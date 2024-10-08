@@ -28,9 +28,9 @@ export const { handle, signIn, signOut } = SvelteKitAuth({
 				if (!domain) throw new Error('malformed Mailgun domain');
 
 				const form = new FormData();
-				form.append('from', `Push <${provider.from}>`);
+				form.append('from', `A+spen system <${provider.from}>`);
 				form.append('to', to);
-				form.append('subject', `Sign in to Push (https://push.haelp.dev)`);
+				form.append('subject', `Sign in to A+spen (https://aplus.haelp.dev)`);
 				form.append('html', html(url));
 				form.append('text', text(url));
 

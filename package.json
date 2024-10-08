@@ -33,10 +33,14 @@
 		"@fortawesome/free-brands-svg-icons": "^6.6.0",
 		"@fortawesome/free-solid-svg-icons": "^6.6.0",
 		"@sveltejs/adapter-node": "^5.2.5",
+		"@types/jsdom": "^21.1.7",
 		"@types/web-push": "^3.6.3",
+		"@types/xml2js": "^0.4.14",
+		"jsdom": "^25.0.1",
 		"mongodb": "^6.9.0",
 		"svelte-fa": "^4.0.3",
 		"svelte-french-toast": "^1.2.0",
-		"web-push": "^3.6.7"
+		"web-push": "^3.6.7",
+		"xml2js": "^0.6.2"
 	}
 }

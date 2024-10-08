@@ -11,11 +11,6 @@ declare global {
 			env: {
 				vapid: string;
 			};
-			name?: string;
-			account: {
-				subscriptions: (Subscription & { _id: string, item: string })[];
-				items: (Item & { _id: string })[];
-			};
 		}
 		// interface PageState {}
 		// interface Platform {}
@@ -23,3 +18,10 @@ declare global {
 }
 
 export {};
+
+declare module "@auth/sveltekit" {
+	interface User {
+		subscriptions?: string[];
+		aspen?: string;
+	}
+}

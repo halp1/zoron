@@ -29,9 +29,13 @@
   };
 </script>
 
+<svelte:head>
+  <title>A+spen | Login</title>
+</svelte:head>
+
 <main class="flex h-screen w-screen flex-col items-center justify-center">
   {#if user}
-    <div class="text-3xl">
+    <div class="flex flex-col items-center justify-center gap-3 text-3xl">
       You are already logged in as {user.email}.
     </div>
     <a href="/account" class="text-xl underline">View account</a>
@@ -39,12 +43,14 @@
   {:else}
     <form on:submit={handleSubmission} class="flex w-96 flex-col gap-5">
       <input
-        class="w-full rounded-lg border-2 border-dashed border-orange-400 bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
+        class="w-full rounded-lg border-2 border-dashed border-blue-400 bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
         name="email"
         placeholder="Email"
         required
       />
-      <button class="btn-full w-full" type="submit"> Log in/Register </button>
+      <button class="btn-full w-full border-2 border-blue-400 bg-transparent" type="submit">
+        Log in/Register
+      </button>
     </form>
   {/if}
 </main>

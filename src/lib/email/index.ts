@@ -98,14 +98,14 @@ export const html = (url: string) => `<!doctype html>
                     <!-- <mj-image width="100px" src="/assets/img/logo-small.png"></mj-image> -->
                     <tr>
                       <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                        <div style="font-family:helvetica;font-size:40px;line-height:1;text-align:center;color:#F45E43;">Log in to Push</div>
+                        <div style="font-family:helvetica;font-size:40px;line-height:1;text-align:center;color:#60a5fa;">Log in to A+spen</div>
                       </td>
                     </tr>
                     <tr>
                       <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                        <p style="border-top:solid 4px #F45E43;font-size:1px;margin:0px auto;width:100%;">
+                        <p style="border-top:solid 4px #60a5fa;font-size:1px;margin:0px auto;width:100%;">
                         </p>
-                        <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" style="border-top:solid 4px #F45E43;font-size:1px;margin:0px auto;width:550px;" role="presentation" width="550px" ><tr><td style="height:0;line-height:0;"> &nbsp;
+                        <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" style="border-top:solid 4px #60a5fa;font-size:1px;margin:0px auto;width:550px;" role="presentation" width="550px" ><tr><td style="height:0;line-height:0;"> &nbsp;
 </td></tr></table><![endif]-->
                       </td>
                     </tr>
@@ -113,8 +113,8 @@ export const html = (url: string) => `<!doctype html>
                       <td align="center" vertical-align="middle" style="font-size:0px;padding:10px 25px;word-break:break-word;">
                         <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%;">
                           <tr>
-                            <td align="center" bgcolor="#F45E43" role="presentation" style="border:none;border-radius:3px;cursor:auto;mso-padding-alt:10px 25px;background:#F45E43;" valign="middle">
-                              <a href="${url}" style="display:inline-block;background:#F45E43;color:white;font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:25px;font-weight:normal;line-height:120%;margin:0;text-decoration:none;text-transform:none;padding:10px 25px;mso-padding-alt:0px;border-radius:3px;" target="_blank"> Log in </a>
+                            <td align="center" bgcolor="#60a5fa" role="presentation" style="border:none;border-radius:3px;cursor:auto;mso-padding-alt:10px 25px;background:#60a5fa;" valign="middle">
+                              <a href="${url}" style="display:inline-block;background:#60a5fa;color:white;font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:25px;font-weight:normal;line-height:120%;margin:0;text-decoration:none;text-transform:none;padding:10px 25px;mso-padding-alt:0px;border-radius:3px;" target="_blank"> Log in </a>
                             </td>
                           </tr>
                         </table>
@@ -141,5 +141,5 @@ export const html = (url: string) => `<!doctype html>
 </html>`;
 
 export const text = (url: string) => {
-	return `Sign in to Push at \n${url}\n\n`;
+	return `Sign in to A+spen at \n${url}\n\n`;
 };
