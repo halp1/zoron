@@ -1,0 +1,2716 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="SHORTCUT ICON" href="images/favicon.ico"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="js/external/lodash/lodash.3.8.0.compat.min.js?version=6.8.1.4.72" type="text/javascript"></script>
+  <script src="js/external/json/json2.js?version=6.8.1.4.72" type="text/javascript"></script>
+  <script src="js/external/jquery/jquery-3.5.1.min.js?version=6.8.1.4.72" type="text/javascript"></script>
+  <script src="js/jquery-ui-1.12.1.min.js?version=6.8.1.4.72" type="text/javascript"></script>
+  <script src="js/external/quicktags/quicktags-1.3.1-concat.js?version=6.8.1.4.72" type="text/javascript"></script>
+
+
+<script src="js/jquery-common.js?version=6.8.1.4.72" type="text/javascript"></script>
+<script src="js/common.js?version=6.8.1.4.72" type="text/javascript"></script>
+<script src="js/hoverText.js?version=6.8.1.4.72" type="text/javascript"></script>
+<script src="js/menu.js?version=6.8.1.4.72" type="text/javascript"></script>
+<script src="js/locale/date-en-US.js?version=6.8.1.4.72" type="text/javascript"></script>
+<script src="js/dateTime.js?version=6.8.1.4.72" type="text/javascript"></script>
+<script src="js/dependencyHandler.js?version=6.8.1.4.72" type="text/javascript"></script>
+<script src="js/dynamicPickList.js?version=6.8.1.4.72" type="text/javascript"></script>
+<script src="js/resourceGrabber.js?version=6.8.1.4.72" type="text/javascript"></script>
+<script src="js/spellCheckField.js?version=6.8.1.4.72" type="text/javascript"></script>
+<script src="js/messageWindow.js?version=6.8.1.4.72" type="text/javascript"></script>
+<script src="js/help.js?version=6.8.1.4.72" type="text/javascript"></script>
+<script src="js/grid.js?version=6.8.1.4.72" type="text/javascript"></script>
+<script src="js/commentBank.js?version=6.8.1.4.72" type="text/javascript"></script>
+
+
+  <script src="js/modules/seatingChartDesign.js?version=6.8.1.4.72" type="text/javascript"></script>
+
+<script src="ckeditor/ckeditor.js?version=6.8.1.4.72" type="text/javascript"></script>
+<script src="js/ckEditorSetup.js?version=6.8.1.4.72" type="text/javascript"></script>
+
+<script language="JavaScript">
+window.name = "root_aspen_window";
+SYSTEM_LOCALE = 'en_US';
+includeStylesheet('student');
+sessionId = 'uK9E8nI69AzaFKvQBMjJL0tetcDPSP_-VkWV7raZ';
+resetSessionTimeout( 1800 );
+sessionTimeoutMessage1 = 'Your session will expire in less than one minute.';
+sessionTimeoutMessage2 = 'Would you like to continue with your session?';
+sessionExpiredMessage = 'Your session has expired at';
+updateSessionTimeout();
+function onLoad()
+{
+makeTabsClickable();
+scrollToCoordinates();
+if (this.resizeFrames)
+{
+resizeFrames();
+}
+if (this.updateCheckboxViews)
+{
+updateCheckboxViews();
+}
+
+}
+
+
+
+</script>
+
+
+
+<title>Aspen: Assignments</title>
+<!-- Start Analytics -->
+<script>
+var trackAnalytics = false;
+
+var analyticUserView = 'Student view';
+var analyticUserRole = 'Student';
+var districtName = 'Lexington Public Schools';
+
+var aspenVersion = '6.8.1.4.72';
+</script>
+<script src="js/analyticsCore.js?version=6.8.1.4.72" type="text/javascript"></script>
+</head>
+
+<body class="bodyBackground" onload="onLoad()">
+<div id="overlay" style="display: none; z-index: 500; position: fixed; left: 0; right: 0; bottom: 0; top: 0; background-color: rgba(0,0,0,0.5);"></div>
+<div id="spellingMenu" class="suggestionMenu spellCheckBackground"></div>
+
+<form name="portalAssignmentDetailForm" method="post" action="/aspen/portalAssignmentDetail.do"><div><input type="hidden" name="org.apache.struts.taglib.html.TOKEN" value="82b5452f36aa8a45cf25dd8dd1f9b6bc"></div>
+<input type="hidden" id="userEvent" name="userEvent" value="930">
+<input type="hidden" id="userParam" name="userParam" value="">
+<input type="hidden" id="operationId" name="operationId" value="">
+<input type="hidden" id="deploymentId" name="deploymentId" value="ma-lexington">
+<input type="hidden" id="scrollX" name="scrollX" value="0">
+<input type="hidden" id="scrollY" name="scrollY" value="0">
+<input type="hidden" id="formFocusField" name="formFocusField" value="">
+<input type="hidden" name="formContents" value="">
+<input type="hidden" name="formContentsDirty" value="">
+<input type="hidden" name="maximized" value="false">
+
+
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+<tr class="layoutHeader" id="layoutHeader">
+<td id="header">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td>
+<div id="topTitleBar" style="">
+
+
+
+
+
+
+
+
+
+
+<!--[if lte IE 6]>
+<script src="js/supersleight-min.js?version=6.8.1.4.72" type="text/javascript"></script>
+<![endif]-->
+
+
+
+<iframe id="downloadFrame" src="javascript:false;" style="display: none"></iframe>
+
+
+
+<script language="Javascript">
+function confirmLogout()
+{
+if (confirm('Do you really want to log off and end your session?'))
+{
+window.open('logout.do', '_top');
+}
+}
+</script>
+<table width="100%" border="0" cellpadding="0" cellspacing="0" height="55px" style="float:left;"> <tr>
+
+<td valign="top" width="50%">
+<table cellpadding="0" cellspacing="0" border="0" style="height: 100%;" >
+<tr valign="top">
+
+<td rowspan="1" class="applicationTitle lightTitle" style="vertical-align: middle" valign="middle">
+
+<span style="padding-left: 10px;">
+Lexington Public Schools 2024-2025
+</span>
+</td>
+</tr>
+<tr>
+
+<td class="applicationSubtitle lightTitle">
+<span style="padding-left: 10px;">
+Liu, Joshua
+</span>
+</td>
+
+</tr>
+</table>
+</td>
+<td align="center">
+
+</td>
+<td align="right" width="40%">
+<div style="float: right;">
+<table border="0" cellspacing="0" cellpadding="0" style='margin-left: auto; margin-right: auto'>
+<tr><td>
+
+
+
+</td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<td>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td>
+<div id="userPreferenceMenu" class="toolbarText pointer toolbarItem" tabindex="0">
+Liu, Joshua
+<img src="images/white_down_arrow.png" class="whiteDownArrow">
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div id="userPreferenceMenuPane" class="menuPane menuPlainBackground c2Border-left">
+<table border="0" cellspacing="0" cellpadding="0">
+<tr id="userPreferenceContext" tabindex="0">
+<td nowrap class="menuOptionFullPadding">Set preferences</td>
+<td nowrap class="menuOptionFullPadding" width="1" align="right">&nbsp;</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+</table>
+</td>
+<script language="Javascript">
+var userPreferenceMenu = new Menu('userPreferenceMenu', null, 'menuItemHighlight pointer', 'pointer');
+userPreferenceMenu.addOption('userPreferenceContext', 'doNamedPopup(\'userPreferences.do\',\'500\',\'450\',\'preferencesPopup\',\'scrollbars=1,resizable=1,menubar=0,location=0\');');
+</script>
+
+<td>
+<div class="toolbarPadding toolbarItem" nowrap  onmouseover="this.className = 'toolbarPadding toolbarItem c2Background'" onmouseout="this.className = 'toolbarPadding toolbarItem'">
+<a href="javascript:confirmLogout();" class="toolbarText"><span class="fa fa-sign-out" style="padding-right:5px;"></span>Log Off</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+</table>
+
+</div>
+</td>
+</tr>
+<tr>
+<td>
+
+<!--         <span id="autoSaveDebugButton">&nbsp;</span>-->
+
+<div id="c2colorRef" class="c2color"> </div>
+<div id="topMenuBar" style="">
+<div id='topMenuBarLeft' class="topMenuLeftScroll">
+<img src="images/previous-arrow-white-black-border.png" style="color: transparent;"/>
+</div>
+<div id='actualTopMenuBar' class="topMenuCenter">
+
+
+
+
+
+
+
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
+<tr>
+
+
+<tbody style="display: inline-block">
+<td width="1" id="left-arrow-container" class="c1Background navTabBackground" nowrap  onmouseover="this.className = 'navTabBackgroundHover'" onmouseout="this.className = 'navTabBackground c1Background'" style="display: none">
+<div class="arrowToLeft"></div>
+</td>
+</tbody>
+<tbody id="topTabs" style="width: 100%; display:inline-block; overflow:hidden">
+<td style="width: 80px; text-align: center;" class="c1Background navTabBackground" nowrap  onmouseover="this.className = 'navTabBackgroundHover'" onmouseout="this.className = 'navTabBackground c1Background'">
+<a href="/aspen/home.do" class="navTab">Pages</a>
+</td>
+
+
+
+
+<!-- D-25797 We do not want to display the tab if the user does not have a role with access to the tab. -->
+
+
+<td width="1" class="navTabDividerSolid"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
+<td width="1" class="c1Background navTabBackground" nowrap  onmouseover="this.className = 'navTabBackgroundHover '" onmouseout="this.className = 'navTabBackground c1Background'">
+<a href="/aspen/portalStudentDetail.do?navkey=myInfo.details.detail" class="navTab" title="My information tab">My&nbsp;Info</a>
+</td>
+
+
+
+<!-- D-25797 We do not want to display the tab if the user does not have a role with access to the tab. -->
+
+
+<td width="1" class="navTabDividerSolid"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
+<td width="1" class=" navTabBackgroundSelected" nowrap >
+<a href="/aspen/portalClassList.do?navkey=academics.classes.list" class="navTab" title="Academics tab">Academics</a>
+</td>
+
+
+
+
+<td width="1" class="navTabDividerSolid"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
+<td width="100%" class="navTabBackground c1Background"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
+</tbody>
+<tbody style="display: inline-block">
+<td width="1" id="right-arrow-container" class="c1Background navTabBackground" nowrap  onmouseover="this.className = 'navTabBackgroundHover'" onmouseout="this.className = 'navTabBackground c1Background'" style="display: none">
+<div class="arrowToRight"></div>
+</td>
+</tbody>
+</tr>
+</table>
+
+</div>
+<div id='topMenuBarRight' class="topMenuRightScroll">
+<img src="images/next-arrow-white-black-border.png" style="color: transparent;"/>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+
+
+
+
+<tr>
+<td>
+<div id="contentArea" class="contentPad">
+<table class="breadcrumbsOuterContainer" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td id="breadcrumbsContainer">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td id="bodytop" class="breadcrumbs">
+
+<a id="link_topNode" href="portalClassList.do?navkey=academics.classes.list&maximized=false"
+title="List of my current classes">
+Classes
+</a> :: <a href="portalClassDetail.do?navkey=academics.classes.list.detail">2309-006 - AP United States History</a>&nbsp;::&nbsp;TotalPoints - LEQ 1: The Constitution
+<img src="images/spacer.gif" height="1" width="2" alt=" ">
+
+</td>
+
+<td>
+<img src="images/spacer.gif" height="1" width="2" alt=" ">
+
+</td>
+<td>
+
+</td>
+<td>
+
+</td>
+<td>
+<img src="images/spacer.gif" height="27" width="1" alt=" ">
+</td>
+</tr>
+</table>
+
+</td>
+<td align="right">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td nowrap>
+<button id="firstButton"  class="navIconFlat navIconFlatPointer" type="button" name="firstButton"
+onclick="doSubmit(80, this.form)"
+title="Go to the first record">
+<div class="navIconGeneral navFirst"></div>
+</button>
+<button id="previousButton" class="navIconFlat navIconFlatPointer" type="button" name="previousButton"
+onclick="doSubmit(70, this.form)"
+title="Go to the previous record">
+<div class="navIconGeneral navPrevious"></div>
+</button>  
+<button type="button"  class="navIconFlat navIconFlatPointer" name="searchButton" id="searchButton"
+onclick="doPickList('jumpToPicklist.do', '700', '470')"
+title="Find"
+class=""
+>
+<div class="navIconGeneral navSearch"></div>
+</button> 
+<button id="nextButton"  class="navIconFlat navIconFlatPointer" type="button" name="nextButton"
+onclick="doSubmit(60, this.form)"
+title="Go to the next record">
+<div class="navIconGeneral navNext"></div>
+</button>
+<button id="lastButton"  class="navIconFlat navIconFlatPointer" type="button" name="lastButton"
+onclick="doSubmit(90, this.form)"
+title="Go to the last record">
+<div class="navIconGeneral navLast"></div>
+</button>
+</td>
+</tr>
+</table>
+
+
+<script language="Javascript">
+function expandSearchString()
+{
+if (document.getElementById("searchStringDiv").style.visibility == "hidden")
+{
+document.getElementById("searchStringDiv").style.visibility = "visible";
+document.getElementById("searchStringNameID").focus();
+}
+else
+{
+document.getElementById("searchStringDiv").style.visibility = "hidden";
+}
+}
+function redirectWithSearch(studentOID)
+{
+var nameOrId = document.getElementById("searchStringNameID").value;
+var last = document.getElementById("searchStringLast").value;
+if ((nameOrId == null || nameOrId == '') && (last == null || last == ''))
+{
+var elem = document.getElementById("searchErrorMessage");
+var changeVal = grabResource("studentSearch.missingFields");
+//Cross browser fix
+//innerText - chrome
+//textContent - firefox
+//error on innerText -> setting the sibling -> IE
+try
+{
+elem.innerText = changeVal;
+elem.textContent = changeVal;
+}
+catch(err)
+{
+elem.nextSibling.data = changeVal;
+}
+}
+else
+{
+var first = document.getElementById("searchStringFirst").value;
+var gradeLevel = document.getElementById("searchStringGradeLevel").value;
+var gender = document.getElementById("searchStringGender").value;
+var dob = document.getElementById("searchStringDOB").value;
+var pathname = document.location["pathname"];
+var navKey = document.location["search"];
+var deploymentId = "ma-lexington";
+navKey = removeParam(navKey, 'nameID');
+navKey = removeParam(navKey, 'last');
+navKey = removeParam(navKey, 'first');
+navKey = removeParam(navKey, 'gradeLevel');
+navKey = removeParam(navKey, 'gender');
+navKey = removeParam(navKey, 'dob');
+navKey = removeParam(navKey, 'studentOID');
+//If there is no navKey, we need a ? to say we have params. If there is one, we need to add an identifier for the end of it
+if (navKey.indexOf('?') < 0)
+{
+navKey = '?';
+}
+else
+{
+navKey = navKey + '&';
+}
+var resouce = rewriteUrl('searchString.do?navkey=' + navKey +
+'&nameID=' + nameOrId +
+'&last=' + last +
+'&first=' + first +
+'&gradeLevel=' + gradeLevel +
+'&gender=' + gender +
+'&dob=' + dob +
+'&studentOID=' + studentOID +
+'&deploymentId=' + deploymentId);
+$.ajax({
+type: "GET",
+url: resouce,
+async: false,
+success: function()
+{
+doSubmit(0, document.forms[0]);
+},
+error: function(){$("#sra-status").text("Communication failure");},
+cache: false
+});
+}
+}
+function removeParam(navKey, param)
+{
+var paramLocation = navKey.indexOf(param);
+if (paramLocation > -1)
+{
+var amperLocation = navKey.indexOf('&', paramLocation);
+if (amperLocation > -1)
+{
+return navKey.substring(0, paramLocation) +	navKey.substring(amperLocation + 1, navKey.length)
+}
+else
+{
+//There is the last param in the list, so we need to remove the previous &
+return navKey.substring(0, paramLocation - 1);
+}
+}
+return navKey;
+}
+</script>
+<style type="text/css">
+span.button-text {
+padding-right: 0 !important;
+}
+</style>
+
+</td>
+</tr>
+
+<tr>
+<td colspan="2"><img src="images/spacer.gif" height="5" width="1" alt=" "></td>
+</tr>
+</table>
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td height="1" width="100" id="layoutVerticalTabsContainer" style="min-width: 100px">
+<div id="layoutVerticalTabs" style="">
+
+
+
+
+
+
+
+
+
+<script language="Javascript">
+function openNode(url)
+{
+var lastSelection = getLastSelectedValue("portalAssignmentDetailForm");
+if (lastSelection != "")
+{
+url += "&oid=" + lastSelection;
+}
+url = rewriteUrl(url);
+window.name = "parentWindow";
+window.open(url, window.name);
+}
+</script>
+
+
+
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" height="100%">
+
+
+
+<tr height="1">
+<td class="verticalTab pointer  verticalTabTopBorder  "  onmouseover="this.className = 'verticalTabHighlight verticalTab pointer  verticalTabTopBorder '" onmouseout="this.className = 'verticalTab pointer  verticalTabTopBorder'">
+
+
+<div class="verticalTabLabel">
+<a href="portalClassDetail.do?navkey=academics.classes.list.detail"
+title="Details for a class"
+class="verticalTabText">Details</a>
+
+
+</div>
+
+</td>
+</tr>
+
+
+
+<tr height="1">
+<td class="verticalTabSelected verticalTabShadowDown " >
+
+
+<div class="verticalTabLabel verticalTabBar c2Border">
+<a href="portalAssignmentList.do?navkey=academics.classes.list.gcd"
+title="List of assignments"
+class="verticalTabTextSelected verticalTabLink">Assignments</a>
+
+
+
+<table border="0" width="100%">
+<tr>
+<td nowrap>
+
+<a href="portalAssignmentDetail.do?navkey=academics.classes.list.gcd.detail"
+title="Details for an assignment" class="nestedNodeText verticalTabLink">
+
+<img src="images/student-vertical-tab-bullet.gif">
+
+
+Details
+</a>
+</td>
+</tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</td>
+</tr>
+
+
+
+<tr height="1">
+<td class="verticalTab pointer   "  onmouseover="this.className = 'verticalTabHighlight verticalTab pointer  '" onmouseout="this.className = 'verticalTab pointer '">
+
+
+<div class="verticalTabLabel">
+<a href="contextList.do?navkey=academics.classes.list.pat"
+title="List of class attendance records"
+class="verticalTabText">Attendance</a>
+
+
+</div>
+
+</td>
+</tr>
+
+
+
+<tr height="*" >
+<td id='fillerRow' width="1" class="borderRight"></td>
+</tr>
+</table>
+
+</div>
+</td>
+<td rowspan="2" width="*" class="contentContainer">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table border="0" cellspacing="0" cellpadding="0" class="optionsBar">
+<tr class="" height="22">
+
+<td width="1%" style="display: none;">
+
+<div id='maximizeMenuButton' class='menu pointer menuBarSegment c1Background' onclick='showMaximizeMenus(event)'>
+<img src='images/menu-icon-white.png' style='height: 15px'>
+</div>
+
+</td>
+
+
+
+<td width="1%">
+<div id="options" tabindex="0" class="menu pointer menuBarSegment c1Background">Options<img src="images/white_down_arrow.png" class="whiteDownArrow"></div><div id="optionsPane" class="menuPane c2Border-left"></div><script language="Javascript">var options = new Menu('options', null, 'menuItemHighlight pointer', 'menuPlainBackground pointer',false);
+options.disable();</script>
+</td>
+
+
+<td width="1%">
+
+<div id="reportsMenu" tabindex="0" class="menu pointer menuBarSegment c1Background">Reports<img src="images/white_down_arrow.png" class="whiteDownArrow"></div><div id="reportsMenuPane" class="menuPane c2Border-left"><table width ="105" id="reportsMenuColumn0Table" border="0" cellspacing="0" cellpadding="0" class="menuColumn" ><tr data-name="menu.tools.reports.option.queue" id="reportsMenu_Option0" data-id="null" tabindex="0"><td nowrap class="menuOption" width="1" align="left"><img src="images/spacer.gif" width="4"></td><td nowrap class="menuOption" width="*" align="left">My Job Queue...</td><td nowrap class="menuOption" width="1" align="right">&nbsp;</td></tr>
+</table></div><script language="Javascript">var reportsMenu = new Menu('reportsMenu', null, 'menuItemHighlight pointer', 'menuPlainBackground pointer',false);
+reportsMenu.addOption('reportsMenu_Option0', 'doNamedPopup(\'personalToolQueue.do\', 450, 350, \'reportQueue\', \'\');');
+</script>
+</td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<td width="1%">
+<div id="helpMenu" class="menu pointer menuBarSegment c1Background" tabindex="0">
+Help
+<img src="images/white_down_arrow.png" class="whiteDownArrow">
+</div>
+<div id="helpMenuPane" class="menuPane c2border-left">
+<table border="0" cellspacing="0" cellpadding="0">
+<tr id="helpOnline" tabindex="0">
+<td nowrap class="menuOption" width="1"><img src="images/spacer.gif" height="1" width="4" alt=" "></td>
+<td nowrap class="menuOption" width="*">Help for this Page</td>
+<td nowrap class="menuOption" width="1" align="right">&nbsp;</td>
+</tr>
+<tr id="helpCenter" tabindex="0">
+<td nowrap class="menuOption" width="1"><img src="images/spacer.gif" height="1" width="4" alt=" "></td>
+<td nowrap class="menuOption" width="*">Help Center</td>
+<td nowrap class="menuOption" width="1" align="right">&nbsp;</td>
+</tr>
+<tr id="helpReleaseNotes" tabindex="0">
+<td nowrap class="menuOption" width="1"><img src="images/spacer.gif" height="1" width="4" alt=" "></td>
+<td nowrap class="menuOption" width="*">Release Notes</td>
+<td nowrap class="menuOption" width="1" align="right"><img src="images/sub-menu-arrow.gif">
+<div id="helpReleaseNotesPane" class="menuPane c2border-left">
+<table border="0" cellspacing="0" cellpadding="0">
+
+<tr id="helpReleaseNotes1" tabindex="0">
+<td nowrap class="menuOption" width="1"><img src="images/spacer.gif" height="1" width="4" alt=" "></td>
+<td nowrap class="menuOption" width="*" align="left">Aspen Release Notes</td>
+<td nowrap class="menuOption" width="1" align="right">&nbsp;</td>
+</tr>
+
+<tr id="helpReleaseNotes2" tabindex="0">
+<td nowrap class="menuOption" width="1"><img src="images/spacer.gif" height="1" width="4" alt=" "></td>
+<td nowrap class="menuOption" width="*" align="left">Release Highlight Videos</td>
+<td nowrap class="menuOption" width="1" align="right">&nbsp;</td>
+</tr>
+
+</table>
+</div>
+
+</td>
+</tr>
+<tr id="helpUserGuides" tabindex="0">
+<td nowrap class="menuOption" width="1"><img src="images/spacer.gif" height="1" width="4" alt=" "></td>
+<td nowrap class="menuOption" width="*">User Guides</td>
+<td nowrap class="menuOption" width="1" align="right"><img src="images/sub-menu-arrow.gif">
+<div id="helpUserGuidesPane" class="menuPane c2border-left">
+<table border="0" cellspacing="0" cellpadding="0">
+
+<tr id="helpUserGuides0" tabindex="0">
+<td nowrap class="menuOption" width="1"><img src="images/spacer.gif" height="1" width="4" alt=" "></td>
+<td nowrap class="menuOption" width="*" align="left">Family and Student Portals - User Guide</td>
+<td nowrap class="menuOption" width="1" align="right">&nbsp;</td>
+</tr>
+
+</table>
+</div>
+
+</td>
+</tr>
+
+<tr class="menuPlainBackground pointer">
+<td nowrap class="menuSeparator" colspan="3"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
+</tr>
+<tr id="helpAbout" tabindex="0">
+<td nowrap class="menuOption" width="1"><img src="images/spacer.gif" height="1" width="4" alt=" "></td>
+<td nowrap class="menuOption" width="*">About Aspen</td>
+<td nowrap class="menuOption" width="1" align="right">&nbsp;</td>
+</tr>
+</table>
+</div>
+
+<script language="Javascript">
+var helpMenu = new Menu('helpMenu', null, 'menuItemHighlight pointer', 'menuPlainBackground pointer');
+var helpUrl    = "#Family_and_Student_Portals/Viewing_Your_Student_s_Academic_Information.htm";
+var helpUrlEsc = "null";
+helpUrl = (helpUrl != "null") ? helpUrl : (helpUrlEsc != "null") ? helpUrlEsc : "";
+if (true && (!isSafari() || false))
+{
+var helpFullUrl = "http://aspenhelp.follettlearning.com?sessid=NjgxLFNJLDIwMjQtMTAtMDgsRU5fVVM=&path=help/aspen_CSH.htm&anchor="+helpUrl.replace("#", "");
+var helpCenterUrl = "http://aspenhelp.follettlearning.com?sessid=NjgxLFNJLDIwMjQtMTAtMDgsRU5fVVM=&path=" + "help/Content/Help_Center/Aspen_Main.htm";
+}
+else
+{
+var helpFullUrl = "help/aspen_CSH.htm" + helpUrl;
+var helpCenterUrl = "help/Content/Help_Center/Aspen_Main.htm";
+}
+helpFullUrl = rewriteUrl(helpFullUrl);
+helpMenu.addOption('helpOnline', 'window.open("'+helpFullUrl+'", "_blank");');
+helpCenterUrl = rewriteUrl(helpCenterUrl);
+helpMenu.addOption('helpCenter', 'window.open("'+helpCenterUrl+'", "_blank");');
+if(false)
+{
+helpMenu.addOption('helpReportProblem', 'doNamedPopup("ticketSubmit.do", 700, 400, "ticketSubmitWindow", "");');
+}
+helpMenu.addOption('helpReleaseNotes', 'doNamedPopup("about.do", 400, 170, "aboutWindow", "");');
+helpMenu.addOption('helpUserGuides', 'doNamedPopup("about.do", 400, 170, "aboutWindow", "");');
+helpMenu.addOption('helpAbout', 'doNamedPopup("about.do", 400, 200, "aboutWindow", "");');
+var helpReleaseNotesMenu = new Menu('helpReleaseNotes', helpMenu, 'menuItemHighlight pointer', 'menuPlainBackground pointer');
+
+helpReleaseNotesMenu.addOption('helpReleaseNotes1', 'window.open(rewriteUrl("http://aspenhelp.follettlearning.com?sessid=NjgxLFNJLDIwMjQtMTAtMDgsRU5fVVM=&path=latestReleaseNotes/ReleaseNotes.pdf"), "_blank");');
+
+helpReleaseNotesMenu.addOption('helpReleaseNotes2', 'window.open(rewriteUrl("https://www.follettcommunity.com/s/topic/0TO2J000000k9bwWAA/current-release"), "_blank");');
+
+var helpUserGuidesMenu = new Menu('helpUserGuides', helpMenu, 'menuItemHighlight pointer', 'menuPlainBackground pointer');
+
+helpUserGuidesMenu.addOption('helpUserGuides0', 'window.open(rewriteUrl("http://aspenhelp.follettlearning.com?sessid=NjgxLFNJLDIwMjQtMTAtMDgsRU5fVVM=&path=guides/Family_Student_portal.pdf"), "_blank");');
+
+</script>
+</td>
+
+
+<td width="*" align="right">
+
+&nbsp;
+
+</td>
+
+<td width="1" onmouseout="this.className = '';" onmouseover="this.className = this.className = 'controlHoverBackground';" class="">
+
+
+
+</td>
+<td width="1">
+<img src="images/spacer.gif" height="1" width="7" alt=" ">
+</td>
+<td width="1" onmouseover="this.className = this.className = 'controlHoverBackground';" onmouseout="this.className = '';" style="padding-right: 3px">
+<a href="javascript:toggleMaximize('Maximize', 'Minimize')"><img id="maximizeImg" src="images/max-window.gif" border="0"></a>
+</td>
+</tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<input type="hidden" name="originalOid" value="GCD0000017PfFO">
+
+
+
+
+<script src="js/xmlElement.js?version=6.8.1.4.72" type="text/javascript"></script>
+<script src="js/detailAutoSave.js?version=6.8.1.4.72" type="text/javascript"></script>
+<script language="JavaScript">
+$(function()
+{
+
+});
+function deleteBean()
+{
+var customDeleteFunction = "null";
+if (customDeleteFunction != null && customDeleteFunction != "null" && customDeleteFunction != "") {
+eval(customDeleteFunction)
+} else {
+var action = "deleteWarning.do" +
+'?dataClass=com.x2dev.sis.model.beans.GradebookColumnDefinition';
+var oid = 'GCD0000017PfFO';
+startProgressMeter();
+makeSynchronousXmlRequest(action, "deleteSuccess", "deleteError()", "oids", oid);
+}
+}
+function deleteBeanEvent()
+{
+var action = "deleteWarningPlanner.do" +
+'?dataClass=com.x2dev.sis.model.beans.GradebookColumnDefinition';
+var oid = 'GCD0000017PfFO';
+startProgressMeter();
+makeSynchronousXmlRequest(action, "deleteSuccess", "deleteError()", "oids", oid);
+}
+function deleteError()
+{
+stopProgressMeter();
+var label = '<strong>ERROR:</strong> &nbsp; Communication error. Try again in a few minutes. If the problem persists, contact your system administrator. ';
+showAlertWindow(label, false, 400, 'button.ok', '');
+}
+function deleteSuccess(resultXml)
+{
+stopProgressMeter();
+var root = resultXml.getElementsByTagName("response")[0];
+var message = root.getAttribute("message");
+if (message != null && message.length > 0)
+{
+var aClassName = 'GradebookColumnDefinition';
+var label = '<strong>WARNING:</strong> &nbsp; Deleting this ' + aClassName + ' record will also delete the following related records:<br><br>' + message + ' ';
+showAlertWindow(label, false, 325, 'button.continue', "doSubmit('" + 130 + "', document.forms['portalAssignmentDetailForm']);", 'button.cancel', '');
+}
+else
+{
+var message = 'Delete this assignment?';
+showAlertWindow(message, false, 400, 'button.continue', "doSubmit(" + 130 + ", document.forms['portalAssignmentDetailForm']);", 'button.cancel', '');
+}
+}
+</script>
+
+
+
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+
+
+
+<td>
+<table id="topButtonBar" border="0" cellpadding="0" cellspacing="0">
+<tr>
+<td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="js/tableLock.js?version=6.8.1.4.72" type="text/javascript"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<input type="hidden" name="independentSave" value="null" />
+<input type="hidden" name="savePrivileges" value="null" />
+<script type="text/javascript">
+if (typeof window.cancelPressed === 'undefined') {
+window.cancelPressed = false;
+}
+function triggerCustomEvent() {
+const iframe = document.getElementById('olrIframe');
+if (iframe && iframe.contentWindow) {
+iframe.contentWindow.postMessage('triggerSaveAndClose', '*');
+}
+doSubmit(940 , this.form);
+window.parent.doRefresh();
+const saveButton = document.getElementById('saveCloseButton');
+saveButton.parentNode.removeChild(saveButton);
+const cancelButton = document.getElementById('cancelButton');
+const buttonText = cancelButton.querySelector('.button-text');
+if (buttonText) {
+buttonText.textContent = 'Close';
+}
+window.parent.doRefresh();
+}
+function doCustomCancel(form)
+{
+const iframe = document.getElementById('olrIframe');
+if (window.cancelPressed) {
+doSubmit(940 , this.form);
+window.cancelPressed = false;
+(new EmbeddedPopup()).close();
+} else {
+doSubmit(940, form);
+const saveButton = document.getElementById('saveCloseButton');
+const cancelButton = document.getElementById('cancelButton');
+if (saveButton) saveButton.disabled = false;
+if (cancelButton) cancelButton.disabled = false;
+window.cancelPressed = true;
+}
+if (iframe && iframe.contentWindow) {
+iframe.contentWindow.postMessage('triggerClose', '*');
+}
+}
+</script>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+
+
+
+
+
+
+
+
+
+
+<td>
+
+</td>
+
+
+<td>
+
+
+
+<button type="button" class="button" id="cancelButton" tabIndex="0" name="cancelButton" onclick="doSubmit(940, this.form);return false;"><span class="fa fa-close fa-lg"></span><span class="button-text">Cancel</span></button>
+
+
+
+<td class="extraButtons">&nbsp;</td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</tr>
+</table>
+
+</td>
+<td id="messageAreaTop">&nbsp;</td>
+</tr>
+</table>
+</td>
+
+
+
+
+
+<td align="right">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<label for="currentTemplateIndex" class="screenReaderHiddenLabel">Current Template Index</label>
+<select name="currentTemplateIndex" onchange="doSubmit(2360, this.form);return false;" id="currentTemplateIndex" class="listHeaderDropdown" title="Template list"><option value="0" selected>
+Default Template
+</option>
+
+
+
+<option value="1" >
+Default Fields
+</option></select>
+</td>
+
+
+</tr>
+
+<tr>
+<td colspan="2"><img src="images/spacer.gif" height="10" width="1" alt=" "></td>
+</tr>
+
+<tr>
+<td colspan="2">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script language="JavaScript">
+INVALID_DATE_FORMAT   = 'The date you entered is not formatted properly.';
+INVALID_DATE_VALUE    = 'The date you entered is invalid.';
+INVALID_NUMERIC_VALUE = 'The number you entered is invalid.';
+INVALID_TIME_FORMAT   = 'The time you entered is not formatted properly.';
+INVALID_TIME_VALUE    = 'The time you entered is invalid.';
+INVALID_TIMESTAMP_FORMAT   = 'The date and time you entered is not formatted properly.';
+
+</script>
+
+<input type="hidden" name="deleteDetailSetId" value="">
+<input type="hidden" name="selectedChild" value="">
+<input type="hidden" name="currentDetailSetId" value="">
+<input type="hidden" name="currentChildId" value="">
+<input type="hidden" name="newDetailSetId" value="">
+<input type="hidden" name="newChildId" value="">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="js/template.js?version=6.8.1.4.72" type="text/javascript"></script>
+<script language="Javascript" type="text/javascript">
+function changeTemplateTab(index)
+{
+$('document').trigger('click');
+$('document').off('click');
+doParamSubmit(2030, document.forms['portalAssignmentDetailForm'], index);
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="collapsibleDiv0" class="detailContainer" >
+<table id="mainTable" width="100%" cellpadding="0" cellspacing="0" border="0" height="1px">
+<tr valign="top">
+
+
+
+<td width="50%" height="100%">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table id="Column|1511537966" width="100%" cellpadding="0" cellspacing="0" border="0" height="100%" style="border-collapse:collapse;">
+
+<tr height="1">
+<td class="detailPropertyGutter headerLabelBackground"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
+<td class="detailValueGutter"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
+</tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tr id="Property|245190873">
+<td width="125" class="detailProperty headerLabelBackground" nowrap>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+<span class=" templateTextSmall">
+
+
+Category &gt; Description
+
+</span>
+
+
+
+
+
+
+</td>
+
+
+<td width="*" class="detailValue" nowrap>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+<span class=" templateTextSmall">
+
+
+<span id="propertyValue(relGcdGctOid_gctTypeDesc)-span">Total Points<input type="hidden" name="propertyValue(relGcdGctOid_gctTypeDesc)" value="Total Points"/></span>
+
+</span>
+
+
+
+
+
+</td>
+
+
+</tr>
+
+
+
+<tr id="Property|1117044086">
+<td width="125" class="detailProperty headerLabelBackground" nowrap>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+<span class=" templateTextSmall">
+
+
+Assignment name
+
+</span>
+
+
+
+
+
+
+</td>
+
+
+<td width="*" class="detailValue" nowrap>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+<span class=" templateTextSmall">
+
+
+<span id="propertyValue(gcdColName)-span">LEQ 1: The Constitution<input type="hidden" name="propertyValue(gcdColName)" value="LEQ 1: The Constitution"/></span>
+
+</span>
+
+
+
+
+
+</td>
+
+
+</tr>
+
+
+
+<tr id="Property|463317432">
+<td width="125" class="detailProperty headerLabelBackground" nowrap>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+<span class=" templateTextSmall">
+
+
+Date assigned
+
+</span>
+
+
+
+
+
+
+</td>
+
+
+<td width="*" class="detailValue" nowrap>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+<span class=" templateTextSmall">
+
+
+<span id="propertyValue(gcdDateAsgn)-span">10/2/2024<input type="hidden" name="propertyValue(gcdDateAsgn)" value="10/2/2024"/></span>
+
+</span>
+
+
+
+
+
+</td>
+
+
+</tr>
+
+
+
+<tr id="Property|1509997831">
+<td width="125" class="detailProperty headerLabelBackground" nowrap>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+<span class=" templateTextSmall">
+
+
+Date due
+
+</span>
+
+
+
+
+
+
+</td>
+
+
+<td width="*" class="detailValue" nowrap>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+<span class=" templateTextSmall">
+
+
+<span id="propertyValue(gcdDateDue)-span">10/2/2024<input type="hidden" name="propertyValue(gcdDateDue)" value="10/2/2024"/></span>
+
+</span>
+
+
+
+
+
+</td>
+
+
+</tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+.assignmentQuizResponse
+{
+top: 0px;
+}
+</style>
+
+<tr>
+<td width="125" class="detailProperty headerLabelBackground" nowrap>Score</td>
+<td width="*" class="detailValue">
+
+<table><tr><td><div class="percentFieldContainer"><div class="percentFieldBarFill" style="background-color: rgb(153,153,153); width: 100px;"></div><div class="percentFieldBarEmpty" style=" width: 0px;"></div><span class="percentFieldInlineLabel">100%</span></div></td><td>10.0 / 10.0</td><td>(10)</td></tr></table>
+</td>
+</tr>
+
+
+
+
+
+
+
+<tr>
+<td class="detailPropertyGutter headerLabelBackground"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
+<td class="detailValueGutter"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
+</tr>
+</table>
+
+</td>
+
+
+
+<td width="50%" height="100%">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table id="Column|1568953364" width="100%" cellpadding="0" cellspacing="0" border="0" height="100%" style="border-collapse:collapse;">
+
+<tr height="1">
+<td class="detailPropertyGutter headerLabelBackground"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
+<td class="detailValueGutter"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
+</tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tr>
+<td width="125" class="detailProperty headerLabelBackground" nowrap></td>
+</tr>
+
+
+
+
+
+
+
+
+<tr>
+<td class="detailPropertyGutter headerLabelBackground"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
+<td class="detailValueGutter"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
+</tr>
+</table>
+
+</td>
+
+
+</tr>
+</table>
+</div>
+
+
+<img src="images/spacer.gif" height="5" width="1" alt=" ">
+
+
+
+
+
+
+
+
+
+<div id="collapsibleDiv2" class="detailContainer" >
+<table id="mainTable" width="100%" cellpadding="0" cellspacing="0" border="0" height="1px">
+<tr valign="top">
+
+
+
+<td width="100%" height="100%">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table id="Column|1181676487" width="100%" cellpadding="0" cellspacing="0" border="0" height="100%" style="border-collapse:collapse;">
+
+<tr height="1">
+<td class="detailPropertyGutter headerLabelBackground"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
+<td class="detailValueGutter"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
+</tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tr>
+<td width="125" class="detailProperty headerLabelBackground" nowrap>
+Description
+</td>
+<td width="*" class="detailValue">
+
+</td>
+</tr>
+
+
+
+
+
+
+
+<tr>
+<td class="detailPropertyGutter headerLabelBackground"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
+<td class="detailValueGutter"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
+</tr>
+</table>
+
+</td>
+
+
+</tr>
+</table>
+</div>
+
+
+<img src="images/spacer.gif" height="5" width="1" alt=" ">
+
+
+
+
+
+<div id="collapsibleDiv3" class="detailContainer" >
+<table id="mainTable" width="100%" cellpadding="0" cellspacing="0" border="0" height="1px">
+<tr valign="top">
+
+
+
+<td width="100%" height="100%">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table id="Column|1801349260" width="100%" cellpadding="0" cellspacing="0" border="0" height="100%" style="border-collapse:collapse;">
+
+<tr height="1">
+<td class="detailPropertyGutter headerLabelBackground"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
+<td class="detailValueGutter"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
+</tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tr>
+<td width="125" class="detailProperty headerLabelBackground" nowrap>
+Remark
+</td>
+<td width="*" class="detailValue">
+
+</td>
+</tr>
+
+
+
+
+
+
+
+
+<tr>
+<td class="detailPropertyGutter headerLabelBackground"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
+<td class="detailValueGutter"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
+</tr>
+</table>
+
+</td>
+
+
+</tr>
+</table>
+</div>
+
+
+<img src="images/spacer.gif" height="5" width="1" alt=" ">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link type="text/css" href="css/gradebook/assignment.css" rel="Stylesheet" />
+<link type="text/css" href="css/lms/repository.css" rel="Stylesheet" />
+<script src="js/assignment/assignmentSupport.js?version=6.8.1.4.72" type="text/javascript"></script>
+<script src="js/jquery-ui-1.12.1.min.js?version=6.8.1.4.72" type="text/javascript"></script>
+
+
+
+
+
+<script type="text/javascript">
+canPost = new Array();
+reqInProgress = false;
+
+
+function submitAssignmentAttachment(assignmentOid, assignmentAttachmentOid, idx)
+{
+if (canPost[idx])
+{
+$.ajax({
+type: 'POST',
+url: rewriteUrl('submitAssignmentAttachments.do?userEvent=930&assignmentOid='+assignmentOid+'&assignmentAttachmentOid='+assignmentAttachmentOid),
+success: function(widgetId){
+var now = new Date();
+var timeString = (now.getMonth() + 1) + "/" + now.getDate() +"/" + (now.getFullYear()-2000) +" " + (now.getHours() > 12? now.getHours() - 12: now.getHours()) + ":" + now.getMinutes() + " " + (now.getHours() > 11 ? "PM" : "AM");
+$("#submitted_text_" + assignmentAttachmentOid).html('Submitted&nbsp;<em class="assignmentSubtext">('+timeString+')</em>');
+}
+});
+}
+else
+{
+alert('You must open the attachment before it can be posted.');
+}
+}
+
+if (isInternetExplorer())
+{
+
+}
+
+$( document ).ready(function() {
+
+var addResHeader = window.parent.document.getElementById("addResourceHeader");
+if (addResHeader) {
+addResHeader.style.display = 'none';
+}
+var addResContent = window.parent.document.getElementById("addResourceContent");
+if (addResContent) {
+addResContent.style.display = 'none';
+}
+
+});
+</script>
+
+<div id="assignmentResourcePanel_inputFormPanel" class="draggableAnywhere" style="position: absolute;"><div id="assignmentResourcePanel_inputFormPanelContents" class="inputFormContents"></div></div>
+
+<iframe id="downloadFrame" src="javascript:false;" style="display: none"></iframe>
+<table width="100%" border="0">
+<tr>
+<td valign="top" class="attachmentArea">
+
+<div id="assignmentDropArea" class="attachmentSubmissionHeader headerLabelBackground">
+Resources Provided by the Teacher
+</div>
+
+
+
+
+
+
+<link type="text/css" href="css/gradebook/assignmentResource.css" rel="Stylesheet" />
+
+
+<div class="repositoryItemDropTarget"  style="padding-left:5px; margin-top:10px;">
+<div style="padding-top:10px;">
+<!--
+Code to render attachments also exists as the function getContentItemListHtml(...)
+located in files assignmentDetail.jsp and plannerLayout.jsp. These could all be combined
+into one to keep functionality and styling the same. Attempt to merge all three places was
+taking longer that time allowed, hence the duplication.
+-->
+<div id="repositoryItemList" style="margin-top:10px;">
+<table class="attachementTable" id="repositoryItemTableList">
+
+</table>
+</div>
+<!-- Displays any existing content items that haven't yet been saved on the assignment -->
+<div id="uploadItemList" style="padding-left: 3px;" align="left">
+
+</div>
+</div>
+
+</div>
+</td>
+
+
+
+
+<td  valign="top" class="submissionItemDropTarget detailContainer" width="50%">
+
+<div class="attachmentSubmissionHeader headerLabelBackground">
+Resources Submitted by the Student
+</div>
+<div class="submissionItemDropTarget" style="padding-left:5px; padding-bottom:10px; padding-top:10px">
+
+
+
+
+</div>
+
+</td>
+</tr>
+</table>
+
+
+<script>
+var assignmentOid = document.getElementsByName("originalOid")[0].value;
+bindContentInputEvents(false);
+</script>
+
+
+
+
+
+<script language="JavaScript">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if (isInternetExplorer()){
+var divIDs = $('div[id^=collapsibleDiv]');
+var maxHeight = 0;
+for (var i = 0; i < divIDs.length; i++){
+maxHeight = 0;
+var tableIDs = $('#mainTable table[id^=Column]',divIDs[i]);
+var len = tableIDs.length;
+var tableHeight = 0;
+for(var j = 0; j < len; j++){
+document.getElementById(tableIDs[j].id).setAttribute('style',"height:"+maxHeight+";");
+tableHeight = document.getElementById(tableIDs[j].id).offsetHeight;
+if (tableHeight > maxHeight){
+maxHeight = tableHeight;
+for(var k = j; k >= 0; k--){
+document.getElementById(tableIDs[k].id).setAttribute('style',"height:"+maxHeight+";");
+}
+}
+}
+}
+}
+</script>
+
+
+
+
+<script language="JavaScript" type="text/javascript">
+$(function()
+{
+setDefaultFocus();
+});
+</script>
+
+</td>
+</tr>
+
+<tr>
+<td colspan="2">
+<img src="images/spacer.gif" height="10" width="1" alt=" ">
+</td>
+</tr>
+
+
+<tr>
+<td colspan="2">
+<table id="bottomButtonBar" border="0" cellpadding="0" cellspacing="0">
+<tr>
+<td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="js/tableLock.js?version=6.8.1.4.72" type="text/javascript"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<input type="hidden" name="independentSave" value="null" />
+<input type="hidden" name="savePrivileges" value="null" />
+<script type="text/javascript">
+if (typeof window.cancelPressed === 'undefined') {
+window.cancelPressed = false;
+}
+function triggerCustomEvent() {
+const iframe = document.getElementById('olrIframe');
+if (iframe && iframe.contentWindow) {
+iframe.contentWindow.postMessage('triggerSaveAndClose', '*');
+}
+doSubmit(940 , this.form);
+window.parent.doRefresh();
+const saveButton = document.getElementById('saveCloseButton');
+saveButton.parentNode.removeChild(saveButton);
+const cancelButton = document.getElementById('cancelButton');
+const buttonText = cancelButton.querySelector('.button-text');
+if (buttonText) {
+buttonText.textContent = 'Close';
+}
+window.parent.doRefresh();
+}
+function doCustomCancel(form)
+{
+const iframe = document.getElementById('olrIframe');
+if (window.cancelPressed) {
+doSubmit(940 , this.form);
+window.cancelPressed = false;
+(new EmbeddedPopup()).close();
+} else {
+doSubmit(940, form);
+const saveButton = document.getElementById('saveCloseButton');
+const cancelButton = document.getElementById('cancelButton');
+if (saveButton) saveButton.disabled = false;
+if (cancelButton) cancelButton.disabled = false;
+window.cancelPressed = true;
+}
+if (iframe && iframe.contentWindow) {
+iframe.contentWindow.postMessage('triggerClose', '*');
+}
+}
+</script>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+
+
+
+
+
+
+
+
+
+
+<td>
+
+</td>
+
+
+<td>
+
+
+
+<button type="button" class="button" id="cancelButton" tabIndex="0" name="cancelButton" onclick="doSubmit(940, this.form);return false;"><span class="fa fa-close fa-lg"></span><span class="button-text">Cancel</span></button>
+
+
+
+<td class="extraButtons">&nbsp;</td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</tr>
+</table>
+
+</td>
+<td id="messageAreaBottom">&nbsp;</td>
+</tr>
+</table>
+</td>
+</tr>
+
+</table>
+<script language="JavaScript">
+window.onresize = resizeFrames;
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="js/detailAutoSave.js?version=6.8.1.4.72" type="text/javascript"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</td>
+<td>
+
+
+
+</td>
+</tr>
+<tr>
+<td height="*" class="borderRight">
+<img src="images/spacer.gif" height="1" width="1" alt=" ">
+</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+</table>
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script language="JavaScript">
+function displayActionMessages(messagesArray, isErrorMessage)
+{
+var messages = messagesArray.join("<br>");
+
+
+showMessageWindow(messages, isErrorMessage, false, 250);
+if(!isErrorMessage) {
+$(function(){$('#messageWindow').stop().animate({opacity: 1.0}, 2000).fadeTo(500, 0, closeMessageWindow);});
+}
+
+}
+</script>
+
+<div id="messageWindow"><img src="images/spacer.gif" height="1" width="1" alt=" "></div>
+<script language="JavaScript">
+setInitialMaximizedState('Maximize', 'Minimize');
+</script>
+
+
+</body>
+</html>
