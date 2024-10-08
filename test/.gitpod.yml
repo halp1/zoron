@@ -1,5 +1,0 @@
-tasks:
-  - name: startup
-    before: curl -fsSL https://bun.sh/install | bash && source /home/gitpod/.bashrc && bun upgrade --canary
-    init: bun install
-    command: bun dev
