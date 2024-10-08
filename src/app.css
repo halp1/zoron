@@ -1,0 +1,25 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@import url("https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap");
+
+@layer components {
+  body {
+    @apply bg-slate-900 text-white;
+  }
+  .btn-circle {
+    @apply flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-opacity-10 p-2 hover:bg-slate-800;
+  }
+
+  .btn-full {
+    @apply flex items-center justify-center gap-4 rounded-xl bg-orange-400 px-5 py-3 text-2xl disabled:bg-slate-400;
+  }
+}
+
+.suse {
+  font-family: "SUSE", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
