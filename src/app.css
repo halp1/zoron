@@ -13,15 +13,15 @@
   }
 
   .btn-full {
-    @apply flex items-center justify-center gap-4 rounded-xl px-5 py-3 text-2xl disabled:bg-slate-400;
+    @apply flex items-center justify-center gap-4 rounded-xl px-5 py-3 text-2xl cursor-pointer;
   }
 
   .btn-filled {
-    @apply bg-blue-400;
+    @apply bg-blue-400 disabled:bg-slate-400;
   }
 
   .btn-outlined {
-    @apply border-blue-400 border-2
+    @apply border-blue-400 border-2 disabled:border-slate-400 disabled:cursor-not-allowed
   }
 }
 

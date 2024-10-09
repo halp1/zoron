@@ -1,0 +1,13 @@
+import { redirect } from "@sveltejs/kit";
+import type { LayoutServerLoad } from "./$types";
+
+export const load: LayoutServerLoad = async (event) => {
+  const account = await event.locals.auth();
+  if (!account || !account.user) return redirect(307, "/login");
+  if (
+    (!account.user.name || !account.user.subscriptions) &&
+    !new URL(event.request.url).pathname.includes("/complete")
+  )
+    return redirect(307, "/account/complete");
+  return {};
+};

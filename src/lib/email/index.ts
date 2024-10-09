@@ -143,3 +143,12 @@ export const html = (url: string) => `<!doctype html>
 export const text = (url: string) => {
 	return `Sign in to A+spen at \n${url}\n\n`;
 };
+
+export const validEmail = (email: string) => {
+  if (!email.endsWith("@lexingtonma.org")) return false;
+  const username = email
+    .split("@")
+    .slice(0, email.split("@").length - 1)
+    .join("@");
+  return /^\d{2}stu\d{1,3}$/.test(username);
+};

@@ -1,13 +1,12 @@
 <script lang="ts">
-  import FingerprintJS from "@fingerprintjs/fingerprintjs";
-  import { onMount } from "svelte";
-  import { getDeviceInfo } from "$lib/web";
-
   import { page } from "$app/stores";
   import { signIn } from "@auth/sveltekit/client";
   import toast from "svelte-french-toast";
+  import { validEmail } from "$lib/email";
 
   $: user = $page.data.session?.user;
+
+  let email = "";
 
   const handleSubmission = async (
     e: SubmitEvent & {
@@ -41,14 +40,23 @@
     <a href="/account" class="text-xl underline">View account</a>
     <a href="/auth/signout" class="text-xl underline">Log out</a>
   {:else}
-    <form on:submit={handleSubmission} class="flex w-96 flex-col gap-5">
+    <img src="/favicon.png" alt="Site icon" class="mb-3 w-32" />
+    <h1 class="mb-10 text-4xl">Log in/Register to A+spen</h1>
+    <form on:submit={handleSubmission} class="flex w-96 flex-col gap-2">
       <input
         class="w-full rounded-lg border-2 border-dashed border-blue-400 bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
         name="email"
+        bind:value={email}
         placeholder="Email"
         required
       />
-      <button class="btn-full w-full border-2 border-blue-400 bg-transparent" type="submit">
+      <div
+        class="mb-3 overflow-hidden text-sm text-red-600 transition-all"
+        style="height: {validEmail(email) || email.length === 0 ? '0px' : '20px'}"
+      >
+        Please enter a valid lexingtonma.org email address.
+      </div>
+      <button class="btn-full btn-outlined" disabled={!validEmail(email)} type="submit">
         Log in/Register
       </button>
     </form>

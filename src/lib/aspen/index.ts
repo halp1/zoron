@@ -63,10 +63,11 @@ export namespace aspen {
 
     // check auth
     if (authRes.status !== 200) {
-      throw new Error("Invalid credentials");
+      throw new Error("Invalid credentials: " + (await authRes.json()).message);
     }
 
     const auth: AuthResponse = await authRes.json();
+    console.log(auth);
     cookie = `${cookie}; user=${encodeURIComponent(JSON.stringify(auth))}`;
 
     const authTokenRes = await fetch(auth.aspenUrl, {

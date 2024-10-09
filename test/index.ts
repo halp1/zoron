@@ -1,10 +1,7 @@
 import chalk from "chalk";
 import { aspen } from "./aspen";
 
-const { cookie, token } = await aspen.authenticate(
-  process.env.USERNAME!,
-  process.env.PASSWORD!
-);
+const { cookie, token } = await aspen.authenticate(process.env.USERNAME!, process.env.PASSWORD!);
 
 const { merged, raw } = await aspen.activity(cookie);
 
@@ -21,11 +18,11 @@ for (const activity of merged) {
         cookie,
         token,
         assignment: activity,
-        studentID,
+        studentID
       })
     );
   } else grades.push({ scored: 0, total: 0, percentage: 0 });
-	process.stdout.write(`\r${++i}/${merged.length}`);
+  process.stdout.write(`\r${++i}/${merged.length}`);
 }
 console.log();
 
@@ -35,9 +32,7 @@ console.log(
       merged.map(
         async (activity, i) =>
           `* ${activity.date} - ${
-            activity.type === "grade"
-              ? chalk.blue("Assignment Grade")
-              : chalk.blue("Attendance")
+            activity.type === "grade" ? chalk.blue("Assignment Grade") : chalk.blue("Attendance")
           } ${
             activity.type === "grade"
               ? `(${activity.class}) ${chalk.bold(

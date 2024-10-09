@@ -1,36 +1,31 @@
 import { parseStringPromise } from "xml2js";
-import type { AuthResponse, Assignment, RecentActivityList } from "../types";
+import type { AuthResponse, Assignment, RecentActivityList } from "./types";
 import { JSDOM } from "jsdom";
 
 export namespace aspen {
   export const authenticate = async (username: string, password: string) => {
     let cookie = "deploymentId=ma-lexington; locale=en_US";
 
-    const sessionRes = await fetch(
-      "https://ma-lexington.myfollett.com/app/rest/i18n/locales",
-      {
-        headers: {
-          accept: "application/json",
-          "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
-          "cache-control": "no-cache",
-          deploymentid: "ma-lexington",
-          pragma: "no-cache",
-          "sec-ch-ua":
-            '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
-          "sec-ch-ua-mobile": "?0",
-          "sec-ch-ua-platform": '"Windows"',
-          "sec-fetch-dest": "empty",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-site": "same-origin",
-          cookie,
-          Referer:
-            "https://ma-lexington.myfollett.com/aspen-login/?deploymentId=ma-lexington",
-          "Referrer-Policy": "strict-origin-when-cross-origin",
-        },
-        body: null,
-        method: "GET",
-      }
-    );
+    const sessionRes = await fetch("https://ma-lexington.myfollett.com/app/rest/i18n/locales", {
+      headers: {
+        accept: "application/json",
+        "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+        "cache-control": "no-cache",
+        deploymentid: "ma-lexington",
+        pragma: "no-cache",
+        "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"Windows"',
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-origin",
+        cookie,
+        Referer: "https://ma-lexington.myfollett.com/aspen-login/?deploymentId=ma-lexington",
+        "Referrer-Policy": "strict-origin-when-cross-origin"
+      },
+      body: null,
+      method: "GET"
+    });
 
     cookie = `${cookie}; ${sessionRes.headers.getAll("set-cookie")[0].split(";")[0]}`;
 
@@ -49,12 +44,11 @@ export namespace aspen {
         "sec-fetch-mode": "cors",
         "sec-fetch-site": "same-origin",
         cookie,
-        Referer:
-          "https://ma-lexington.myfollett.com/aspen-login/?deploymentId=ma-lexington",
-        "Referrer-Policy": "strict-origin-when-cross-origin",
+        Referer: "https://ma-lexington.myfollett.com/aspen-login/?deploymentId=ma-lexington",
+        "Referrer-Policy": "strict-origin-when-cross-origin"
       },
       body: `username=${username}&password=${password}`,
-      method: "POST",
+      method: "POST"
     });
 
     // check auth
@@ -81,12 +75,11 @@ export namespace aspen {
         "sec-fetch-user": "?1",
         "upgrade-insecure-requests": "1",
         cookie,
-        Referer:
-          "https://ma-lexington.myfollett.com/aspen-login/?deploymentId=ma-lexington",
-        "Referrer-Policy": "strict-origin-when-cross-origin",
+        Referer: "https://ma-lexington.myfollett.com/aspen-login/?deploymentId=ma-lexington",
+        "Referrer-Policy": "strict-origin-when-cross-origin"
       },
       body: null,
-      method: "GET",
+      method: "GET"
     });
 
     if (authTokenRes.status !== 200) {
@@ -111,10 +104,10 @@ export namespace aspen {
         cookie,
         Referer:
           "https://ma-lexington.myfollett.com/aspen/portalAssignmentDetail.do?navkey=academics.classes.list.gcd.detail&oid=GCD0000017PfFO",
-        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Referrer-Policy": "strict-origin-when-cross-origin"
       },
       body: null,
-      method: "GET",
+      method: "GET"
     });
 
     if (homeRes.status !== 200) {
@@ -142,8 +135,7 @@ export namespace aspen {
           "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
           "cache-control": "no-cache",
           pragma: "no-cache",
-          "sec-ch-ua":
-            '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+          "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
           "sec-ch-ua-mobile": "?0",
           "sec-ch-ua-platform": '"Windows"',
           "sec-fetch-dest": "empty",
@@ -152,10 +144,10 @@ export namespace aspen {
           "x-requested-with": "XMLHttpRequest",
           cookie: cookie,
           Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
-          "Referrer-Policy": "strict-origin-when-cross-origin",
+          "Referrer-Policy": "strict-origin-when-cross-origin"
         },
         body: null,
-        method: "GET",
+        method: "GET"
       }
     );
 
@@ -167,34 +159,34 @@ export namespace aspen {
     require("fs").writeFileSync("activity.html", activityXml);
     const activity: RecentActivityList = await parseStringPromise(activityXml);
 
-    const attendence = activity["recent-activity-list"][
-      "recent-activity"
-    ][0].periodAttendance.map((period) => {
-      return {
-        type: "attendance" as const,
-        date: period.$.date,
-        period: period.$.period,
-        code: period.$.code,
-        class: period.$.classname,
-        id: period.$.oid,
-        sscid: period.$.sscoid,
-      };
-    });
+    const attendence = activity["recent-activity-list"]["recent-activity"][0].periodAttendance.map(
+      (period) => {
+        return {
+          type: "attendance" as const,
+          date: period.$.date,
+          period: period.$.period,
+          code: period.$.code,
+          class: period.$.classname,
+          id: period.$.oid,
+          sscid: period.$.sscoid
+        };
+      }
+    );
 
-    const grades = activity["recent-activity-list"][
-      "recent-activity"
-    ][0].gradebookScore.map((score) => {
-      return {
-        type: "grade" as const,
-        date: score.$.date,
-        assignment: score.$.assignmentname,
-        class: score.$.classname,
-        grade: score.$.grade,
-        id: score.$.assignmentoid,
-        sscid: score.$.sscoid,
-        gtmid: score.$.gtmoid,
-      } satisfies Assignment;
-    });
+    const grades = activity["recent-activity-list"]["recent-activity"][0].gradebookScore.map(
+      (score) => {
+        return {
+          type: "grade" as const,
+          date: score.$.date,
+          assignment: score.$.assignmentname,
+          class: score.$.classname,
+          grade: score.$.grade,
+          id: score.$.assignmentoid,
+          sscid: score.$.sscoid,
+          gtmid: score.$.gtmoid
+        } satisfies Assignment;
+      }
+    );
 
     const computeMilliseconds = (date: string): number => {
       const d = new Date(
@@ -213,10 +205,8 @@ export namespace aspen {
       attendence: attendence.sort(
         (a, b) => computeMilliseconds(b.date) - computeMilliseconds(a.date)
       ),
-      grades: grades.sort(
-        (a, b) => computeMilliseconds(b.date) - computeMilliseconds(a.date)
-      ),
-      raw: activity,
+      grades: grades.sort((a, b) => computeMilliseconds(b.date) - computeMilliseconds(a.date)),
+      raw: activity
     };
   };
 
@@ -243,7 +233,7 @@ export namespace aspen {
     cookie,
     assignment,
     studentID,
-    token,
+    token
   }: {
     cookie: string;
     token: string;
@@ -270,101 +260,83 @@ export namespace aspen {
 
     const preload = rewriteUrl("portalClassList.do");
     const resource = rewriteUrl(`${preload}?navkey=academics.classes.list`);
-    const resourceRes = await fetch(
-      `https://ma-lexington.myfollett.com/aspen/${resource}`,
-      {
-        headers: {
-          accept:
-            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-          "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
-          "cache-control": "no-cache",
-          pragma: "no-cache",
-          "sec-ch-ua":
-            '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
-          "sec-ch-ua-mobile": "?0",
-          "sec-ch-ua-platform": '"Windows"',
-          "sec-fetch-dest": "document",
-          "sec-fetch-mode": "navigate",
-          "sec-fetch-site": "same-origin",
-          "sec-fetch-user": "?1",
-          "upgrade-insecure-requests": "1",
-          cookie: cookie,
-          Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
-          "Referrer-Policy": "strict-origin-when-cross-origin",
-        },
-        body: null,
-        method: "GET",
-      }
-    );
+    const resourceRes = await fetch(`https://ma-lexington.myfollett.com/aspen/${resource}`, {
+      headers: {
+        accept:
+          "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+        "cache-control": "no-cache",
+        pragma: "no-cache",
+        "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"Windows"',
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-site": "same-origin",
+        "sec-fetch-user": "?1",
+        "upgrade-insecure-requests": "1",
+        cookie: cookie,
+        Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
+        "Referrer-Policy": "strict-origin-when-cross-origin"
+      },
+      body: null,
+      method: "GET"
+    });
 
     if (resourceRes.status !== 200) {
-      throw new Error(
-        `Failed to get resource: ${resourceRes.status}`
-      );
+      throw new Error(`Failed to get resource: ${resourceRes.status}`);
     }
 
-    const preloadRes = await fetch(
-      `https://ma-lexington.myfollett.com/aspen/${preload}`,
-      {
-        headers: {
-          accept: "*/*",
-          "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
-          "cache-control": "no-cache",
-          "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-          pragma: "no-cache",
-          "sec-ch-ua":
-            '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
-          "sec-ch-ua-mobile": "?0",
-          "sec-ch-ua-platform": '"Windows"',
-          "sec-fetch-dest": "empty",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-site": "same-origin",
-          "x-requested-with": "XMLHttpRequest",
-          cookie,
-          Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
-          "Referrer-Policy": "strict-origin-when-cross-origin",
-        },
-        body: `selectedStudentOid=${studentID}&userEvent=2210&org.apache.struts.taglib.html.TOKEN=${token}`,
-        method: "POST",
-      }
-    );
+    const preloadRes = await fetch(`https://ma-lexington.myfollett.com/aspen/${preload}`, {
+      headers: {
+        accept: "*/*",
+        "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+        "cache-control": "no-cache",
+        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        pragma: "no-cache",
+        "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"Windows"',
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-origin",
+        "x-requested-with": "XMLHttpRequest",
+        cookie,
+        Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
+        "Referrer-Policy": "strict-origin-when-cross-origin"
+      },
+      body: `selectedStudentOid=${studentID}&userEvent=2210&org.apache.struts.taglib.html.TOKEN=${token}`,
+      method: "POST"
+    });
 
     if (preloadRes.status !== 200) {
-      throw new Error(
-        `Failed to get preload: ${preloadRes.status}`
-      );
+      throw new Error(`Failed to get preload: ${preloadRes.status}`);
     }
 
-    const filterRes = await fetch(
-      `https://ma-lexington.myfollett.com/aspen/${resource}`,
-      {
-        headers: {
-          accept: "*/*",
-          "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
-          "cache-control": "no-cache",
-          "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-          pragma: "no-cache",
-          "sec-ch-ua":
-            '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
-          "sec-ch-ua-mobile": "?0",
-          "sec-ch-ua-platform": '"Windows"',
-          "sec-fetch-dest": "empty",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-site": "same-origin",
-          "x-requested-with": "XMLHttpRequest",
-          cookie,
-          Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
-          "Referrer-Policy": "strict-origin-when-cross-origin",
-        },
-        body: `filterDefinitionId=%23%23%23all&userEvent=2060&org.apache.struts.taglib.html.TOKEN=${token}`,
-        method: "POST",
-      }
-    );
+    const filterRes = await fetch(`https://ma-lexington.myfollett.com/aspen/${resource}`, {
+      headers: {
+        accept: "*/*",
+        "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+        "cache-control": "no-cache",
+        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        pragma: "no-cache",
+        "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"Windows"',
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-origin",
+        "x-requested-with": "XMLHttpRequest",
+        cookie,
+        Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
+        "Referrer-Policy": "strict-origin-when-cross-origin"
+      },
+      body: `filterDefinitionId=%23%23%23all&userEvent=2060&org.apache.struts.taglib.html.TOKEN=${token}`,
+      method: "POST"
+    });
 
     if (filterRes.status !== 200) {
-      throw new Error(
-        `Failed to get filter: ${filterRes.status}`
-      );
+      throw new Error(`Failed to get filter: ${filterRes.status}`);
     }
 
     const preloadRes2 = await fetch(
@@ -375,8 +347,7 @@ export namespace aspen {
           "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
           "cache-control": "no-cache",
           pragma: "no-cache",
-          "sec-ch-ua":
-            '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+          "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
           "sec-ch-ua-mobile": "?0",
           "sec-ch-ua-platform": '"Windows"',
           "sec-fetch-dest": "empty",
@@ -385,17 +356,15 @@ export namespace aspen {
           "x-requested-with": "XMLHttpRequest",
           cookie,
           Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
-          "Referrer-Policy": "strict-origin-when-cross-origin",
+          "Referrer-Policy": "strict-origin-when-cross-origin"
         },
         body: null,
-        method: "GET",
+        method: "GET"
       }
     );
 
     if (preloadRes2.status !== 200) {
-      throw new Error(
-        `Failed to get preload2: ${preloadRes2.status}`
-      );
+      throw new Error(`Failed to get preload2: ${preloadRes2.status}`);
     }
 
     const assignmentRes = await fetch(
@@ -407,8 +376,7 @@ export namespace aspen {
           "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
           "cache-control": "no-cache",
           pragma: "no-cache",
-          "sec-ch-ua":
-            '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+          "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
           "sec-ch-ua-mobile": "?0",
           "sec-ch-ua-platform": '"Windows"',
           "sec-fetch-dest": "document",
@@ -418,39 +386,40 @@ export namespace aspen {
           "upgrade-insecure-requests": "1",
           cookie: cookie,
           Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
-          "Referrer-Policy": "strict-origin-when-cross-origin",
+          "Referrer-Policy": "strict-origin-when-cross-origin"
         },
         body: null,
-        method: "GET",
+        method: "GET"
       }
     );
 
     if (assignmentRes.status !== 200) {
-      throw new Error(
-        `Failed to get assignment: ${assignmentRes.status}`
-      );
+      throw new Error(`Failed to get assignment: ${assignmentRes.status}`);
     }
 
     const assignmentHtml = await assignmentRes.text();
 
     const dom = new JSDOM(assignmentHtml);
-    const percentage = parseFloat(dom.window.document.querySelector(
-      ".percentFieldInlineLabel"
-    )?.textContent?.slice(0, -1) || 'NaN');
+    let percentage = parseFloat(
+      dom.window.document.querySelector(".percentFieldInlineLabel")?.textContent?.slice(0, -1) ||
+        "NaN"
+    );
 
-		const [rawPoints] = [...dom.window.document.querySelectorAll(
-			'td.detailValue table tbody tr td'
-		)].map(td => td.textContent).filter((item) => item?.includes(' / ')
-		);
-		if (!rawPoints || !percentage) {
-			throw new Error("Failed to parse points");
-		}
-		const [points, maxPoints] = rawPoints.split(' / ').map(item => parseFloat(item.trim()));
+    const [rawPoints] = [
+      ...dom.window.document.querySelectorAll("td.detailValue table tbody tr td")
+    ]
+      .map((td) => td.textContent)
+      .filter((item) => item?.includes(" / "));
+    if (!rawPoints) {
+      throw new Error("Failed to parse points");
+    }
+    const [points, maxPoints] = rawPoints.split(" / ").map((item) => parseFloat(item.trim()));
+    if (!percentage && percentage !== 0) percentage = Math.round((points / maxPoints) * 100);
 
     return {
-			percentage,
-			scored: points,
-			total: maxPoints,
-		};
+      percentage,
+      scored: points,
+      total: maxPoints
+    };
   };
 }

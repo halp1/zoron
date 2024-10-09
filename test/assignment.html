@@ -67,7 +67,7 @@
 window.name = "root_aspen_window";
 SYSTEM_LOCALE = 'en_US';
 includeStylesheet('student');
-sessionId = 'uK9E8nI69AzaFKvQBMjJL0tetcDPSP_-VkWV7raZ';
+sessionId = 'pIU6R4j4rYrCOvi9BHUqj0-udOp5nibtwAum2TZF';
 resetSessionTimeout( 1800 );
 sessionTimeoutMessage1 = 'Your session will expire in less than one minute.';
 sessionTimeoutMessage2 = 'Would you like to continue with your session?';
@@ -112,7 +112,7 @@ var aspenVersion = '6.8.1.4.72';
 <div id="overlay" style="display: none; z-index: 500; position: fixed; left: 0; right: 0; bottom: 0; top: 0; background-color: rgba(0,0,0,0.5);"></div>
 <div id="spellingMenu" class="suggestionMenu spellCheckBackground"></div>
 
-<form name="portalAssignmentDetailForm" method="post" action="/aspen/portalAssignmentDetail.do"><div><input type="hidden" name="org.apache.struts.taglib.html.TOKEN" value="82b5452f36aa8a45cf25dd8dd1f9b6bc"></div>
+<form name="portalAssignmentDetailForm" method="post" action="/aspen/portalAssignmentDetail.do"><div><input type="hidden" name="org.apache.struts.taglib.html.TOKEN" value="5a89d6b4c2eeeaa7aac395f41da21328"></div>
 <input type="hidden" id="userEvent" name="userEvent" value="930">
 <input type="hidden" id="userParam" name="userParam" value="">
 <input type="hidden" id="operationId" name="operationId" value="">
@@ -371,7 +371,7 @@ userPreferenceMenu.addOption('userPreferenceContext', 'doNamedPopup(\'userPrefer
 <a id="link_topNode" href="portalClassList.do?navkey=academics.classes.list&maximized=false"
 title="List of my current classes">
 Classes
-</a> :: <a href="portalClassDetail.do?navkey=academics.classes.list.detail">2309-006 - AP United States History</a>&nbsp;::&nbsp;TotalPoints - LEQ 1: The Constitution
+</a> :: <a href="portalClassDetail.do?navkey=academics.classes.list.detail">1308-005 - American Literature</a>&nbsp;::&nbsp;HCC - Participation, first half of Q1
 <img src="images/spacer.gif" height="1" width="2" alt=" ">
 
 </td>
@@ -449,6 +449,15 @@ title="Go to the last record">
 </td>
 </tr>
 </table>
+
+<script language="Javascript">
+document.forms['portalAssignmentDetailForm'].elements['nextButton'].disabled = true;
+document.forms['portalAssignmentDetailForm'].elements['lastButton'].disabled = true;
+$("#nextButton").addClass("navIconDisabled");
+$("#lastButton").addClass("navIconDisabled");
+$("#nextButton").removeClass("navIconFlatPointer");
+$("#lastButton").removeClass("navIconFlatPointer");
+</script>
 
 
 <script language="Javascript">
@@ -929,7 +938,7 @@ helpUserGuidesMenu.addOption('helpUserGuides0', 'window.open(rewriteUrl("http://
 
 
 
-<input type="hidden" name="originalOid" value="GCD0000017PfFO">
+<input type="hidden" name="originalOid" value="GCD0000016lFg8">
 
 
 
@@ -949,7 +958,7 @@ eval(customDeleteFunction)
 } else {
 var action = "deleteWarning.do" +
 '?dataClass=com.x2dev.sis.model.beans.GradebookColumnDefinition';
-var oid = 'GCD0000017PfFO';
+var oid = 'GCD0000016lFg8';
 startProgressMeter();
 makeSynchronousXmlRequest(action, "deleteSuccess", "deleteError()", "oids", oid);
 }
@@ -958,7 +967,7 @@ function deleteBeanEvent()
 {
 var action = "deleteWarningPlanner.do" +
 '?dataClass=com.x2dev.sis.model.beans.GradebookColumnDefinition';
-var oid = 'GCD0000017PfFO';
+var oid = 'GCD0000016lFg8';
 startProgressMeter();
 makeSynchronousXmlRequest(action, "deleteSuccess", "deleteError()", "oids", oid);
 }
@@ -1319,7 +1328,7 @@ doParamSubmit(2030, document.forms['portalAssignmentDetailForm'], index);
 
 
 
-<table id="Column|1511537966" width="100%" cellpadding="0" cellspacing="0" border="0" height="100%" style="border-collapse:collapse;">
+<table id="Column|1439497044" width="100%" cellpadding="0" cellspacing="0" border="0" height="100%" style="border-collapse:collapse;">
 
 <tr height="1">
 <td class="detailPropertyGutter headerLabelBackground"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
@@ -1361,7 +1370,7 @@ doParamSubmit(2030, document.forms['portalAssignmentDetailForm'], index);
 
 
 
-<tr id="Property|245190873">
+<tr id="Property|1397363830">
 <td width="125" class="detailProperty headerLabelBackground" nowrap>
 
 
@@ -1470,7 +1479,7 @@ Category &gt; Description
 <span class=" templateTextSmall">
 
 
-<span id="propertyValue(relGcdGctOid_gctTypeDesc)-span">Total Points<input type="hidden" name="propertyValue(relGcdGctOid_gctTypeDesc)" value="Total Points"/></span>
+<span id="propertyValue(relGcdGctOid_gctTypeDesc)-span">Homework, collaboration, and class work<input type="hidden" name="propertyValue(relGcdGctOid_gctTypeDesc)" value="Homework, collaboration, and class work"/></span>
 
 </span>
 
@@ -1485,7 +1494,7 @@ Category &gt; Description
 
 
 
-<tr id="Property|1117044086">
+<tr id="Property|855797643">
 <td width="125" class="detailProperty headerLabelBackground" nowrap>
 
 
@@ -1594,7 +1603,7 @@ Assignment name
 <span class=" templateTextSmall">
 
 
-<span id="propertyValue(gcdColName)-span">LEQ 1: The Constitution<input type="hidden" name="propertyValue(gcdColName)" value="LEQ 1: The Constitution"/></span>
+<span id="propertyValue(gcdColName)-span">Participation, first half of Q1<input type="hidden" name="propertyValue(gcdColName)" value="Participation, first half of Q1"/></span>
 
 </span>
 
@@ -1609,7 +1618,7 @@ Assignment name
 
 
 
-<tr id="Property|463317432">
+<tr id="Property|2025610976">
 <td width="125" class="detailProperty headerLabelBackground" nowrap>
 
 
@@ -1718,7 +1727,7 @@ Date assigned
 <span class=" templateTextSmall">
 
 
-<span id="propertyValue(gcdDateAsgn)-span">10/2/2024<input type="hidden" name="propertyValue(gcdDateAsgn)" value="10/2/2024"/></span>
+<span id="propertyValue(gcdDateAsgn)-span">8/30/2024<input type="hidden" name="propertyValue(gcdDateAsgn)" value="8/30/2024"/></span>
 
 </span>
 
@@ -1733,7 +1742,7 @@ Date assigned
 
 
 
-<tr id="Property|1509997831">
+<tr id="Property|2128799710">
 <td width="125" class="detailProperty headerLabelBackground" nowrap>
 
 
@@ -1842,7 +1851,7 @@ Date due
 <span class=" templateTextSmall">
 
 
-<span id="propertyValue(gcdDateDue)-span">10/2/2024<input type="hidden" name="propertyValue(gcdDateDue)" value="10/2/2024"/></span>
+<span id="propertyValue(gcdDateDue)-span">8/30/2024<input type="hidden" name="propertyValue(gcdDateDue)" value="8/30/2024"/></span>
 
 </span>
 
@@ -1886,7 +1895,7 @@ top: 0px;
 <td width="125" class="detailProperty headerLabelBackground" nowrap>Score</td>
 <td width="*" class="detailValue">
 
-<table><tr><td><div class="percentFieldContainer"><div class="percentFieldBarFill" style="background-color: rgb(153,153,153); width: 100px;"></div><div class="percentFieldBarEmpty" style=" width: 0px;"></div><span class="percentFieldInlineLabel">100%</span></div></td><td>10.0 / 10.0</td><td>(10)</td></tr></table>
+<table><tr><td>0.95 / 1.0</td><td>(Excluded from averages)</td></tr></table>
 </td>
 </tr>
 
@@ -1926,7 +1935,7 @@ top: 0px;
 
 
 
-<table id="Column|1568953364" width="100%" cellpadding="0" cellspacing="0" border="0" height="100%" style="border-collapse:collapse;">
+<table id="Column|1673226004" width="100%" cellpadding="0" cellspacing="0" border="0" height="100%" style="border-collapse:collapse;">
 
 <tr height="1">
 <td class="detailPropertyGutter headerLabelBackground"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
@@ -2043,7 +2052,7 @@ top: 0px;
 
 
 
-<table id="Column|1181676487" width="100%" cellpadding="0" cellspacing="0" border="0" height="100%" style="border-collapse:collapse;">
+<table id="Column|1361000044" width="100%" cellpadding="0" cellspacing="0" border="0" height="100%" style="border-collapse:collapse;">
 
 <tr height="1">
 <td class="detailPropertyGutter headerLabelBackground"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>
@@ -2160,7 +2169,7 @@ Description
 
 
 
-<table id="Column|1801349260" width="100%" cellpadding="0" cellspacing="0" border="0" height="100%" style="border-collapse:collapse;">
+<table id="Column|1879795021" width="100%" cellpadding="0" cellspacing="0" border="0" height="100%" style="border-collapse:collapse;">
 
 <tr height="1">
 <td class="detailPropertyGutter headerLabelBackground"><img src="images/spacer.gif" height="1" width="1" alt=" "></td>

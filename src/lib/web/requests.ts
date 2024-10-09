@@ -10,10 +10,12 @@ export namespace requests {
   export const post = async <T = {}>(
     uri: string,
     data: Record<string, any>
-  ): Promise<({ success: true } & T) | { message: string }> => {
-    return await request("POST", uri, {
+  ): Promise<{ success: true; data: T } | { success: false; error: string }> => {
+    const res = await request("POST", uri, {
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     }).then((r) => r.json());
+    if ("message" in res) return JSON.parse(res.message);
+    return res;
   };
 }
