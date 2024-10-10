@@ -3,6 +3,7 @@
   import type { aspen } from "$lib/aspen";
   import Fa from "svelte-fa";
   import { faInfoCircle, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+  import type { AccountUpdateRes } from "../../api/account/update/+server";
 
   let username = "";
   let password = "";
@@ -18,7 +19,10 @@
   const validPassword = (password: string) =>
     password.length === 4 + 3 + 4 && /^[a-zA-Z]{4}\d{3}[a-zA-Z]{4}$/.test(password);
 
+  let submitting = false;
+
   const submit = async (e: { preventDefault: () => void }) => {
+    if (submitting) return toast.error("Please wait for the previous request to finish.");
     e.preventDefault();
 
     if (!validUsername(username) || !validPassword(password)) {
@@ -26,13 +30,16 @@
     }
 
     const dismiss = toast.loading("Verifying credentials...");
-    const res = await requests.post<Awaited<ReturnType<typeof aspen.authenticate>>>(
-      "/api/account/update",
-      { username, password }
-    );
+    submitting = true;
+
+    const res = await requests.post<AccountUpdateRes>("/api/account/update", {
+      username,
+      password
+    });
     dismiss();
+    submitting = false;
     if (!res.success) return toast.error("An error occurred while logging in: " + res.error);
-    else return toast.success(`Hello, ${res.data.token}`);
+    else return toast.success(`Hello, ${res.data.name.first} ${res.data.name.last}`);
   };
 
   let showPassword = false;
@@ -96,7 +103,7 @@
     </div>
     <button
       class="btn-full btn-outlined"
-      disabled={!validUsername(username) || !validPassword(password)}
+      disabled={!validUsername(username) || !validPassword(password) || submitting}
       type="submit"
     >
       Update

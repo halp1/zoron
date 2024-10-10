@@ -6,7 +6,7 @@ import { database as databaseName, dbClient } from "$lib/database";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import { html, text, validEmail } from "$lib/email";
 
-const adapter = MongoDBAdapter(dbClient, {
+export const adapter = MongoDBAdapter(dbClient, {
   databaseName
 });
 

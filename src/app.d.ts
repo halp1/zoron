@@ -23,5 +23,6 @@ declare module "@auth/sveltekit" {
 	interface User {
 		subscriptions?: string[];
 		aspen?: string;
+		session?: { cookie: string; token: string };
 	}
 }

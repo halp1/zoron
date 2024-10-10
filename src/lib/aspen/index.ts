@@ -67,7 +67,6 @@ export namespace aspen {
     }
 
     const auth: AuthResponse = await authRes.json();
-    console.log(auth);
     cookie = `${cookie}; user=${encodeURIComponent(JSON.stringify(auth))}`;
 
     const authTokenRes = await fetch(auth.aspenUrl, {
@@ -126,15 +125,25 @@ export namespace aspen {
     }
 
     const homeText = await homeRes.text();
+
     const tokenSearch = homeText.match(
       /<input type="hidden" name="org.apache.struts.taglib.html.TOKEN" value="(.+?)"/
     );
     if (!tokenSearch) {
       throw new Error("Failed to find token");
     }
-    const token = tokenSearch[1];
+		const token = tokenSearch[1];
 
-    return { cookie, token };
+		const nameSearch = homeText.match(
+      /<div id="userPreferenceMenu" class="toolbarText pointer toolbarItem" tabindex="0">\s*([\w\s,]+)\s*/
+    );
+    if (!nameSearch) {
+      throw new Error("Failed to find name");
+    }
+		const name = nameSearch[1].trim();
+		const [last, first] = name.split(", ");
+
+    return { cookie, token, name: { first, last} };
   };
 
   export const email = async (cookie: string) => {
@@ -236,7 +245,6 @@ export namespace aspen {
     }
 
     const activityXml = await activityRes.text();
-    require("fs").writeFileSync("activity.html", activityXml);
     const activity: RecentActivityList = await parseStringPromise(activityXml);
 
     const attendence = activity["recent-activity-list"]["recent-activity"][0].periodAttendance.map(
