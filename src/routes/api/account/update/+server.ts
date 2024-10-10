@@ -30,10 +30,14 @@ export const POST: RequestHandler = async ({ locals: { auth }, request }) => {
       );
     }
 
-    adapter.updateUser!({
+    const encrypted = aspen.encrypt(email, data.username, data.password);
+
+    await adapter.updateUser!({
       id: session.user.id!,
       name: `${account.name.first} ${account.name.last}`,
-      aspen: 
+      aspen: encrypted,
+      session: { cookie: account.cookie, token: account.token },
+      subscriptions: []
     });
 
     return api.json<AccountUpdateRes>({
@@ -42,7 +46,6 @@ export const POST: RequestHandler = async ({ locals: { auth }, request }) => {
       name: account.name
     });
   } catch (e: any) {
-    console.error(e.stack);
     return api.error(e.message, 401);
   }
 };

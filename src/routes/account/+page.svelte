@@ -19,7 +19,7 @@
     {#if $page.data && $page.data.session && $page.data.session.user}
       <div class="relative flex flex-col sm:w-[450px]">
         <div class="mx-auto border-b-2 border-slate-600 pb-1 text-3xl">
-          Hello, {$page.data.session.user.email}.
+          Hello, {$page.data.session.user.name}.
         </div>
       </div>
     {:else}

@@ -1,8 +1,12 @@
 import { parseStringPromise } from "xml2js";
 import { JSDOM } from "jsdom";
 import type { AuthResponse, Assignment, RecentActivityList } from "./types";
+import {encrypt as _encrypt, decrypt as _decrypt} from './crypt';
 
 export namespace aspen {
+  export const encrypt = _encrypt;
+  export const decrypt = _decrypt;
+
   const getCookies = (res: Response) =>
     [...res.headers.entries()]
       .filter(([name]) => name === "set-cookie")
@@ -328,24 +332,6 @@ export namespace aspen {
     assignment: Assignment;
     studentID: string;
   }) => {
-    // goStudentFilteredList(
-    //   "STD000000DgYFr",
-    //   "portalClassList.do",
-    //   "academics.classes.list",
-    //   null,
-    //   function () {
-    //     applyAllRecordsFilter(
-    //       "portalClassList.do?navKey=academics.classes.list",
-    //       function () {
-    //         goPreLoad(
-    //           "portalAssignmentList.do?navkey=academics.classes.list.gcd&oid=SSC0000016IDiz&gtmoid=gtmX20000000T1",
-    //           "portalAssignmentDetail.do?navkey=academics.classes.list.gcd.detail&oid=GCD0000017PfFO"
-    //         );
-    //       }
-    //     );
-    //   }
-    // );
-
     const preload = rewriteUrl("portalClassList.do");
     const resource = rewriteUrl(`${preload}?navkey=academics.classes.list`);
     const resourceRes = await fetch(`https://ma-lexington.myfollett.com/aspen/${resource}`, {

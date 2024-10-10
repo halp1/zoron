@@ -4,6 +4,7 @@
   import Fa from "svelte-fa";
   import { faInfoCircle, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
   import type { AccountUpdateRes } from "../../api/account/update/+server";
+  import { goto } from "$app/navigation";
 
   let username = "";
   let password = "";
@@ -39,7 +40,10 @@
     dismiss();
     submitting = false;
     if (!res.success) return toast.error("An error occurred while logging in: " + res.error);
-    else return toast.success(`Hello, ${res.data.name.first} ${res.data.name.last}`);
+    else {
+      toast.success(`Hello, ${res.data.name.first} ${res.data.name.last}`);
+      await goto("/account");
+    }
   };
 
   let showPassword = false;
