@@ -6,8 +6,8 @@ export const load: LayoutServerLoad = async (event) => {
   if (!account || !account.user) return redirect(307, "/login");
   if (
     (!account.user.name || !account.user.subscriptions) &&
-    !new URL(event.request.url).pathname.includes("/complete")
+    !new URL(event.request.url).pathname.includes("/update")
   )
-    return redirect(307, "/account/complete");
+    return redirect(307, "/account/update");
   return {};
 };

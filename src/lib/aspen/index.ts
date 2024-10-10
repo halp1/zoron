@@ -37,7 +37,7 @@ export namespace aspen {
       method: "GET"
     });
 
-    cookie = `${cookie}; ${getCookies(sessionRes)[0]}`;
+    cookie = `${cookie}; ${getCookies(sessionRes).join("; ")}`;
 
     const authRes = await fetch("https://ma-lexington.myfollett.com/app/rest/auth", {
       headers: {
@@ -135,6 +135,75 @@ export namespace aspen {
     const token = tokenSearch[1];
 
     return { cookie, token };
+  };
+
+  export const email = async (cookie: string) => {
+    const mainPageRes = await fetch(
+      "https://ma-lexington.myfollett.com/aspen/portalStudentDetail.do?navkey=myInfo.details.detail",
+      {
+        headers: {
+          accept: "application/json",
+          "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+          "cache-control": "no-cache",
+          deploymentid: "ma-lexington",
+          pragma: "no-cache",
+          "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+          "sec-ch-ua-mobile": "?0",
+          "sec-ch-ua-platform": '"Windows"',
+          "sec-fetch-dest": "empty",
+          "sec-fetch-mode": "cors",
+          "sec-fetch-site": "same-origin",
+          cookie,
+          Referer: "https://ma-lexington.myfollett.com/aspen-login/?deploymentId=ma-lexington",
+          "Referrer-Policy": "strict-origin-when-cross-origin"
+        },
+        body: null,
+        method: "GET"
+      }
+    );
+
+    if (mainPageRes.status !== 200) {
+      throw new Error(`Failed to get main info page`);
+    }
+
+    const mainPageHTML = await mainPageRes.text();
+    const mainPageDom = new JSDOM(mainPageHTML);
+
+    const form = mainPageDom.window.document.forms["genericDetailForm" as any];
+
+    const formData = new mainPageDom.window.FormData(form);
+    formData.set("userParam", "3");
+    formData.set("userEvent", "2030");
+
+    const body = new mainPageDom.window.URLSearchParams(formData as any).toString();
+
+    const pageRes = await fetch(`https://ma-lexington.myfollett.com/aspen/portalStudentDetail.do`, {
+      headers: {
+        accept: "*/*",
+        "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+        "cache-control": "no-cache",
+        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        pragma: "no-cache",
+        "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"Windows"',
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-origin",
+        "x-requested-with": "XMLHttpRequest",
+        cookie,
+        Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
+        "Referrer-Policy": "strict-origin-when-cross-origin"
+      },
+      body,
+      method: "POST"
+    });
+
+    const email = [
+      ...new JSDOM(await pageRes.text()).window.document.querySelectorAll("input")
+    ].filter((i) => i.value.includes("@lexingtonma.org"))[0].value;
+
+    return email;
   };
 
   export const activity = async (cookie: string) => {

@@ -11,11 +11,15 @@ export namespace requests {
     uri: string,
     data: Record<string, any>
   ): Promise<{ success: true; data: T } | { success: false; error: string }> => {
-    const res = await request("POST", uri, {
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    }).then((r) => r.json());
-    if ("message" in res) return JSON.parse(res.message);
-    return res;
+    try {
+      const res = await request("POST", uri, {
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      }).then((r) => r.json());
+      if ("message" in res) return JSON.parse(res.message);
+      return res;
+    } catch {
+      return { success: false, error: "Network Error" };
+    }
   };
 }

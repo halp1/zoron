@@ -2,6 +2,10 @@ import { aspen } from "$lib/aspen";
 import { api } from "$lib/web/api";
 import type { RequestHandler } from "./$types";
 
+export interface AccountUpdateRes extends Awaited<ReturnType< {
+
+}
+
 export const POST: RequestHandler = async ({ locals: { auth }, request }) => {
   const session = await auth();
 
@@ -14,8 +18,10 @@ export const POST: RequestHandler = async ({ locals: { auth }, request }) => {
 
   try {
     const account = await aspen.authenticate(data.username, data.password);
-    return api.json(account);
+    const email = await aspen.email(account.cookie);
+    return api.json({ account, email });
   } catch (e: any) {
+    console.error(e.stack);
     return api.error(e.message, 401);
   }
 };
