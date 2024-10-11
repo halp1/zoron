@@ -1,7 +1,7 @@
 import { parseStringPromise } from "xml2js";
 import { JSDOM } from "jsdom";
-import type { AuthResponse, Assignment, RecentActivityList } from "./types";
-import {encrypt as _encrypt, decrypt as _decrypt} from './crypt';
+import type { AuthResponse, Assignment, RecentActivityList, Attendance } from "./types";
+import { encrypt as _encrypt, decrypt as _decrypt } from "./crypt";
 
 export namespace aspen {
   export const encrypt = _encrypt;
@@ -136,18 +136,18 @@ export namespace aspen {
     if (!tokenSearch) {
       throw new Error("Failed to find token");
     }
-		const token = tokenSearch[1];
+    const token = tokenSearch[1];
 
-		const nameSearch = homeText.match(
+    const nameSearch = homeText.match(
       /<div id="userPreferenceMenu" class="toolbarText pointer toolbarItem" tabindex="0">\s*([\w\s,]+)\s*/
     );
     if (!nameSearch) {
       throw new Error("Failed to find name");
     }
-		const name = nameSearch[1].trim();
-		const [last, first] = name.split(", ");
+    const name = nameSearch[1].trim();
+    const [last, first] = name.split(", ");
 
-    return { cookie, token, name: { first, last} };
+    return { cookie, token, name: { first, last } };
   };
 
   export const email = async (cookie: string) => {
@@ -289,7 +289,7 @@ export namespace aspen {
       return d.getTime();
     };
 
-    const mergedActivity = [...attendence, ...grades].sort(
+    const mergedActivity: (Assignment | Attendance)[] = [...attendence, ...grades].sort(
       (a, b) => computeMilliseconds(b.date) - computeMilliseconds(a.date)
     );
     return {
@@ -474,7 +474,7 @@ export namespace aspen {
     const assignmentHtml = await assignmentRes.text();
 
     const dom = new JSDOM(assignmentHtml);
-    const percentage = parseFloat(
+    let percentage = parseFloat(
       dom.window.document.querySelector(".percentFieldInlineLabel")?.textContent?.slice(0, -1) ||
         "NaN"
     );
@@ -484,10 +484,13 @@ export namespace aspen {
     ]
       .map((td) => td.textContent)
       .filter((item) => item?.includes(" / ")) as any;
-    if (!rawPoints || !percentage) {
+
+    if (!rawPoints) {
       throw new Error("Failed to parse points");
     }
     const [points, maxPoints] = rawPoints.split(" / ").map((item) => parseFloat(item.trim()));
+
+    if (Number.isNaN(percentage)) percentage = Math.round((points / maxPoints) * 100);
 
     return {
       percentage,

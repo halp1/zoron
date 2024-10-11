@@ -68,3 +68,13 @@ export interface Assignment {
   sscid: string;
   gtmid: string;
 }
+
+export interface Attendance {
+	type: "attendance";
+	date: string;
+	period: string;
+	code: string;
+	class: string;
+	id: string;
+	sscid: string;
+}

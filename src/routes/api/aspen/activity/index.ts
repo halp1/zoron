@@ -19,6 +19,6 @@ export const activity = async (session: Session) => {
       }
     });
 
-    await aspen.activity(apsenSession.cookie);
+    return await aspen.activity(apsenSession.cookie);
   }
 };
