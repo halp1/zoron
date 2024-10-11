@@ -5,6 +5,9 @@
   import { getDeviceInfo, requests, toast, type Device } from "$lib/web";
   import Toggle from "$lib/components/Toggle.svelte";
   import { writable } from "svelte/store";
+  import type { Settings } from "$lib/types";
+    import _ from "lodash";
+    import { defaultSettings } from "../api/account/settings/defaults";
 
   let device: Device | null = null;
   onMount(() => {
@@ -18,11 +21,7 @@
   }
 
   let mounted = false;
-  const settings = writable({
-    notifications: {
-      attendance: false
-    }
-  });
+  const settings = writable(_.merge(defaultSettings, $page.data.session?.user?.settings));
 
   onMount(async () => {
     mounted = true;
@@ -30,12 +29,11 @@
 
   settings.subscribe(async (value) => {
     if (!mounted) return;
-    const res = await requests.post("/api/account/settings", {
+    const res = await requests.post<Settings>("/api/account/settings", {
       notifications: value.notifications
     });
-    if (!res.success) {
-      toast.error("An error occurred while saving your settings: " + res.error);
-    }
+    if (!res.success) toast.error("An error occurred while saving your settings: " + res.error);
+    else toast.success("Updated settings");
   });
 </script>
 

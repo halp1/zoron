@@ -31,3 +31,11 @@
   font-weight: 400;
   font-style: normal;
 }
+
+.no-scroll::-webkit-scrollbar {
+  display: none;
+}
+.no-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}

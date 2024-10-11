@@ -1,6 +1,6 @@
 // See https://kit.svelte.dev/docs/types#app
 
-import type { Item, Subscription } from '$lib/types';
+import type { Item, Settings, Subscription } from '$lib/types';
 
 // for information about these interfaces
 declare global {
@@ -25,5 +25,6 @@ declare module "@auth/sveltekit" {
 		subscriptions?: string[];
 		aspen?: string;
 		session?: { cookie: string; token: string };
+		settings?: Settings;
 	}
 }

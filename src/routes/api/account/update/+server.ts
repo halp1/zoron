@@ -3,6 +3,8 @@ import { api } from "$lib/web/api";
 import type { RequestHandler } from "./$types";
 import type { Session } from "$lib/types";
 import { adapter } from "../../../../auth";
+import { defaultSettings } from "../settings/defaults";
+import _ from "lodash";
 
 export interface AccountUpdateRes {
   email: string;
@@ -37,6 +39,7 @@ export const POST: RequestHandler = async ({ locals: { auth }, request }) => {
       name: `${account.name.first} ${account.name.last}`,
       aspen: encrypted,
       session: { cookie: account.cookie, token: account.token },
+      settings: _.merge(defaultSettings, session.user.settings || {}),
       subscriptions: []
     });
 
