@@ -8,6 +8,7 @@ declare global {
 		// interface Error {}
 		// interface Locals {}
 		interface PageData {
+			username?: string;
 			env: {
 				vapid: string;
 			};

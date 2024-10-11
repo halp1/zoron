@@ -13,7 +13,7 @@
   }
 
   .btn-full {
-    @apply flex items-center justify-center gap-4 rounded-xl px-5 py-3 text-2xl cursor-pointer;
+    @apply flex cursor-pointer items-center justify-center gap-4 rounded-xl px-5 py-3 text-2xl;
   }
 
   .btn-filled {
@@ -21,7 +21,7 @@
   }
 
   .btn-outlined {
-    @apply border-blue-400 border-2 disabled:border-slate-400 disabled:cursor-not-allowed
+    @apply border-2 border-blue-400 bg-white bg-opacity-0 transition-all hover:bg-opacity-5 disabled:cursor-not-allowed disabled:border-slate-400;
   }
 }
 

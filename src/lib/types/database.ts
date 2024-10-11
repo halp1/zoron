@@ -5,3 +5,10 @@ export interface Subscription {
   device: Device;
   subscription: PushSubscriptionJSON;
 }
+
+export interface Settings {
+  notifications: {
+    attendance: boolean;
+    grades: boolean;
+  };
+}
