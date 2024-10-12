@@ -6,8 +6,8 @@
   import Toggle from "$lib/components/Toggle.svelte";
   import { writable } from "svelte/store";
   import type { Settings } from "$lib/types";
-    import _ from "lodash";
-    import { defaultSettings } from "../api/account/settings/defaults";
+  import _ from "lodash";
+  import { defaultSettings } from "../api/account/settings/defaults";
 
   let device: Device | null = null;
   onMount(() => {

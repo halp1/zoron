@@ -141,7 +141,7 @@ export const html = (url: string) => `<!doctype html>
 </html>`;
 
 export const text = (url: string) => {
-	return `Sign in to A+spen at \n${url}\n\n`;
+  return `Sign in to A+spen at \n${url}\n\n`;
 };
 
 export const validEmail = (email: string) => {

@@ -15,6 +15,6 @@ export const POST: RequestHandler = async ({ request, locals: { auth } }) => {
   try {
     return api.json(await assignment(session, body.assignment, body.studentID));
   } catch (e: any) {
-		return api.error(`Failed to get assignment (${e?.message || e})`, 500);
+    return api.error(`Failed to get assignment (${e?.message || e})`, 500);
   }
 };

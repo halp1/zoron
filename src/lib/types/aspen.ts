@@ -1,4 +1,4 @@
 export interface Session {
-	cookie: string;
-	token: string;
+  cookie: string;
+  token: string;
 }

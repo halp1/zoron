@@ -1,30 +1,30 @@
 // See https://kit.svelte.dev/docs/types#app
 
-import type { Item, Settings, Subscription } from '$lib/types';
+import type { Item, Settings, Subscription } from "$lib/types";
 
 // for information about these interfaces
 declare global {
-	namespace App {
-		// interface Error {}
-		// interface Locals {}
-		interface PageData {
-			username?: string;
-			env: {
-				vapid: string;
-			};
-		}
-		// interface PageState {}
-		// interface Platform {}
-	}
+  namespace App {
+    // interface Error {}
+    // interface Locals {}
+    interface PageData {
+      username?: string;
+      env: {
+        vapid: string;
+      };
+    }
+    // interface PageState {}
+    // interface Platform {}
+  }
 }
 
 export {};
 
 declare module "@auth/sveltekit" {
-	interface User {
-		subscriptions?: string[];
-		aspen?: string;
-		session?: { cookie: string; token: string };
-		settings?: Settings;
-	}
+  interface User {
+    subscriptions?: string[];
+    aspen?: string;
+    session?: { cookie: string; token: string };
+    settings?: Settings;
+  }
 }

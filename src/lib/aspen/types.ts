@@ -70,11 +70,11 @@ export interface Assignment {
 }
 
 export interface Attendance {
-	type: "attendance";
-	date: string;
-	period: string;
-	code: string;
-	class: string;
-	id: string;
-	sscid: string;
+  type: "attendance";
+  date: string;
+  period: string;
+  code: string;
+  class: string;
+  id: string;
+  sscid: string;
 }
