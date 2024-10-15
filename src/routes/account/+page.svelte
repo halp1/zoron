@@ -8,6 +8,8 @@
   import type { Settings } from "$lib/types";
   import _ from "lodash";
   import { defaultSettings } from "../api/account/settings/defaults";
+  import { faHome } from "@fortawesome/free-solid-svg-icons";
+  import Fa from "svelte-fa";
 
   let device: Device | null = null;
   onMount(() => {
@@ -49,6 +51,12 @@
             {$page.data.username || "Unset"}
           </div>
         </div>
+        <a
+          href="/home"
+          class="btn-full btn-outlined mx-auto flex items-center justify-center gap-3 text-base"
+        >
+          My A+spen <Fa icon={faHome} />
+        </a>
         <div>
           <div class="text-2xl">Notifications</div>
           <div class="flex items-center gap-3">
