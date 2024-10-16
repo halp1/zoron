@@ -3,7 +3,7 @@ import type { Session } from "@auth/sveltekit";
 import { adapter } from "../../../../auth";
 import type { Assignment } from "$lib/aspen/types";
 
-export const assignment = async (session: Session, assignment: Assignment, studentID: string) => {
+export const assignment = async (session: Session, assignment: Assignment, studentID: string, onProgress?: (step: number, total: number) => void) => {
   if (!session.user?.email || !session.user.aspen) throw new Error("Not authenticated");
   if (!assignment) throw new Error("No assignment provided");
   try {
