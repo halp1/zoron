@@ -17,7 +17,7 @@
 
   $: tabBarWidth = activeTabIndex === -1 ? 0 : tabRefs[activeTabIndex]?.offsetWidth || 0;
 
-	import { onNavigate } from "$app/navigation";
+  import { onNavigate } from "$app/navigation";
 
   onNavigate((navigation) => {
     if (!document.startViewTransition) return;
@@ -51,44 +51,46 @@
     ></div>
   </div>
 
-  <div
-    class="view no-scroll flex w-5/6 flex-1 flex-col gap-2 overflow-auto border-4 border-dashed border-slate-600 p-6"
-  >
-    <slot />
-  </div>
+  {#key $page.url}
+    <div
+      class="view no-scroll flex w-5/6 flex-1 flex-col gap-2 overflow-auto border-4 border-dashed border-slate-600 p-6"
+    >
+      <slot />
+    </div>
+  {/key}
 </main>
 
 <style>
-	.view {
-		view-transition-name: slide-in-out;
-	}
+  .view {
+    view-transition-name: slide-in-out;
+  }
 
-	@keyframes slide-in {
-		0% {
-			transform: translateX(100%);
-			opacity: 0;
-		}
-		100% {
-			transform: translateX(0);
-			opacity: 1;
-		}
-	}
+  @keyframes slide-in {
+    0% {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
 
-	@keyframes slide-out {
-		0% {
-			transform: translateX(0);
-			opacity: 1;
-		}
-		100% {
-			transform: translateX(-100%);
-			opacity: 0;
-		}
-	}
+  @keyframes slide-out {
+    0% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+  }
 
-	::view-transition-new(slide-in-out) {
-		animation: slide-in 0.3s ease-out;
-	}
-	::view-transition-old(slide-in-out) {
-		animation: slide-out 0.3s ease-out;
-	}
+  ::view-transition-new(slide-in-out) {
+    animation: slide-in 0.3s ease-out;
+  }
+  ::view-transition-old(slide-in-out) {
+    animation: slide-out 0.3s ease-out;
+  }
 </style>
