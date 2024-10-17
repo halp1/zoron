@@ -14,7 +14,7 @@
           scored: number;
           total: number;
         }
-      | true;
+      | number;
   }
   let merged = $page.data.activity?.merged as (GradeWithData | Attendance)[] | undefined;
 </script>
@@ -28,7 +28,7 @@
         </div>
         {item.assignment}:
         <div class="flex h-8 items-center justify-center border-4 border-slate-600 px-2">
-          {#if !item.scoring || item.scoring === true}
+          {#if !item.scoring || typeof item.scoring === "number"}
             {item.grade}
           {:else if item.scoring.scored.toString().trim() === item.grade.trim()}
             {item.grade} / {item.scoring.total} ({item.scoring.percentage}%)
@@ -38,29 +38,42 @@
         </div>
 
         <div class="ml-auto" />
-        {#if item.scoring === true}
-          <div class="text-slate-400">loading...</div>
+        {#if typeof item.scoring === "number"}
+          <div class="relative ml-2 h-2 w-12 overflow-hidden rounded-full bg-slate-600">
+            <div
+              class="absolute left-0 top-0 h-full bg-green-300"
+              style="width: {item.scoring * 100}%"
+            ></div>
+          </div>
         {/if}
         <div class="flex items-center gap-2">
-          {#if !item.scoring}
+          {#if !item.scoring && typeof item.scoring !== "number"}
             <button
               class="btn-circle"
               on:click={async (e) => {
                 e.preventDefault();
-                if (merged.filter((item) => "scoring" in item && item.scoring === true).length > 1)
+                if (
+                  merged.filter((item) => "scoring" in item && typeof item.scoring === "number")
+                    .length > 1
+                )
                   return toast.error("Slow down...");
-                item.scoring = true;
-                const res = await requests.post("/api/aspen/assignment", {
-                  assignment: item,
-                  studentID:
-                    $page.data.activity.raw["recent-activity-list"]["recent-activity"][0].$
-                      .studentoid
-                });
+                item.scoring = 0;
+                const res = await requests.stream(
+                  "/api/aspen/assignment",
+                  {
+                    assignment: item,
+                    studentID:
+                      $page.data.activity.raw["recent-activity-list"]["recent-activity"][0].$
+                        .studentoid
+                  },
+                  (steps, total) => {
+                    item.scoring = steps / total;
+                  }
+                );
                 if (!res.success) {
                   item.scoring = undefined;
                   return toast.error(`Error loading assignment data: ${res.error}`);
                 }
-                // @ts-expect-error no typescript arg
                 merged[idx] = { ...item, scoring: res.data };
               }}
             >

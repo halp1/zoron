@@ -1,3 +1,4 @@
+import { autoCatch } from "$lib";
 import type { aspen } from "$lib/aspen";
 import type { StreamAPI } from "$lib/types";
 
@@ -31,27 +32,46 @@ export namespace requests {
     data: Record<string, any>,
     onProgress?: aspen.Types.ProgressCallback
   ) => {
-    const response = await fetch(uri, {
-      method: 'POST',
-      headers: { "Content-Type": "application/json"},
-      body: JSON.stringify(data)
-    });
+    try {
+      const response = await fetch(uri, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
 
-    const reader = response.body?.getReader();
-    const decoder = new TextDecoder();
-    let done = false;
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let done = false;
 
-    while (!done && reader) {
-      const { value, done: streamDone } = await reader.read();
-      done = streamDone;
+      while (!done && reader) {
+        const { value, done: streamDone } = await reader.read();
+        done = streamDone;
 
-      if (value) {
-        const text = decoder.decode(value);
-        const data: StreamAPI.Message<aspen.Types.Assignment> = JSON.parse(text);
+        if (value) {
+          const text = decoder.decode(value);
+          const messages = text
+            .trim()
+            .split("\n")
+            .map((item) => item.trim());
+          for (const message of messages) {
+            try {
+              const data: StreamAPI.Message<aspen.Types.Assignment> = JSON.parse(message);
 
-        if (data.type === "error") return {}
-
+              if (data.type === "error")
+                return { success: false as const, error: data.error, code: data.code };
+              if (data.type === "progress" && onProgress) onProgress(data.step, data.total);
+              if (data.type === "response") return { success: true as const, data: data.data };
+            } catch (e) {
+              console.error("Error parsing stream data: " + message);
+              return { success: false as const, error: "System Error" };
+            }
+          }
+        }
       }
+      return { success: false as const, error: "System Error" };
+    } catch (e) {
+      console.error(e);
+      return { success: false as const, error: "Network Error" };
     }
-  }
+  };
 }
