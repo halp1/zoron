@@ -7,9 +7,9 @@ export namespace aspen {
   export namespace Types {
     export type ProgressCallback = (step: number, total: number) => void;
     export interface Assignment {
-      percentage: number,
-      scored: number,
-      total: number,
+      percentage: number;
+      scored: number;
+      total: number;
     }
   }
 
@@ -553,7 +553,7 @@ export namespace aspen {
 
     return {
       percentage,
-      scored: points,
+      scored: Math.round(points * 100) / 100,
       total: maxPoints
     };
   };
