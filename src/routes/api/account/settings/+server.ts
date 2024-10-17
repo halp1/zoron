@@ -1,5 +1,5 @@
 import type { Settings } from "$lib/types";
-import { api } from "$lib/web/api";
+import { api } from "$lib/server";
 import { adapter } from "../../../../auth";
 import type { RequestHandler } from "./$types";
 import _ from "lodash";

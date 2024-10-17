@@ -3,7 +3,12 @@ import type { Session } from "@auth/sveltekit";
 import { adapter } from "../../../../auth";
 import type { Assignment } from "$lib/aspen/types";
 
-export const assignment = async (session: Session, assignment: Assignment, studentID: string, onProgress?: (step: number, total: number) => void) => {
+export const assignment = async (
+  session: Session,
+  assignment: Assignment,
+  studentID: string,
+  onProgress?: aspen.Types.ProgressCallback
+) => {
   if (!session.user?.email || !session.user.aspen) throw new Error("Not authenticated");
   if (!assignment) throw new Error("No assignment provided");
   try {
@@ -12,11 +17,18 @@ export const assignment = async (session: Session, assignment: Assignment, stude
       cookie: session.user.session.cookie,
       token: session.user.session.token,
       assignment,
-      studentID
+      studentID,
+      onProgress
     });
   } catch {
+    const total = aspen.constants.steps.authenticate + aspen.constants.steps.assignment;
+
     const { username, password } = aspen.decrypt(session.user.email, session.user.aspen);
-    const aspenSession = await aspen.authenticate(username, password);
+    const aspenSession = await aspen.authenticate(
+      username,
+      password,
+      (step) => onProgress && onProgress(step, total)
+    );
 
     await adapter.updateUser!({
       id: session.user.id!,
@@ -30,7 +42,9 @@ export const assignment = async (session: Session, assignment: Assignment, stude
       cookie: aspenSession.cookie,
       token: aspenSession.token,
       assignment,
-      studentID
+      studentID,
+      onProgress: (step) =>
+        onProgress && onProgress(step + aspen.constants.steps.authenticate, total)
     });
   }
 };

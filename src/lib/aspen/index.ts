@@ -4,6 +4,15 @@ import type { AuthResponse, Assignment, RecentActivityList, Attendance } from ".
 import { encrypt as _encrypt, decrypt as _decrypt } from "./crypt";
 
 export namespace aspen {
+  export namespace Types {
+    export type ProgressCallback = (step: number, total: number) => void;
+    export interface Assignment {
+      percentage: number,
+      scored: number,
+      total: number,
+    }
+  }
+
   export const encrypt = _encrypt;
   export const decrypt = _decrypt;
 
@@ -17,7 +26,27 @@ export namespace aspen {
     return cookie.split(";")[0];
   };
 
-  export const authenticate = async (username: string, password: string) => {
+  const progressTicker = (steps: number, cb?: Types.ProgressCallback) => {
+    let step = 0;
+    return () => {
+      step++;
+      cb && cb(step, steps);
+    };
+  };
+
+  export namespace constants {
+    export namespace steps {
+      export const authenticate = 5;
+      export const assignment = 6;
+    }
+  }
+
+  export const authenticate = async (
+    username: string,
+    password: string,
+    onProgress?: Types.ProgressCallback
+  ) => {
+    const tick = progressTicker(constants.steps.authenticate, onProgress);
     let cookie = "deploymentId=ma-lexington; locale=en_US";
 
     const sessionRes = await fetch("https://ma-lexington.myfollett.com/app/rest/i18n/locales", {
@@ -40,6 +69,12 @@ export namespace aspen {
       body: null,
       method: "GET"
     });
+
+    if (sessionRes.status !== 200) {
+      throw new Error(
+        `Failed to initialize authorization sequence: ${sessionRes.status} (${sessionRes.statusText})`
+      );
+    }
 
     cookie = `${cookie}; ${getCookies(sessionRes).join("; ")}`;
 
@@ -69,6 +104,8 @@ export namespace aspen {
     if (authRes.status !== 200) {
       throw new Error("Invalid credentials: " + (await authRes.json()).message);
     }
+
+    tick();
 
     const auth: AuthResponse = await authRes.json();
     cookie = `${cookie}; user=${encodeURIComponent(JSON.stringify(auth))}`;
@@ -100,6 +137,8 @@ export namespace aspen {
       throw new Error(`Failed to get auth token: ${await authTokenRes.text()}`);
     }
 
+    tick();
+
     const homeRes = await fetch("https://ma-lexington.myfollett.com/aspen/home.do", {
       headers: {
         accept:
@@ -128,6 +167,8 @@ export namespace aspen {
       throw new Error(`Failed to get home: ${await homeRes.text()}`);
     }
 
+    tick();
+
     const homeText = await homeRes.text();
 
     const tokenSearch = homeText.match(
@@ -146,6 +187,8 @@ export namespace aspen {
     }
     const name = nameSearch[1].trim();
     const [last, first] = name.split(", ");
+
+    tick();
 
     return { cookie, token, name: { first, last } };
   };
@@ -325,13 +368,17 @@ export namespace aspen {
     cookie,
     assignment,
     studentID,
-    token
+    token,
+    onProgress
   }: {
     cookie: string;
     token: string;
     assignment: Assignment;
     studentID: string;
-  }) => {
+    onProgress?: Types.ProgressCallback;
+  }): Promise<Types.Assignment> => {
+    const tick = progressTicker(constants.steps.assignment, onProgress);
+
     const preload = rewriteUrl("portalClassList.do");
     const resource = rewriteUrl(`${preload}?navkey=academics.classes.list`);
     const resourceRes = await fetch(`https://ma-lexington.myfollett.com/aspen/${resource}`, {
@@ -361,6 +408,8 @@ export namespace aspen {
       throw new Error(`Failed to get resource: ${resourceRes.status}`);
     }
 
+    tick();
+
     const preloadRes = await fetch(`https://ma-lexington.myfollett.com/aspen/${preload}`, {
       headers: {
         accept: "*/*",
@@ -387,6 +436,8 @@ export namespace aspen {
       throw new Error(`Failed to get preload: ${preloadRes.status}`);
     }
 
+    tick();
+
     const filterRes = await fetch(`https://ma-lexington.myfollett.com/aspen/${resource}`, {
       headers: {
         accept: "*/*",
@@ -412,6 +463,8 @@ export namespace aspen {
     if (filterRes.status !== 200) {
       throw new Error(`Failed to get filter: ${filterRes.status}`);
     }
+
+    tick();
 
     const preloadRes2 = await fetch(
       `https://ma-lexington.myfollett.com/aspen/portalAssignmentList.do?navkey=academics.classes.list.gcd&oid=${assignment.sscid}&gtmoid=${assignment.gtmid}`,
@@ -440,6 +493,8 @@ export namespace aspen {
     if (preloadRes2.status !== 200) {
       throw new Error(`Failed to get preload2: ${preloadRes2.status}`);
     }
+
+    tick();
 
     const assignmentRes = await fetch(
       `https://ma-lexington.myfollett.com/aspen/portalAssignmentDetail.do?navkey=academics.classes.list.gcd.detail&oid=${assignment.id}`,
@@ -471,6 +526,8 @@ export namespace aspen {
       throw new Error(`Failed to get assignment: ${assignmentRes.status}`);
     }
 
+    tick();
+
     const assignmentHtml = await assignmentRes.text();
 
     const dom = new JSDOM(assignmentHtml);
@@ -491,6 +548,8 @@ export namespace aspen {
     const [points, maxPoints] = rawPoints.split(" / ").map((item) => parseFloat(item.trim()));
 
     if (Number.isNaN(percentage)) percentage = Math.round((points / maxPoints) * 100);
+
+    tick();
 
     return {
       percentage,
