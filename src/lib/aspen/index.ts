@@ -6,10 +6,33 @@ import { encrypt as _encrypt, decrypt as _decrypt } from "./crypt";
 export namespace aspen {
   export namespace Types {
     export type ProgressCallback = (step: number, total: number) => void;
+
+    export interface Name {
+      first: string;
+      last: string;
+    }
     export interface Assignment {
       percentage: number;
       scored: number;
       total: number;
+    }
+
+    export interface Class {
+      name: string;
+      course: string;
+      term: string;
+      teachers: Name[];
+      email: string;
+      room?: string;
+      grade?: {
+        points: number;
+        letter: string;
+      };
+      attendance: {
+        absent: number;
+        tardy: number;
+        dismissed: number;
+      };
     }
   }
 
@@ -343,6 +366,77 @@ export namespace aspen {
       grades: grades.sort((a, b) => computeMilliseconds(b.date) - computeMilliseconds(a.date)),
       raw: activity
     };
+  };
+
+  export const classes = async (cookie: string): Promise<Types.Class[]> => {
+    const res = await fetch(
+      "https://ma-lexington.myfollett.com/aspen/portalClassList.do?navkey=academics.classes.list",
+      {
+        headers: {
+          accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+          "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+          "cache-control": "no-cache",
+          pragma: "no-cache",
+          "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+          "sec-ch-ua-mobile": "?0",
+          "sec-ch-ua-platform": '"Windows"',
+          "sec-fetch-dest": "document",
+          "sec-fetch-mode": "navigate",
+          "sec-fetch-site": "same-origin",
+          "sec-fetch-user": "?1",
+          "upgrade-insecure-requests": "1",
+          cookie: cookie,
+          Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
+          "Referrer-Policy": "strict-origin-when-cross-origin"
+        },
+        body: null,
+        method: "GET"
+      }
+    );
+
+    if (res.status !== 200) {
+      throw new Error(`Failed to get classes: ${res.status}`);
+    }
+
+    const text = await res.text();
+    const dom = new JSDOM(text);
+    const body = dom.window.document.querySelector("#dataGrid table tbody");
+    if (!body) throw new Error("Failed to find data");
+    const rows = [...body.children].slice(1);
+
+    const data: Types.Class[] = [];
+    for (const row of rows) {
+      const items = [...row.children].slice(1) as HTMLTableCellElement[];
+      if (items.length === 0) continue;
+      const getItem = (index: number) =>
+        [...items[index].children][0]?.innerHTML?.trim() ||
+        items[index].innerHTML.trim();
+      data.push({
+        name: getItem(0),
+        course: getItem(1),
+        term: getItem(2),
+        teachers: getItem(3)
+          .split("; ")
+          .map(
+            (item) =>
+              ({ first: item.split(", ")[1], last: item.split(", ")[0] }) satisfies Types.Name
+          ),
+        email: getItem(4),
+        room: getItem(5),
+        grade: {
+          points: Math.round(parseFloat(getItem(6).split(" ")[0]) * 100) / 100,
+          letter: getItem(6).split(" ")[1]
+        },
+        attendance: {
+          absent: parseInt(getItem(7)),
+          tardy: parseInt(getItem(8)),
+          dismissed: parseInt(getItem(9))
+        }
+      });
+    }
+
+    return data;
   };
 
   const rewriteUrl = (url: string) => {
