@@ -8,7 +8,7 @@
   import type { Settings } from "$lib/types";
   import _ from "lodash";
   import { defaultSettings } from "../api/account/settings/defaults";
-  import { faHome } from "@fortawesome/free-solid-svg-icons";
+  import { faHome, faClose } from "@fortawesome/free-solid-svg-icons";
   import Fa from "svelte-fa";
 
   let device: Device | null = null;
@@ -37,6 +37,13 @@
     if (!res.success) toast.error("An error occurred while saving your settings: " + res.error);
     else toast.success("Updated settings");
   });
+
+  let deleting: number = -1;
+  let deleteInterval: NodeJS.Timeout | null = null;
+  const unclickDeleteAccountButton = () => {
+    if (deleteInterval) clearInterval(deleteInterval);
+    deleting = 0;
+  };
 </script>
 
 <main>
@@ -82,6 +89,9 @@
             Sign out
           </button>
           <button
+            on:click={() => {
+              deleting = 0;
+            }}
             class="btn-full btn-outlined col-span-1 flex flex-1 items-center justify-center border-red-500 text-base"
           >
             Delete account
@@ -99,4 +109,63 @@
       </button>
     {/if}
   </div>
+  <!-- delete modal thingy -->
+  {#if deleting !== -1}
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <div
+      class="fixed bottom-0 left-0 right-0 top-0 grid place-items-center backdrop-blur-md"
+      on:click={({ currentTarget, target }) => {
+        if (currentTarget === target) deleting = -1;
+      }}
+    >
+      <div class="relative flex flex-col items-center rounded-lg bg-slate-800 p-5">
+        <button
+          class="btn-circle absolute right-2 top-2"
+          on:click={() => {
+            deleting = -1;
+          }}><Fa icon={faClose} /></button
+        >
+        <div class="text-2xl">Delete your account?</div>
+        <div class="text-sm text-slate-400">This action is irreversible.</div>
+        <button
+          class="btn-full btn-outlined relative mt-5 flex w-72 items-center justify-center overflow-hidden border-red-500 text-base text-transparent"
+        >
+          Delete account
+          <div
+            class="pointer-events-none absolute left-0 h-full bg-red-500 bg-opacity-40 transition-all {deleting ===
+            0
+              ? 'duration-200'
+              : 'duration-0'}"
+            style="width: {deleting}%;"
+          ></div>
+          <button
+            on:mousedown={async () => {
+              deleteInterval = setInterval(async () => {
+                deleting += 0.5;
+                if (deleting >= 100) {
+                  deleting = -1;
+                  // @ts-expect-error
+                  clearInterval(deleteInterval);
+                  toast.loading("Deleting account...");
+                  const res = await requests.del("/api/account/delete");
+                  if (res.success) {
+                    toast.success("Account deleted.");
+                    await signOut({ redirect: true, callbackUrl: "/" });
+                  } else {
+                    toast.error("An error occurred while deleting your account: " + res.error);
+                  }
+                }
+              }, 1000 / 120);
+            }}
+            on:mouseup={unclickDeleteAccountButton}
+            on:mouseleave={unclickDeleteAccountButton}
+            class="absolute bottom-0 left-0 right-0 top-0 z-10 flex items-center justify-center text-white"
+          >
+            Delete account
+          </button>
+        </button>
+      </div>
+    </div>
+  {/if}
 </main>

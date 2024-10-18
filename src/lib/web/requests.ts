@@ -11,6 +11,18 @@ export namespace requests {
     return await fetch(uri, { method, headers: options.headers, body: options.body });
   };
 
+	export const del = async <T = {}>(
+		uri: string
+	): Promise<{ success: true; data: T } | { success: false; error: string }> => {
+		try {
+			const res = await request("DELETE", uri).then((r) => r.json());
+			if ("message" in res) return JSON.parse(res.message);
+			return res;
+		} catch {
+			return { success: false, error: "Network Error" };
+		}
+	}
+
   export const post = async <T = {}>(
     uri: string,
     data: Record<string, any>
@@ -75,3 +87,4 @@ export namespace requests {
     }
   };
 }
+

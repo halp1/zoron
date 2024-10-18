@@ -5,16 +5,16 @@
   import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
   import type { PageData } from "./$types";
   import Fa from "svelte-fa";
+  import { requests, toast } from "$lib/web";
 
   interface Class extends aspen.Types.Class {
     expanded: boolean;
     data?: any;
   }
 
+  const data: PageData["classes"] = $page.data.classes;
   const classes: Class[] | null =
-    ($page.data.classes as PageData["classes"])?.map(
-      (item) => ({ ...item, expanded: false }) satisfies Class
-    ) || null;
+    data?.classes?.map((c) => ({ ...c, expanded: false }) satisfies Class) ?? null;
 </script>
 
 {#if classes}
@@ -22,9 +22,15 @@
     <div class="border-2 border-slate-600 p-3">
       <div class="flex items-center gap-2">
         <button
-          on:click={() => {
+          on:click={async () => {
             c.expanded = !c.expanded;
-            setTimeout(() => c.data = 'test', 2000)
+            const res = await requests.post("/api/aspen/class", {
+              classID: c.id
+            });
+
+            if (res.success) {
+              c.data = res.data;
+            } else toast.error("An error occurred while fetching class data: " + res.error);
           }}
           class="btn-circle"
           ><Fa

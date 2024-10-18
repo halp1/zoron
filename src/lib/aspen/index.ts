@@ -18,6 +18,7 @@ export namespace aspen {
     }
 
     export interface Class {
+      id: string;
       name: string;
       course: string;
       term: string;
@@ -60,6 +61,7 @@ export namespace aspen {
   export namespace constants {
     export namespace steps {
       export const authenticate = 5;
+      export const classDetail = 4;
       export const assignment = 6;
     }
   }
@@ -368,7 +370,7 @@ export namespace aspen {
     };
   };
 
-  export const classes = async (cookie: string): Promise<Types.Class[]> => {
+  export const classes = async (cookie: string): Promise<{ classes: Types.Class[] }> => {
     const res = await fetch(
       "https://ma-lexington.myfollett.com/aspen/portalClassList.do?navkey=academics.classes.list",
       {
@@ -410,9 +412,9 @@ export namespace aspen {
       const items = [...row.children].slice(1) as HTMLTableCellElement[];
       if (items.length === 0) continue;
       const getItem = (index: number) =>
-        [...items[index].children][0]?.innerHTML?.trim() ||
-        items[index].innerHTML.trim();
+        [...items[index].children][0]?.innerHTML?.trim() || items[index].innerHTML.trim();
       data.push({
+        id: items[0].id,
         name: getItem(0),
         course: getItem(1),
         term: getItem(2),
@@ -436,7 +438,9 @@ export namespace aspen {
       });
     }
 
-    return data;
+    return {
+      classes: data
+    };
   };
 
   const rewriteUrl = (url: string) => {
@@ -456,6 +460,101 @@ export namespace aspen {
           parts[1].replaceAll(":", "%3A").replaceAll("[", "%5B").replaceAll("]", "%5D");
     }
     return url;
+  };
+
+  export const classDetail = async ({
+    cookie,
+    classID,
+    onProgress
+  }: {
+    cookie: string;
+    classID: string;
+    onProgress?: Types.ProgressCallback;
+  }) => {
+    const tick = progressTicker(constants.steps.classDetail, onProgress);
+
+    const prefetch = await fetch(
+      "https://ma-lexington.myfollett.com/aspen/portalClassList.do?navkey=academics.classes.list&maximized=false",
+      {
+        headers: {
+          accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+          "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+          "cache-control": "no-cache",
+          pragma: "no-cache",
+          "sec-ch-ua": '"Not A(Brand";v="8", "Chromium";v="132", "Google Chrome";v="132"',
+          "sec-ch-ua-mobile": "?0",
+          "sec-ch-ua-platform": '"Windows"',
+          "sec-fetch-dest": "document",
+          "sec-fetch-mode": "navigate",
+          "sec-fetch-site": "same-origin",
+          "sec-fetch-user": "?1",
+          "upgrade-insecure-requests": "1",
+          cookie: cookie,
+          Referer:
+            "https://ma-lexington.myfollett.com/aspen/portalClassDetail.do?navkey=academics.classes.list.detail",
+          "Referrer-Policy": "strict-origin-when-cross-origin"
+        },
+        body: null,
+        method: "GET"
+      }
+    );
+
+    if (prefetch.status !== 200) {
+      throw new Error(`Failed to prefetch classes: ${prefetch.status}`);
+    }
+
+    tick();
+
+    const prefetchDom = new JSDOM(await prefetch.text());
+    const prefetchForm = prefetchDom.window.document.forms["classListForm" as any];
+    const formData = new prefetchDom.window.FormData(prefetchForm);
+    formData.set("userParam", classID);
+    formData.set("userEvent", "2100");
+    const body = new prefetchDom.window.URLSearchParams(formData as any).toString();
+
+    const res = await fetch("https://ma-lexington.myfollett.com/aspen/portalClassList.do", {
+      headers: {
+        accept:
+          "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+        "cache-control": "no-cache",
+        "content-type": "application/x-www-form-urlencoded",
+        pragma: "no-cache",
+        "sec-ch-ua": '"Not A(Brand";v="8", "Chromium";v="132", "Google Chrome";v="132"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"Windows"',
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-site": "same-origin",
+        "sec-fetch-user": "?1",
+        "upgrade-insecure-requests": "1",
+        cookie,
+        Referer:
+          "https://ma-lexington.myfollett.com/aspen/portalClassList.do?navkey=academics.classes.list&maximized=false",
+        "Referrer-Policy": "strict-origin-when-cross-origin"
+      },
+      body,
+      method: "POST"
+    });
+
+    if (res.status !== 200) {
+      throw new Error(`Failed to get class detail: ${res.status}`);
+    }
+
+    tick();
+
+    const text = await res.text();
+    const dom = new JSDOM(text);
+
+    const table = [...dom.window.document.querySelectorAll("table")]
+      .filter((item) => item.textContent?.includes("Average Summary"))
+      .at(-1);
+
+    if (!table) throw new Error("Failed to find data table");
+    const rows = [...table.children[0].children].slice(1);
+    const categories = [...table.querySelectorAll('td[rowspan="2"]')];
+    return "win";
   };
 
   export const assignment = async ({

@@ -47,7 +47,7 @@
         class="w-full rounded-lg border-2 border-dashed border-blue-400 bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
         name="email"
         bind:value={email}
-        placeholder="Email"
+        placeholder="School Email"
         required
       />
       <div

@@ -5,7 +5,7 @@ export namespace api {
     _error(code, JSON.stringify({ success: false, error: message }));
   };
 
-  export const json = <T>(data: T) => {
+  export const json = <T>(data?: T) => {
     return Response.json({ success: true, data });
   };
 }

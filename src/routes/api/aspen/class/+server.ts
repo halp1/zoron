@@ -1,0 +1,21 @@
+import { api } from "$lib/server";
+import { classDetail } from ".";
+import type { RequestHandler } from "./$types";
+
+export const POST: RequestHandler = async ({ locals: { auth }, request }) => {
+  const session = await auth();
+  if (!session?.user?.email) return api.error("Unauthorized", 401);
+  if (!session.user.aspen)
+    return api.error("No Aspen credentials, please update your account at /account/update", 401);
+  const body = await request.json();
+  const requiredArgs = ["classID"];
+  if (!requiredArgs.every((arg) => arg in body))
+    return api.error("Missing required arguments", 400);
+
+  try {
+    return api.json(await classDetail(session, { classID: body.classID }));
+  } catch (e) {
+    console.error(e);
+    return api.error("Failed to get class detail", 500);
+  }
+};

@@ -42,7 +42,8 @@
     if (!res.success) return toast.error("An error occurred while logging in: " + res.error);
     else {
       toast.success(`Hello, ${res.data.name.first} ${res.data.name.last}`);
-      await goto("/account");
+      // requires a hard refresh to update the session
+      location.href = "/account";
     }
   };
 
@@ -101,9 +102,10 @@
       Your username or password is invalid.
     </div>
     <div class="mb-3 text-sm text-slate-400">
-      <Fa icon={faInfoCircle} class="float-left mr-2 mt-[3px]" /> Your information is encrypted and stored
-      securely on the server. We will never send your credentials to a 3rd party. You will always have
-      the option to permanently delete your account and the data associated with it.
+      <Fa icon={faInfoCircle} class="float-left mr-2 mt-[3px]" />
+      Your information is encrypted and stored securely on the server. We will never send your credentials
+      to a 3rd party. You will always have the option to permanently delete your account and the data
+      associated with it.
     </div>
     <button
       class="btn-full btn-outlined"
