@@ -2,6 +2,7 @@
   import { page } from "$app/stores";
   import type { aspen } from "$lib/aspen";
   import type { Assignment, Attendance } from "$lib/aspen/types";
+  import Skeleton from "$lib/components/Skeleton.svelte";
   import { requests, toast } from "$lib/web";
   import { faDownload } from "@fortawesome/free-solid-svg-icons";
   import { onMount } from "svelte";
@@ -24,12 +25,20 @@
     <div class="flex items-center gap-3">
       {#if item.type === "grade"}
         <div class="border-x-4 border-x-slate-600 px-2">
-          <span class="text-green-300">Grade</span> - {item.class}
+          <span class="text-green-300">Grade</span> -
+          <a
+            href="/home/grades#{encodeURIComponent(item.class)}"
+            class="border-b-2 border-slate-600 border-opacity-0 text-blue-300 hover:border-opacity-100"
+            >{item.class}</a
+          >
         </div>
         {item.assignment}:
         <div class="flex h-8 items-center justify-center border-4 border-slate-600 px-2">
           {#if !item.scoring || typeof item.scoring === "number"}
             {item.grade}
+            {#if typeof item.scoring === "number"}
+              {" "}/ <Skeleton class="ml-2 h-2 w-12" />
+            {/if}
           {:else if item.scoring.scored.toString().trim() === item.grade.trim()}
             {item.grade} / {item.scoring.total} ({item.scoring.percentage}%)
           {:else}
@@ -84,7 +93,7 @@
         <div class="text-slate-400">{item.date}</div>
       {:else}
         <div class="border-x-4 border-x-slate-600 px-2">
-          <span class="text-blue-300">Attendance</span> - {item.class}
+          <span class="text-yellow-300">Attendance</span> - {item.class}
         </div>
 
         <div class="">Period:</div>

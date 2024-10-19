@@ -35,6 +35,21 @@ export namespace aspen {
         dismissed: number;
       };
     }
+
+    export interface ClassDetailCategory {
+      name: string;
+      terms: {
+        weight?: number;
+        grade?: {
+          number: number;
+          letter: string;
+        };
+      }[];
+    }
+
+    export interface ClassDetail {
+      grades: ClassDetailCategory[];
+    }
   }
 
   export const encrypt = _encrypt;
@@ -552,9 +567,53 @@ export namespace aspen {
       .at(-1);
 
     if (!table) throw new Error("Failed to find data table");
-    const rows = [...table.children[0].children].slice(1);
-    const categories = [...table.querySelectorAll('td[rowspan="2"]')];
-    return "win";
+    const rows = [...table.querySelectorAll("tr.listCell")].slice(0, -1);
+    const categories = [...table.querySelectorAll('td[rowspan="2"]')]
+      .map((item) => item.textContent?.trim()!)
+      .filter((i) => i);
+
+    const result: Types.ClassDetail = {
+      grades: []
+    };
+
+    for (let i = 0; i < categories.length * 2; i += 2) {
+      const weights = [...rows[i].children]
+        .slice(2)
+        .map((item) => item.textContent?.trim())
+        .map((item) => item === 'N/A' ? undefined : Math.round(100 * parseFloat(item?.slice(0, -1)!)) / 100);
+      const grades = [...rows[i + 1].children]
+        .slice(1)
+        .map((item) => item.textContent?.trim())
+        .map(
+          (item) =>
+            (item &&
+              item.length > 0 &&
+              ([
+                Math.round(100 * parseFloat(item.split(" ")[0])) / 100,
+                item.split(" ")[1]
+              ] as const)) ||
+            undefined
+        );
+      const r: Types.ClassDetailCategory = {
+        name: categories[i / 2],
+        terms: weights.map(
+          (weight, idx) =>
+            ({
+              weight,
+              grade: grades[idx]
+                ? {
+                    number: grades[idx][0],
+                    letter: grades[idx][1]
+                  }
+                : undefined
+            }) satisfies Types.ClassDetailCategory["terms"][number]
+        )
+      };
+
+      result.grades.push(r);
+    }
+
+    return result;
   };
 
   export const assignment = async ({
