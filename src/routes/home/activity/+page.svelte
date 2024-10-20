@@ -20,6 +20,10 @@
   let merged = $page.data.activity?.merged as (GradeWithData | Attendance)[] | undefined;
 </script>
 
+<svelte:head>
+  <title>Activity | A+spen</title>
+</svelte:head>
+
 {#if merged}
   {#each merged as item, idx}
     <div class="flex items-center gap-3">

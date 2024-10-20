@@ -51,7 +51,7 @@
 </script>
 
 <svelte:head>
-  <title>A+spen | Update your credentials</title>
+  <title>Update your credentials | A+spen</title>
 </svelte:head>
 
 <main class="flex h-screen w-screen flex-col items-center justify-center">

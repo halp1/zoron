@@ -2,7 +2,7 @@
   import { page } from "$app/stores";
   import type { aspen } from "$lib/aspen";
   import { Collapsible, Skeleton } from "$lib/components";
-  import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
+  import { faChevronRight, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
   import type { PageData } from "./$types";
   import Fa from "svelte-fa";
   import { requests, toast } from "$lib/web";
@@ -59,9 +59,23 @@
     })();
   });
 
+  const calculateFinalGrade = (grades: aspen.Types.ClassDetail["grades"]) => {
+		const grade = grades!;
+    const terms: number[] = [];
+    grade.categories[0].terms.forEach((_, idx) => {
+      if (grade.posted[idx]) terms.push(grade.posted[idx].number);
+      else if (grade.averages[idx]) terms.push(grade.averages[idx].number);
+    });
+    return terms.reduce((a, b) => a + b, 0) / terms.length;
+  };
+
   // pre-load classes for tailwind
   ("grid-cols-1 grid-cols-2 grid-cols-3 grid-cols-4 grid-cols-5 grid-cols-6 grid-cols-7 grid-cols-8 grid-cols-9 grid-cols-10 grid-cols-11 grid-cols-12 border-b-0");
 </script>
+
+<svelte:head>
+  <title>Grades | A+spen</title>
+</svelte:head>
 
 {#if classes}
   {#each classes as c}
@@ -104,9 +118,9 @@
             <div class="text-slate-400">(no room)</div>{/if}
         </div>
         <div class="ml-auto"></div>
-        {#if c.grade && !Number.isNaN(c.grade.points) && typeof c.grade.points === "number"}
+        {#if c.grade && !Number.isNaN(c.grade.number) && typeof c.grade.number === "number"}
           <div class="relative mx-2 flex items-center text-xl">
-            {c.grade?.points}: {c.grade.letter}
+            {c.grade.number.toFixed(2)}: {c.grade.letter}
             <div class="absolute bottom-0 h-1 w-full bg-slate-600" />
           </div>
         {:else}
@@ -133,7 +147,7 @@
         <div class="pt-2"></div>
 
         {#if !c.data}
-          <div class="space-y-3 mt-3">
+          <div class="mt-3 space-y-3">
             <Skeleton class="h-4 sm:w-80" />
             <Skeleton class="h-4 sm:w-96" />
             <Skeleton class="h-4 sm:w-60" />
@@ -142,59 +156,130 @@
         {:else}
           <div class="flex gap-10 p-5">
             <div class="flex-1">Something is coming here soon...</div>
-            <div
-              class="relative grid flex-1 border-2 border-slate-600 grid-cols-{c.data.grades[0]
-                .terms.length *
-                2 +
-                3}"
-            >
+            {#if c.data.grades}
               <div
-                class="col-span-3 flex items-center justify-center border-b-2 border-dashed border-slate-600 p-2 text-center"
+                class="relative grid flex-1 border-2 border-slate-600 grid-cols-{c.data.grades
+                  .categories[0].terms.length *
+                  2 +
+                  3}"
               >
-                Category
-              </div>
-              {#each c.data.grades[0].terms as _, idx}
                 <div
-                  class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 p-2 text-center"
+                  class="col-span-3 flex items-center justify-center border-b-2 border-dashed border-slate-600 p-2 text-center"
                 >
-                  Term {idx + 1}
+                  Category
                 </div>
-              {/each}
-              {#each c.data.grades as grade}
-                <div
-                  class="col-span-3 row-span-2 flex items-center justify-center overflow-hidden border-b-2 border-dashed border-slate-600 p-2 text-center"
-                  style="overflow-wrap: break-word; word-break: break-word"
-                >
-                  {grade.name}
-                </div>
-                {#each grade.terms as term}
+                {#each c.data.grades.categories[0].terms as _, idx}
                   <div
-                    class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 p-2 text-center"
+                    class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 p-2 text-center"
                   >
-                    {#if term.weight}
-                      {term.weight}%
-                    {:else}
-                      N/A
-                    {/if}
+                    Term {idx + 1}
                   </div>
                 {/each}
-                {#each grade.terms as term}
+                {#each c.data.grades.categories as grade}
                   <div
-                    class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-opacity-50 p-2 text-center"
-                    style={(!term.grade &&
-                      "background: repeating-linear-gradient(45deg, rgb(71 85 105 / var(--tw-bg-opacity)), rgb(71 85 105 / var(--tw-bg-opacity)) 2px, transparent 2px, transparent 10px); background-position: 0 0; background-size: 100% 100%;") ||
+                    class="col-span-3 row-span-2 flex items-center justify-center overflow-hidden border-b-2 border-dashed border-slate-600 p-2 text-center"
+                    style="overflow-wrap: break-word; word-break: break-word"
+                  >
+                    {grade.name}
+                  </div>
+                  {#each grade.terms as term}
+                    <div
+                      class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 p-2 text-center"
+                    >
+                      {#if term.weight}
+                        {term.weight}%
+                      {:else}
+                        N/A
+                      {/if}
+                    </div>
+                  {/each}
+                  {#each grade.terms as term}
+                    <div
+                      class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-opacity-50 p-2 text-center"
+                      style={(!term.grade &&
+                        "background: repeating-linear-gradient(45deg, rgb(71 85 105 / var(--tw-bg-opacity)), rgb(71 85 105 / var(--tw-bg-opacity)) 2px, transparent 2px, transparent 10px); background-position: 0 0; background-size: 100% 100%;") ||
+                        ""}
+                    >
+                      {#if term.grade}
+                        {term.grade.number.toFixed(2)}
+                        <div class="ml-1">({term.grade.letter})</div>
+                      {:else}
+                        <div class="select-none text-transparent">.</div>
+                      {/if}
+                    </div>
+                  {/each}
+                {/each}
+                <div
+                  class="col-span-3 flex items-center justify-center overflow-hidden border-b-2 border-dashed border-slate-600 p-2 text-center"
+                  style="overflow-wrap: break-word; word-break: break-word"
+                >
+                  Quarterly average
+                </div>
+                {#each c.data.grades.averages as avg}
+                  <div
+                    class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 p-2 text-center"
+                    style={(!avg &&
+                      "background: repeating-linear-gradient(45deg, rgb(100 116 139 / .5), rgb(100 116 139 / .5) 2px, #1e293b 2px, #1e293b 10px); background-position: 0 0; background-size: 100% 100%;") ||
                       ""}
                   >
-                    {#if term.grade}
-                      {term.grade.number}
-                      <div class="ml-1">({term.grade.letter})</div>
+                    {#if avg}
+                      {avg.number.toFixed(2)}
+                      <div class="ml-1">({avg.letter})</div>
                     {:else}
                       <div class="select-none text-transparent">.</div>
                     {/if}
                   </div>
                 {/each}
-              {/each}
-            </div>
+                <div
+                  class="col-span-3 flex items-center justify-center overflow-hidden border-b-2 border-dashed border-slate-600 p-2 text-center"
+                  style="overflow-wrap: break-word; word-break: break-word"
+                >
+                  Posted grade
+                </div>
+                {#each c.data.grades.posted as grade}
+                  <div
+                    class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 p-2 text-center {!grade &&
+                      'bg-opacity-50'}"
+                    style={(!grade &&
+                      "background: repeating-linear-gradient(45deg, rgb(71 85 105 / var(--tw-bg-opacity)), rgb(71 85 105 / var(--tw-bg-opacity)) 2px, transparent 2px, transparent 10px); background-position: 0 0; background-size: 100% 100%;") ||
+                      ""}
+                  >
+                    {#if grade}
+                      {grade.number.toFixed(2)}
+                      <div class="ml-1">({grade.letter})</div>
+                    {:else}
+                      <div class="select-none text-transparent">.</div>
+                    {/if}
+                  </div>
+                {/each}
+                <div
+                  class="col-span-3 flex items-center justify-center overflow-hidden border-b-2 border-dashed border-slate-600 p-2 text-center"
+                  style="overflow-wrap: break-word; word-break: break-word"
+                >
+                  Final grade
+                </div>
+                <div
+                  class="relative flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 p-2 text-center"
+                  style="grid-column: span {c.data.grades.categories[0].terms.length * 2} / span {c
+                    .data.grades.categories[0].terms.length * 2};"
+                >
+                  {#if c.data.grades.final}
+                    {c.data.grades.final.number.toFixed(2)}
+                    <div class="ml-1">({c.data.grades.final.letter})</div>
+                  {:else}
+                    {calculateFinalGrade(c.data.grades).toFixed(2)}
+                    <Fa
+                      icon={faQuestionCircle}
+                      class="absolute right-2 top-1/2 -translate-y-1/2 cursor-help"
+                      title="This grade is calculated as an average of all terms. It may not accurately represent your final grade."
+                    />
+                  {/if}
+                </div>
+              </div>
+            {:else}
+              <div class="flex flex-1 items-center justify-center py-5 text-slate-400">
+                This class doesn't appear to have any grades...
+              </div>{/if}
           </div>
         {/if}
       </Collapsible>

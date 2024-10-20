@@ -46,6 +46,10 @@
   };
 </script>
 
+<svelte:head>
+	<title>Account | A+spen</title>
+</svelte:head>
+
 <main>
   <div class="flex h-screen w-screen flex-col items-center justify-center">
     {#if $page.data && $page.data.session && $page.data.session.user}

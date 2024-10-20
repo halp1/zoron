@@ -29,7 +29,7 @@
 </script>
 
 <svelte:head>
-  <title>A+spen | Login</title>
+  <title>Login | A+spen</title>
 </svelte:head>
 
 <main class="flex h-screen w-screen flex-col items-center justify-center">
