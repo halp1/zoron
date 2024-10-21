@@ -16,7 +16,7 @@ export namespace aspen {
       first: string;
       last: string;
     }
-    export interface Assignment {
+    export interface AssignmentScore {
       percentage: number;
       scored: number;
       total: number;
@@ -46,6 +46,15 @@ export namespace aspen {
       }[];
     }
 
+		export interface Assignment {
+			id: string;
+			name: string;
+			assigned: string;
+			due: string;
+			weight: number;
+			score: AssignmentScore
+		}
+
     export interface ClassDetail {
       grades?: {
         categories: ClassDetailCategory[];
@@ -53,6 +62,7 @@ export namespace aspen {
         posted: (Grade | undefined)[];
         final?: Grade;
       };
+			assignments: Assignment[]
     }
   }
 
@@ -484,11 +494,16 @@ export namespace aspen {
   export const classDetail = async ({
     cookie,
     classID,
-    onProgress
+    onProgress,
+    assignments
   }: {
     cookie: string;
     classID: string;
     onProgress?: Types.ProgressCallback;
+    assignments?: {
+      category?: string;
+      term?: number;
+    };
   }) => {
     const tick = progressTicker(constants.steps.classDetail, onProgress);
 
@@ -563,112 +578,163 @@ export namespace aspen {
 
     tick();
 
-    const text = await res.text();
-    const dom = new JSDOM(text);
+    const [grades, ass] = await Promise.all([
+      (async () => {
+        const text = await res.text();
+        const dom = new JSDOM(text);
 
-    const table = [...dom.window.document.querySelectorAll("table")]
-      .filter((item) => item.textContent?.includes("Average Summary"))
-      .at(-1);
+        const table = [...dom.window.document.querySelectorAll("table")]
+          .filter((item) => item.textContent?.includes("Average Summary"))
+          .at(-1);
 
-    if (!table) throw new Error("Failed to find data table");
-    const rows = [...table.querySelectorAll("tr.listCell")];
-    const categories = [...table.querySelectorAll('td[rowspan="2"]')]
-      .map((item) => item.textContent?.trim()!)
-      .filter((i) => i);
+        if (!table) throw new Error("Failed to find data table");
+        const rows = [...table.querySelectorAll("tr.listCell")];
+        const categories = [...table.querySelectorAll('td[rowspan="2"]')]
+          .map((item) => item.textContent?.trim()!)
+          .filter((i) => i);
 
-    const result: Types.ClassDetail = {
-      grades:
-        (categories.length > 0 && {
-          categories: [],
-          averages: [],
-          posted: []
-        }) ||
-        undefined
-    };
+        const result: Types.ClassDetail["grades"] =
+          (categories.length > 0 && {
+            categories: [],
+            averages: [],
+            posted: []
+          }) ||
+          undefined;
+        if (categories.length > 0) {
+          for (let i = 0; i < categories.length * 2; i += 2) {
+            const weights = [...rows[i].children]
+              .slice(2)
+              .map((item) => item.textContent?.trim())
+              .map((item) =>
+                item === "N/A" ? undefined : Math.round(100 * parseFloat(item?.slice(0, -1)!)) / 100
+              );
+            const grades = [...rows[i + 1].children]
+              .slice(1)
+              .map((item) => item.textContent?.trim())
+              .map(
+                (item) =>
+                  (item &&
+                    item.length > 0 &&
+                    ([
+                      Math.round(100 * parseFloat(item.split(" ")[0])) / 100,
+                      item.split(" ")[1]
+                    ] as const)) ||
+                  undefined
+              );
+            const r: Types.ClassDetailCategory = {
+              name: categories[i / 2],
+              terms: weights.map(
+                (weight, idx) =>
+                  ({
+                    weight,
+                    grade: grades[idx]
+                      ? {
+                          number: grades[idx][0],
+                          letter: grades[idx][1]
+                        }
+                      : undefined
+                  }) satisfies Types.ClassDetailCategory["terms"][number]
+              )
+            };
 
-    if (categories.length > 0) {
-      for (let i = 0; i < categories.length * 2; i += 2) {
-        const weights = [...rows[i].children]
-          .slice(2)
-          .map((item) => item.textContent?.trim())
-          .map((item) =>
-            item === "N/A" ? undefined : Math.round(100 * parseFloat(item?.slice(0, -1)!)) / 100
-          );
-        const grades = [...rows[i + 1].children]
-          .slice(1)
-          .map((item) => item.textContent?.trim())
-          .map(
-            (item) =>
-              (item &&
-                item.length > 0 &&
-                ([
-                  Math.round(100 * parseFloat(item.split(" ")[0])) / 100,
-                  item.split(" ")[1]
-                ] as const)) ||
-              undefined
-          );
-        const r: Types.ClassDetailCategory = {
-          name: categories[i / 2],
-          terms: weights.map(
-            (weight, idx) =>
-              ({
-                weight,
-                grade: grades[idx]
-                  ? {
-                      number: grades[idx][0],
-                      letter: grades[idx][1]
-                    }
-                  : undefined
-              }) satisfies Types.ClassDetailCategory["terms"][number]
-          )
-        };
+            result!.categories.push(r);
+          }
 
-        result.grades!.categories.push(r);
-      }
+          result!.averages = [
+            ...(table.querySelector("tr.listCellHighlight") as HTMLTableRowElement).children
+          ]
+            .slice(1)
+            .map((item) => item.textContent?.trim())
+            .map((item) =>
+              item && item.length > 0
+                ? ({
+                    number: Math.round(100 * parseFloat(item.split(" ")[0])) / 100,
+                    letter: item.split(" ")[1]
+                  } satisfies Types.Grade)
+                : undefined
+            );
 
-      result.grades!.averages = [
-        ...(table.querySelector("tr.listCellHighlight") as HTMLTableRowElement).children
-      ]
-        .slice(1)
-        .map((item) => item.textContent?.trim())
-        .map((item) =>
-          item && item.length > 0
-            ? ({
-                number: Math.round(100 * parseFloat(item.split(" ")[0])) / 100,
-                letter: item.split(" ")[1]
-              } satisfies Types.Grade)
-            : undefined
+          result!.posted = [...rows.at(-1)!.children]
+            .slice(1)
+            .map((item) => item.textContent?.trim())
+            .map((item) =>
+              item && item.length > 0
+                ? ({
+                    number: Math.round(100 * parseFloat(item.split(" ")[0])) / 100,
+                    letter: item.split(" ")[1]
+                  } satisfies Types.Grade)
+                : undefined
+            );
+
+          const finalText = [
+            ...[
+              ...dom.window.document.querySelectorAll(
+                "div.detailContainer table tbody tr td.detailProperty.headerLabelBackground"
+              )
+            ].at(-1)!.parentNode!.children
+          ].at(-1)!.textContent;
+          if (!finalText) throw new Error("Failed to find final grade");
+          if (finalText.trim().length > 1) {
+            result!.final = {
+              number: Math.round(parseFloat(finalText.split(" ")[0]) * 100) / 100,
+              letter: finalText.split(" ")[1].trim()
+            };
+          }
+        }
+
+        return result;
+      })(),
+      (async () => {
+				const initialRes = await fetch(
+          "https://ma-lexington.myfollett.com/aspen/portalAssignmentList.do?navkey=academics.classes.list.gcd",
+          {
+            headers: {
+              accept:
+                "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+              "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+              "cache-control": "no-cache",
+              pragma: "no-cache",
+              "sec-ch-ua": '"Not A(Brand";v="8", "Chromium";v="132", "Google Chrome";v="132"',
+              "sec-ch-ua-mobile": "?0",
+              "sec-ch-ua-platform": '"Windows"',
+              "sec-fetch-dest": "document",
+              "sec-fetch-mode": "navigate",
+              "sec-fetch-site": "none",
+              "sec-fetch-user": "?1",
+              "upgrade-insecure-requests": "1",
+              cookie,
+            },
+            referrerPolicy: "strict-origin-when-cross-origin",
+            body: null,
+            method: "GET"
+          }
         );
 
-      result.grades!.posted = [...rows.at(-1)!.children]
-        .slice(1)
-        .map((item) => item.textContent?.trim())
-        .map((item) =>
-          item && item.length > 0
-            ? ({
-                number: Math.round(100 * parseFloat(item.split(" ")[0])) / 100,
-                letter: item.split(" ")[1]
-              } satisfies Types.Grade)
-            : undefined
-        );
+				if (initialRes.status !== 200) {
+					throw new Error(`Failed to get initial assignments: ${initialRes.status}`);
+				}
 
-      const finalText = [
-        ...[
-          ...dom.window.document.querySelectorAll(
-            "div.detailContainer table tbody tr td.detailProperty.headerLabelBackground"
-          )
-        ].at(-1)!.parentNode!.children
-      ].at(-1)!.textContent;
-      if (!finalText) throw new Error("Failed to find final grade");
-      if (finalText.trim().length > 1) {
-        result.grades!.final = {
-          number: Math.round(parseFloat(finalText.split(" ")[0]) * 100) / 100,
-          letter: finalText.split(" ")[1].trim()
-        };
-      }
-    }
+				const parseAssignements = (document: JSDOM['window']['document']): Types.Assignment[] => {
+					
+				}
 
-    return result;
+				
+				const document = new JSDOM(await initialRes.text()).window.document;
+				const defaultTerm = parseInt((document.querySelector("#gradeTermOid") as HTMLSelectElement).value.slice(-1));
+				
+				if (!assignments || (assignments.category === undefined && assignments.term === undefined) || (assignments.category === 'All' && (assignments.term === undefined || assignments.term === defaultTerm))) {
+					return parseAssignements(document);
+				} else {
+					// for now
+					return parseAssignements(document);
+				}
+			})()
+    ] as const);
+
+    return {
+      grades,
+			assignments: ass
+    } satisfies Types.ClassDetail;
   };
 
   export const assignment = async ({
@@ -683,7 +749,7 @@ export namespace aspen {
     assignment: Assignment;
     studentID: string;
     onProgress?: Types.ProgressCallback;
-  }): Promise<Types.Assignment> => {
+  }): Promise<Types.AssignmentScore> => {
     const tick = progressTicker(constants.steps.assignment, onProgress);
 
     const preload = rewriteUrl("portalClassList.do");

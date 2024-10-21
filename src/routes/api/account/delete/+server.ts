@@ -7,7 +7,7 @@ export const DELETE = async ({ locals: { auth } }) => {
   if (!session?.user) return api.error("Unauthorized", 401);
   try {
     await adapter.deleteUser!(session.user.id!);
-		return api.json();
+    return api.json();
   } catch {
     return api.error("Failed to delete account", 500);
   }

@@ -60,7 +60,7 @@
   });
 
   const calculateFinalGrade = (grades: aspen.Types.ClassDetail["grades"]) => {
-		const grade = grades!;
+    const grade = grades!;
     const terms: number[] = [];
     grade.categories[0].terms.forEach((_, idx) => {
       if (grade.posted[idx]) terms.push(grade.posted[idx].number);
@@ -81,7 +81,6 @@
   {#each classes as c}
     <div id="c-{c.id}" class="border-2 border-slate-600 p-3">
       <div class="flex items-center gap-2">
-        <!-- svelte-ignore missing-declaration -->
         <button
           on:click={async () => {
             c.expanded = !c.expanded;

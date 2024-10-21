@@ -11,7 +11,7 @@
 </script>
 
 <svelte:head>
-	<title>{message} | A+spen</title>
+  <title>{message} | A+spen</title>
 </svelte:head>
 
 <main class="grid h-screen w-screen place-items-center">

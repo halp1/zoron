@@ -47,7 +47,7 @@
 </script>
 
 <svelte:head>
-	<title>Account | A+spen</title>
+  <title>Account | A+spen</title>
 </svelte:head>
 
 <main>
