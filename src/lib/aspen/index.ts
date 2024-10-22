@@ -46,14 +46,14 @@ export namespace aspen {
       }[];
     }
 
-		export interface Assignment {
-			id: string;
-			name: string;
-			assigned: string;
-			due: string;
-			weight: number;
-			score: AssignmentScore
-		}
+    export interface Assignment {
+      id: string;
+      name: string;
+      assigned: string;
+      due: string;
+      weight?: number;
+      score?: AssignmentScore;
+    }
 
     export interface ClassDetail {
       grades?: {
@@ -62,7 +62,7 @@ export namespace aspen {
         posted: (Grade | undefined)[];
         final?: Grade;
       };
-			assignments: Assignment[]
+      assignments: Assignment[];
     }
   }
 
@@ -685,7 +685,7 @@ export namespace aspen {
         return result;
       })(),
       (async () => {
-				const initialRes = await fetch(
+        const initialRes = await fetch(
           "https://ma-lexington.myfollett.com/aspen/portalAssignmentList.do?navkey=academics.classes.list.gcd",
           {
             headers: {
@@ -702,7 +702,7 @@ export namespace aspen {
               "sec-fetch-site": "none",
               "sec-fetch-user": "?1",
               "upgrade-insecure-requests": "1",
-              cookie,
+              cookie
             },
             referrerPolicy: "strict-origin-when-cross-origin",
             body: null,
@@ -710,30 +710,71 @@ export namespace aspen {
           }
         );
 
-				if (initialRes.status !== 200) {
-					throw new Error(`Failed to get initial assignments: ${initialRes.status}`);
-				}
+        if (initialRes.status !== 200) {
+          throw new Error(`Failed to get initial assignments: ${initialRes.status}`);
+        }
 
-				const parseAssignements = (document: JSDOM['window']['document']): Types.Assignment[] => {
-					
-				}
+        const parseAssignements = (document: JSDOM["window"]["document"]): Types.Assignment[] => {
+          const rows = [...document.querySelectorAll("#dataGrid > table > tbody > tr.listCell")];
 
-				
-				const document = new JSDOM(await initialRes.text()).window.document;
-				const defaultTerm = parseInt((document.querySelector("#gradeTermOid") as HTMLSelectElement).value.slice(-1));
-				
-				if (!assignments || (assignments.category === undefined && assignments.term === undefined) || (assignments.category === 'All' && (assignments.term === undefined || assignments.term === defaultTerm))) {
-					return parseAssignements(document);
-				} else {
-					// for now
-					return parseAssignements(document);
-				}
-			})()
+          if (rows[0].textContent?.trim() === "No matching records") return [];
+
+          return rows.map(
+            (row) =>
+              ({
+                id: row.children[1].id,
+                name: row.children[1].textContent!.trim(),
+                assigned: row.children[2].textContent!.trim(),
+                due: row.children[3].textContent!.trim(),
+                weight:
+                  row.children.length === 7
+                    ? Math.round(parseFloat(row.children[4].textContent!.trim()) * 100) / 100
+                    : undefined,
+                score:
+                  row.children[4].textContent!.trim() === "Ungraded"
+                    ? undefined
+                    : ((): Types.Assignment["score"] => {
+                        const items =
+                          row.children[row.children.length === 7 ? 5 : 4].querySelectorAll(
+                            "table > tbody > tr > td"
+                          );
+                        if (items.length === 1) return;
+
+                        const str = items[items.length - 2].textContent!.trim().split(" / ");
+                        const scored = Math.round(parseFloat(str[0]) * 100) / 100;
+                        const total = Math.round(parseFloat(str[1]) * 100) / 100;
+                        return {
+                          scored,
+                          total,
+                          percentage: Math.round((scored / total) * 100 * 100) / 100
+                        };
+                      })()
+              }) satisfies Types.Assignment
+          );
+        };
+
+        const document = new JSDOM(await initialRes.text()).window.document;
+        const defaultTerm = parseInt(
+          (document.querySelector("#gradeTermOid") as HTMLSelectElement).value.slice(-1)
+        );
+
+        if (
+          !assignments ||
+          (assignments.category === undefined && assignments.term === undefined) ||
+          (assignments.category === "All" &&
+            (assignments.term === undefined || assignments.term === defaultTerm))
+        ) {
+          return parseAssignements(document);
+        } else {
+          // for now
+          return parseAssignements(document);
+        }
+      })()
     ] as const);
 
     return {
       grades,
-			assignments: ass
+      assignments: ass
     } satisfies Types.ClassDetail;
   };
 

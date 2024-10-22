@@ -11,6 +11,7 @@
   interface Class extends aspen.Types.Class {
     expanded: boolean;
     data?: aspen.Types.ClassDetail;
+    gradesRef?: HTMLDivElement;
   }
 
   const data: PageData["classes"] = $page.data.classes;
@@ -85,8 +86,12 @@
           on:click={async () => {
             c.expanded = !c.expanded;
             if (c.expanded && !c.data) {
-              c.data = await loadClassData(c);
+              c.data = { ...(await loadClassData(c)), loaded: false };
               if (!c.data) c.expanded = false;
+              setTimeout(() => {
+                // @ts-expect error data undefined (won't be)
+                c.data.loaded = true;
+              }, 50);
             }
           }}
           class="btn-circle"
@@ -154,11 +159,73 @@
           </div>
         {:else}
           <div class="flex gap-10 p-5">
-            <div class="flex-1">Something is coming here soon...</div>
+            <div class="flex-1">
+              {#if c.data.assignments.length > 0}
+                <div
+                  class="flex flex-1 flex-col items-stretch overflow-auto"
+                  style="max-height: {typeof document !== 'undefined'
+                    ? // @ts-expect-error offsetheight blah blah
+                      document.querySelector(`grades-${c.id}`)?.offsetHeight || 400
+                    : 400}px"
+                >
+                  {#each c.data.assignments as assignment}
+                    <div class="grid grid-cols-7 border-2 border-slate-600 p-2">
+                      <div
+                        class="col-span-3 row-span-2 flex items-center justify-center border-r-2 border-dashed border-r-slate-600 pr-2 text-center"
+                      >
+                        {assignment.name}
+                      </div>
+                      <div class="col-span-2 row-span-2 flex flex-col items-center text-right">
+                        <div>{assignment.due}</div>
+                        <div class="text-slate-400">
+                          Weight: <span class="font-bold"
+                            >{typeof assignment.weight === "undefined"
+                              ? 1
+                              : assignment.weight}</span
+                          >
+                        </div>
+                      </div>
+                      {#if assignment.score}
+                        <div class="col-span-2 flex items-center justify-end gap-1">
+                          <div class="font-bold">{assignment.score.scored}</div>
+                          <div>/</div>
+                          <div class="font-bold">{assignment.score.total}</div>
+                        </div>
+                        <div
+                          class="relative col-span-2 border-2 border-dashed border-slate-600 text-transparent"
+                        >
+                          .
+                          <div
+                            class="absolute left-0 top-0 h-full bg-green-400 bg-opacity-80"
+                            style="width: {assignment.score.percentage}%"
+                          ></div>
+                          <div
+                            class="absolute right-0 top-1/2 z-10 -translate-y-1/2 font-bold text-white"
+                          >
+                            {assignment.score.percentage}%
+                          </div>
+                        </div>
+                      {:else}
+                        <div
+                          class="col-span-2 row-span-2 flex items-center justify-center text-slate-400"
+                        >
+                          No score available
+                        </div>
+                      {/if}
+                    </div>
+                  {/each}
+                </div>
+              {:else}
+                <div class="flex flex-1 items-center justify-center py-5 text-slate-400">
+                  You don't have any assignemnts in this class yet...
+                </div>
+              {/if}
+            </div>
             {#if c.data.grades}
               <div
-                class="relative grid flex-1 border-2 border-slate-600 grid-cols-{c.data.grades
-                  .categories[0].terms.length *
+                id="grades-{c.id}"
+                class="relative mb-auto grid flex-1 border-2 border-slate-600 grid-cols-{c.data
+                  .grades.categories[0].terms.length *
                   2 +
                   3}"
               >
