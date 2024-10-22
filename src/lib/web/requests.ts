@@ -67,7 +67,7 @@ export namespace requests {
             .map((item) => item.trim());
           for (const message of messages) {
             try {
-              const data: StreamAPI.Message<aspen.Types.Assignment> = JSON.parse(message);
+              const data: StreamAPI.Message<T> = JSON.parse(message);
 
               if (data.type === "error")
                 return { success: false as const, error: data.error, code: data.code };

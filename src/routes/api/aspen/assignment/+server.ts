@@ -4,7 +4,7 @@ import { assignment } from ".";
 import type { RequestHandler } from "./$types";
 
 export const POST: RequestHandler = async ({ request, locals: { auth } }) => {
-  const stream = await streamPromise<aspen.Types.Assignment>();
+  const stream = await streamPromise<aspen.Types.AssignmentScore>();
   const session = await auth();
   if (!session?.user?.email) return stream.error("Unauthorized", 401);
   if (!session.user.aspen)

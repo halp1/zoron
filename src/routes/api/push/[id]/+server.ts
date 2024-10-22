@@ -4,7 +4,7 @@ import type { RequestHandler } from "./$types";
 
 import { query, remove } from "$lib/database";
 import { ObjectId } from "mongodb";
-import type { Item, Subscription } from "$lib/types";
+import type { Subscription } from "$lib/types";
 import { VAPID_PRIVATE, VAPID_PUBLIC } from "$env/static/private";
 
 const isValidURL = (url: string): boolean => {
@@ -92,10 +92,6 @@ export const POST: RequestHandler = async ({ request, params: { id } }) => {
   }
   const validate = push.options ? validateNotificationOptions(push.options) : true;
   if (validate !== true) return error(400, validate);
-
-  const item = await query<Item>({ collection: "items", query: { _id: new ObjectId(id) } });
-  if (!item[0]) return error(404, "Item not found");
-  if (key !== item[0].key) return error(403, "Unauthorized");
 
   webpush.setVapidDetails("https://push.haelp.dev", VAPID_PUBLIC, VAPID_PRIVATE);
 

@@ -31,11 +31,12 @@
   });
 </script>
 
-<main class="activity-container flex h-screen w-full flex-col items-center justify-center py-10">
+<main class="activity-container flex h-screen w-full flex-col items-center justify-center">
   <div
-    class="title relative mb-10 flex items-center gap-4 border-x-2 border-dashed border-slate-600 px-3 text-3xl"
+    class="title relative mb-10 flex w-full items-center gap-4 bg-slate-800 px-3 py-2 text-3xl shadow-lg"
     bind:this={tabContainer}
   >
+    <div class="ml-auto"></div>
     {#each tabs as tab, idx}
       <a
         href={tab.path}
@@ -44,17 +45,16 @@
         bind:this={tabRefs[idx]}>{tab.name}</a
       >
     {/each}
+    <div class="mr-auto"></div>
     <div
-      class="absolute -bottom-1 h-1 rounded-full bg-white transition-all"
+      class="absolute bottom-1 h-[2px] rounded-full bg-white transition-all"
       style="width: {tabBarWidth}px; left: {(tabRefs[activeTabIndex]?.getBoundingClientRect()
         .left || 0) - (tabContainer?.getBoundingClientRect().left || 0)}px"
     ></div>
   </div>
 
   {#key $page.url}
-    <div
-      class="view no-scroll flex flex-1 flex-col gap-2 overflow-auto p-5"
-    >
+    <div class="view no-scroll flex w-full flex-1 flex-col gap-2 overflow-auto px-10 pb-10">
       <slot />
     </div>
   {/key}

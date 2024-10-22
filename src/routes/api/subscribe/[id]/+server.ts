@@ -2,7 +2,7 @@ import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { insert, query } from "$lib/database";
 import { ObjectId } from "mongodb";
-import type { Subscription, Item } from "$lib/types";
+import type { Subscription } from "$lib/types";
 
 export const POST: RequestHandler = async ({ request, locals, params: { id } }) => {
   const session = await locals.auth();
@@ -17,8 +17,6 @@ export const POST: RequestHandler = async ({ request, locals, params: { id } }) 
     !body.device.id
   )
     return error(400, "Bad device data");
-  const item = await query<Item>({ collection: "items", query: { _id: new ObjectId(id) } });
-  if (!item[0]) return error(404, "Item not found");
   const subscription = await query<Subscription>({
     collection: "subscriptions",
     query: {

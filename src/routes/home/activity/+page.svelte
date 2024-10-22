@@ -87,6 +87,7 @@
                   item.scoring = undefined;
                   return toast.error(`Error loading assignment data: ${res.error}`);
                 }
+                // @ts-expect-error
                 merged[idx] = { ...item, scoring: res.data };
               }}
             >
