@@ -53,7 +53,7 @@
 
   {#key $page.url}
     <div
-      class="view no-scroll mx-5 flex max-w-[1400px] flex-1 flex-col gap-2 overflow-auto p-6 xl:w-[1200px]"
+      class="view no-scroll flex flex-1 flex-col gap-2 overflow-auto p-5"
     >
       <slot />
     </div>

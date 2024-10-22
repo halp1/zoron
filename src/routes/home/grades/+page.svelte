@@ -11,12 +11,12 @@
   interface Class extends aspen.Types.Class {
     expanded: boolean;
     data?: aspen.Types.ClassDetail;
-    gradesRef?: HTMLDivElement;
+    height: number;
   }
 
   const data: PageData["classes"] = $page.data.classes;
   const classes: Class[] | null =
-    data?.classes?.map((c) => ({ ...c, expanded: false }) satisfies Class) ?? null;
+    data?.classes?.map((c) => ({ ...c, expanded: false, height: -1 }) satisfies Class) ?? null;
 
   const loadClassData = async (c: Class) => {
     const res = await requests.post<aspen.Types.ClassDetail>("/api/aspen/class", {
@@ -86,12 +86,16 @@
           on:click={async () => {
             c.expanded = !c.expanded;
             if (c.expanded && !c.data) {
-              c.data = { ...(await loadClassData(c)), loaded: false };
+              c.data = await loadClassData(c);
+              c.height = -1;
               if (!c.data) c.expanded = false;
-              setTimeout(() => {
-                // @ts-expect error data undefined (won't be)
-                c.data.loaded = true;
-              }, 50);
+              const interval = setInterval(() => {
+                if (document.querySelector(`#grades-${c.id}`)) {
+                  // @ts-expect-error offsetheight blah blah
+                  c.height = document.querySelector(`#grades-${c.id}`)?.offsetHeight || 400;
+                  clearInterval(interval);
+                }
+              }, 10);
             }
           }}
           class="btn-circle"
@@ -162,14 +166,14 @@
             <div class="flex-1">
               {#if c.data.assignments.length > 0}
                 <div
-                  class="flex flex-1 flex-col items-stretch overflow-auto"
-                  style="max-height: {typeof document !== 'undefined'
-                    ? // @ts-expect-error offsetheight blah blah
-                      document.querySelector(`grades-${c.id}`)?.offsetHeight || 400
-                    : 400}px"
+                  class="no-scroll flex flex-1 flex-col items-stretch overflow-auto border-2 border-slate-600"
+                  style="max-height: {c.height === -1 ? 400 : c.height}px"
                 >
-                  {#each c.data.assignments as assignment}
-                    <div class="grid grid-cols-7 border-2 border-slate-600 p-2">
+                  {#each c.data.assignments as assignment, idx}
+                    <div
+                      class="grid grid-cols-7 border-b-2 border-dashed border-slate-600 p-2"
+                      style={idx === c.data.assignments.length - 1 ? "border: none" : ""}
+                    >
                       <div
                         class="col-span-3 row-span-2 flex items-center justify-center border-r-2 border-dashed border-r-slate-600 pr-2 text-center"
                       >
