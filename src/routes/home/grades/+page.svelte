@@ -79,280 +79,284 @@
 </svelte:head>
 
 {#if classes}
-  {#each classes as c}
-    <div id="c-{c.id}" class="border-2 border-slate-600 p-3">
-      <div class="flex items-center gap-2">
-        <button
-          on:click={async () => {
-            c.expanded = !c.expanded;
-            if (c.expanded && !c.data) {
-              c.data = await loadClassData(c);
-              c.height = -1;
-              if (!c.data) c.expanded = false;
-              const interval = setInterval(() => {
-                if (document.querySelector(`#grades-${c.id}`)) {
-                  // @ts-expect-error offsetheight blah blah
-                  c.height = document.querySelector(`#grades-${c.id}`)?.offsetHeight || 400;
-                  clearInterval(interval);
+  <div class="flex flex-wrap justify-center gap-5">
+    {#each classes as c}
+      <div id="c-{c.id}" class="w-96 border-2 border-slate-600 p-3">
+        <div>
+          <div class="flex items-center">
+            <button
+              on:click={async () => {
+                c.expanded = !c.expanded;
+                if (c.expanded && !c.data) {
+                  c.data = await loadClassData(c);
+                  c.height = -1;
+                  if (!c.data) c.expanded = false;
+                  const interval = setInterval(() => {
+                    if (document.querySelector(`#grades-${c.id}`)) {
+                      // @ts-expect-error offsetheight blah blah
+                      c.height = document.querySelector(`#grades-${c.id}`)?.offsetHeight || 400;
+                      clearInterval(interval);
+                    }
+                  }, 10);
                 }
-              }, 10);
-            }
-          }}
-          class="btn-circle"
-          ><Fa
-            icon={faChevronRight}
-            class="transition-all {c.expanded ? 'rotate-90' : 'rotate-0'}"
-          />
-        </button>
-        <div class="border-r-2 border-slate-600 pr-2 text-xl">{c.name}</div>
-        <div class="border-r-2 border-slate-600 pr-2 text-slate-400">{c.course}</div>
-        <div class="">
-          {#if c.teachers.length === 1}
-            {c.teachers[0].first} {c.teachers[0].last}
+              }}
+              class="btn-circle"
+              ><Fa
+                icon={faChevronRight}
+                class="transition-all {c.expanded ? 'rotate-90' : 'rotate-0'}"
+              />
+            </button>
+            <div class="text-2xl">{c.name}</div>
+          </div>
+          <div class="border-r-2 border-slate-600 pr-2 text-sm text-slate-400">{c.course}</div>
+          <div class="">
+            {#if c.teachers.length === 1}
+              {c.teachers[0].first} {c.teachers[0].last}
+            {:else}
+              {#each c.teachers.slice(0, c.teachers.length - 1) as teacher}
+                {teacher.first}
+                {teacher.last}{#if c.teachers.length > 2},{/if}
+              {/each}
+              and
+              {c.teachers.at(-1)?.first}
+              {c.teachers.at(-1)?.last}
+            {/if}
+          </div>
+          <div class="flex items-center gap-2 border-l-2 border-slate-600 pl-2">
+            Room: {#if c.room}
+              <div class="font-bold">{c.room}</div>
+            {:else}
+              <div class="text-slate-400">(no room)</div>{/if}
+          </div>
+          <div class="ml-auto"></div>
+          {#if c.grade && !Number.isNaN(c.grade.number) && typeof c.grade.number === "number"}
+            <div class="relative mx-2 flex items-center text-xl">
+              {c.grade.number.toFixed(2)}: {c.grade.letter}
+              <div class="absolute bottom-0 h-1 w-full bg-slate-600" />
+            </div>
           {:else}
-            {#each c.teachers.slice(0, c.teachers.length - 1) as teacher}
-              {teacher.first}
-              {teacher.last}{#if c.teachers.length > 2},{/if}
-            {/each}
-            and
-            {c.teachers.at(-1)?.first}
-            {c.teachers.at(-1)?.last}
+            <div class="mx-2 text-slate-400">No grades available</div>
           {/if}
-        </div>
-        <div class="flex items-center gap-2 border-l-2 border-slate-600 pl-2">
-          Room: {#if c.room}
-            <div class="font-bold">{c.room}</div>
-          {:else}
-            <div class="text-slate-400">(no room)</div>{/if}
-        </div>
-        <div class="ml-auto"></div>
-        {#if c.grade && !Number.isNaN(c.grade.number) && typeof c.grade.number === "number"}
-          <div class="relative mx-2 flex items-center text-xl">
-            {c.grade.number.toFixed(2)}: {c.grade.letter}
-            <div class="absolute bottom-0 h-1 w-full bg-slate-600" />
-          </div>
-        {:else}
-          <div class="mx-2 text-slate-400">No grades available</div>
-        {/if}
-        <div class="flex items-center gap-3 text-slate-400">
-          <div class="flex gap-2">
-            <div class="font-bold">Absent:</div>
-            {c.attendance.absent}
-          </div>
-          <div class="flex gap-2">
-            <div class="font-bold">Tardy:</div>
-            {c.attendance.tardy}
-          </div>
-          <div class="flex gap-2">
-            <div class="font-bold">Dismissed:</div>
-            {c.attendance.dismissed}
+          <div class="flex items-center justify-center gap-3 text-slate-400">
+            <div class="flex gap-2">
+              <div class="font-bold">Absent:</div>
+              {c.attendance.absent}
+            </div>
+            <div class="flex gap-2">
+              <div class="font-bold">Tardy:</div>
+              {c.attendance.tardy}
+            </div>
+            <div class="flex gap-2">
+              <div class="font-bold">Dismissed:</div>
+              {c.attendance.dismissed}
+            </div>
           </div>
         </div>
-      </div>
-      <Collapsible open={c.expanded} key={c.data}>
-        <div class="pt-2"></div>
-        <div class="border-t-2 border-dashed border-slate-600"></div>
-        <div class="pt-2"></div>
+        <Collapsible open={c.expanded} key={c.data}>
+          <div class="pt-2"></div>
+          <div class="border-t-2 border-dashed border-slate-600"></div>
+          <div class="pt-2"></div>
 
-        {#if !c.data}
-          <div class="mt-3 space-y-3">
-            <Skeleton class="h-4 sm:w-80" />
-            <Skeleton class="h-4 sm:w-96" />
-            <Skeleton class="h-4 sm:w-60" />
-            <Skeleton class="h-4 sm:w-72" />
-          </div>
-        {:else}
-          <div class="flex gap-10 p-5">
-            <div class="flex-1">
-              {#if c.data.assignments.length > 0}
-                <div
-                  class="no-scroll flex flex-1 flex-col items-stretch overflow-auto border-2 border-slate-600"
-                  style="max-height: {c.height === -1 ? 400 : c.height}px"
-                >
-                  {#each c.data.assignments as assignment, idx}
-                    <div
-                      class="grid grid-cols-7 border-b-2 border-dashed border-slate-600 p-2"
-                      style={idx === c.data.assignments.length - 1 ? "border: none" : ""}
-                    >
+          {#if !c.data}
+            <div class="mt-3 space-y-3">
+              <Skeleton class="h-4 sm:w-80" />
+              <Skeleton class="h-4 sm:w-96" />
+              <Skeleton class="h-4 sm:w-60" />
+              <Skeleton class="h-4 sm:w-72" />
+            </div>
+          {:else}
+            <div class="flex gap-10 p-5">
+              <div class="flex-1">
+                {#if c.data.assignments.length > 0}
+                  <div
+                    class="no-scroll flex flex-1 flex-col items-stretch overflow-auto border-2 border-slate-600"
+                    style="max-height: {c.height === -1 ? 400 : c.height}px"
+                  >
+                    {#each c.data.assignments as assignment, idx}
                       <div
-                        class="col-span-3 row-span-2 flex items-center justify-center border-r-2 border-dashed border-r-slate-600 pr-2 text-center"
+                        class="grid grid-cols-7 border-b-2 border-dashed border-slate-600 p-2"
+                        style={idx === c.data.assignments.length - 1 ? "border: none" : ""}
                       >
-                        {assignment.name}
-                      </div>
-                      <div class="col-span-2 row-span-2 flex flex-col items-center text-right">
-                        <div>{assignment.due}</div>
-                        <div class="text-slate-400">
-                          Weight: <span class="font-bold"
-                            >{typeof assignment.weight === "undefined"
-                              ? 1
-                              : assignment.weight}</span
-                          >
-                        </div>
-                      </div>
-                      {#if assignment.score}
-                        <div class="col-span-2 flex items-center justify-end gap-1">
-                          <div class="font-bold">{assignment.score.scored}</div>
-                          <div>/</div>
-                          <div class="font-bold">{assignment.score.total}</div>
-                        </div>
                         <div
-                          class="relative col-span-2 border-2 border-dashed border-slate-600 text-transparent"
+                          class="col-span-3 row-span-2 flex items-center justify-center border-r-2 border-dashed border-r-slate-600 pr-2 text-center"
                         >
-                          .
-                          <div
-                            class="absolute left-0 top-0 h-full bg-green-400 bg-opacity-80"
-                            style="width: {assignment.score.percentage}%"
-                          ></div>
-                          <div
-                            class="absolute right-0 top-1/2 z-10 -translate-y-1/2 font-bold text-white"
-                          >
-                            {assignment.score.percentage}%
+                          {assignment.name}
+                        </div>
+                        <div class="col-span-2 row-span-2 flex flex-col items-center text-right">
+                          <div>{assignment.due}</div>
+                          <div class="text-slate-400">
+                            Weight: <span class="font-bold"
+                              >{typeof assignment.weight === "undefined"
+                                ? 1
+                                : assignment.weight}</span
+                            >
                           </div>
                         </div>
-                      {:else}
-                        <div
-                          class="col-span-2 row-span-2 flex items-center justify-center text-slate-400"
-                        >
-                          No score available
-                        </div>
-                      {/if}
+                        {#if assignment.score}
+                          <div class="col-span-2 flex items-center justify-end gap-1">
+                            <div class="font-bold">{assignment.score.scored}</div>
+                            <div>/</div>
+                            <div class="font-bold">{assignment.score.total}</div>
+                          </div>
+                          <div
+                            class="relative col-span-2 border-2 border-dashed border-slate-600 text-transparent"
+                          >
+                            .
+                            <div
+                              class="absolute left-0 top-0 h-full bg-green-400 bg-opacity-80"
+                              style="width: {assignment.score.percentage}%"
+                            ></div>
+                            <div
+                              class="absolute right-0 top-1/2 z-10 -translate-y-1/2 font-bold text-white"
+                            >
+                              {assignment.score.percentage}%
+                            </div>
+                          </div>
+                        {:else}
+                          <div
+                            class="col-span-2 row-span-2 flex items-center justify-center text-slate-400"
+                          >
+                            No score available
+                          </div>
+                        {/if}
+                      </div>
+                    {/each}
+                  </div>
+                {:else}
+                  <div class="flex flex-1 items-center justify-center py-5 text-slate-400">
+                    You don't have any assignemnts in this class yet...
+                  </div>
+                {/if}
+              </div>
+              {#if c.data.grades}
+                <div
+                  id="grades-{c.id}"
+                  class="relative mb-auto grid flex-1 border-2 border-slate-600 grid-cols-{c.data
+                    .grades.categories[0].terms.length *
+                    2 +
+                    3}"
+                >
+                  <div
+                    class="col-span-3 flex items-center justify-center border-b-2 border-dashed border-slate-600 p-2 text-center"
+                  >
+                    Category
+                  </div>
+                  {#each c.data.grades.categories[0].terms as _, idx}
+                    <div
+                      class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 p-2 text-center"
+                    >
+                      Term {idx + 1}
                     </div>
                   {/each}
-                </div>
-              {:else}
-                <div class="flex flex-1 items-center justify-center py-5 text-slate-400">
-                  You don't have any assignemnts in this class yet...
-                </div>
-              {/if}
-            </div>
-            {#if c.data.grades}
-              <div
-                id="grades-{c.id}"
-                class="relative mb-auto grid flex-1 border-2 border-slate-600 grid-cols-{c.data
-                  .grades.categories[0].terms.length *
-                  2 +
-                  3}"
-              >
-                <div
-                  class="col-span-3 flex items-center justify-center border-b-2 border-dashed border-slate-600 p-2 text-center"
-                >
-                  Category
-                </div>
-                {#each c.data.grades.categories[0].terms as _, idx}
+                  {#each c.data.grades.categories as grade}
+                    <div
+                      class="col-span-3 row-span-2 flex items-center justify-center overflow-hidden border-b-2 border-dashed border-slate-600 p-2 text-center"
+                      style="overflow-wrap: break-word; word-break: break-word"
+                    >
+                      {grade.name}
+                    </div>
+                    {#each grade.terms as term}
+                      <div
+                        class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 p-2 text-center"
+                      >
+                        {#if term.weight}
+                          {term.weight}%
+                        {:else}
+                          N/A
+                        {/if}
+                      </div>
+                    {/each}
+                    {#each grade.terms as term}
+                      <div
+                        class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-opacity-50 p-2 text-center"
+                        style={(!term.grade &&
+                          "background: repeating-linear-gradient(45deg, rgb(71 85 105 / var(--tw-bg-opacity)), rgb(71 85 105 / var(--tw-bg-opacity)) 2px, transparent 2px, transparent 10px); background-position: 0 0; background-size: 100% 100%;") ||
+                          ""}
+                      >
+                        {#if term.grade}
+                          {term.grade.number.toFixed(2)}
+                          <div class="ml-1">({term.grade.letter})</div>
+                        {:else}
+                          <div class="select-none text-transparent">.</div>
+                        {/if}
+                      </div>
+                    {/each}
+                  {/each}
                   <div
-                    class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 p-2 text-center"
-                  >
-                    Term {idx + 1}
-                  </div>
-                {/each}
-                {#each c.data.grades.categories as grade}
-                  <div
-                    class="col-span-3 row-span-2 flex items-center justify-center overflow-hidden border-b-2 border-dashed border-slate-600 p-2 text-center"
+                    class="col-span-3 flex items-center justify-center overflow-hidden border-b-2 border-dashed border-slate-600 p-2 text-center"
                     style="overflow-wrap: break-word; word-break: break-word"
                   >
-                    {grade.name}
+                    Quarterly average
                   </div>
-                  {#each grade.terms as term}
+                  {#each c.data.grades.averages as avg}
                     <div
                       class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 p-2 text-center"
-                    >
-                      {#if term.weight}
-                        {term.weight}%
-                      {:else}
-                        N/A
-                      {/if}
-                    </div>
-                  {/each}
-                  {#each grade.terms as term}
-                    <div
-                      class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-opacity-50 p-2 text-center"
-                      style={(!term.grade &&
-                        "background: repeating-linear-gradient(45deg, rgb(71 85 105 / var(--tw-bg-opacity)), rgb(71 85 105 / var(--tw-bg-opacity)) 2px, transparent 2px, transparent 10px); background-position: 0 0; background-size: 100% 100%;") ||
+                      style={(!avg &&
+                        "background: repeating-linear-gradient(45deg, rgb(100 116 139 / .5), rgb(100 116 139 / .5) 2px, #1e293b 2px, #1e293b 10px); background-position: 0 0; background-size: 100% 100%;") ||
                         ""}
                     >
-                      {#if term.grade}
-                        {term.grade.number.toFixed(2)}
-                        <div class="ml-1">({term.grade.letter})</div>
+                      {#if avg}
+                        {avg.number.toFixed(2)}
+                        <div class="ml-1">({avg.letter})</div>
                       {:else}
                         <div class="select-none text-transparent">.</div>
                       {/if}
                     </div>
                   {/each}
-                {/each}
-                <div
-                  class="col-span-3 flex items-center justify-center overflow-hidden border-b-2 border-dashed border-slate-600 p-2 text-center"
-                  style="overflow-wrap: break-word; word-break: break-word"
-                >
-                  Quarterly average
-                </div>
-                {#each c.data.grades.averages as avg}
                   <div
-                    class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 p-2 text-center"
-                    style={(!avg &&
-                      "background: repeating-linear-gradient(45deg, rgb(100 116 139 / .5), rgb(100 116 139 / .5) 2px, #1e293b 2px, #1e293b 10px); background-position: 0 0; background-size: 100% 100%;") ||
-                      ""}
+                    class="col-span-3 flex items-center justify-center overflow-hidden border-b-2 border-dashed border-slate-600 p-2 text-center"
+                    style="overflow-wrap: break-word; word-break: break-word"
                   >
-                    {#if avg}
-                      {avg.number.toFixed(2)}
-                      <div class="ml-1">({avg.letter})</div>
+                    Posted grade
+                  </div>
+                  {#each c.data.grades.posted as grade}
+                    <div
+                      class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 p-2 text-center {!grade &&
+                        'bg-opacity-50'}"
+                      style={(!grade &&
+                        "background: repeating-linear-gradient(45deg, rgb(71 85 105 / var(--tw-bg-opacity)), rgb(71 85 105 / var(--tw-bg-opacity)) 2px, transparent 2px, transparent 10px); background-position: 0 0; background-size: 100% 100%;") ||
+                        ""}
+                    >
+                      {#if grade}
+                        {grade.number.toFixed(2)}
+                        <div class="ml-1">({grade.letter})</div>
+                      {:else}
+                        <div class="select-none text-transparent">.</div>
+                      {/if}
+                    </div>
+                  {/each}
+                  <div
+                    class="col-span-3 flex items-center justify-center overflow-hidden border-b-2 border-dashed border-slate-600 p-2 text-center"
+                    style="overflow-wrap: break-word; word-break: break-word"
+                  >
+                    Final grade
+                  </div>
+                  <div
+                    class="relative flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 p-2 text-center"
+                    style="grid-column: span {c.data.grades.categories[0].terms.length *
+                      2} / span {c.data.grades.categories[0].terms.length * 2};"
+                  >
+                    {#if c.data.grades.final}
+                      {c.data.grades.final.number.toFixed(2)}
+                      <div class="ml-1">({c.data.grades.final.letter})</div>
                     {:else}
-                      <div class="select-none text-transparent">.</div>
+                      {calculateFinalGrade(c.data.grades).toFixed(2)}
+                      <Fa
+                        icon={faQuestionCircle}
+                        class="absolute right-2 top-1/2 -translate-y-1/2 cursor-help"
+                        title="This grade is calculated as an average of all terms. It may not accurately represent your final grade."
+                      />
                     {/if}
                   </div>
-                {/each}
-                <div
-                  class="col-span-3 flex items-center justify-center overflow-hidden border-b-2 border-dashed border-slate-600 p-2 text-center"
-                  style="overflow-wrap: break-word; word-break: break-word"
-                >
-                  Posted grade
                 </div>
-                {#each c.data.grades.posted as grade}
-                  <div
-                    class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 p-2 text-center {!grade &&
-                      'bg-opacity-50'}"
-                    style={(!grade &&
-                      "background: repeating-linear-gradient(45deg, rgb(71 85 105 / var(--tw-bg-opacity)), rgb(71 85 105 / var(--tw-bg-opacity)) 2px, transparent 2px, transparent 10px); background-position: 0 0; background-size: 100% 100%;") ||
-                      ""}
-                  >
-                    {#if grade}
-                      {grade.number.toFixed(2)}
-                      <div class="ml-1">({grade.letter})</div>
-                    {:else}
-                      <div class="select-none text-transparent">.</div>
-                    {/if}
-                  </div>
-                {/each}
-                <div
-                  class="col-span-3 flex items-center justify-center overflow-hidden border-b-2 border-dashed border-slate-600 p-2 text-center"
-                  style="overflow-wrap: break-word; word-break: break-word"
-                >
-                  Final grade
-                </div>
-                <div
-                  class="relative flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 p-2 text-center"
-                  style="grid-column: span {c.data.grades.categories[0].terms.length * 2} / span {c
-                    .data.grades.categories[0].terms.length * 2};"
-                >
-                  {#if c.data.grades.final}
-                    {c.data.grades.final.number.toFixed(2)}
-                    <div class="ml-1">({c.data.grades.final.letter})</div>
-                  {:else}
-                    {calculateFinalGrade(c.data.grades).toFixed(2)}
-                    <Fa
-                      icon={faQuestionCircle}
-                      class="absolute right-2 top-1/2 -translate-y-1/2 cursor-help"
-                      title="This grade is calculated as an average of all terms. It may not accurately represent your final grade."
-                    />
-                  {/if}
-                </div>
-              </div>
-            {:else}
-              <div class="flex flex-1 items-center justify-center py-5 text-slate-400">
-                This class doesn't appear to have any grades...
-              </div>{/if}
-          </div>
-        {/if}
-      </Collapsible>
-    </div>
-  {/each}
+              {:else}
+                <div class="flex flex-1 items-center justify-center py-5 text-slate-400">
+                  This class doesn't appear to have any grades...
+                </div>{/if}
+            </div>
+          {/if}
+        </Collapsible>
+      </div>
+    {/each}
+  </div>
 {/if}

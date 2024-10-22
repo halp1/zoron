@@ -17,7 +17,10 @@
 
   $: tabBarWidth = activeTabIndex === -1 ? 0 : tabRefs[activeTabIndex]?.offsetWidth || 0;
 
-  import { onNavigate } from "$app/navigation";
+  import { goto, onNavigate } from "$app/navigation";
+  import Fa from "svelte-fa";
+  import { faSignOut } from "@fortawesome/free-solid-svg-icons";
+  import { signOut } from "@auth/sveltekit/client";
 
   onNavigate((navigation) => {
     if (!document.startViewTransition) return;
@@ -33,19 +36,42 @@
 
 <main class="activity-container flex h-screen w-full flex-col items-center justify-center">
   <div
-    class="title relative mb-10 flex w-full items-center gap-4 bg-slate-800 px-3 py-2 text-3xl shadow-lg"
+    class="title relative mb-10 flex h-12 w-full items-center gap-4 bg-slate-800 px-3 shadow-lg"
     bind:this={tabContainer}
   >
+    <div class="flex w-60 items-center text-3xl">
+      <img src="/favicon.png" alt="Site Icon" class="h-8" />
+      <div class="ml-2 font-bold">A+</div>
+      <div>spen</div>
+    </div>
     <div class="ml-auto"></div>
     {#each tabs as tab, idx}
       <a
         href={tab.path}
-        class=""
+        class="text-xl"
         class:active={activeTabIndex === tabs.indexOf(tab)}
-        bind:this={tabRefs[idx]}>{tab.name}</a
+        bind:this={tabRefs[idx]}
       >
+        {tab.name}
+      </a>
     {/each}
     <div class="mr-auto"></div>
+    <div class="flex w-60 items-center justify-end gap-2">
+      <button
+        class="flex h-8 w-32 items-center justify-center gap-2 rounded-full border-2 border-blue-400 bg-white bg-opacity-0 transition-all hover:bg-opacity-10"
+        on:click={() => goto("/account")}
+      >
+        <Fa icon={faSignOut} />
+        My Account
+      </button>
+      <button
+        class="flex h-8 w-[100px] items-center justify-center gap-2 rounded-full border-2 border-blue-400 bg-white bg-opacity-0 transition-all hover:bg-opacity-10"
+        on:click={() => signOut({ callbackUrl: "/", redirect: true })}
+      >
+        <Fa icon={faSignOut} />
+        Log Out
+      </button>
+    </div>
     <div
       class="absolute bottom-1 h-[2px] rounded-full bg-white transition-all"
       style="width: {tabBarWidth}px; left: {(tabRefs[activeTabIndex]?.getBoundingClientRect()
