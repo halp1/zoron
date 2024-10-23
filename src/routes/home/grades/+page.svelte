@@ -8,6 +8,8 @@
   import { requests, toast } from "$lib/web";
   import { onMount } from "svelte";
 
+  import "./grades.css";
+
   interface Class extends aspen.Types.Class {
     expanded: boolean;
     data?: aspen.Types.ClassDetail;
@@ -79,76 +81,121 @@
 </svelte:head>
 
 {#if classes}
-  <div class="flex flex-wrap justify-center gap-5">
+  <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
     {#each classes as c}
-      <div id="c-{c.id}" class="w-96 border-2 border-slate-600 p-3">
-        <div>
-          <div class="flex items-center">
-            <button
-              on:click={async () => {
-                c.expanded = !c.expanded;
-                if (c.expanded && !c.data) {
-                  c.data = await loadClassData(c);
-                  c.height = -1;
-                  if (!c.data) c.expanded = false;
-                  const interval = setInterval(() => {
-                    if (document.querySelector(`#grades-${c.id}`)) {
-                      // @ts-expect-error offsetheight blah blah
-                      c.height = document.querySelector(`#grades-${c.id}`)?.offsetHeight || 400;
-                      clearInterval(interval);
+      <div
+        id="c-{c.id}"
+        class="{c.expanded && c.data
+          ? 'col-span-1 pt-1 md:col-span-2 lg:col-span-3 xl:col-span-4'
+          : ''} class mb-auto border-2 border-slate-600 p-3"
+				style="view-transition-name: class-{c.id}"
+      >
+        <div class={(c.expanded && c.data && "flex items-end") || ""}>
+          <div>
+            <div class="flex items-center">
+              <button
+                on:click={async () => {
+                  if (!c.expanded) {
+                    if (!c.data) {
+                      c.expanded = true;
+                      const data = await loadClassData(c);
+                      document.startViewTransition(
+                        () =>
+                          new Promise((r) => {
+                            c.data = data;
+                            c.height = -1;
+                            if (!c.data) c.expanded = false;
+                            const interval = setInterval(() => {
+                              if (document.querySelector(`#grades-${c.id}`)) {
+                                c.height =
+                                  // @ts-expect-error offsetheight blah blah
+                                  document.querySelector(`#grades-${c.id}`)?.offsetHeight || 400;
+                                clearInterval(interval);
+                                // @ts-expect-error didn't put void
+                                r();
+                              }
+                            }, 10);
+                          })
+                      );
+                    } else {
+                      document.startViewTransition(() => {
+                        c.expanded = true;
+                        return new Promise((r) => setTimeout(r, 130));
+                      });
                     }
-                  }, 10);
-                }
-              }}
-              class="btn-circle"
-              ><Fa
-                icon={faChevronRight}
-                class="transition-all {c.expanded ? 'rotate-90' : 'rotate-0'}"
-              />
-            </button>
-            <div class="text-2xl">{c.name}</div>
-          </div>
-          <div class="border-r-2 border-slate-600 pr-2 text-sm text-slate-400">{c.course}</div>
-          <div class="">
-            {#if c.teachers.length === 1}
-              {c.teachers[0].first} {c.teachers[0].last}
-            {:else}
-              {#each c.teachers.slice(0, c.teachers.length - 1) as teacher}
-                {teacher.first}
-                {teacher.last}{#if c.teachers.length > 2},{/if}
-              {/each}
-              and
-              {c.teachers.at(-1)?.first}
-              {c.teachers.at(-1)?.last}
-            {/if}
-          </div>
-          <div class="flex items-center gap-2 border-l-2 border-slate-600 pl-2">
-            Room: {#if c.room}
-              <div class="font-bold">{c.room}</div>
-            {:else}
-              <div class="text-slate-400">(no room)</div>{/if}
-          </div>
-          <div class="ml-auto"></div>
-          {#if c.grade && !Number.isNaN(c.grade.number) && typeof c.grade.number === "number"}
-            <div class="relative mx-2 flex items-center text-xl">
-              {c.grade.number.toFixed(2)}: {c.grade.letter}
-              <div class="absolute bottom-0 h-1 w-full bg-slate-600" />
+                  } else {
+                    document.startViewTransition(() => {
+                      c.expanded = false;
+                      return new Promise((r) => setTimeout(r, 130));
+                    });
+                  }
+                }}
+                class="btn-circle"
+                ><Fa
+                  icon={faChevronRight}
+                  class="transition-all {c.expanded ? 'rotate-90' : 'rotate-0'}"
+                />
+              </button>
+              <div class="text-xl">{c.name}</div>
             </div>
-          {:else}
-            <div class="mx-2 text-slate-400">No grades available</div>
-          {/if}
-          <div class="flex items-center justify-center gap-3 text-slate-400">
-            <div class="flex gap-2">
-              <div class="font-bold">Absent:</div>
-              {c.attendance.absent}
+            <div class="flex items-center">
+              <div class="mr-2 border-r-2 border-slate-600 pr-2 text-sm text-slate-400">
+                {c.course}
+              </div>
+              <div class="">
+                {#if c.teachers.length === 1}
+                  {c.teachers[0].first} {c.teachers[0].last}
+                {:else}
+                  {#each c.teachers.slice(0, c.teachers.length - 1) as teacher}
+                    {teacher.first}
+                    {teacher.last}{#if c.teachers.length > 2},{/if}
+                  {/each}
+                  and
+                  {c.teachers.at(-1)?.first}
+                  {c.teachers.at(-1)?.last}
+                {/if}
+              </div>
             </div>
-            <div class="flex gap-2">
-              <div class="font-bold">Tardy:</div>
-              {c.attendance.tardy}
+          </div>
+          <div class="ml-auto flex {c.expanded && c.data ? 'items-center gap-4' : 'gap-0'}">
+            <div
+              class="flex justify-end border-slate-600 {c.expanded && c.data
+                ? 'flex-row gap-5 border-l-0'
+                : 'mt-auto flex-col border-l-2'}"
+            >
+              <div class="flex items-center gap-2 pl-2">
+                Room: {#if c.room}
+                  <div class="font-bold">{c.room}</div>
+                {:else}
+                  <div class="text-slate-400">(no room)</div>{/if}
+              </div>
+              {#if c.grade && !Number.isNaN(c.grade.number) && typeof c.grade.number === "number"}
+                <div class="relative mx-2 mr-auto flex items-center text-xl">
+                  {c.grade.number.toFixed(2)}: {c.grade.letter}
+                  <div class="absolute bottom-0 h-[3px] w-full bg-slate-600" />
+                </div>
+              {:else}
+                <div class="mx-2 text-slate-400">No grades available</div>
+              {/if}
             </div>
-            <div class="flex gap-2">
-              <div class="font-bold">Dismissed:</div>
-              {c.attendance.dismissed}
+            <div
+              class="-mb-1 ml-auto flex flex-col items-end justify-center border-dashed border-slate-600 text-slate-400 {c.expanded &&
+              c.data
+                ? 'border-l-2 pl-2'
+                : 'border-l-0 pl-0'}"
+            >
+              <div class="flex gap-2">
+                <div class="font-bold">Absent:</div>
+                {c.attendance.absent}
+              </div>
+              <div class="-mt-1 flex gap-2">
+                <div class="font-bold">Tardy:</div>
+                {c.attendance.tardy}
+              </div>
+              <div class="-mt-1 flex gap-2">
+                <div class="font-bold">Dismissed:</div>
+                {c.attendance.dismissed}
+              </div>
             </div>
           </div>
         </div>
@@ -169,7 +216,7 @@
               <div class="flex-1">
                 {#if c.data.assignments.length > 0}
                   <div
-                    class="no-scroll flex flex-1 flex-col items-stretch overflow-auto border-2 border-slate-600"
+                    class="custom-scroll flex flex-1 flex-col items-stretch overflow-auto border-2 border-slate-600"
                     style="max-height: {c.height === -1 ? 400 : c.height}px"
                   >
                     {#each c.data.assignments as assignment, idx}
@@ -182,8 +229,11 @@
                         >
                           {assignment.name}
                         </div>
-                        <div class="col-span-2 row-span-2 flex flex-col items-center text-right">
+                        <div
+                          class="col-span-2 row-span-2 flex flex-col items-center justify-center text-right"
+                        >
                           <div>{assignment.due}</div>
+                          <!-- {#if "weight" in assignment && assignment.weight !== undefined} -->
                           <div class="text-slate-400">
                             Weight: <span class="font-bold"
                               >{typeof assignment.weight === "undefined"
@@ -191,6 +241,7 @@
                                 : assignment.weight}</span
                             >
                           </div>
+                          <!-- {/if} -->
                         </div>
                         {#if assignment.score}
                           <div class="col-span-2 flex items-center justify-end gap-1">
@@ -237,27 +288,27 @@
                     3}"
                 >
                   <div
-                    class="col-span-3 flex items-center justify-center border-b-2 border-dashed border-slate-600 p-2 text-center"
+                    class="col-span-3 flex items-center justify-center border-b-2 border-dashed border-slate-600 px-2 py-1 text-center"
                   >
                     Category
                   </div>
                   {#each c.data.grades.categories[0].terms as _, idx}
                     <div
-                      class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 p-2 text-center"
+                      class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 px-2 py-1 text-center"
                     >
                       Term {idx + 1}
                     </div>
                   {/each}
                   {#each c.data.grades.categories as grade}
                     <div
-                      class="col-span-3 row-span-2 flex items-center justify-center overflow-hidden border-b-2 border-dashed border-slate-600 p-2 text-center"
+                      class="col-span-3 row-span-2 flex items-center justify-center overflow-hidden border-b-2 border-dashed border-slate-600 px-2 py-1 text-center capitalize"
                       style="overflow-wrap: break-word; word-break: break-word"
                     >
                       {grade.name}
                     </div>
                     {#each grade.terms as term}
                       <div
-                        class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 p-2 text-center"
+                        class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 px-2 py-1 text-center"
                       >
                         {#if term.weight}
                           {term.weight}%
@@ -268,7 +319,7 @@
                     {/each}
                     {#each grade.terms as term}
                       <div
-                        class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-opacity-50 p-2 text-center"
+                        class="col-span-2 flex flex-wrap justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-opacity-50 px-2 py-1 text-center text-sm xl:text-base"
                         style={(!term.grade &&
                           "background: repeating-linear-gradient(45deg, rgb(71 85 105 / var(--tw-bg-opacity)), rgb(71 85 105 / var(--tw-bg-opacity)) 2px, transparent 2px, transparent 10px); background-position: 0 0; background-size: 100% 100%;") ||
                           ""}
@@ -283,14 +334,14 @@
                     {/each}
                   {/each}
                   <div
-                    class="col-span-3 flex items-center justify-center overflow-hidden border-b-2 border-dashed border-slate-600 p-2 text-center"
+                    class="col-span-3 flex items-center justify-center overflow-hidden border-b-2 border-dashed border-slate-600 px-2 py-1 text-center"
                     style="overflow-wrap: break-word; word-break: break-word"
                   >
                     Quarterly average
                   </div>
                   {#each c.data.grades.averages as avg}
                     <div
-                      class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 p-2 text-center"
+                      class="col-span-2 flex flex-wrap justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 px-2 py-1 text-center text-sm xl:text-base"
                       style={(!avg &&
                         "background: repeating-linear-gradient(45deg, rgb(100 116 139 / .5), rgb(100 116 139 / .5) 2px, #1e293b 2px, #1e293b 10px); background-position: 0 0; background-size: 100% 100%;") ||
                         ""}
@@ -304,14 +355,14 @@
                     </div>
                   {/each}
                   <div
-                    class="col-span-3 flex items-center justify-center overflow-hidden border-b-2 border-dashed border-slate-600 p-2 text-center"
+                    class="col-span-3 flex items-center justify-center overflow-hidden border-b-2 border-dashed border-slate-600 px-2 py-1 text-center"
                     style="overflow-wrap: break-word; word-break: break-word"
                   >
                     Posted grade
                   </div>
                   {#each c.data.grades.posted as grade}
                     <div
-                      class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 p-2 text-center {!grade &&
+                      class="col-span-2 flex flex-wrap justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 px-2 py-1 text-center text-sm xl:text-base {!grade &&
                         'bg-opacity-50'}"
                       style={(!grade &&
                         "background: repeating-linear-gradient(45deg, rgb(71 85 105 / var(--tw-bg-opacity)), rgb(71 85 105 / var(--tw-bg-opacity)) 2px, transparent 2px, transparent 10px); background-position: 0 0; background-size: 100% 100%;") ||
@@ -326,13 +377,13 @@
                     </div>
                   {/each}
                   <div
-                    class="col-span-3 flex items-center justify-center overflow-hidden border-b-2 border-dashed border-slate-600 p-2 text-center"
+                    class="col-span-3 flex items-center justify-center overflow-hidden border-b-2 border-dashed border-slate-600 px-2 py-1 text-center"
                     style="overflow-wrap: break-word; word-break: break-word"
                   >
                     Final grade
                   </div>
                   <div
-                    class="relative flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 p-2 text-center"
+                    class="relative flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 px-2 py-1 text-center"
                     style="grid-column: span {c.data.grades.categories[0].terms.length *
                       2} / span {c.data.grades.categories[0].terms.length * 2};"
                   >

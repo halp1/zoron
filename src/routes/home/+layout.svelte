@@ -1,5 +1,9 @@
 <script lang="ts">
   import { page } from "$app/stores";
+  import { goto, onNavigate } from "$app/navigation";
+  import Fa from "svelte-fa";
+  import { faSignOut, faUser } from "@fortawesome/free-solid-svg-icons";
+  import { signOut } from "@auth/sveltekit/client";
 
   const tabs = [
     { name: "Home", path: "/home" },
@@ -16,11 +20,6 @@
   let tabRefs: HTMLAnchorElement[] = [];
 
   $: tabBarWidth = activeTabIndex === -1 ? 0 : tabRefs[activeTabIndex]?.offsetWidth || 0;
-
-  import { goto, onNavigate } from "$app/navigation";
-  import Fa from "svelte-fa";
-  import { faSignOut } from "@fortawesome/free-solid-svg-icons";
-  import { signOut } from "@auth/sveltekit/client";
 
   onNavigate((navigation) => {
     if (!document.startViewTransition) return;
@@ -61,7 +60,7 @@
         class="flex h-8 w-32 items-center justify-center gap-2 rounded-full border-2 border-blue-400 bg-white bg-opacity-0 transition-all hover:bg-opacity-10"
         on:click={() => goto("/account")}
       >
-        <Fa icon={faSignOut} />
+        <Fa icon={faUser} />
         My Account
       </button>
       <button
@@ -87,36 +86,4 @@
 </main>
 
 <style>
-  .view {
-    view-transition-name: slide-in-out;
-  }
-
-  @keyframes slide-in {
-    0% {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    100% {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-
-  @keyframes slide-out {
-    0% {
-      transform: translateX(0);
-      opacity: 1;
-    }
-    100% {
-      transform: translateX(-100%);
-      opacity: 0;
-    }
-  }
-
-  ::view-transition-new(slide-in-out) {
-    animation: slide-in 0.3s ease-out;
-  }
-  ::view-transition-old(slide-in-out) {
-    animation: slide-out 0.3s ease-out;
-  }
 </style>

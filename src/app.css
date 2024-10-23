@@ -23,6 +23,19 @@
   .btn-outlined {
     @apply border-2 border-blue-400 bg-white bg-opacity-0 transition-all hover:bg-opacity-5 disabled:cursor-not-allowed disabled:border-slate-400;
   }
+
+  .custom-scroll::-webkit-scrollbar {
+    @apply w-2;
+  }
+  /* Style the track */
+  .custom-scroll::-webkit-scrollbar-track {
+    @apply bg-slate-800;
+  }
+
+  /* Style the scrollbar thumb */
+  .custom-scroll::-webkit-scrollbar-thumb {
+    @apply rounded-l-full bg-slate-400 hover:bg-slate-500;
+  }
 }
 
 .suse {
@@ -38,4 +51,39 @@
 .no-scroll {
   scrollbar-width: none;
   -ms-overflow-style: none;
+}
+
+*,
+::before,
+::after {
+  transition: all 0.2s ease-in-out;
+}
+
+@keyframes slide-in {
+  0% {
+    transform: translateX(30%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-out {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-30%);
+    opacity: 0;
+  }
+}
+
+::view-transition-new(slide-in-out) {
+  animation: slide-in 0.3s ease-out;
+}
+::view-transition-old(slide-in-out) {
+  animation: slide-out 0.3s ease-out;
 }
