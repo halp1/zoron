@@ -5,6 +5,8 @@
   import { faSignOut, faUser } from "@fortawesome/free-solid-svg-icons";
   import { signOut } from "@auth/sveltekit/client";
 
+  import "./home.css";
+
   const tabs = [
     { name: "Home", path: "/home" },
     { name: "Schedule", path: "/home/schedule" },
@@ -21,7 +23,21 @@
 
   $: tabBarWidth = activeTabIndex === -1 ? 0 : tabRefs[activeTabIndex]?.offsetWidth || 0;
 
+  let animationDirection: "left" | "right" = "left";
+
   onNavigate((navigation) => {
+    const from = tabs.indexOf(
+      [...tabs].reverse().find((tab) => navigation.from?.url.pathname.includes(tab.path))!
+    );
+    const to = tabs.indexOf(
+      [...tabs].reverse().find((tab) => navigation.to?.url.pathname.includes(tab.path))!
+    );
+
+    if (from !== -1 && to !== -1) {
+      if (from < to) animationDirection = "right";
+      else animationDirection = "left";
+    }
+
     if (!document.startViewTransition) return;
 
     return new Promise((resolve) => {
@@ -34,8 +50,10 @@
 </script>
 
 <main class="activity-container flex h-screen w-full flex-col items-center justify-center">
+  <div class="h-12"></div>
   <div
-    class="title relative mb-10 flex h-12 w-full items-center gap-4 bg-slate-800 px-3 shadow-lg"
+    class="fixed left-0 top-0 z-10 flex h-12 w-full items-center gap-4 bg-slate-800 px-3 shadow-2xl"
+    style="view-transition-name: header;"
     bind:this={tabContainer}
   >
     <div class="flex w-60 items-center text-3xl">
@@ -79,11 +97,20 @@
   </div>
 
   {#key $page.url}
-    <div class="view no-scroll flex w-full flex-1 flex-col gap-2 overflow-auto px-10 pb-10">
+    <div
+      class="view-anim-{animationDirection} no-scroll flex w-full flex-1 flex-col gap-2 overflow-auto p-10"
+    >
       <slot />
     </div>
   {/key}
 </main>
 
 <style>
+  .view-anim-left {
+    view-transition-name: slide-in-out-left;
+  }
+
+  .view-anim-right {
+    view-transition-name: slide-in-out-right;
+  }
 </style>

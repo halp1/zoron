@@ -8,8 +8,6 @@
   import { requests, toast } from "$lib/web";
   import { onMount } from "svelte";
 
-  import "./grades.css";
-
   interface Class extends aspen.Types.Class {
     expanded: boolean;
     data?: aspen.Types.ClassDetail;
@@ -62,6 +60,24 @@
     })();
   });
 
+  let loaded = false;
+
+  onMount(() => {
+    const items = classes?.map((c) => `class-${c.id}`);
+
+    const style = document.createElement("style");
+    style.innerHTML = `${items?.map((item) => `::view-transition-group(${item})`).join(", ")} {
+      animation-timing-function: ease-in;
+      animation-duration: 0.3s;
+    }
+    ::view-transition-image-pair(*) {
+      isolation: auto;
+    }`;
+    document.head.appendChild(style);
+    setTimeout(() => loaded = true, 100)
+    return () => style.remove();
+  });
+
   const calculateFinalGrade = (grades: aspen.Types.ClassDetail["grades"]) => {
     const grade = grades!;
     const terms: number[] = [];
@@ -87,8 +103,8 @@
         id="c-{c.id}"
         class="{c.expanded && c.data
           ? 'col-span-1 pt-1 md:col-span-2 lg:col-span-3 xl:col-span-4'
-          : ''} class mb-auto border-2 border-slate-600 p-3"
-				style="view-transition-name: class-{c.id}"
+          : ''} mb-auto border-2 border-slate-600 p-3"
+        style={loaded ? `view-transition-name: class-${c.id}` : ""}
       >
         <div class={(c.expanded && c.data && "flex items-end") || ""}>
           <div>
@@ -207,9 +223,9 @@
           {#if !c.data}
             <div class="mt-3 space-y-3">
               <Skeleton class="h-4 sm:w-80" />
-              <Skeleton class="h-4 sm:w-96" />
               <Skeleton class="h-4 sm:w-60" />
               <Skeleton class="h-4 sm:w-72" />
+              <Skeleton class="h-4 sm:w-80" />
             </div>
           {:else}
             <div class="flex gap-10 p-5">
