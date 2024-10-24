@@ -2,16 +2,34 @@
   import { page } from "$app/stores";
   import { goto, onNavigate } from "$app/navigation";
   import Fa from "svelte-fa";
-  import { faSignOut, faUser } from "@fortawesome/free-solid-svg-icons";
+  import {
+    faSignOut,
+    faUser,
+    type IconDefinition,
+    faHome,
+    faCalendar,
+    faChartLine,
+    faList
+  } from "@fortawesome/free-solid-svg-icons";
   import { signOut } from "@auth/sveltekit/client";
 
   import "./home.css";
+    import { onMount } from "svelte";
+    import { PWA } from "$lib/web";
 
-  const tabs = [
-    { name: "Home", path: "/home" },
-    { name: "Schedule", path: "/home/schedule" },
-    { name: "Grades", path: "/home/grades" },
-    { name: "Activity", path: "/home/activity" }
+  interface Tab {
+    name: string;
+    path: string;
+    icon: IconDefinition;
+    mobileOnly?: boolean;
+  }
+
+  const tabs: Tab[] = [
+    { name: "Home", path: "/home", icon: faHome },
+    { name: "Schedule", path: "/home/schedule", icon: faCalendar },
+    { name: "Grades", path: "/home/grades", icon: faChartLine },
+    { name: "Activity", path: "/home/activity", icon: faList },
+    { name: "Account", path: "/account", icon: faUser, mobileOnly: true }
   ];
 
   $: activeTabIndex = tabs.indexOf(
@@ -47,53 +65,69 @@
       });
     });
   });
+
+	onMount(() => {
+		const listener = () => {
+			// use matchMedia to check if the user is a small screen <600 width
+			if (window.matchMedia("(max-width: 600px)").matches) {
+				// if the user is on a small screen, request fullscreen
+				document.body.requestFullscreen();
+			}
+		};
+
+		document.addEventListener('touchstart', listener);
+		return () => document.removeEventListener('touchstart', listener);
+	});
+	const prompt = PWA.prompt;
 </script>
 
-<main class="activity-container flex h-screen w-full flex-col items-center justify-center">
-  <div class="h-12"></div>
-  <div
-    class="fixed left-0 top-0 z-10 flex h-12 w-full items-center gap-4 bg-slate-800 px-3 shadow-2xl"
-    style="view-transition-name: header;"
-    bind:this={tabContainer}
-  >
-    <div class="flex w-60 items-center text-3xl">
-      <img src="/favicon.png" alt="Site Icon" class="h-8" />
-      <div class="ml-2 font-bold">A+</div>
-      <div>spen</div>
-    </div>
-    <div class="ml-auto"></div>
-    {#each tabs as tab, idx}
-      <a
-        href={tab.path}
-        class="text-xl"
-        class:active={activeTabIndex === tabs.indexOf(tab)}
-        bind:this={tabRefs[idx]}
-      >
-        {tab.name}
-      </a>
-    {/each}
-    <div class="mr-auto"></div>
-    <div class="flex w-60 items-center justify-end gap-2">
-      <button
-        class="flex h-8 w-32 items-center justify-center gap-2 rounded-full border-2 border-blue-400 bg-white bg-opacity-0 transition-all hover:bg-opacity-10"
-        on:click={() => goto("/account")}
-      >
-        <Fa icon={faUser} />
-        My Account
-      </button>
-      <button
-        class="flex h-8 w-[100px] items-center justify-center gap-2 rounded-full border-2 border-blue-400 bg-white bg-opacity-0 transition-all hover:bg-opacity-10"
-        on:click={() => signOut({ callbackUrl: "/", redirect: true })}
-      >
-        <Fa icon={faSignOut} />
-        Log Out
-      </button>
-    </div>
+<main class="activity-container flex h-screen w-full flex-col items-center justify-center bg-slate-900">
+  <div class="hidden md:block">
+    <div class="h-12"></div>
     <div
-      class="absolute bottom-1 h-[2px] rounded-full bg-white transition-all"
-      style="width: {tabBarWidth}px; left: {(tabRefs[activeTabIndex]?.getBoundingClientRect()
-        .left || 0) - (tabContainer?.getBoundingClientRect().left || 0)}px"
-    ></div>
+      class="fixed left-0 top-0 z-10 flex h-12 w-full items-center gap-4 bg-slate-800 px-3 shadow-2xl"
+      style="view-transition-name: header;"
+      bind:this={tabContainer}
+    >
+      <div class="flex w-60 items-center text-3xl">
+        <img src="/favicon.png" alt="Site Icon" class="h-8" />
+        <div class="ml-2 font-bold">A+</div>
+        <div>spen</div>
+      </div>
+      <div class="ml-auto"></div>
+      {#each tabs.filter((tab) => !tab.mobileOnly) as tab, idx}
+        <a
+          href={tab.path}
+          class="text-xl"
+          class:active={activeTabIndex === tabs.indexOf(tab)}
+          bind:this={tabRefs[idx]}
+        >
+          {tab.name}
+        </a>
+      {/each}
+      <div class="mr-auto"></div>
+      <div class="flex w-60 items-center justify-end gap-2">
+        <button
+          class="flex h-8 w-32 items-center justify-center gap-2 rounded-full border-2 border-blue-400 bg-white bg-opacity-0 transition-all hover:bg-opacity-10"
+          on:click={() => goto("/account")}
+        >
+          <Fa icon={faUser} />
+          My Account
+        </button>
+        <button
+          class="flex h-8 w-[100px] items-center justify-center gap-2 rounded-full border-2 border-blue-400 bg-white bg-opacity-0 transition-all hover:bg-opacity-10"
+          on:click={() => signOut({ callbackUrl: "/", redirect: true })}
+        >
+          <Fa icon={faSignOut} />
+          Log Out
+        </button>
+      </div>
+      <div
+        class="absolute bottom-1 h-[2px] rounded-full bg-white transition-all"
+        style="width: {tabBarWidth}px; left: {(tabRefs[activeTabIndex]?.getBoundingClientRect()
+          .left || 0) - (tabContainer?.getBoundingClientRect().left || 0)}px"
+      ></div>
+    </div>
   </div>
 
   {#key $page.url}
@@ -103,6 +137,23 @@
       <slot />
     </div>
   {/key}
+  <div class="flex h-20 w-full items-center justify-evenly bg-slate-800 shadow-xl md:hidden">
+    {#each tabs as tab}
+      <a href={tab.path} class="flex w-20 flex-col items-center justify-center">
+        <div class="rounded-full bg-white bg-opacity-10 p-3">
+          <Fa icon={tab.icon} size="lg" />
+        </div>
+        <div class="text-center">{tab.name}</div>
+      </a>
+    {/each}
+  </div>
+	<!-- PWA popup -->
+	<div class="fixed top-0 left-0 right-0 bottom-0 {$prompt ? "flex" : "hidden"} items-center justify-center backdrop-blur-md">
+		<div class="p-10 rounded-md bg-slate-800">
+			install pwa?
+
+		</div>
+	</div>
 </main>
 
 <style>

@@ -32,7 +32,7 @@
   <title>Login | A+spen</title>
 </svelte:head>
 
-<main class="flex h-screen w-screen flex-col items-center justify-center">
+<main class="flex h-screen w-screen flex-col items-center justify-center px-5">
   {#if user}
     <div class="flex flex-col items-center justify-center gap-3 text-3xl">
       You are already logged in as {user.email}.
@@ -41,7 +41,7 @@
     <a href="/auth/signout" class="text-xl underline">Log out</a>
   {:else}
     <img src="/favicon.png" alt="Site icon" class="mb-3 w-32" />
-    <h1 class="mb-10 text-4xl">Log in/Register to A+spen</h1>
+    <h1 class="mb-10 text-center text-4xl">Log in/Register to A+spen</h1>
     <form on:submit={handleSubmission} class="flex w-96 flex-col gap-2">
       <input
         class="w-full rounded-lg border-2 border-dashed border-blue-400 bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
