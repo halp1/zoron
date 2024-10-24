@@ -25,7 +25,7 @@ export namespace requests {
 
   export const post = async <T = {}>(
     uri: string,
-    data: Record<string, any>
+    data: Record<string, any> = {}
   ): Promise<{ success: true; data: T } | { success: false; error: string }> => {
     try {
       const res = await request("POST", uri, {

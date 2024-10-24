@@ -92,6 +92,9 @@ export namespace aspen {
       export const authenticate = 5;
       export const classDetail = 4;
       export const assignment = 6;
+      export namespace schedule {
+        export const pdf = 1;
+      }
     }
   }
 
@@ -971,4 +974,78 @@ export namespace aspen {
       total: maxPoints
     };
   };
+
+  export namespace schedule {
+    export const pdf = async (cookie: string, onProgress?: Types.ProgressCallback) => {
+      const tick = progressTicker(constants.steps.schedule.pdf, onProgress);
+      const toolRes = await fetch(
+        `https://ma-lexington.myfollett.com/aspen/runTool.do?maximized=false&oid=RPT0000010rMZR&toolClass=com.follett.fsc.core.k12.beans.Report&deploymentId=ma-lexington`,
+        {
+          headers: {
+            accept:
+              "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+            "cache-control": "no-cache",
+            pragma: "no-cache",
+            "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"Windows"',
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "same-origin",
+            "sec-fetch-user": "?1",
+            "upgrade-insecure-requests": "1",
+            cookie,
+            Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
+            "Referrer-Policy": "strict-origin-when-cross-origin"
+          },
+          body: null,
+          method: "GET"
+        }
+      );
+
+      if (toolRes.status !== 200) {
+        throw new Error(`Failed to get tool page: ${toolRes.status} (${toolRes.statusText})`);
+      }
+
+      tick();
+
+      const { window: toolWindow } = new JSDOM(await toolRes.text());
+      const { document: toolDoc } = toolWindow;
+
+      const toolForm = new toolWindow.FormData(toolDoc.forms["toolInputForm" as any]);
+      toolForm.set("formatStr", "0");
+      toolForm.set("userEVent", "960");
+
+      const body = new toolWindow.URLSearchParams(toolForm as any).toString();
+
+      const res = await fetch(`https://ma-lexington.myfollett.com/aspen/runTool.do`, {
+        headers: {
+          accept: "*/*",
+          "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+          "cache-control": "no-cache",
+          "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+          pragma: "no-cache",
+          "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+          "sec-ch-ua-mobile": "?0",
+          "sec-ch-ua-platform": '"Windows"',
+          "sec-fetch-dest": "empty",
+          "sec-fetch-mode": "cors",
+          "sec-fetch-site": "same-origin",
+          "x-requested-with": "XMLHttpRequest",
+          cookie,
+          Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
+          "Referrer-Policy": "strict-origin-when-cross-origin"
+        },
+        body,
+        method: "POST"
+      });
+
+      if (res.status !== 200) {
+        throw new Error(`Failed to run schedule job: ${res.status} (${res.status})`);
+      }
+
+      return await res.text();
+    };
+  }
 }
