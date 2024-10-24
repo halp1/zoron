@@ -14,8 +14,8 @@
   import { signOut } from "@auth/sveltekit/client";
 
   import "./home.css";
-    import { onMount } from "svelte";
-    import { PWA } from "$lib/web";
+  import { onMount } from "svelte";
+  import { PWA } from "$lib/web";
 
   interface Tab {
     name: string;
@@ -66,22 +66,24 @@
     });
   });
 
-	onMount(() => {
-		const listener = () => {
-			// use matchMedia to check if the user is a small screen <600 width
-			if (window.matchMedia("(max-width: 600px)").matches) {
-				// if the user is on a small screen, request fullscreen
-				document.body.requestFullscreen();
-			}
-		};
+  onMount(() => {
+    const listener = () => {
+      // use matchMedia to check if the user is a small screen <600 width
+      if (window.matchMedia("(max-width: 600px)").matches) {
+        // if the user is on a small screen, request fullscreen
+        document.body.requestFullscreen();
+      }
+    };
 
-		document.addEventListener('touchstart', listener);
-		return () => document.removeEventListener('touchstart', listener);
-	});
-	const prompt = PWA.prompt;
+    document.addEventListener("touchstart", listener);
+    return () => document.removeEventListener("touchstart", listener);
+  });
+  const prompt = PWA.prompt;
 </script>
 
-<main class="activity-container flex h-screen w-full flex-col items-center justify-center bg-slate-900">
+<main
+  class="activity-container flex h-screen w-full flex-col items-center justify-center bg-slate-900"
+>
   <div class="hidden md:block">
     <div class="h-12"></div>
     <div
@@ -147,13 +149,38 @@
       </a>
     {/each}
   </div>
-	<!-- PWA popup -->
-	<div class="fixed top-0 left-0 right-0 bottom-0 {$prompt ? "flex" : "hidden"} items-center justify-center backdrop-blur-md">
-		<div class="p-10 rounded-md bg-slate-800">
-			install pwa?
-
-		</div>
-	</div>
+  <!-- PWA popup -->
+  <div
+    class="fixed bottom-0 left-0 right-0 top-0 {$prompt
+      ? 'flex'
+      : 'hidden'} items-center justify-center backdrop-blur-md"
+  >
+    <div class="flex flex-col items-center justify-center rounded-md bg-slate-800 p-10">
+      <div class="mb-5 text-xl">Install A+spen?</div>
+      <div class="text-center">
+        You appear to be on a mobile device.
+        <br />
+        A+spen works better when installed as an app.
+      </div>
+      <div class="mt-3 flex items-center justify-center gap-3">
+        <button
+          class="btn-full btn-outlined border-green-400 text-base"
+          on:click={() => {
+            $prompt?.prompt();
+            PWA.hidePrompt();
+          }}
+        >
+          Install
+        </button>
+        <button
+          class="btn-full btn-outlined border-blue-400 text-base"
+          on:click={() => PWA.hidePrompt()}
+        >
+          No thanks
+        </button>
+      </div>
+    </div>
+  </div>
 </main>
 
 <style>
