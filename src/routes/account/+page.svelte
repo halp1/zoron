@@ -151,7 +151,7 @@
                   deleting = -1;
                   // @ts-expect-error
                   clearInterval(deleteInterval);
-                  toast.loading("Deleting account...");
+                  const {dismiss} = toast.loading("Deleting account...");
                   const res = await requests.del("/api/account/delete");
                   if (res.success) {
                     toast.success("Account deleted.");
@@ -159,6 +159,7 @@
                   } else {
                     toast.error("An error occurred while deleting your account: " + res.error);
                   }
+									dismiss();
                 }
               }, 1000 / 120);
             }}

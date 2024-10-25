@@ -32,9 +32,9 @@
     { name: "Account", path: "/account", icon: faUser, mobileOnly: true }
   ];
 
-  $: activeTabIndex = tabs.indexOf(
-    [...tabs].reverse().find((tab) => $page.url.pathname.includes(tab.path))!
-  );
+  $: activeTabIndex = $page.url?.pathname
+    ? tabs.indexOf([...tabs].reverse().find((tab) => $page.url.pathname.includes(tab.path))!)
+    : 0;
 
   let tabContainer: HTMLDivElement | null = null;
   let tabRefs: HTMLAnchorElement[] = [];
@@ -153,7 +153,7 @@
   <div
     class="fixed bottom-0 left-0 right-0 top-0 {$prompt
       ? 'flex'
-      : 'hidden'} items-center justify-center backdrop-blur-md relative"
+      : 'hidden'} relative items-center justify-center backdrop-blur-md"
   >
     <div class="flex flex-col items-center justify-center rounded-md bg-slate-800 p-10">
       <div class="mb-5 text-xl">Install A+spen?</div>

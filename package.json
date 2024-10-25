@@ -10,7 +10,7 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --check .",
     "format": "prettier --write .",
-		"build:icons": "cd static && node ../generateIcons.js"
+    "build:icons": "cd static && node ../generateIcons.js"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^3.2.5",
@@ -42,6 +42,7 @@
     "jsdom": "^25.0.1",
     "lodash": "^4.17.21",
     "mongodb": "^6.9.0",
+    "pdf2json": "^3.1.4",
     "svelte-fa": "^4.0.3",
     "svelte-french-toast": "^1.2.0",
     "web-push": "^3.6.7",

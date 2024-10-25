@@ -3,7 +3,6 @@
   import type { aspen } from "$lib/aspen";
   import { Collapsible, Skeleton } from "$lib/components";
   import { faChevronRight, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
-  import type { PageData } from "./$types";
   import Fa from "svelte-fa";
   import { requests, toast } from "$lib/web";
   import { onMount } from "svelte";
@@ -14,9 +13,10 @@
     height: number;
   }
 
-  const data: PageData["classes"] = $page.data.classes;
-  const classes: Class[] | null =
-    data?.classes?.map((c) => ({ ...c, expanded: false, height: -1 }) satisfies Class) ?? null;
+  let data = null as { classes: aspen.Types.Class[] } | null;
+  $: classes = (
+    data ? data.classes.map((c) => ({ ...c, expanded: false, height: -1 }) satisfies Class) : null
+  ) as Class[] | null;
 
   const loadClassData = async (c: Class) => {
     const res = await requests.post<aspen.Types.ClassDetail>("/api/aspen/class", {
@@ -27,36 +27,41 @@
     return "data" in res ? res.data : undefined;
   };
 
-  let started = false;
   onMount(() => {
-    const name = decodeURIComponent(location.hash).replaceAll("#", "");
-    if (!name || name.length === 0 || !classes) return;
-    const c = classes.find((c) => c.name.trim() === name.trim());
-    if (!c) return toast.error(`Class "${name}" does not exist`);
     (async () => {
-      classes[classes.indexOf(c)].expanded = true;
-      const element = document.querySelector(`#c-${c.id}`);
-      if (!element) return toast.error("An error occured");
-      setTimeout(
-        () =>
-          element?.parentElement?.scrollTo({
-            top: element.getBoundingClientRect().top - 20,
-            behavior: "smooth"
-          }),
-        100
-      );
+      const res = await requests.post<any>("/api/aspen/classes");
+      if (!res.success) return toast.error(res.error);
+      data = res.data;
+      setTimeout(async () => {
+        const name = decodeURIComponent(location.hash).replaceAll("#", "");
+        if (!name || name.length === 0 || !classes) return;
+        const c = classes.find((c) => c.name.trim() === name.trim());
+        if (!c) return toast.error(`Class "${name}" does not exist`);
 
-      const data = await loadClassData(c);
-      classes[classes.indexOf(c)].data = data;
-      setTimeout(
-        () =>
-          element?.parentElement?.scrollTo({
-            top: element.getBoundingClientRect().top - 20,
-            behavior: "smooth"
-          }),
-        300
-      );
-      history.replaceState({}, "", location.href.split("#")[0]);
+        classes[classes.indexOf(c)].expanded = true;
+        const element = document.querySelector(`#c-${c.id}`);
+        if (!element) return toast.error("An error occured");
+        setTimeout(
+          () =>
+            element?.parentElement?.scrollTo({
+              top: element.getBoundingClientRect().top - 20,
+              behavior: "smooth"
+            }),
+          100
+        );
+
+        const d = await loadClassData(c);
+        classes[classes.indexOf(c)].data = d;
+        setTimeout(
+          () =>
+            element?.parentElement?.scrollTo({
+              top: element.getBoundingClientRect().top - 20,
+              behavior: "smooth"
+            }),
+          300
+        );
+        history.replaceState({}, "", location.href.split("#")[0]);
+      }, 100);
     })();
   });
 
@@ -74,7 +79,7 @@
       isolation: auto;
     }`;
     document.head.appendChild(style);
-    setTimeout(() => loaded = true, 100)
+    setTimeout(() => (loaded = true), 100);
     return () => style.remove();
   });
 
@@ -424,6 +429,12 @@
           {/if}
         </Collapsible>
       </div>
+    {/each}
+  </div>
+{:else}
+  <div class="space-y-4">
+    {#each Array.from({ length: 10 }) as _}
+      <Skeleton class="h-4" style="width: {50 + Math.random() * 50}%" />
     {/each}
   </div>
 {/if}

@@ -30,7 +30,7 @@
       return toast.error("Your username or password is invalid.");
     }
 
-    const dismiss = toast.loading("Verifying credentials...");
+    const {dismiss} = toast.loading("Verifying credentials...");
     submitting = true;
 
     const res = await requests.post<AccountUpdateRes>("/api/account/update", {

@@ -1,4 +1,5 @@
 import { parseStringPromise } from "xml2js";
+import Parser, { type Text, type Page } from "pdf2json";
 import { JSDOM } from "jsdom";
 import type { AuthResponse, Assignment, RecentActivityList, Attendance } from "./types";
 import { encrypt as _encrypt, decrypt as _decrypt } from "./crypt";
@@ -64,6 +65,8 @@ export namespace aspen {
       };
       assignments: Assignment[];
     }
+
+    export type Semester = 1 | 2;
   }
 
   export const encrypt = _encrypt;
@@ -93,7 +96,7 @@ export namespace aspen {
       export const classDetail = 4;
       export const assignment = 6;
       export namespace schedule {
-        export const pdf = 1;
+        export const pdf = 5;
       }
     }
   }
@@ -976,7 +979,11 @@ export namespace aspen {
   };
 
   export namespace schedule {
-    export const pdf = async (cookie: string, onProgress?: Types.ProgressCallback) => {
+    export const pdf = async (
+      cookie: string,
+      semester: Types.Semester = 1,
+      onProgress?: Types.ProgressCallback
+    ) => {
       const tick = progressTicker(constants.steps.schedule.pdf, onProgress);
       const toolRes = await fetch(
         `https://ma-lexington.myfollett.com/aspen/runTool.do?maximized=false&oid=RPT0000010rMZR&toolClass=com.follett.fsc.core.k12.beans.Report&deploymentId=ma-lexington`,
@@ -1014,17 +1021,19 @@ export namespace aspen {
       const { document: toolDoc } = toolWindow;
 
       const toolForm = new toolWindow.FormData(toolDoc.forms["toolInputForm" as any]);
-      toolForm.set("formatStr", "0");
-      toolForm.set("userEVent", "960");
+      // toolForm.set("formatStr", "0"); // we don't want csv anymore :((
+      toolForm.set("userEvent", "960");
 
-      const body = new toolWindow.URLSearchParams(toolForm as any).toString();
+      const body = new FormData();
+      for (const [key, value] of toolForm.entries()) {
+        body.append(key, value);
+      }
 
       const res = await fetch(`https://ma-lexington.myfollett.com/aspen/runTool.do`, {
         headers: {
           accept: "*/*",
           "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
           "cache-control": "no-cache",
-          "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
           pragma: "no-cache",
           "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
           "sec-ch-ua-mobile": "?0",
@@ -1045,7 +1054,212 @@ export namespace aspen {
         throw new Error(`Failed to run schedule job: ${res.status} (${res.status})`);
       }
 
-      return await res.text();
+      tick();
+
+      const text = await res.text();
+      const urlStart = "doNamedPopup('";
+      const idx = text.indexOf(urlStart);
+      if (idx === -1) {
+        throw new Error("Failed to find schedule download URL");
+      }
+      const url = text.substring(
+        idx + urlStart.length,
+        text.indexOf("'", idx + urlStart.length + 1)
+      );
+
+      const prePdfRes = await fetch(`https://ma-lexington.myfollett.com/aspen/${url}`, {
+        headers: {
+          accept: "*/*",
+          "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+          "cache-control": "no-cache",
+          pragma: "no-cache",
+          "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+          "sec-ch-ua-mobile": "?0",
+          "sec-ch-ua-platform": '"Windows"',
+          "sec-fetch-dest": "document",
+          "sec-fetch-mode": "navigate",
+          "sec-fetch-site": "same-origin",
+          "sec-fetch-user": "?1",
+          "upgrade-insecure-requests": "1",
+          cookie,
+          Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
+          "Referrer-Policy": "strict-origin-when-cross-origin"
+        },
+        body: null,
+        method: "GET"
+      });
+
+      if (prePdfRes.status !== 200) {
+        throw new Error(
+          `Failed to prefetch schedule: ${prePdfRes.status} (${prePdfRes.statusText})`
+        );
+      }
+
+      tick();
+
+      const pdfURLStart = "rewriteUrl('";
+      const prePdfText = await prePdfRes.text();
+      const pdfURL = prePdfText.substring(
+        prePdfText.indexOf(pdfURLStart) + pdfURLStart.length,
+        prePdfText.indexOf("')", prePdfText.indexOf(pdfURLStart) + pdfURLStart.length)
+      );
+
+      const pdfRes = await fetch(pdfURL, {
+        headers: {
+          accept: "*/*",
+          "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+          "cache-control": "no-cache",
+          pragma: "no-cache",
+          "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+          "sec-ch-ua-mobile": "?0",
+          "sec-ch-ua-platform": '"Windows"',
+          "sec-fetch-dest": "document",
+          "sec-fetch-mode": "navigate",
+          "sec-fetch-site": "same-origin",
+          "sec-fetch-user": "?1",
+          "upgrade-insecure-requests": "1",
+          cookie,
+          Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
+          "Referrer-Policy": "strict-origin-when-cross-origin"
+        },
+        method: "GET"
+      });
+
+      if (pdfRes.status !== 200) {
+        throw new Error(`Failed to download schedule: ${pdfRes.status} (${pdfRes.statusText})`);
+      }
+
+      tick();
+
+      const pdfBuffer = Buffer.from(await pdfRes.arrayBuffer());
+      const parsed = await parser.extract(pdfBuffer, semester);
+      tick();
+      return parsed;
     };
+
+    export namespace parser {
+      export const pdfPromise = async (data: Buffer): Promise<import("pdf2json").Page[]> =>
+        new Promise<Page[]>((res, rej) => {
+          const parser = new Parser();
+          parser.on("pdfParser_dataError", (errData) => rej(errData.parserError));
+          parser.on("pdfParser_dataReady", (pdfData) => {
+            res(pdfData.Pages);
+          });
+
+          parser.parseBuffer(data);
+        });
+
+      interface Course {
+        course: string;
+        level?: "Hon" | "AP" | "CP";
+        description: string;
+        room: string;
+        teacher: string;
+        term: "ALL" | "S 1" | "S 2";
+        schedule?: string;
+        credit: number;
+      }
+
+      export const parse = async (d: Buffer) => {
+        const et = (text: Text) => decodeURIComponent(text.R[0].T);
+
+        const data = await pdfPromise(d);
+        const schedulePage = data[0];
+        const text = schedulePage.Texts;
+        const name = et(text[0]);
+
+        const columns = {
+          1.688: "course",
+          5.625: "level",
+          9.313: "description",
+          18.563: "room",
+          21.438: "teacher",
+          26.813: "term",
+          29.375: "schedule",
+          34.125: "credit"
+        };
+
+        const res: Course[] = [];
+        const cols = Object.keys(columns).map((key) => parseFloat(key));
+        const idCol = cols[0];
+        const rows = text.filter((t) => t.x === idCol).map((t) => t.y);
+        rows.forEach((y) => {
+          const r: Record<string, string | number> = {};
+          cols.forEach((col) => {
+            const i = text.find((t) => t.x === col && t.y === y);
+            if (i) r[columns[col as keyof typeof columns]] = et(i).trim();
+          });
+          if ("credit" in r) r.credit = parseInt(r.credit as string);
+          res.push(r as any);
+        });
+
+        return { name, courses: res.filter((r) => r.course !== "Course") };
+      };
+
+      export const generateSchedule = (
+        data: Awaited<ReturnType<typeof parse>>,
+        semester: 1 | 2
+      ) => {
+        const schedule = [
+          ["A1", "B1", "C1", "D1", "E1", "F1"],
+          ["E2", "F2", "G1", "H1", "R", "D2"],
+          ["B2", "A2", "G2", "H2", "I", "C2"],
+          ["A3", "B3", "C3", "D3", "E3", "F3"],
+          ["E4", "F4", "G3", "H3", "I", "D4"],
+          ["B4", "A4", "G4", "H4", "I", "C4"]
+        ].flat();
+        /** @type {({...(typeof data.courses[number]), $: boolean} | null)[]} */
+        const res: (null | (Course & { $: boolean; block: string }))[] = Array(
+          schedule.length
+        ).fill(null);
+        const lunches: (3 | 2 | 1)[] = Array(6).fill(3);
+        data.courses.forEach((course) => {
+          if (
+            !course.schedule ||
+            course.schedule === "I" ||
+            !(course.term === "ALL" || course.term === `S ${semester}`) ||
+            course.schedule.length === 0
+          )
+            return;
+          if (course.schedule === "HR") {
+            res[schedule.findIndex((b) => b === "R")] = JSON.parse(JSON.stringify(course));
+            return;
+          }
+          const blocks: [string, boolean, ...number[]][] = [];
+          for (const char of course.schedule.split("")) {
+            if (char === "$") {
+              blocks.at(-1)![1] = true;
+            } else if ("1234".includes(char)) blocks.at(-1)!.push(parseInt(char));
+            else blocks.push([char, false]);
+          }
+          blocks.forEach((block) => {
+            if (block.length === 2) block.push(1, 2, 3, 4);
+          });
+          schedule.forEach((block, i) => {
+            blocks.forEach((b) => {
+              const code = block[0],
+                day = parseInt(block[1]);
+              if (b[0] === code && b.slice(2).includes(day))
+                res[i] = {
+                  ...course,
+                  $: b[1],
+                  block: block[0] + (b[1] ? "$" : "") + day.toString()
+                };
+            });
+          });
+        });
+        for (let i = 0; i < 6; i++) {
+          const $s = res
+            .slice(i * 6, (i + 1) * 6)
+            .filter((item, idx) => item?.$ && (idx === 2 || idx === 3));
+          lunches[i] = (3 - $s.length) as any;
+        }
+
+        return { lunches, schedule: res };
+      };
+
+      export const extract = (data: Buffer, semester: 1 | 2) =>
+        parse(data).then((data) => generateSchedule(data, semester));
+    }
   }
 }
