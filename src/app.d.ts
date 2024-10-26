@@ -26,5 +26,8 @@ declare module "@auth/sveltekit" {
     aspen?: string;
     session?: { cookie: string; token: string };
     settings?: Settings;
+    schedule?: {
+      lunches: ()
+    }
   }
 }

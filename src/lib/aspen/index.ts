@@ -66,7 +66,32 @@ export namespace aspen {
       assignments: Assignment[];
     }
 
-    export type Semester = 1 | 2;
+    export namespace Schedule {
+      export type Semester = 1 | 2;
+      export type Lunch = 3 | 2 | 1;
+
+      export interface PDFCourse {
+        course: string;
+        level?: "Hon" | "AP" | "CP";
+        description: string;
+        room: string;
+        teacher: string;
+        term: "ALL" | "S 1" | "S 2";
+        schedule?: string;
+        credit: number;
+      }
+
+      export interface Course extends PDFCourse {
+        $: boolean;
+        block: string;
+      }
+
+      export interface Schedule {
+        semester: Semester;
+        lunches: Lunch[];
+        schedule: (Course | null)[];
+      }
+    }
   }
 
   export const encrypt = _encrypt;
@@ -981,9 +1006,9 @@ export namespace aspen {
   export namespace schedule {
     export const pdf = async (
       cookie: string,
-      semester: Types.Semester = 1,
+      semester: Types.Schedule.Semester = 1,
       onProgress?: Types.ProgressCallback
-    ) => {
+    ): Promise<Types.Schedule.Schedule> => {
       const tick = progressTicker(constants.steps.schedule.pdf, onProgress);
       const toolRes = await fetch(
         `https://ma-lexington.myfollett.com/aspen/runTool.do?maximized=false&oid=RPT0000010rMZR&toolClass=com.follett.fsc.core.k12.beans.Report&deploymentId=ma-lexington`,
@@ -1149,17 +1174,6 @@ export namespace aspen {
           parser.parseBuffer(data);
         });
 
-      interface Course {
-        course: string;
-        level?: "Hon" | "AP" | "CP";
-        description: string;
-        room: string;
-        teacher: string;
-        term: "ALL" | "S 1" | "S 2";
-        schedule?: string;
-        credit: number;
-      }
-
       export const parse = async (d: Buffer) => {
         const et = (text: Text) => decodeURIComponent(text.R[0].T);
 
@@ -1179,7 +1193,7 @@ export namespace aspen {
           34.125: "credit"
         };
 
-        const res: Course[] = [];
+        const res: Types.Schedule.Course[] = [];
         const cols = Object.keys(columns).map((key) => parseFloat(key));
         const idCol = cols[0];
         const rows = text.filter((t) => t.x === idCol).map((t) => t.y);
@@ -1199,7 +1213,7 @@ export namespace aspen {
       export const generateSchedule = (
         data: Awaited<ReturnType<typeof parse>>,
         semester: 1 | 2
-      ) => {
+      ): Types.Schedule.Schedule => {
         const schedule = [
           ["A1", "B1", "C1", "D1", "E1", "F1"],
           ["E2", "F2", "G1", "H1", "R", "D2"],
@@ -1209,10 +1223,8 @@ export namespace aspen {
           ["B4", "A4", "G4", "H4", "I", "C4"]
         ].flat();
         /** @type {({...(typeof data.courses[number]), $: boolean} | null)[]} */
-        const res: (null | (Course & { $: boolean; block: string }))[] = Array(
-          schedule.length
-        ).fill(null);
-        const lunches: (3 | 2 | 1)[] = Array(6).fill(3);
+        const res: (null | Types.Schedule.Course)[] = Array(schedule.length).fill(null);
+        const lunches: Types.Schedule.Lunch[] = Array(6).fill(3);
         data.courses.forEach((course) => {
           if (
             !course.schedule ||
@@ -1255,10 +1267,10 @@ export namespace aspen {
           lunches[i] = (3 - $s.length) as any;
         }
 
-        return { lunches, schedule: res };
+        return { semester, lunches, schedule: res };
       };
 
-      export const extract = (data: Buffer, semester: 1 | 2) =>
+      export const extract = (data: Buffer, semester: 1 | 2): Promise<Types.Schedule.Schedule> =>
         parse(data).then((data) => generateSchedule(data, semester));
     }
   }
