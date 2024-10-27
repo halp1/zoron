@@ -65,19 +65,6 @@
       });
     });
   });
-
-  onMount(() => {
-    const listener = () => {
-      // use matchMedia to check if the user is a small screen <600 width
-      if (window.matchMedia("(max-width: 600px)").matches) {
-        // if the user is on a small screen, request fullscreen
-        document.body.requestFullscreen();
-      }
-    };
-
-    document.addEventListener("touchstart", listener);
-    return () => document.removeEventListener("touchstart", listener);
-  });
   const prompt = PWA.prompt;
 </script>
 

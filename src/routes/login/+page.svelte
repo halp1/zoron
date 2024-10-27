@@ -3,6 +3,7 @@
   import { signIn } from "@auth/sveltekit/client";
   import toast from "svelte-french-toast";
   import { validEmail } from "$lib/email";
+    import Footer from "$lib/components/Footer.svelte";
 
   $: user = $page.data.session?.user;
 
@@ -62,3 +63,4 @@
     </form>
   {/if}
 </main>
+<Footer fixed/>
