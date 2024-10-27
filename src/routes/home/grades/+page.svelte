@@ -237,7 +237,7 @@
               <div class="flex-1">
                 {#if c.data.assignments.length > 0}
                   <div
-                    class="custom-scroll flex flex-1 flex-col items-stretch overflow-auto border-2 border-slate-600"
+                    class="custom-scroll custom-scroll-right flex flex-1 flex-col items-stretch overflow-auto border-2 border-slate-600"
                     style="max-height: {c.height === -1 ? 400 : c.height}px"
                   >
                     {#each c.data.assignments as assignment, idx}

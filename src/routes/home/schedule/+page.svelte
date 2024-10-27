@@ -2,6 +2,17 @@
   import { page } from "$app/stores";
   import type { aspen } from "$lib/aspen";
   import { requests, toast } from "$lib/web";
+  import {
+    faCalendarDay,
+    faCalendarDays,
+    faFileExport,
+    faClose,
+    faInfoCircle
+  } from "@fortawesome/free-solid-svg-icons";
+  import Fa from "svelte-fa";
+  import choobs from "../../../assets/choobs.png";
+  import { Collapsible } from "$lib/components";
+  import { updateChoobsSchedule } from "./choobs";
 
   $: schedule = ($page.data.session?.user || {}).schedule;
 
@@ -60,6 +71,11 @@
 
     return newSchedule;
   };
+
+  let mode: "full" | "day" = "full";
+
+  let exportModalOpen = false;
+  let exportChoice: null | "choobs" = null;
 </script>
 
 {#if !schedule}
@@ -82,31 +98,150 @@
     </button>
   </div>
 {:else}
-  <div class="grid h-full grid-cols-6 border-4 border-slate-800">
-    {#each transpose(insertLunches(schedule), 6, 7) as block, i}
-      <div
-        class="{i >= 42 - 6 ? '' : 'border-b-4'} {i % 6 === 5
-          ? ''
-          : 'border-r-4'} row-span-1 flex flex-col items-center gap-2 border-slate-800 py-2 {block.color} bg-opacity-50"
+  <div class="relative flex h-full items-center gap-3">
+    <div class="flex flex-col items-center gap-3">
+      <button
+        class="btn-circle {mode === 'day' ? 'bg-blue-600 hover:bg-blue-400' : ''}"
+        on:click={() => {
+          mode = "day";
+        }}
       >
-        {#if block.type === "block"}
-          <div class="relative px-2 text-center text-sm font-bold" style="word-wrap: break-word">
-            {block.description}
-          </div>
-          <div class="mt-auto flex w-full items-center px-2 text-sm">
-            <div class="mr-auto">Room <strong>{block.room}</strong></div>
-            <div class="relative ml-auto inline-flex items-center gap-2">
-              {#if block.block}
-                {block.block}
+        <Fa icon={faCalendarDay} />
+      </button>
+      <button
+        class="btn-circle {mode === 'full' ? 'bg-blue-600 hover:bg-blue-400' : ''}"
+        on:click={() => {
+          mode = "full";
+        }}
+      >
+        <Fa icon={faCalendarDays} />
+      </button>
+      <button
+        class="btn-circle"
+        on:click={() => {
+          exportModalOpen = true;
+        }}
+      >
+        <Fa icon={faFileExport} />
+      </button>
+    </div>
+    {#if mode === "full"}
+      <div class="custom-scroll flex min-h-full flex-1 justify-center overflow-auto">
+        <div class="grid min-h-full grid-cols-6 border-4 border-slate-800">
+          {#each transpose(insertLunches(schedule), 6, 7) as block, i}
+            <div
+              class="{i >= 42 - 6 ? '' : 'border-b-4'} {i % 6 === 5
+                ? ''
+                : 'border-r-4'} row-span-1 flex flex-col items-center gap-2 border-slate-800 py-2 {block.color} bg-opacity-50"
+            >
+              {#if block.type === "block"}
+                <div
+                  class="relative px-2 text-center text-sm font-bold"
+                  style="word-wrap: break-word;"
+                >
+                  {block.description}
+                </div>
+                <div class="mt-auto flex w-full items-center px-2 text-sm">
+                  <div class="mr-auto">Room <strong>{block.room}</strong></div>
+                  <div class="relative ml-auto inline-flex items-center gap-2">
+                    {#if block.block}
+                      {block.block}
+                    {/if}
+                  </div>
+                </div>
+              {:else}
+                <div class="my-auto text-xl">
+                  {block.type === "lunch" ? "Lunch" : block.type === "i-block" ? "I Block" : "Free"}
+                </div>
               {/if}
             </div>
-          </div>
-        {:else}
-          <div class="my-auto text-xl">
-            {block.type === "lunch" ? "Lunch" : block.type === "i-block" ? "I Block" : "Free"}
-          </div>
-        {/if}
+          {/each}
+        </div>
       </div>
-    {/each}
+    {:else}
+      <div class="custom-scroll flex max-w-96 flex-col gap-5"></div>
+    {/if}
+  </div>
+{/if}
+
+{#if exportModalOpen}
+  <!-- svelte-ignore a11y-click-events-have-key-events -->
+  <!-- svelte-ignore a11y-no-static-element-interactions -->
+  <div
+    class="fixed bottom-0 left-0 right-0 top-0 grid place-items-center bg-slate-900 bg-opacity-20 backdrop-blur-xl"
+    on:click={({ currentTarget, target }) => {
+      if (currentTarget === target) {
+        exportModalOpen = false;
+        exportChoice = null;
+      }
+    }}
+  >
+    <div class="relative flex flex-col items-center rounded-lg bg-slate-800 p-5">
+      <button
+        class="btn-circle absolute right-2 top-2"
+        on:click={() => {
+          exportModalOpen = false;
+          exportChoice = null;
+        }}><Fa icon={faClose} /></button
+      >
+      <div class="text-2xl">Export Calendar</div>
+      <div class="text-sm text-slate-400">
+        Use this calendar on other sites, imported automatically.
+      </div>
+      <Collapsible open={exportChoice === null}>
+        <div class="pb-3">
+          <button
+            on:click={() => {
+              exportChoice = "choobs";
+            }}
+            class="btn-full btn-outlined mt-3 flex items-center justify-center gap-2 px-1 py-1 text-base"
+          >
+            <img src={choobs} class="h-8 rounded-lg" alt="choobs.app icon" />
+            Export to choobs.app
+          </button>
+        </div>
+      </Collapsible>
+      <Collapsible open={exportChoice === "choobs"}>
+        <form
+          on:submit={async (e) => {
+            e.preventDefault();
+            if (!schedule?.schedule) return toast.error("Schedule not loaded");
+            // @ts-expect-error chooobs not a property of target
+            const password = e.target?.choobs?.value;
+            if (!password || typeof password !== "string" || password.length <= 0)
+              return toast.error("Password is required");
+            if (!$page.data.session?.user?.email) return toast.error("User not logged in");
+            const { dismiss } = toast.loading("Exporting schedule...");
+            try {
+              await updateChoobsSchedule(
+                schedule.schedule,
+                $page.data.session?.user?.email,
+                password
+              );
+            } catch {
+              toast.error("Failed to export schedule");
+            }
+            dismiss();
+						
+          }}
+          class="flex w-full flex-wrap items-center gap-2 pt-2"
+        >
+          <input
+            class="min-w-72 rounded-lg border-2 border-dashed border-blue-400 bg-transparent px-3 py-2 outline-none focus-within:border-solid focus-within:outline-none"
+            name="choobs"
+            placeholder="Enter your choobs.app password"
+            type="password"
+            autocomplete="off"
+            required
+          />
+          <button class="btn-full btn-outlined border-blue-600 py-2 text-base">Export</button>
+        </form>
+        <div class="mx-auto w-96 py-2 text-sm text-slate-400">
+          <Fa icon={faInfoCircle} class="float-left mr-2 mt-[3px]" />
+          Your password is used once to write your schedule to your account. It is never sent to an server
+          or stored.
+        </div>
+      </Collapsible>
+    </div>
   </div>
 {/if}

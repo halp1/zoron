@@ -23,6 +23,15 @@
     icon: IconDefinition;
     mobileOnly?: boolean;
   }
+  let windowWidth = 0;
+  onMount(() => {
+    windowWidth = window.innerWidth;
+    const listener = () => {
+      windowWidth = window.innerWidth;
+    };
+    window.addEventListener("resize", listener);
+    return () => window.removeEventListener("resize", listener);
+  });
 
   const tabs: Tab[] = [
     { name: "Home", path: "/home", icon: faHome },
@@ -67,6 +76,10 @@
   });
   const prompt = PWA.prompt;
 </script>
+
+<svelte:head>
+  <title>Schedule | A+spen</title>
+</svelte:head>
 
 <main
   class="activity-container flex h-screen w-full flex-col items-center justify-center bg-slate-900"
@@ -114,7 +127,10 @@
       <div
         class="absolute bottom-1 h-[2px] rounded-full bg-white transition-all"
         style="width: {tabBarWidth}px; left: {(tabRefs[activeTabIndex]?.getBoundingClientRect()
-          .left || 0) - (tabContainer?.getBoundingClientRect().left || 0)}px"
+          .left || 0) -
+          (tabContainer?.getBoundingClientRect().left || 0) -
+          windowWidth +
+          windowWidth}px"
       ></div>
     </div>
   </div>

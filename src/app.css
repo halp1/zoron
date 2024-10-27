@@ -34,7 +34,10 @@
 
   /* Style the scrollbar thumb */
   .custom-scroll::-webkit-scrollbar-thumb {
-    @apply rounded-l-full bg-slate-400 hover:bg-slate-500;
+    @apply rounded-full bg-slate-400 hover:bg-slate-500;
+  }
+  .custom-scroll-right::-webkit-scrollbar-thumb {
+    @apply rounded-l-full;
   }
 }
 
