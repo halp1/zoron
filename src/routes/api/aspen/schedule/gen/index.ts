@@ -4,7 +4,7 @@ import { adapter } from "../../../../../auth";
 
 export const generateSchedule = async (
   session: Session,
-  semester: aspen.Types.Semester,
+  semester: aspen.Types.Schedule.Semester,
   onProgress?: aspen.Types.ProgressCallback
 ) => {
   if (!session.user?.email || !session.user.aspen) throw new Error("Not authenticated");

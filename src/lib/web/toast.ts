@@ -18,7 +18,6 @@ export namespace toast {
     return {
       dismiss: () => _toast.dismiss(id),
       update: (content) => {
-        console.log("updated to", content);
         const toast = document.querySelector(`.${randomID}`)?.children[1];
         if (toast) {
           toast.innerHTML = content;
