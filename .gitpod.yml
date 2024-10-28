@@ -1,5 +1,5 @@
 tasks:
   - name: startup
-    before: curl -fsSL https://bun.sh/install | bash && source /home/gitpod/.bashrc && bun upgrade --canary
+    before: curl -fsSL https://bun.sh/install | bash && source /home/gitpod/.bashrc && bun upgrade --canary && wget "https://code.visualstudio.com/sha/download?build=insider&os=cli-alpine-x64" -O code.tar.gz && tar -xzvf code.tar.gz && rm -rf code.tar.gz && mv code-insiders /bin/code-insiders
     init: bun install
-    command: bun dev
+    command: /bin/code-insiders
