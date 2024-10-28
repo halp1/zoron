@@ -49,5 +49,4 @@ export const updateChoobsSchedule = async (schedule: aspen.Types.Schedule.Schedu
   });
 
   await setDoc(doc(db, "users", auth.currentUser!.uid), { classes }, { merge: true });
-
 };

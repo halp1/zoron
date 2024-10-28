@@ -218,8 +218,14 @@
                 $page.data.session?.user?.email,
                 password
               );
-            } catch {
-              toast.error("Failed to export schedule");
+							toast.success("Schedule exported successfully");
+							exportModalOpen = false;
+							exportChoice = null;
+							// @ts-expect-error choobs not a property of target
+							e.target.choobs.value = "";
+            } catch (e) {
+							// @ts-expect-error e is unknown
+              toast.error(`Failed to export schedule (${e.message})`);
             }
             dismiss();
 						
