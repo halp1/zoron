@@ -3,11 +3,14 @@
   import { signIn } from "@auth/sveltekit/client";
   import toast from "svelte-french-toast";
   import { validEmail } from "$lib/email";
-	import Footer from "$lib/components/Footer.svelte";
+  import Footer from "$lib/components/Footer.svelte";
+  import { Collapsible, Toggle } from "$lib/components";
 
   $: user = $page.data.session?.user;
 
   let email = "";
+  let usePassword = false;
+  let password = "";
 
   const handleSubmission = async (
     e: SubmitEvent & {
@@ -22,10 +25,12 @@
       return;
     }
 
-    await signIn("mailgun", {
-      callbackUrl: location.origin + "/account",
-      email
-    });
+    if (!usePassword) {
+      await signIn("mailgun", {
+        callbackUrl: location.origin + "/account",
+        email
+      });
+    }
   };
 </script>
 
@@ -42,7 +47,7 @@
     <a href="/auth/signout" class="text-xl underline">Log out</a>
   {:else}
     <img src="/favicon.png" alt="Site icon" class="mb-3 w-32" />
-    <h1 class="mb-10 text-center text-4xl">Log in/Register to A+spen</h1>
+    <h1 class="mb-10 text-center text-4xl">Log in to A+spen</h1>
     <form on:submit={handleSubmission} class="flex w-96 flex-col gap-2">
       <input
         class="w-full rounded-lg border-2 border-dashed border-blue-400 bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
@@ -52,15 +57,32 @@
         required
       />
       <div
-        class="mb-3 overflow-hidden text-sm text-red-600 transition-all"
+        class="overflow-hidden text-sm text-red-600 transition-all"
         style="height: {validEmail(email) || email.length === 0 ? '0px' : '20px'}"
       >
         Please enter a valid lexingtonma.org email address.
       </div>
-      <button class="btn-full btn-outlined" disabled={!validEmail(email)} type="submit">
-        Log in/Register
+      <div class="flex items-center gap-2">
+        <Toggle bind:checked={usePassword} color="bg-blue-400" /> Use Password
+      </div>
+      <Collapsible open={usePassword}>
+        <input
+          class="mb-3 w-full rounded-lg border-2 border-dashed border-blue-400 bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
+          name="password"
+          bind:value={password}
+          placeholder="Password"
+          type="password"
+          required={usePassword}
+        /></Collapsible
+      >
+      <button
+        class="btn-full btn-outlined"
+        disabled={!validEmail(email) && ((usePassword && password.length === 0) || false)}
+        type="submit"
+      >
+        Log in with {usePassword ? "password" : "email"}
       </button>
     </form>
   {/if}
 </main>
-<Footer fixed/>
+<Footer fixed />

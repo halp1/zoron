@@ -1,7 +1,7 @@
-import { SvelteKitAuth } from "@auth/sveltekit";
+import { SvelteKitAuth, type SvelteKitAuthConfig } from "@auth/sveltekit";
 import Mailgun from "@auth/sveltekit/providers/mailgun";
 
-import { GP, MAILGUN_KEY } from "$env/static/private";
+import { DOMAIN, MAILGUN_KEY } from "$env/static/private";
 import { database as databaseName, dbClient } from "$lib/database";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import { html, text, validEmail } from "$lib/email";
@@ -10,12 +10,18 @@ export const adapter = MongoDBAdapter(dbClient, {
   databaseName
 });
 
-export const { handle, signIn, signOut } = SvelteKitAuth({
+export const auth = {
   trustHost: true,
+  session: {
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+    generateSessionToken: () => crypto.randomUUID()
+  },
   adapter,
   pages: {
-    signIn: "/login"
+    signIn: "/login",
+		verifyRequest: "/verify",
   },
+
   providers: [
     Mailgun({
       name: "Sign in to Push",
@@ -76,19 +82,17 @@ export const { handle, signIn, signOut } = SvelteKitAuth({
       return session;
     }
   },
-  cookies:
-    GP && GP !== "0"
-      ? {
-          sessionToken: {
-            name: "next-auth.session-token",
-            options: {
-              domain: GP,
-              path: "/",
-              httpOnly: true,
-              sameSite: "lax",
-              secure: false
-            }
-          }
-        }
-      : undefined
-});
+  cookies: {
+    sessionToken: {
+      name: "next-auth.session-token",
+      options: {
+        domain: DOMAIN,
+        path: "/",
+        httpOnly: true,
+        sameSite: "lax",
+        secure: false
+      }
+    }
+  }
+} satisfies SvelteKitAuthConfig;
+export const { handle, signIn, signOut } = SvelteKitAuth(auth);

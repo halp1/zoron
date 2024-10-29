@@ -1,1 +1,1 @@
-export { handle } from "./auth/auth";
+export { handle } from "$lib/auth";
