@@ -1,6 +1,6 @@
 import { aspen } from "$lib/aspen";
 import type { Session } from "@auth/sveltekit";
-import { adapter } from "../../../../auth";
+import { adapter } from "../../../../auth/auth";
 
 export const activity = async (session: Session) => {
   if (!session.user?.email || !session.user.aspen) throw new Error("Not authenticated");

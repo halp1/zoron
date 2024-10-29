@@ -1,5 +1,5 @@
 import { api } from "$lib/server";
-import { adapter } from "../../../../auth";
+import { adapter } from "../../../../auth/auth";
 
 export const DELETE = async ({ locals: { auth } }) => {
   const session = await auth();

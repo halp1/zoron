@@ -8,7 +8,14 @@
   import type { Settings } from "$lib/types";
   import _ from "lodash";
   import { defaultSettings } from "../api/account/settings/defaults";
-  import { faHome, faClose } from "@fortawesome/free-solid-svg-icons";
+  import {
+    faHome,
+    faClose,
+    faKey,
+    faRightFromBracket,
+    faUserSlash,
+		faUserEdit
+  } from "@fortawesome/free-solid-svg-icons";
   import Fa from "svelte-fa";
 
   let device: Device | null = null;
@@ -76,10 +83,28 @@
         </div>
         <div class="border-b-2 border-dashed border-slate-600"></div>
         <div class="grid grid-cols-2 gap-2">
+          {#if $page.data.session.user.password}
+            <a
+              href="/account/password"
+              class="btn-full btn-outlined col-span-2 flex flex-1 items-center justify-center gap-3 border-blue-400 text-base"
+            >
+              <Fa icon={faKey} />
+              Update password
+            </a>
+          {:else}
+            <a
+              href="/account/password"
+              class="btn-full btn-outlined col-span-2 flex flex-1 items-center justify-center gap-3 border-blue-400 text-base"
+            >
+              <Fa icon={faKey} />
+              Add a password
+            </a>
+          {/if}
           <a
             href="/account/update"
-            class="btn-full btn-outlined col-span-2 flex flex-1 items-center justify-center border-orange-400 text-base"
+            class="btn-full btn-outlined col-span-2 flex flex-1 items-center justify-center gap-3 border-orange-400 text-base"
           >
+            <Fa icon={faUserEdit} />
             Update credentials
           </a>
           <button
@@ -88,16 +113,18 @@
               await signOut({ redirect: true, callbackUrl: "/" });
               toast.success("You have been signed out.");
             }}
-            class="btn-full btn-outlined col-span-1 flex flex-1 items-center justify-center border-red-500 text-base"
+            class="btn-full btn-outlined col-span-1 flex flex-1 items-center justify-center gap-3 border-red-500 text-base"
           >
+            <Fa icon={faRightFromBracket} />
             Sign out
           </button>
           <button
             on:click={() => {
               deleting = 0;
             }}
-            class="btn-full btn-outlined col-span-1 flex flex-1 items-center justify-center border-red-500 text-base"
+            class="btn-full btn-outlined col-span-1 flex flex-1 items-center justify-center gap-3 border-red-500 text-base"
           >
+            <Fa icon={faUserSlash} />
             Delete account
           </button>
         </div>
@@ -151,7 +178,7 @@
                   deleting = -1;
                   // @ts-expect-error
                   clearInterval(deleteInterval);
-                  const {dismiss} = toast.loading("Deleting account...");
+                  const { dismiss } = toast.loading("Deleting account...");
                   const res = await requests.del("/api/account/delete");
                   if (res.success) {
                     toast.success("Account deleted.");
@@ -159,7 +186,7 @@
                   } else {
                     toast.error("An error occurred while deleting your account: " + res.error);
                   }
-									dismiss();
+                  dismiss();
                 }
               }, 1000 / 120);
             }}
