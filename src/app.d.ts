@@ -28,5 +28,6 @@ declare module "@auth/sveltekit" {
     session?: { cookie: string; token: string };
     settings?: Settings;
     schedule?: aspen.Types.Schedule.Schedule & { updated: number };
+    password?: { hash: string; salt: string };
   }
 }

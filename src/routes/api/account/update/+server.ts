@@ -2,7 +2,7 @@ import { aspen } from "$lib/aspen";
 import { api } from "$lib/server";
 import type { RequestHandler } from "./$types";
 import type { Session } from "$lib/types";
-import { adapter } from "../../../../auth";
+import { adapter } from "../../../../auth/auth";
 import { defaultSettings } from "../settings/defaults";
 import _ from "lodash";
 

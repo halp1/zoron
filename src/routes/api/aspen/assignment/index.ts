@@ -1,6 +1,6 @@
 import { aspen } from "$lib/aspen";
 import type { Session } from "@auth/sveltekit";
-import { adapter } from "../../../../auth";
+import { adapter } from "../../../../auth/auth";
 import type { Assignment } from "$lib/aspen/types";
 
 export const assignment = async (
