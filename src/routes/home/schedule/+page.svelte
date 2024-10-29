@@ -7,7 +7,8 @@
     faCalendarDays,
     faFileExport,
     faClose,
-    faInfoCircle
+    faInfoCircle,
+    faRotateRight
   } from "@fortawesome/free-solid-svg-icons";
   import Fa from "svelte-fa";
   import choobs from "../../../assets/choobs.png";
@@ -17,6 +18,21 @@
   $: schedule = ($page.data.session?.user || {}).schedule;
 
   const getLoadingText = (percentage: number) => `Generating schedule (${percentage}%)...`;
+  const updateSchedule = async () => {
+    if (updating) return toast.error("Schedule is already updating");
+    updating = true;
+    const { dismiss, update } = toast.loading("Generating schedule (0%)...");
+    const res = await requests.stream("/api/aspen/schedule/gen", { semester: 1 }, (step, total) =>
+      update(getLoadingText((step / total) * 100))
+    );
+    if (res.success === true) {
+      history.go(0);
+      toast.success("Schedule updated successfully");
+    } else toast.error(res.error);
+    dismiss();
+    updating = false;
+  };
+
   const transpose = <T,>(arr: T[], width: number, height: number): T[] =>
     arr.map((_, i) => arr[(i % width) * height + Math.floor(i / width)]);
 
@@ -76,26 +92,13 @@
 
   let exportModalOpen = false;
   let exportChoice: null | "choobs" = null;
+
+  let updating = false;
 </script>
 
 {#if !schedule}
   <div class="flex h-full flex-col items-center justify-center gap-3">
-    <button
-      class="btn-full btn-outlined text-base"
-      on:click={async () => {
-        const { dismiss, update } = toast.loading("Generating schedule (0%)...");
-        const res = await requests.stream(
-          "/api/aspen/schedule/gen",
-          { semester: 1 },
-          (step, total) => update(getLoadingText((step / total) * 100))
-        );
-        if (res.success === true) history.go(0);
-        else toast.error(res.error);
-        dismiss();
-      }}
-    >
-      Download
-    </button>
+    <button class="btn-full btn-outlined text-base" on:click={updateSchedule}> Download </button>
   </div>
 {:else}
   <div class="relative flex h-full items-center gap-3">
@@ -105,6 +108,7 @@
         on:click={() => {
           mode = "day";
         }}
+        title="Single day  view"
       >
         <Fa icon={faCalendarDay} />
       </button>
@@ -113,6 +117,7 @@
         on:click={() => {
           mode = "full";
         }}
+        title="Full schedule view"
       >
         <Fa icon={faCalendarDays} />
       </button>
@@ -121,8 +126,17 @@
         on:click={() => {
           exportModalOpen = true;
         }}
+        title="Export schedule"
       >
         <Fa icon={faFileExport} />
+      </button>
+      <button
+        class="btn-circle"
+        on:click={updateSchedule}
+        disabled={updating}
+        title="Refresh schedule"
+      >
+        <Fa icon={faRotateRight} />
       </button>
     </div>
     {#if mode === "full"}
@@ -218,17 +232,16 @@
                 $page.data.session?.user?.email,
                 password
               );
-							toast.success("Schedule exported successfully");
-							exportModalOpen = false;
-							exportChoice = null;
-							// @ts-expect-error choobs not a property of target
-							e.target.choobs.value = "";
+              toast.success("Schedule exported successfully");
+              exportModalOpen = false;
+              exportChoice = null;
+              // @ts-expect-error choobs not a property of target
+              e.target.choobs.value = "";
             } catch (e) {
-							// @ts-expect-error e is unknown
+              // @ts-expect-error e is unknown
               toast.error(`Failed to export schedule (${e.message})`);
             }
             dismiss();
-						
           }}
           class="flex w-full flex-wrap items-center gap-2 pt-2"
         >
