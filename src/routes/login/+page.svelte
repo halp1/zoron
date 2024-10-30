@@ -31,8 +31,7 @@
     } else {
       const res = await requests.post("/api/account/login", { email, password });
       if (res.success) {
-        toast.success("Logged in successfully");
-        // location.href = "/account";
+        location.href = "/account";
       } else {
         toast.error(res.error);
       }
