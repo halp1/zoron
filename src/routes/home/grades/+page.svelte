@@ -93,6 +93,8 @@
     return terms.reduce((a, b) => a + b, 0) / terms.length;
   };
 
+  const useLinearGradient = false;
+
   // pre-load classes for tailwind
   ("grid-cols-1 grid-cols-2 grid-cols-3 grid-cols-4 grid-cols-5 grid-cols-6 grid-cols-7 grid-cols-8 grid-cols-9 grid-cols-10 grid-cols-11 grid-cols-12 border-b-0");
 </script>
@@ -341,7 +343,8 @@
                     {#each grade.terms as term}
                       <div
                         class="col-span-2 flex flex-wrap justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-opacity-50 px-2 py-1 text-center text-sm xl:text-base"
-                        style={(!term.grade &&
+                        style={(useLinearGradient &&
+                          !term.grade &&
                           "background: repeating-linear-gradient(45deg, rgb(71 85 105 / var(--tw-bg-opacity)), rgb(71 85 105 / var(--tw-bg-opacity)) 2px, transparent 2px, transparent 10px); background-position: 0 0; background-size: 100% 100%;") ||
                           ""}
                       >
@@ -363,7 +366,7 @@
                   {#each c.data.grades.averages as avg}
                     <div
                       class="col-span-2 flex flex-wrap justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 px-2 py-1 text-center text-sm xl:text-base"
-                      style={(!avg &&
+                      style={(useLinearGradient && !avg &&
                         "background: repeating-linear-gradient(45deg, rgb(100 116 139 / .5), rgb(100 116 139 / .5) 2px, #1e293b 2px, #1e293b 10px); background-position: 0 0; background-size: 100% 100%;") ||
                         ""}
                     >
@@ -385,7 +388,7 @@
                     <div
                       class="col-span-2 flex flex-wrap justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 px-2 py-1 text-center text-sm xl:text-base {!grade &&
                         'bg-opacity-50'}"
-                      style={(!grade &&
+                      style={(useLinearGradient && !grade &&
                         "background: repeating-linear-gradient(45deg, rgb(71 85 105 / var(--tw-bg-opacity)), rgb(71 85 105 / var(--tw-bg-opacity)) 2px, transparent 2px, transparent 10px); background-position: 0 0; background-size: 100% 100%;") ||
                         ""}
                     >

@@ -1,6 +1,6 @@
 import { streamPromise } from "$lib/server";
 import { generateSchedule } from ".";
-import { adapter } from "../../../../../auth/auth";
+import { adapter } from "$lib/auth";
 import type { RequestHandler } from "./$types";
 
 export const POST: RequestHandler = async ({ locals: { auth }, request }) => {
