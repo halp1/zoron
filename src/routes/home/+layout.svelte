@@ -34,7 +34,7 @@
   });
 
   const tabs: Tab[] = [
-    { name: "Home", path: "/home", icon: faHome },
+    { name: "Home", path: "/home?page=home", icon: faHome },
     { name: "Schedule", path: "/home/schedule", icon: faCalendar },
     { name: "Grades", path: "/home/grades", icon: faChartLine },
     { name: "Activity", path: "/home/activity", icon: faList },
@@ -42,7 +42,18 @@
   ];
 
   $: activeTabIndex = $page.url?.pathname
-    ? tabs.indexOf([...tabs].reverse().find((tab) => $page.url.pathname.includes(tab.path))!)
+    ? tabs.indexOf(
+        [...tabs]
+          .reverse()
+          .find((tab) =>
+            $page.url.pathname.includes(
+              tab.path.slice(
+                0,
+                tab.path.indexOf("?") === -1 ? tab.path.length : tab.path.indexOf("?")
+              )
+            )
+          )!
+      )
     : 0;
 
   let tabContainer: HTMLDivElement | null = null;
