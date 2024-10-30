@@ -14,7 +14,7 @@
     faKey,
     faRightFromBracket,
     faUserSlash,
-		faUserEdit
+    faUserEdit
   } from "@fortawesome/free-solid-svg-icons";
   import Fa from "svelte-fa";
 
@@ -38,8 +38,10 @@
 
   settings.subscribe(async (value) => {
     if (!mounted) return;
+    toast.success("test");
     const res = await requests.post<Settings>("/api/account/settings", {
-      notifications: value.notifications
+      notifications: value.notifications,
+      home: value.home
     });
     if (!res.success) toast.error("An error occurred while saving your settings: " + res.error);
     else toast.success("Updated settings");
@@ -75,10 +77,25 @@
         >
           My A+spen <Fa icon={faHome} />
         </a>
-        <div>
-          <div class="text-2xl">Notifications</div>
-          <div class="flex items-center gap-3">
-            Attendance: <Toggle bind:checked={$settings.notifications.attendance} />
+        <div class="flex">
+          <div class="flex flex-1 flex-col items-center">
+            <div class="text-2xl">Notifications</div>
+            <div class="flex items-center gap-3">
+              Attendance: <Toggle bind:checked={$settings.notifications.attendance} />
+            </div>
+            <div class="flex items-center gap-3">
+              Grades: <Toggle bind:checked={$settings.notifications.grades} />
+            </div>
+          </div>
+          <div class="flex flex-1 flex-col items-center">
+            <div class="mt-2 text-2xl">Home page</div>
+            Default tab:
+            <select bind:value={$settings.home.default} class="bg-transparent">
+              <option value="home" class="text-black">Home</option>
+              <option value="assignments" class="text-black">Assignments</option>
+              <option value="grades" class="text-black">Grades</option>
+              <option value="activity" class="text-black">Activity</option>
+            </select>
           </div>
         </div>
         <div class="border-b-2 border-dashed border-slate-600"></div>
@@ -105,7 +122,7 @@
             class="btn-full btn-outlined col-span-2 flex flex-1 items-center justify-center gap-3 border-orange-400 text-base"
           >
             <Fa icon={faUserEdit} />
-            Update credentials
+            Update Aspen credentials
           </a>
           <button
             on:click={async (e) => {
