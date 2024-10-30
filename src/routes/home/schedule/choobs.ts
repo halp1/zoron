@@ -1,4 +1,4 @@
-import type { aspen } from '$lib/aspen';
+import type { aspen } from "$lib/aspen";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
@@ -19,7 +19,11 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-export const updateChoobsSchedule = async (schedule: aspen.Types.Schedule.Schedule['schedule'], email: string, password: string) => {
+export const updateChoobsSchedule = async (
+  schedule: aspen.Types.Schedule.Schedule["schedule"],
+  email: string,
+  password: string
+) => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
   } catch {
@@ -28,7 +32,7 @@ export const updateChoobsSchedule = async (schedule: aspen.Types.Schedule.Schedu
   const user = await getDoc(doc(db, "users", auth.currentUser?.uid!));
   if (!user.exists()) throw new Error("User not found");
 
-	const classes: Record<string, [string, string]> = {};
+  const classes: Record<string, [string, string]> = {};
 
   const nameRemap = {
     "Adolescent Health Issues II": "Health",

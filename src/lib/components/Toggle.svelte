@@ -1,6 +1,6 @@
 <script lang="ts">
   export let checked = false;
-	export let color = "bg-orange-400";
+  export let color = "bg-orange-400";
 </script>
 
 <label class="flex cursor-pointer items-center">

@@ -1,10 +1,8 @@
 <script lang="ts">
   import { requests, toast } from "$lib/web";
-  import type { aspen } from "$lib/aspen";
   import Fa from "svelte-fa";
   import { faInfoCircle, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
   import type { AccountUpdateRes } from "../../api/account/update/+server";
-  import { goto } from "$app/navigation";
 
   let username = "";
   let password = "";
@@ -30,7 +28,7 @@
       return toast.error("Your username or password is invalid.");
     }
 
-    const {dismiss} = toast.loading("Verifying credentials...");
+    const { dismiss } = toast.loading("Verifying credentials...");
     submitting = true;
 
     const res = await requests.post<AccountUpdateRes>("/api/account/update", {

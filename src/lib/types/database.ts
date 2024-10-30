@@ -11,7 +11,7 @@ export interface Settings {
     attendance: boolean;
     grades: boolean;
   };
-	home: {
-		default: "home" | "schedule" | "grades" | "activity";
-	}
+  home: {
+    default: "home" | "schedule" | "grades" | "activity";
+  };
 }
