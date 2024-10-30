@@ -79,9 +79,9 @@
     </div>
     <div
       class="mb-2 overflow-hidden text-sm text-red-600 transition-all"
-      style="height: {confirm.length > 0 && confirm !== password ? '0px' : '20px'}"
+      style="height: {confirm.length > 0 && confirm !== password ? '20px' : '0px'}"
     >
-      Your username or password is invalid.
+      Passwords do not match
     </div>
     <div class="mb-3 text-sm text-slate-400">
       <Fa icon={faInfoCircle} class="float-left mr-2 mt-[3px]" />

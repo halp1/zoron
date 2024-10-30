@@ -21,8 +21,12 @@
   const updateSchedule = async () => {
     if (updating) return toast.error("Schedule is already updating");
     updating = true;
+    const currentDate = new Date();
+    const jan25_2024 = new Date(2024, 0, 25); // January is month 0 in JavaScript Date
+    const semester = currentDate >= jan25_2024 ? 2 : 1;
+
     const { dismiss, update } = toast.loading("Generating schedule (0%)...");
-    const res = await requests.stream("/api/aspen/schedule/gen", { semester: 1 }, (step, total) =>
+    const res = await requests.stream("/api/aspen/schedule/gen", { semester }, (step, total) =>
       update(getLoadingText((step / total) * 100))
     );
     if (res.success === true) {
