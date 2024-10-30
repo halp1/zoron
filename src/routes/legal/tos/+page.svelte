@@ -1,5 +1,5 @@
-<div class="max-w-[800px] mx-auto my-10">
-  <h1 class="mb-4 text-2xl font-bold text-center">Terms of Service</h1>
+<div class="mx-auto my-10 max-w-[800px]">
+  <h1 class="mb-4 text-center text-2xl font-bold">Terms of Service</h1>
 
   <section class="mb-6">
     <h2 class="mb-2 text-xl font-bold">1. Introduction</h2>

@@ -1,13 +1,13 @@
 <script>
   import { onMount } from "svelte";
   import { Toaster } from "svelte-french-toast";
-	import { PWA } from "$lib/web";
+  import { PWA } from "$lib/web";
   import "../app.css";
 
   onMount(() => {
     document.body.classList.add("suse");
 
-		PWA.initialize();
+    PWA.initialize();
   });
 </script>
 
@@ -21,4 +21,4 @@
 </svelte:head>
 
 <Toaster />
-<slot/>
+<slot />

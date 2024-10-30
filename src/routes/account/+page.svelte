@@ -38,7 +38,6 @@
 
   settings.subscribe(async (value) => {
     if (!mounted) return;
-    toast.success("test");
     const res = await requests.post<Settings>("/api/account/settings", {
       notifications: value.notifications,
       home: value.home

@@ -19,6 +19,7 @@ export const auth = {
   adapter,
   pages: {
     signIn: "/login",
+    signOut: "/logout",
     verifyRequest: "/verify"
   },
 

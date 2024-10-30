@@ -4,5 +4,8 @@ export const defaultSettings: Settings = {
   notifications: {
     attendance: false,
     grades: false
+  },
+  home: {
+    default: "home"
   }
 };

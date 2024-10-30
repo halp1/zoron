@@ -14,7 +14,7 @@
     <img src="/favicon.png" alt="icon" class="w-28" />
     <div><span class="font-bold">A+</span>spen</div>
   </div>
-  <div class="mt-10 text-3xl text-center">The better Aspen experience you've always wanted.</div>
+  <div class="mt-10 text-center text-3xl">The better Aspen experience you've always wanted.</div>
   <div class="mt-10 flex items-center gap-10">
     <BubbleButton type="a" href="/login">Get Started</BubbleButton>
   </div>

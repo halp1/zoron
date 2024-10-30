@@ -34,13 +34,17 @@ export const POST: RequestHandler = async ({ locals: { auth }, request }) => {
 
     const encrypted = aspen.encrypt(email, data.username, data.password);
 
+    const activity = await aspen.activity(account.cookie);
+    const ids = activity.merged.map((item) => btoa(item.id + item.sscid)).slice(1);
+
     await adapter.updateUser!({
       id: session.user.id!,
       name: `${account.name.first} ${account.name.last}`,
       aspen: encrypted,
       session: { cookie: account.cookie, token: account.token },
       settings: _.merge(defaultSettings, session.user.settings || {}),
-      subscriptions: []
+      subscriptions: [],
+      notified: { activity: ids }
     });
 
     return api.json<AccountUpdateRes>({

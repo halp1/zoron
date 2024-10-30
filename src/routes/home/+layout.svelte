@@ -120,20 +120,20 @@
       {/each}
       <div class="mr-auto"></div>
       <div class="flex w-60 items-center justify-end gap-2">
-        <button
+        <a
           class="flex h-8 w-32 items-center justify-center gap-2 rounded-full border-2 border-blue-400 bg-white bg-opacity-0 transition-all hover:bg-opacity-10"
-          on:click={() => goto("/account")}
+          href="/account"
         >
           <Fa icon={faUser} />
           My Account
-        </button>
-        <button
+        </a>
+        <a
           class="flex h-8 w-[100px] items-center justify-center gap-2 rounded-full border-2 border-blue-400 bg-white bg-opacity-0 transition-all hover:bg-opacity-10"
-          on:click={() => signOut({ callbackUrl: "/", redirect: true })}
+          href="/logout"
         >
           <Fa icon={faSignOut} />
           Log Out
-        </button>
+        </a>
       </div>
       <div
         class="absolute bottom-1 h-[2px] rounded-full bg-white transition-all"
