@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 
   const token = auth.session.generateSessionToken();
-  const session = await adapter.createSession!({
+  await adapter.createSession!({
     userId: user.id,
     sessionToken: token,
     expires: new Date(Date.now() + auth.session.maxAge * 1000)
