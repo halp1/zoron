@@ -1,6 +1,6 @@
 import { aspen } from "$lib/aspen";
 import type { Session } from "@auth/sveltekit";
-import { adapter } from "../../../../auth/auth";
+import { adapter } from "$lib/auth";
 
 export const classDetail = async (
   session: Session,

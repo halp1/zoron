@@ -1,6 +1,6 @@
 import type { Settings } from "$lib/types";
 import { api } from "$lib/server";
-import { adapter } from "../../../../auth/auth";
+import { adapter } from "$lib/auth";
 import type { RequestHandler } from "./$types";
 import _ from "lodash";
 import { defaultSettings } from "./defaults";
