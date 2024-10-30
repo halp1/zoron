@@ -19,7 +19,7 @@ export const auth = {
   adapter,
   pages: {
     signIn: "/login",
-		verifyRequest: "/verify",
+    verifyRequest: "/verify"
   },
 
   providers: [
@@ -60,24 +60,12 @@ export const auth = {
     })
   ],
   callbacks: {
-    session({ session, trigger, user, newSession }) {
+    session({ session, user }) {
       if (session?.user) {
         session.user = { ...user, ...session.user };
       }
 
-      if (newSession && trigger === "update") {
-        const updateProperties: { [key: string]: any } = {};
-        if (newSession.image && typeof newSession.image === "string") {
-          updateProperties.image = newSession.image;
-        }
-        if (newSession.name && typeof newSession.name === "string") {
-          updateProperties.name = newSession.name;
-        }
-
-        if (Object.keys(updateProperties).length > 0) {
-          adapter.updateUser!({ id: user.id, ...updateProperties });
-        }
-      }
+      if (session.user.password) session.user.password = true as any;
 
       return session;
     }
