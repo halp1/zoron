@@ -1,5 +1,6 @@
 import { adapter, hashPassword } from "$lib/auth";
 import { api } from "$lib/server";
+
 import type { RequestHandler } from "./$types";
 
 export const POST: RequestHandler = async ({ locals: { auth }, request }) => {

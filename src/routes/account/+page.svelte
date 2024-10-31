@@ -1,50 +1,21 @@
 <script lang="ts">
   import { page } from "$app/stores";
   import { signIn, signOut } from "@auth/sveltekit/client";
-  import { onMount } from "svelte";
-  import { getDeviceInfo, requests, toast, type Device } from "$lib/web";
-  import Toggle from "$lib/components/Toggle.svelte";
-  import { writable } from "svelte/store";
-  import type { Settings } from "$lib/types";
-  import _ from "lodash";
-  import { defaultSettings } from "../api/account/settings/defaults";
+  import { requests, toast } from "$lib/web";
   import {
     faHome,
     faClose,
     faKey,
     faRightFromBracket,
     faUserSlash,
-    faUserEdit
+    faUserEdit,
+    faGear
   } from "@fortawesome/free-solid-svg-icons";
   import Fa from "svelte-fa";
 
-  let device: Device | null = null;
-  onMount(() => {
-    (async () => {
-      device = await getDeviceInfo();
-    })();
-  });
-
-  if (!$page.data.session || !$page.data.session.user) {
+  if (!$page.data?.session || !$page.data.session?.user) {
     signIn();
   }
-
-  let mounted = false;
-  const settings = writable(_.merge(defaultSettings, $page.data.session?.user?.settings));
-
-  onMount(async () => {
-    mounted = true;
-  });
-
-  settings.subscribe(async (value) => {
-    if (!mounted) return;
-    const res = await requests.post<Settings>("/api/account/settings", {
-      notifications: value.notifications,
-      home: value.home
-    });
-    if (!res.success) toast.error("An error occurred while saving your settings: " + res.error);
-    else toast.success("Updated settings");
-  });
 
   let deleting: number = -1;
   let deleteInterval: NodeJS.Timeout | null = null;
@@ -72,37 +43,23 @@
         </div>
         <a
           href="/home"
-          class="btn-full btn-outlined mx-auto flex items-center justify-center gap-3 text-base"
+          class="btn-full btn-outlined mx-auto flex items-center justify-center gap-3 border-green-400 text-base"
         >
           My A+spen <Fa icon={faHome} />
         </a>
-        <div class="flex">
-          <div class="flex flex-1 flex-col items-center">
-            <div class="text-2xl">Notifications</div>
-            <div class="flex items-center gap-3">
-              Attendance: <Toggle bind:checked={$settings.notifications.attendance} />
-            </div>
-            <div class="flex items-center gap-3">
-              Grades: <Toggle bind:checked={$settings.notifications.grades} />
-            </div>
-          </div>
-          <div class="flex flex-1 flex-col items-center">
-            <div class="mt-2 text-2xl">Home page</div>
-            Default tab:
-            <select bind:value={$settings.home.default} class="bg-transparent">
-              <option value="home" class="text-black">Home</option>
-              <option value="assignments" class="text-black">Assignments</option>
-              <option value="grades" class="text-black">Grades</option>
-              <option value="activity" class="text-black">Activity</option>
-            </select>
-          </div>
-        </div>
         <div class="border-b-2 border-dashed border-slate-600"></div>
         <div class="grid grid-cols-2 gap-2">
+          <a
+            href="/account/settings"
+            class="btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-blue-400 text-base"
+          >
+            <Fa icon={faGear} />
+            Account settings
+          </a>
           {#if $page.data.session.user.password}
             <a
               href="/account/password"
-              class="btn-full btn-outlined col-span-2 flex flex-1 items-center justify-center gap-3 border-blue-400 text-base"
+              class="btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-blue-400 text-base"
             >
               <Fa icon={faKey} />
               Update password
@@ -110,7 +67,7 @@
           {:else}
             <a
               href="/account/password"
-              class="btn-full btn-outlined col-span-2 flex flex-1 items-center justify-center gap-3 border-blue-400 text-base"
+              class="btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-blue-400 text-base"
             >
               <Fa icon={faKey} />
               Add a password

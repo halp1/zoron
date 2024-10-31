@@ -1,10 +1,12 @@
 import { aspen } from "$lib/aspen";
-import { api } from "$lib/server";
-import type { RequestHandler } from "./$types";
-import type { Session } from "$lib/types";
 import { adapter } from "$lib/auth";
-import { defaultSettings } from "../settings/defaults";
+import { api } from "$lib/server";
+import type { Session } from "$lib/types";
+
 import _ from "lodash";
+
+import { defaultSettings } from "../settings/defaults";
+import type { RequestHandler } from "./$types";
 
 export interface AccountUpdateRes {
   email: string;

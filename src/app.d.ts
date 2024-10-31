@@ -1,5 +1,4 @@
 // See https://kit.svelte.dev/docs/types#app
-
 import type { aspen } from "$lib/aspen";
 import type { Item, Settings, Subscription } from "$lib/types";
 

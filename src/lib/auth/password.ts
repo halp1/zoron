@@ -1,4 +1,4 @@
-import { randomBytes, pbkdf2 } from "crypto";
+import { pbkdf2, randomBytes } from "crypto";
 
 export const hashPassword = async (password: string) => {
   // use nodejs crypto

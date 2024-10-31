@@ -1,8 +1,10 @@
-import type { Settings } from "$lib/types";
-import { api } from "$lib/server";
 import { adapter } from "$lib/auth";
-import type { RequestHandler } from "./$types";
+import { api } from "$lib/server";
+import type { Settings } from "$lib/types";
+
 import _ from "lodash";
+
+import type { RequestHandler } from "./$types";
 import { defaultSettings } from "./defaults";
 
 type DeepPartial<T> = {

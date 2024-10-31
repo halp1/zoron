@@ -1,8 +1,9 @@
-import { parseStringPromise } from "xml2js";
-import Parser, { type Text, type Page } from "pdf2json";
 import { JSDOM } from "jsdom";
-import type { AuthResponse, Assignment, RecentActivityList, Attendance } from "./types";
-import { encrypt as _encrypt, decrypt as _decrypt } from "./crypt";
+import Parser, { type Page, type Text } from "pdf2json";
+import { parseStringPromise } from "xml2js";
+
+import { decrypt as _decrypt, encrypt as _encrypt } from "./crypt";
+import type { Assignment, Attendance, AuthResponse, RecentActivityList } from "./types";
 
 export namespace aspen {
   export namespace Types {

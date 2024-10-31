@@ -1,10 +1,11 @@
-import { SvelteKitAuth, type SvelteKitAuthConfig } from "@auth/sveltekit";
+import { database as databaseName, dbClient } from "$lib/database";
+import { html, text, validEmail } from "$lib/email";
+
 import Mailgun from "@auth/sveltekit/providers/mailgun";
 
 import { DOMAIN, MAILGUN_KEY } from "$env/static/private";
-import { database as databaseName, dbClient } from "$lib/database";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import { html, text, validEmail } from "$lib/email";
+import { SvelteKitAuth, type SvelteKitAuthConfig } from "@auth/sveltekit";
 
 export const adapter = MongoDBAdapter(dbClient, {
   databaseName

@@ -1,11 +1,12 @@
-import webpush from "web-push";
-import { error, json } from "@sveltejs/kit";
-import type { RequestHandler } from "./$types";
-
 import { query, remove } from "$lib/database";
-import { ObjectId } from "mongodb";
 import type { Subscription } from "$lib/types";
+
 import { VAPID_PRIVATE, VAPID_PUBLIC } from "$env/static/private";
+import { error, json } from "@sveltejs/kit";
+import { ObjectId } from "mongodb";
+import webpush from "web-push";
+
+import type { RequestHandler } from "./$types";
 
 const isValidURL = (url: string): boolean => {
   try {

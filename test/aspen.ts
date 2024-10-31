@@ -1,6 +1,7 @@
-import { parseStringPromise } from "xml2js";
-import type { AuthResponse, Assignment, RecentActivityList } from "./types";
 import { JSDOM } from "jsdom";
+import { parseStringPromise } from "xml2js";
+
+import type { Assignment, AuthResponse, RecentActivityList } from "./types";
 
 export namespace aspen {
   export const authenticate = async (username: string, password: string) => {

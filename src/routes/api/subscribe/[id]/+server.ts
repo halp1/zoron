@@ -1,8 +1,10 @@
-import { error, json } from "@sveltejs/kit";
-import type { RequestHandler } from "./$types";
 import { insert, query } from "$lib/database";
-import { ObjectId } from "mongodb";
 import type { Subscription } from "$lib/types";
+
+import { error, json } from "@sveltejs/kit";
+import { ObjectId } from "mongodb";
+
+import type { RequestHandler } from "./$types";
 
 export const POST: RequestHandler = async ({ request, locals, params: { id } }) => {
   const session = await locals.auth();
