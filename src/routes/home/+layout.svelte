@@ -93,7 +93,7 @@
 </svelte:head>
 
 <main
-  class="activity-container flex h-screen w-full flex-col items-center justify-center bg-slate-900"
+  class="activity-container flex h-screen w-full flex-col items-center justify-center"
 >
   <div class="hidden md:block">
     <div class="h-12"></div>
