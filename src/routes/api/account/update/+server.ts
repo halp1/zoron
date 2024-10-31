@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ locals: { auth }, request }) => {
       aspen: encrypted,
       session: { cookie: account.cookie, token: account.token },
       settings: _.merge(defaultSettings, session.user.settings || {}),
-      subscriptions: [],
+      devices: [],
       notified: { activity: ids }
     });
 

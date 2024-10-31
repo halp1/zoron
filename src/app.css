@@ -6,8 +6,11 @@
 
 @layer components {
   body {
-    @apply bg-slate-900 text-white;
+    @apply text-white;
   }
+	.bg-gradient {
+		@apply bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-[#0c1c3d] to-[#0a0f24];
+	}
   .btn-circle {
     @apply flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-opacity-10 p-2 hover:bg-slate-800;
   }

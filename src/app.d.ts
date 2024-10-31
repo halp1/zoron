@@ -22,7 +22,7 @@ export {};
 
 declare module "@auth/sveltekit" {
   interface User {
-    subscriptions?: string[];
+    devices?: Subscription[];
     aspen?: string;
     session?: { cookie: string; token: string };
     settings?: Settings;
