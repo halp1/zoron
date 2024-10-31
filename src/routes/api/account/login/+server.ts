@@ -1,7 +1,9 @@
 import { adapter, auth, verifyPassword } from "$lib/auth";
 import { api } from "$lib/server";
+
+import "@auth/sveltekit";
+
 import type { RequestHandler } from "./$types";
-import {} from "@auth/sveltekit";
 
 export const POST: RequestHandler = async ({ request }) => {
   const { email, password } = await request.json();

@@ -1,4 +1,5 @@
 import type { aspen } from "$lib/aspen";
+
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc, getFirestore, setDoc } from "firebase/firestore";

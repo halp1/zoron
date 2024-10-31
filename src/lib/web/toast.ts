@@ -1,4 +1,5 @@
-import { toast as _toast, type Renderable, type ToastOptions } from "svelte-french-toast";
+import { type Renderable, type ToastOptions, toast as _toast } from "svelte-french-toast";
+
 export namespace toast {
   export const success: typeof _toast.success = (message, options) =>
     _toast.success(message, { position: "bottom-right", ...options });

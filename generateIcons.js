@@ -1,6 +1,6 @@
-import sharp from "sharp";
 import fs from "fs";
 import path from "path";
+import sharp from "sharp";
 
 const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
 const inputPath = "./favicon.png";

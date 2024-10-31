@@ -1,6 +1,7 @@
 import { redirect } from "@sveltejs/kit";
-import type { PageServerLoad } from "./$types";
+
 import { activity } from "../../api/aspen/activity";
+import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ locals: { auth } }) => {
   const session = await auth();

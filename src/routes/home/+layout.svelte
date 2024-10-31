@@ -61,7 +61,7 @@
 
   $: tabBarWidth = activeTabIndex === -1 ? 0 : tabRefs[activeTabIndex]?.offsetWidth || 0;
 
-  let animationDirection: "left" | "right" = "left";
+  let animationDirection: "left" | "right" | "none" = "left";
 
   onNavigate((navigation) => {
     const from = tabs.indexOf(
@@ -74,7 +74,7 @@
     if (from !== -1 && to !== -1) {
       if (from < to) animationDirection = "right";
       else animationDirection = "left";
-    }
+    } else animationDirection = "none";
 
     if (!document.startViewTransition) return;
 

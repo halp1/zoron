@@ -1,4 +1,5 @@
 import { api } from "$lib/server";
+
 import { classDetail } from ".";
 import type { RequestHandler } from "./$types";
 

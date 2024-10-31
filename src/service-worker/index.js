@@ -1,10 +1,10 @@
+import { version } from "$service-worker";
+
 /// <reference types="@sveltejs/kit" />
 /// <reference no-default-lib="true"/>
 /// <reference lib="esnext" />
 /// <reference lib="webworker" />
 const sw = /** @type {ServiceWorkerGlobalScope} */ (/** @type {unknown} */ (self));
-
-import { version } from "$service-worker";
 
 sw.addEventListener("install", (event) => {
   console.log(`[SW] Installed (${version})`);
