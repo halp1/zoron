@@ -112,7 +112,7 @@
         on:click={() => {
           mode = "day";
         }}
-        title="Single day  view"
+        title="Single day view"
       >
         <Fa icon={faCalendarDay} />
       </button>
