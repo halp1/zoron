@@ -13,5 +13,6 @@ export interface Settings {
   };
   home: {
     default: "home" | "schedule" | "grades" | "activity";
+		hideGPA: boolean;
   };
 }

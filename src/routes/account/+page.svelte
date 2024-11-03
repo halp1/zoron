@@ -45,7 +45,7 @@
           href="/home"
           class="btn-full btn-outlined mx-auto flex items-center justify-center gap-3 border-green-400 text-base"
         >
-          My A+spen <Fa icon={faHome} />
+          <Fa icon={faHome} /> My A+spen
         </a>
         <div class="border-b-2 border-dashed border-slate-600"></div>
         <div class="grid grid-cols-2 gap-2">

@@ -95,7 +95,7 @@
             </button>
           {/if}
         </div>
-        <div class="text-slate-400">{item.date}</div>
+        <div class="text-slate-4pp00">{item.date}</div>
       {:else}
         <div class="border-x-4 border-x-slate-600 px-2">
           <span class="text-yellow-300">Attendance</span> - {item.class}

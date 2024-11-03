@@ -7,6 +7,8 @@
   import { onMount } from "svelte";
   import { writable } from "svelte/store";
   import { defaultSettings } from "../../api/account/settings/defaults";
+  import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+  import Fa from "svelte-fa";
 
   let device: Device | null = null;
   onMount(() => {
@@ -18,8 +20,9 @@
   let mounted = false;
   const settings = writable(_.merge(defaultSettings, $page.data.session?.user?.settings));
 
-  onMount(async () => {
+  onMount(() => {
     mounted = true;
+    return () => history.go(0);
   });
 
   settings.subscribe(async (value) => {
@@ -43,7 +46,10 @@
 
 <main>
   <div class="flex h-screen w-screen flex-col items-center justify-center">
-    <div class="flex w-96 flex-col gap-3 rounded-2xl bg-slate-800 p-10">
+    <div class="relative flex w-96 flex-col gap-3 rounded-2xl bg-slate-800 p-10">
+      <a class="btn-circle absolute left-5 top-5" href="/account">
+        <Fa icon={faArrowLeft} />
+      </a>
       <div class="border-b-2 border-slate-600 pb-1 text-center text-4xl">Settings</div>
       <div class="flex flex-1 flex-col gap-1">
         <div class="text-2xl">Notifications</div>
@@ -66,7 +72,7 @@
           {/if}
         </div>
         {#if !matchingDevice}
-          <button class="btn-full btn-outlined text-base mt-2">Add this device</button>
+          <button class="btn-full btn-outlined mt-2 text-base">Add this device</button>
         {/if}
       </div>
       <div class="flex flex-1 flex-col gap-1">
@@ -82,6 +88,10 @@
             <option value="grades" class="bg-slate-800 text-white">Grades</option>
             <option value="activity" class="bg-slate-800 text-white">Activity</option>
           </select>
+        </div>
+        <!-- hideGPA toggle -->
+        <div class="flex items-center gap-3">
+          <Toggle bind:checked={$settings.home.hideGPA} /> Hide GPA
         </div>
       </div>
     </div>

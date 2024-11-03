@@ -10,12 +10,25 @@
   interface Class extends aspen.Types.Class {
     expanded: boolean;
     data?: aspen.Types.ClassDetail;
+    credit?: number;
     height: number;
   }
 
   let data = null as { classes: aspen.Types.Class[] } | null;
   $: classes = (
-    data ? data.classes.map((c) => ({ ...c, expanded: false, height: -1 }) satisfies Class) : null
+    data
+      ? data.classes.map(
+          (c) =>
+            ({
+              ...c,
+              expanded: false,
+              height: -1,
+              credit: $page.data?.session?.user?.schedule?.schedule?.find(
+                (a) => a?.course === c.course
+              )?.credit
+            }) satisfies Class
+        )
+      : null
   ) as Class[] | null;
 
   const loadClassData = async (c: Class) => {
@@ -95,6 +108,50 @@
 
   const useLinearGradient = false;
 
+  const individualGPA = (letter?: string) => {
+    switch (letter) {
+      case "A+":
+        return 4.33;
+      case "A":
+        return 4.0;
+      case "A-":
+        return 3.67;
+      case "B+":
+        return 3.33;
+      case "B":
+        return 3.0;
+      case "B-":
+        return 2.67;
+      case "C+":
+        return 2.33;
+      case "C":
+        return 2.0;
+      case "C-":
+        return 1.67;
+      case "D+":
+        return 1.33;
+      case "D":
+        return 1.0;
+      case "D-":
+        return 0.67;
+      case "F":
+        return 0.0;
+      default:
+        return null;
+    }
+  };
+
+  const calculateGPA = (
+    grades: { grade?: aspen.Types.Grade; courseID: string; credit?: number }[]
+  ) =>
+    grades
+      .map((grade) => ({
+        gpa: individualGPA(grade?.grade?.letter)!,
+        weight: grade.credit!
+      }))
+      .filter((g) => g.weight && g.gpa !== null)
+      .reduce((a, b, _, arr) => a + (b.gpa * b.weight) / arr.reduce((a, b) => a + b.weight, 0), 0);
+
   // pre-load classes for tailwind
   ("grid-cols-1 grid-cols-2 grid-cols-3 grid-cols-4 grid-cols-5 grid-cols-6 grid-cols-7 grid-cols-8 grid-cols-9 grid-cols-10 grid-cols-11 grid-cols-12 border-b-0");
 </script>
@@ -104,87 +161,107 @@
 </svelte:head>
 
 {#if classes}
+  {#if classes && $page.data?.session?.user?.schedule && !$page.data?.session?.user?.settings?.home?.hideGPA}
+    <div class="mb-2 text-center text-3xl" style="view-transition-name: gpa;">
+      Quater GPA: {calculateGPA(
+        classes.map((c) => ({ grade: c.grade, courseID: c.course, credit: c.credit }))
+      ).toFixed(2)}
+    </div>
+  {/if}
   <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
     {#each classes as c}
       <div
         id="c-{c.id}"
         class="{c.expanded && c.data
-          ? 'col-span-1 pt-1 md:col-span-2 lg:col-span-3 xl:col-span-4'
+          ? 'col-span-1 sm:pt-1 md:col-span-2 lg:col-span-3 xl:col-span-4'
           : ''} mb-auto border-2 border-slate-600 p-3"
         style={loaded ? `view-transition-name: class-${c.id}` : ""}
       >
-        <div class={(c.expanded && c.data && "flex items-end") || ""}>
-          <div>
-            <div class="flex items-center">
-              <button
-                on:click={async () => {
-                  if (!c.expanded) {
-                    if (!c.data) {
-                      c.expanded = true;
-                      const data = await loadClassData(c);
-                      document.startViewTransition(
-                        () =>
-                          new Promise((r) => {
-                            c.data = data;
-                            c.height = -1;
-                            if (!c.data) c.expanded = false;
-                            const interval = setInterval(() => {
-                              if (document.querySelector(`#grades-${c.id}`)) {
-                                c.height =
-                                  // @ts-expect-error offsetheight blah blah
-                                  document.querySelector(`#grades-${c.id}`)?.offsetHeight || 400;
-                                clearInterval(interval);
-                                // @ts-expect-error didn't put void
-                                r();
-                              }
-                            }, 10);
-                          })
-                      );
+        <div class={(c.expanded && c.data && "sm:flex sm:items-end") || ""}>
+          <div class="flex items-center">
+            <div>
+              <div class="flex items-center">
+                <button
+                  on:click={async () => {
+                    if (!c.expanded) {
+                      if (!c.data) {
+                        c.expanded = true;
+                        const data = await loadClassData(c);
+                        document.startViewTransition(
+                          () =>
+                            new Promise((r) => {
+                              c.data = data;
+                              c.height = -1;
+                              if (!c.data) c.expanded = false;
+                              const interval = setInterval(() => {
+                                if (document.querySelector(`#grades-${c.id}`)) {
+                                  c.height =
+                                    // @ts-expect-error offsetheight blah blah
+                                    document.querySelector(`#grades-${c.id}`)?.offsetHeight || 400;
+                                  clearInterval(interval);
+                                  // @ts-expect-error didn't put void
+                                  r();
+                                }
+                              }, 10);
+                            })
+                        );
+                      } else {
+                        document.startViewTransition(() => {
+                          c.expanded = true;
+                          return new Promise((r) => setTimeout(r, 130));
+                        });
+                      }
                     } else {
                       document.startViewTransition(() => {
-                        c.expanded = true;
+                        c.expanded = false;
                         return new Promise((r) => setTimeout(r, 130));
                       });
                     }
-                  } else {
-                    document.startViewTransition(() => {
-                      c.expanded = false;
-                      return new Promise((r) => setTimeout(r, 130));
-                    });
-                  }
-                }}
-                class="btn-circle"
-                ><Fa
-                  icon={faChevronRight}
-                  class="transition-all {c.expanded ? 'rotate-90' : 'rotate-0'}"
-                />
-              </button>
-              <div class="text-xl">{c.name}</div>
-            </div>
-            <div class="flex items-center">
-              <div class="mr-2 border-r-2 border-slate-600 pr-2 text-sm text-slate-400">
-                {c.course}
-              </div>
-              <div class="">
-                {#if c.teachers.length === 1}
-                  {c.teachers[0].first} {c.teachers[0].last}
-                {:else}
-                  {#each c.teachers.slice(0, c.teachers.length - 1) as teacher}
-                    {teacher.first}
-                    {teacher.last}{#if c.teachers.length > 2},{/if}
-                  {/each}
-                  and
-                  {c.teachers.at(-1)?.first}
-                  {c.teachers.at(-1)?.last}
+                  }}
+                  class="btn-circle -ml-2 mr-1"
+                  ><Fa
+                    icon={faChevronRight}
+                    class="transition-all {c.expanded ? 'rotate-90' : 'rotate-0'}"
+                  />
+                </button>
+                <div class="text-xl">{c.name}</div>
+                {#if c.credit && c.expanded && c.data && window.matchMedia('(min-width: 640px)').matches}
+                  <div class="ml-3 text-slate-400">
+                    {c.credit.toFixed(2)} credits
+                  </div>
                 {/if}
               </div>
+              <div class="flex items-center">
+                <div class="mr-2 border-r-2 border-slate-600 pr-2 text-sm text-slate-400">
+                  {c.course}
+                </div>
+                <div>
+                  {#if c.teachers.length === 1}
+                    {c.teachers[0].first} {c.teachers[0].last}
+                  {:else}
+                    {#each c.teachers.slice(0, c.teachers.length - 1) as teacher}
+                      {teacher.first}
+                      {teacher.last}{#if c.teachers.length > 2},{/if}
+                    {/each}
+                    and
+                    {c.teachers.at(-1)?.first}
+                    {c.teachers.at(-1)?.last}
+                  {/if}
+                </div>
+              </div>
             </div>
+            {#if c.credit && ((!c.expanded || !c.data) || !window.matchMedia('(min-width: 640px)').matches)}
+              <div class="ml-auto text-slate-400">
+                {c.credit.toFixed(2)} credits
+              </div>
+            {/if}
           </div>
-          <div class="ml-auto flex {c.expanded && c.data ? 'items-center gap-4' : 'gap-0'}">
+          <div class="ml-auto flex gap-0 {c.expanded && c.data ? 'sm:items-center sm:gap-4' : ''}">
             <div
-              class="flex justify-end border-slate-600 {c.expanded && c.data
-                ? 'flex-row gap-5 border-l-0'
-                : 'mt-auto flex-col border-l-2'}"
+              class="mt-auto flex flex-col justify-end border-l-2 border-slate-600 {c.expanded &&
+              c.data
+                ? 'sm:gap-5 sm:flex-row sm:border-l-0'
+                : ''}"
             >
               <div class="flex items-center gap-2 pl-2">
                 Room: {#if c.room}
@@ -202,10 +279,10 @@
               {/if}
             </div>
             <div
-              class="-mb-1 ml-auto flex flex-col items-end justify-center border-dashed border-slate-600 text-slate-400 {c.expanded &&
+              class="-mb-1 ml-auto flex flex-col items-end justify-center border-l-0 border-dashed border-slate-600 pl-0 text-slate-400 {c.expanded &&
               c.data
-                ? 'border-l-2 pl-2'
-                : 'border-l-0 pl-0'}"
+                ? 'sm:border-l-2 sm:pl-2'
+                : ''}"
             >
               <div class="flex gap-2">
                 <div class="font-bold">Absent:</div>
@@ -235,22 +312,24 @@
               <Skeleton class="h-4 sm:w-80" />
             </div>
           {:else}
-            <div class="flex gap-10 p-5">
+            <div class="grid grid-cols-1 gap-10 p-5 lg:grid-cols-2">
               <div class="flex-1">
                 {#if c.data.assignments.length > 0}
+                  {@html `<style>div { --height: ${c.height === -1 ? 400 : c.height}px; }</style`}
                   <div
-                    class="custom-scroll custom-scroll-right flex flex-1 flex-col items-stretch overflow-auto border-2 border-slate-600"
-                    style="max-height: {c.height === -1 ? 400 : c.height}px"
+                    class="custom-scroll custom-scroll-right flex max-h-96 flex-1 flex-col items-stretch overflow-auto border-2 border-slate-600 lg:max-h-[var(--height)]"
                   >
                     {#each c.data.assignments as assignment, idx}
                       <div
-                        class="grid grid-cols-7 border-b-2 border-dashed border-slate-600 p-2"
+                        class="grid grid-cols-4 border-b-2 border-dashed border-slate-600 p-2 sm:grid-cols-7"
                         style={idx === c.data.assignments.length - 1 ? "border: none" : ""}
                       >
                         <div
-                          class="col-span-3 row-span-2 flex items-center justify-center border-r-2 border-dashed border-r-slate-600 pr-2 text-center"
+                          class="col-span-4 row-span-2 flex items-center justify-center border-dashed border-r-slate-600 text-center font-bold sm:col-span-3 sm:border-r-2 sm:pr-2"
                         >
-                          {assignment.name}
+                          <div class="border-b-2 border-slate-600">
+                            {assignment.name}
+                          </div>
                         </div>
                         <div
                           class="col-span-2 row-span-2 flex flex-col items-center justify-center text-right"
@@ -258,11 +337,9 @@
                           <div>{assignment.due}</div>
                           <!-- {#if "weight" in assignment && assignment.weight !== undefined} -->
                           <div class="text-slate-400">
-                            Weight: <span class="font-bold"
-                              >{typeof assignment.weight === "undefined"
-                                ? 1
-                                : assignment.weight}</span
-                            >
+                            Weight: <span class="font-bold">
+                              {typeof assignment.weight === "undefined" ? 1 : assignment.weight}
+                            </span>
                           </div>
                           <!-- {/if} -->
                         </div>

@@ -26,6 +26,7 @@ export const POST: RequestHandler = async ({ request, locals: { auth } }) => {
   ) {
     settingsToUpdate.home.default = body.home.default;
   }
+  if (typeof body?.home?.hideGPA === "boolean") settingsToUpdate.home.hideGPA = body.home.hideGPA;
 
   await adapter.updateUser!({ id: session.user.id!, settings: settingsToUpdate });
 
