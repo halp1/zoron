@@ -2,10 +2,12 @@ import fs from "fs";
 import path from "path";
 import sharp from "sharp";
 
+const relative = (p) => path.resolve(__dirname, "../static", p);
+
 const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
-const inputPath = "./favicon.png";
-const outputDir = "./icons";
-const manifestPath = "./site.webmanifest";
+const inputPath = relative("./favicon.png");
+const outputDir = relative("./icons");
+const manifestPath = relative("./site.webmanifest");
 
 // Create output directory if it doesn't exist
 if (!fs.existsSync(outputDir)) {

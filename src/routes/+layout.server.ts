@@ -14,6 +14,7 @@ export const load: LayoutServerLoad = async (event) => {
     username: aspenName,
     env: {
       vapid: VAPID_PUBLIC
-    }
+    },
+    hideFooter: event.cookies.get("hide-footer") === "1"
   };
 };

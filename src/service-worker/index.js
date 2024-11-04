@@ -1,13 +1,43 @@
 import { version } from "$service-worker";
 
+
 /// <reference types="@sveltejs/kit" />
 /// <reference no-default-lib="true"/>
 /// <reference lib="esnext" />
 /// <reference lib="webworker" />
+
+// const assets = ["/favicon-48x48.png","/web-app-manifest-192x192.png","/web-app-manifest-512x512.png","/favicon.png","/site.webmanifest","/apple-touch-icon.png","/icons/icon-96x96.png","/icons/icon-192x192.png","/icons/icon-152x152.png","/icons/icon-512x512.png","/icons/icon-384x384.png","/icons/icon-128x128.png","/icons/icon-72x72.png","/icons/icon-144x144.png","/favicon.ico","/fonts/suse/bold.ttf","/fonts/suse/regular.ttf","/favicon.svg"];
+const assets = [];
+
 const sw = /** @type {ServiceWorkerGlobalScope} */ (/** @type {unknown} */ (self));
+
+const CACHE_NAME = `app-cache-${version}`;
 
 sw.addEventListener("install", (event) => {
   console.log(`[SW] Installed (${version})`);
+  event.waitUntil(
+    caches
+      .open(CACHE_NAME)
+      .then((cache) => cache.addAll(assets))
+      .then(() => sw.skipWaiting())
+  );
+});
+
+sw.addEventListener("fetch", (event) => {
+  event.respondWith(
+    caches.match(event.request).then((response) => response || fetch(event.request))
+  );
+});
+
+sw.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)))
+      )
+      .then(() => sw.clients.claim())
+  );
 });
 
 const generateRandomID = () => Math.floor(Math.random() * 10 ** 9).toString(16);

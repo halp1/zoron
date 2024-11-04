@@ -5,12 +5,13 @@ export const streamPromise = <T = any>() =>
   new Promise<{
     controller: ReadableStreamDefaultController<any>;
     stream: ReadableStream;
-    tick: (step: number, total: number) => void;
+    tick: (options: {step: number, total: number, id?: string, data?: any}) => void;
     end: (data: T) => void;
     error: (message: string, code: number) => Response;
     response: () => Response;
   }>((res) => {
     let controller: ReadableStreamDefaultController<any>;
+    let r: Response | null = null;
     const stream = new ReadableStream({
       start: (c) => {
         controller = c;
@@ -19,15 +20,19 @@ export const streamPromise = <T = any>() =>
 
     controller ??= new ReadableStreamDefaultController();
 
-    const response = () => new Response(stream, { headers: { "Content-Type": "text/plain" } });
+    const response = () => {
+      r = r || new Response(stream, { headers: { "Content-Type": "text/plain" } });
+      return r;
+    };
     res({
       controller,
       stream,
-      tick: (step, total) =>
+      tick: ({step, total, id, data}) =>
         autoCatch(() =>
           controller.enqueue(
             new TextEncoder().encode(
-              JSON.stringify({ type: "progress", step, total } satisfies StreamAPI.Progress) + "\n"
+              JSON.stringify({ type: "progress", step, total, id, data } satisfies StreamAPI.Progress) +
+                "\n"
             )
           )
         ),

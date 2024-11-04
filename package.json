@@ -5,12 +5,13 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
+    "build:icons": "node scrips/generateIcons.js",
+		"build:assets": "bun scripts/generateStaticFiles.ts",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --check .",
-    "format": "prettier --write .",
-    "build:icons": "cd static && node ../generateIcons.js"
+    "format": "prettier --write ."
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^3.3.1",
