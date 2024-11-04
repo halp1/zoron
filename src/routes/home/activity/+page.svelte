@@ -42,6 +42,7 @@
             const item = merged.find((item) => item.id === id);
             if (!item || item.type === "attendance") return;
             if (data) {
+							alert('dataed ' + JSON.stringify(data));
               merged[merged.indexOf(item)] = { ...item, scoring: data };
             } else {
               merged[merged.indexOf(item)] = { ...item, scoring: steps / total };
