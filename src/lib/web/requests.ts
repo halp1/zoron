@@ -55,17 +55,20 @@ export namespace requests {
       const decoder = new TextDecoder();
       let done = false;
 
+      let chunk = "";
+
       while (!done && reader) {
         const { value, done: streamDone } = await reader.read();
         done = streamDone;
 
         if (value) {
           const text = decoder.decode(value);
-          const messages = text
+          const messages = (chunk + text)
             .trim()
             .split("\n")
             .map((item) => item.trim());
           for (const message of messages) {
+            console.log("recieved", message);
             try {
               const data: StreamAPI.Message<T> = JSON.parse(message);
 
@@ -76,7 +79,8 @@ export namespace requests {
               if (data.type === "response") return { success: true as const, data: data.data };
             } catch (e) {
               console.error("Error parsing stream data: " + message);
-              return { success: false as const, error: "System Error" };
+              chunk = message;
+              // return { success: false as const, error: "System Error" };
             }
           }
         }

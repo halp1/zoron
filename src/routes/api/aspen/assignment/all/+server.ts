@@ -16,7 +16,7 @@ const  processBatch = async(
 ) => {
   const queue = [...assignments];
   const inProgress = new Set();
-  const batchSize = 5;
+  const batchSize = 1;
 
   async function processOne(item: { assignment: Assignment; studentID: string }) {
     try {
@@ -26,6 +26,7 @@ const  processBatch = async(
         t = total;
       });
       stream.tick({ step: t, total: t, id: item.assignment.sscid, data: result });
+			console.log('finished', item.assignment.assignment);
       return result;
     } catch (error) {
       return null;
