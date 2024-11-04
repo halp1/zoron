@@ -3,6 +3,8 @@ export namespace StreamAPI {
     type: "progress";
     step: number;
     total: number;
+    id?: string;
+    data?: any;
   }
 
   export interface Response<T> {

@@ -16,6 +16,7 @@
   import "./home.css";
   import { onMount } from "svelte";
   import { PWA } from "$lib/web";
+  import { Footer } from "$lib/components";
 
   interface Tab {
     name: string;
@@ -92,9 +93,7 @@
   <title>Schedule | A+spen</title>
 </svelte:head>
 
-<main
-  class="activity-container flex h-screen w-full flex-col items-center justify-center"
->
+<main class="activity-container flex h-screen w-full flex-col items-center justify-center">
   <div class="hidden md:block">
     <div class="h-12"></div>
     <div
@@ -163,11 +162,12 @@
       </a>
     {/each}
   </div>
+  <Footer className="hidden md:flex" hideable />
   <!-- PWA popup -->
   <div
     class="fixed bottom-0 left-0 right-0 top-0 {$prompt
       ? 'flex'
-      : 'hidden'} relative items-center justify-center backdrop-blur-md"
+      : 'hidden'} items-center justify-center backdrop-blur-md"
   >
     <div class="flex flex-col items-center justify-center rounded-md bg-slate-800 p-10">
       <div class="mb-5 text-xl">Install A+spen?</div>

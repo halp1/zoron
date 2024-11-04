@@ -11,11 +11,13 @@ export namespace PWA {
   }
 
   export const prompt = writable<BeforeInstallPromptEvent | null>(null);
+  export const overridePrompt = writable<BeforeInstallPromptEvent | null>(null);
 
   const showAllowed = () =>
     !window.matchMedia("(display-mode: standalone)").matches &&
     localStorage.getItem("pwa-hide-prompt") !== "1" &&
-    window.matchMedia("(max-width: 600px)").matches;
+    true;
+  // window.matchMedia("(max-width: 600px)").matches;
 
   export const initialize = () => {
     window.addEventListener("beforeinstallprompt", (event) => {
@@ -23,6 +25,7 @@ export namespace PWA {
         event.preventDefault();
         prompt.set(event as BeforeInstallPromptEvent);
       }
+      overridePrompt.set(event as BeforeInstallPromptEvent);
     });
   };
 

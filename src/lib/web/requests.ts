@@ -42,7 +42,7 @@ export namespace requests {
   export const stream = async <T = {}>(
     uri: string,
     data: Record<string, any>,
-    onProgress?: aspen.Types.ProgressCallback
+    onProgress?: (steps: number, total: number, id?: string, data?: any) => void
   ) => {
     try {
       const response = await fetch(uri, {
@@ -71,7 +71,8 @@ export namespace requests {
 
               if (data.type === "error")
                 return { success: false as const, error: data.error, code: data.code };
-              if (data.type === "progress" && onProgress) onProgress(data.step, data.total);
+              if (data.type === "progress" && onProgress)
+                onProgress(data.step, data.total, data.id, data.data);
               if (data.type === "response") return { success: true as const, data: data.data };
             } catch (e) {
               console.error("Error parsing stream data: " + message);

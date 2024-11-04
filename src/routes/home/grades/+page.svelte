@@ -225,7 +225,7 @@
                   />
                 </button>
                 <div class="text-xl">{c.name}</div>
-                {#if c.credit && c.expanded && c.data && window.matchMedia('(min-width: 640px)').matches}
+                {#if c.credit && c.expanded && c.data && window.matchMedia("(min-width: 640px)").matches}
                   <div class="ml-3 text-slate-400">
                     {c.credit.toFixed(2)} credits
                   </div>
@@ -250,9 +250,10 @@
                 </div>
               </div>
             </div>
-            {#if c.credit && ((!c.expanded || !c.data) || !window.matchMedia('(min-width: 640px)').matches)}
-              <div class="ml-auto text-slate-400">
-                {c.credit.toFixed(2)} credits
+            {#if c.credit && (!c.expanded || !c.data || !window.matchMedia("(min-width: 640px)").matches)}
+              <div class="ml-auto text-slate-400 flex flex-col border-r-2 border-slate-600 pr-1">
+                <div class="text-end -mb-1">{c.credit.toFixed(2)}</div>
+                <div class="text-end">credits</div>
               </div>
             {/if}
           </div>
@@ -260,7 +261,7 @@
             <div
               class="mt-auto flex flex-col justify-end border-l-2 border-slate-600 {c.expanded &&
               c.data
-                ? 'sm:gap-5 sm:flex-row sm:border-l-0'
+                ? 'sm:flex-row sm:gap-5 sm:border-l-0'
                 : ''}"
             >
               <div class="flex items-center gap-2 pl-2">

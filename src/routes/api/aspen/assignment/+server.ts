@@ -1,5 +1,5 @@
 import type { aspen } from "$lib/aspen";
-import { api, streamPromise } from "$lib/server";
+import { streamPromise } from "$lib/server";
 
 import { assignment } from ".";
 import type { RequestHandler } from "./$types";
@@ -15,7 +15,9 @@ export const POST: RequestHandler = async ({ request, locals: { auth } }) => {
   if (!body.assignment) return stream.error("No assignment provided", 400);
   if (!body.studentID) return stream.error("No student ID provided", 400);
 
-  assignment(session, body.assignment, body.studentID, stream.tick)
+  assignment(session, body.assignment, body.studentID, (step, total) =>
+    stream.tick({ step, total })
+  )
     .then((res) => stream.end(res))
     .catch((error) => stream.error(`Failed to get assignment (${error?.message || error})`, 500));
   return stream.response();

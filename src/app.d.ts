@@ -12,6 +12,7 @@ declare global {
       env: {
         vapid: string;
       };
+			hideFooter: boolean;
     }
     // interface PageState {}
     // interface Platform {}
