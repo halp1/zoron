@@ -16,8 +16,7 @@ export namespace PWA {
   const showAllowed = () =>
     !window.matchMedia("(display-mode: standalone)").matches &&
     localStorage.getItem("pwa-hide-prompt") !== "1" &&
-    true;
-  // window.matchMedia("(max-width: 600px)").matches;
+    window.matchMedia("(max-width: 600px)").matches;
 
   export const initialize = () => {
     window.addEventListener("beforeinstallprompt", (event) => {
