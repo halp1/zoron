@@ -4,7 +4,7 @@
   import type { Assignment, Attendance } from "$lib/aspen/types";
   import Skeleton from "$lib/components/Skeleton.svelte";
   import { requests, toast } from "$lib/web";
-  import { faDownload, faGraduationCap } from "@fortawesome/free-solid-svg-icons";
+  import { faDownload, faGraduationCap, faCalendarCheck } from "@fortawesome/free-solid-svg-icons";
   import { onMount } from "svelte";
   import Fa from "svelte-fa";
   interface GradeWithData extends Assignment {
@@ -80,7 +80,9 @@
           </div>
           <div class="flex pl-2 sm:hidden"><Fa icon={faGraduationCap} color="#4ade80" /></div>
           {item.assignment}:
-          <div class="flex h-8 items-center justify-center border-4 border-slate-600 px-2">
+          <div
+            class="flex h-8 items-center justify-center whitespace-nowrap border-4 border-slate-600 px-2"
+          >
             {#if !item.scoring || typeof item.scoring === "number"}
               {item.grade}
               {#if typeof item.scoring === "number"}
@@ -100,7 +102,7 @@
               {item.grade} / {item.scoring.total}
             {:else}
               {item.grade}
-              <span class="hidden sm:inline ml-1">
+              <span class="ml-1 hidden sm:inline">
                 ({item.scoring.scored} / {item.scoring.total})
               </span>
             {/if}
@@ -153,23 +155,22 @@
               </button>
             {/if}
           </div> -->
-          <div class="hidden text-slate-400 sm:block">{item.date}</div>
-          <div class="text-slate-400 sm:hidden">
-            {item.date.split("-")[1]}/{item.date.split("-")[2]}
-          </div>
         {:else}
-          <div class="border-x-4 border-x-slate-600 px-2">
+          <div class="hidden px-2 sm:block">
             <span class="text-yellow-300">Attendance</span> - {item.class}
           </div>
+          <div class="flex px-2 sm:hidden"><Fa icon={faCalendarCheck} color="#fde047" /></div>
 
           <div class="">Period:</div>
           {item.period}
           <div class="">Code:</div>
           {item.code}
-
-          <div class="ml-auto" />
-          <div class="text-slate-400">{item.date}</div>
         {/if}
+        <div class="ml-auto" />
+        <div class="hidden text-slate-400 sm:block">{item.date}</div>
+        <div class="text-slate-400 sm:hidden">
+          {item.date.split("-")[1]}/{item.date.split("-")[2]}
+        </div>
       </div>
     {/each}
   {/if}
