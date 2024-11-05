@@ -6,7 +6,7 @@ export const load: LayoutServerLoad = async (event) => {
   const account = await event.locals.auth();
   if (!account || !account.user) return redirect(307, "/login");
   if (
-    (!account.user.name || !account.user.subscriptions) &&
+    (!account.user.name || !account.user.aspen) &&
     !new URL(event.request.url).pathname.includes("/update")
   )
     return redirect(307, "/account/update");
