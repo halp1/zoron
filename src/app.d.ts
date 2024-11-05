@@ -12,7 +12,7 @@ declare global {
       env: {
         vapid: string;
       };
-			hideFooter: boolean;
+      hideFooter: boolean;
     }
     // interface PageState {}
     // interface Platform {}
@@ -31,6 +31,7 @@ declare module "@auth/sveltekit" {
     notified?: {
       activity: string[];
     };
+    activity?: { id: string; data: { scored: number; total: number; percentage: number } | null }[];
     password?: { hash: string; salt: string };
   }
 }

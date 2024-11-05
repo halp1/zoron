@@ -39,6 +39,7 @@ export namespace requests {
     }
   };
 
+
   export const stream = async <T = {}>(
     uri: string,
     data: Record<string, any>,
@@ -68,7 +69,6 @@ export namespace requests {
             .split("\n")
             .map((item) => item.trim());
           for (const message of messages) {
-            console.log("recieved", message);
             try {
               const data: StreamAPI.Message<T> = JSON.parse(message);
 
