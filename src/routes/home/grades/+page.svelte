@@ -6,6 +6,7 @@
   import Fa from "svelte-fa";
   import { requests, toast } from "$lib/web";
   import { onMount } from "svelte";
+  import { replaceState } from "$app/navigation";
 
   interface Class extends aspen.Types.Class {
     expanded: boolean;
@@ -73,7 +74,7 @@
             }),
           300
         );
-        history.replaceState({}, "", location.href.split("#")[0]);
+        replaceState(location.href.split("#")[0], {});
       }, 100);
     })();
   });
@@ -251,8 +252,8 @@
               </div>
             </div>
             {#if c.credit && (!c.expanded || !c.data || !window.matchMedia("(min-width: 640px)").matches)}
-              <div class="ml-auto text-slate-400 flex flex-col border-r-2 border-slate-600 pr-1">
-                <div class="text-end -mb-1">{c.credit.toFixed(2)}</div>
+              <div class="ml-auto flex flex-col border-r-2 border-slate-600 pr-1 text-slate-400">
+                <div class="-mb-1 text-end">{c.credit.toFixed(2)}</div>
                 <div class="text-end">credits</div>
               </div>
             {/if}

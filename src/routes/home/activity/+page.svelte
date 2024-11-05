@@ -14,23 +14,28 @@
           scored: number;
           total: number;
         }
-      | number;
+      | number
+      | null;
   }
+
+  const existingData = $page.data.session?.user?.activity || [];
+
   let merged = $page.data.activity?.merged as (GradeWithData | Attendance)[] | undefined;
   let loading = false;
   onMount(() => {
     if (!merged || loading) return;
     loading = true;
-    toast.success("loading data...");
     (async () => {
       merged.forEach((item, idx) => {
         if (item.type !== "grade") return;
-        merged[idx] = { ...item, scoring: 0 };
+        const existing = existingData.find((existing) => existing.id === item.id);
+        if (!existing) merged[idx] = { ...item, scoring: 0 };
+        else merged[idx] = { ...item, scoring: existing.data };
       });
       const res = await requests.stream(
         "/api/aspen/assignment/all",
         merged
-          .filter((item) => item.type === "grade")
+          .filter((item) => item.type === "grade" && typeof item.scoring === "number")
           .map((item) => ({
             assignment: item,
             studentID:
@@ -38,11 +43,9 @@
           })),
         (steps, total, id, data) => {
           try {
-            console.log("data incoming");
             const item = merged.find((item) => item.id === id);
             if (!item || item.type === "attendance") return;
-            if (data) {
-							alert('dataed ' + JSON.stringify(data));
+            if (data || data === null) {
               merged[merged.indexOf(item)] = { ...item, scoring: data };
             } else {
               merged[merged.indexOf(item)] = { ...item, scoring: steps / total };
@@ -95,12 +98,11 @@
               {/if}
             {:else if item.scoring.scored.toString().trim() === item.grade.trim()}
               {item.grade} / {item.scoring.total}
-              <span class="sm: hidden">({item.scoring.percentage}%)</span>
             {:else}
               {item.grade}
-              <span class="hidden sm:inline"
-                >({item.scoring.scored} / {item.scoring.total} - {item.scoring.percentage}%)</span
-              >
+              <span class="hidden sm:inline ml-1">
+                ({item.scoring.scored} / {item.scoring.total})
+              </span>
             {/if}
           </div>
 
@@ -115,8 +117,8 @@
               ></div>
             </div>
           {/if}
-          <div class="flex items-center gap-2">
-            {#if !item.scoring && typeof item.scoring !== "number"}
+          <!-- <div class="flex items-center gap-2">
+            {#if item.scoring === undefined}
               <button
                 class="btn-circle"
                 on:click={async (e) => {
@@ -150,7 +152,7 @@
                 <Fa icon={faDownload} />
               </button>
             {/if}
-          </div>
+          </div> -->
           <div class="hidden text-slate-400 sm:block">{item.date}</div>
           <div class="text-slate-400 sm:hidden">
             {item.date.split("-")[1]}/{item.date.split("-")[2]}
