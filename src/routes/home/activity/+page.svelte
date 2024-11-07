@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onNavigate } from "$app/navigation";
   import { page } from "$app/stores";
   import type { aspen } from "$lib/aspen";
   import type { Assignment, Attendance } from "$lib/aspen/types";
@@ -21,10 +22,9 @@
   const existingData = $page.data.session?.user?.activity || [];
 
   let merged = $page.data.activity?.merged as (GradeWithData | Attendance)[] | undefined;
-  let loading = false;
   onMount(() => {
-    if (!merged || loading) return;
-    loading = true;
+    if (!merged || (window as any).loadingActivity) return;
+    (window as any).loadingActivity = true;
     (async () => {
       merged.forEach((item, idx) => {
         if (item.type !== "grade") return;
@@ -59,6 +59,10 @@
         return toast.error(`Error loading assignment data: ${res.error}`);
       }
     })();
+
+    onNavigate(() => {
+      (window as any).loadingActivity = false;
+    });
   });
 </script>
 

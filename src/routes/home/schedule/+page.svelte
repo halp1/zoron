@@ -102,7 +102,17 @@
 
 {#if !schedule}
   <div class="flex h-full flex-col items-center justify-center gap-3">
-    <button class="btn-full btn-outlined text-base" on:click={updateSchedule}> Download </button>
+    <div class="text-2xl">Your schedule has not been loaded</div>
+    <button class="btn-full btn-outlined text-base" on:click={updateSchedule}>Load Schedule</button>
+    <div class="flex max-w-96 flex-wrap items-center gap-1 px-3 text-slate-600 justify-center">
+      {#each "Once your schedule is loaded, it can updated once every 24 hours via the {icon} button".split(" ") as word}
+        {#if word === "{icon}"}
+          <Fa icon={faRotateRight} />
+        {:else}
+          <span>{word}</span>
+        {/if}
+      {/each}
+    </div>
   </div>
 {:else}
   <div class="relative flex h-full items-center gap-3">

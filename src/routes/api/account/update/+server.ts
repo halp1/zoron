@@ -46,7 +46,9 @@ export const POST: RequestHandler = async ({ locals: { auth }, request }) => {
       session: { cookie: account.cookie, token: account.token },
       settings: _.merge(defaultSettings, session.user.settings || {}),
       devices: [],
-      notified: { activity: ids }
+      notified: { activity: ids },
+      activity: undefined,
+      schedule: undefined
     });
 
     return api.json<AccountUpdateRes>({
