@@ -11,6 +11,25 @@ export namespace requests {
     return await fetch(uri, { method, headers: options.headers, body: options.body });
   };
 
+  export const get = async <T = {}>(
+    uri: string,
+    data: Record<string, any> = {}
+  ): Promise<{ success: true; data: T } | { success: false; error: string }> => {
+    try {
+      const url = new URL(uri);
+      for (const key in data) {
+        url.searchParams.append(key, data[key]);
+      }
+      let res = await request("GET", url.toString()).then((r) => r.json());
+      if ("message" in res) {
+        res = JSON.parse(res.message);
+      }
+      return !("success" in res) ? { success: true, data: res } : res;
+    } catch {
+      return { success: false, error: "Network Error" };
+    }
+  };
+
   export const del = async <T = {}>(
     uri: string
   ): Promise<{ success: true; data: T } | { success: false; error: string }> => {
@@ -38,7 +57,6 @@ export namespace requests {
       return { success: false, error: "Network Error" };
     }
   };
-
 
   export const stream = async <T = {}>(
     uri: string,
