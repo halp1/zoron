@@ -20,17 +20,18 @@
   }
 
   const existingData = $page.data.session?.user?.activity || [];
+  let merged = undefined as (GradeWithData | Attendance)[] | undefined;
 
-  let merged = $page.data.activity?.merged as (GradeWithData | Attendance)[] | undefined;
   onMount(() => {
-    if (!merged || (window as any).loadingActivity) return;
-    (window as any).loadingActivity = true;
     (async () => {
+      merged = (await $page.data.activity).merged!;
+      if (!merged || (window as any).loadingActivity) return;
+      (window as any).loadingActivity = true;
       merged.forEach((item, idx) => {
         if (item.type !== "grade") return;
         const existing = existingData.find((existing) => existing.id === item.id);
-        if (!existing) merged[idx] = { ...item, scoring: 0 };
-        else merged[idx] = { ...item, scoring: existing.data };
+        if (!existing) merged![idx] = { ...item, scoring: 0 };
+        else merged![idx] = { ...item, scoring: existing.data };
       });
       const res = await requests.stream(
         "/api/aspen/assignment/all",
@@ -43,12 +44,12 @@
           })),
         (steps, total, id, data) => {
           try {
-            const item = merged.find((item) => item.id === id);
+            const item = merged!.find((item) => item.id === id);
             if (!item || item.type === "attendance") return;
             if (data || data === null) {
-              merged[merged.indexOf(item)] = { ...item, scoring: data };
+              merged![merged!.indexOf(item)] = { ...item, scoring: data };
             } else {
-              merged[merged.indexOf(item)] = { ...item, scoring: steps / total };
+              merged![merged!.indexOf(item)] = { ...item, scoring: steps / total };
             }
           } catch (e) {
             console.error(e);
@@ -60,9 +61,9 @@
       }
     })();
 
-    onNavigate(() => {
-      (window as any).loadingActivity = false;
-    });
+    // onNavigate(() => {
+    //   (window as any).loadingActivity = false;
+    // });
   });
 </script>
 
@@ -70,10 +71,21 @@
   <title>Activity | A+spen</title>
 </svelte:head>
 <div class="no-scroll flex w-full flex-1 flex-col gap-2 overflow-auto border-l-4 border-slate-600">
-  {#if merged}
+  {#if !merged}
+    {#each Array.from({ length: 60 }) as _}
+      <div class="my-2 flex items-center gap-3">
+        <Skeleton class="ml-3 h-4" style="width: {Math.random() * 150 + 75 + 90}px" />
+        <Skeleton class="h-4 flex-1" />
+        <Skeleton class="h-4 w-24" />
+      </div>
+    {/each}
+  {:else}
     {#each merged as item, idx}
       <div class="flex items-center gap-3">
         {#if item.type === "grade"}
+          <div class="ml-3 flex w-5 justify-center sm:-mr-2">
+            <Fa icon={faGraduationCap} color="#4ade80" />
+          </div>
           <div class="hidden border-r-4 border-slate-600 px-2 sm:block">
             <span class="text-green-300">Grade</span> -
             <a
@@ -82,7 +94,6 @@
               >{item.class}</a
             >
           </div>
-          <div class="flex pl-2 sm:hidden"><Fa icon={faGraduationCap} color="#4ade80" /></div>
           {item.assignment}:
           <div
             class="flex h-8 items-center justify-center whitespace-nowrap border-4 border-slate-600 px-2"
@@ -160,15 +171,22 @@
             {/if}
           </div> -->
         {:else}
-          <div class="hidden px-2 sm:block">
-            <span class="text-yellow-300">Attendance</span> - {item.class}
+          <div class="ml-3 flex w-5 justify-center sm:-mr-2">
+            <Fa icon={faCalendarCheck} color="#fde047" />
           </div>
-          <div class="flex px-2 sm:hidden"><Fa icon={faCalendarCheck} color="#fde047" /></div>
+          <div class="hidden border-r-4 border-slate-600 px-2 sm:block">
+            <span class="text-yellow-300">Attendance</span> -
+            <a
+              href="/home/grades#{encodeURIComponent(item.class)}"
+              class="border-b-2 border-slate-600 border-opacity-0 text-blue-300 hover:border-opacity-100"
+              >{item.class}</a
+            >
+          </div>
 
-          <div class="">Period:</div>
-          {item.period}
-          <div class="">Code:</div>
-          {item.code}
+          <div class="-mr-1">Period:</div>
+          <div class="font-bold">{item.period}</div>
+          <div class="-mr-1">Code:</div>
+          <div class="font-bold">{item.code}</div>
         {/if}
         <div class="ml-auto" />
         <div class="hidden text-slate-400 sm:block">{item.date}</div>
