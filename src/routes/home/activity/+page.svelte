@@ -24,7 +24,8 @@
 
   onMount(() => {
     (async () => {
-      merged = (await $page.data.activity).merged!;
+			const activity = await $page.data.activity;
+      merged = activity.merged!;
       if (!merged || (window as any).loadingActivity) return;
       (window as any).loadingActivity = true;
       merged.forEach((item, idx) => {
@@ -40,7 +41,7 @@
           .map((item) => ({
             assignment: item,
             studentID:
-              $page.data.activity.raw["recent-activity-list"]["recent-activity"][0].$.studentoid
+              activity.raw["recent-activity-list"]["recent-activity"][0].$.studentoid
           })),
         (steps, total, id, data) => {
           try {
@@ -134,42 +135,6 @@
               ></div>
             </div>
           {/if}
-          <!-- <div class="flex items-center gap-2">
-            {#if item.scoring === undefined}
-              <button
-                class="btn-circle"
-                on:click={async (e) => {
-                  e.preventDefault();
-                  if (
-                    merged.filter((item) => "scoring" in item && typeof item.scoring === "number")
-                      .length > 1
-                  )
-                    return toast.error("Slow down...");
-                  item.scoring = 0;
-                  const res = await requests.stream(
-                    "/api/aspen/assignment",
-                    {
-                      assignment: item,
-                      studentID:
-                        $page.data.activity.raw["recent-activity-list"]["recent-activity"][0].$
-                          .studentoid
-                    },
-                    (steps, total) => {
-                      item.scoring = steps / total;
-                    }
-                  );
-                  if (!res.success) {
-                    item.scoring = undefined;
-                    return toast.error(`Error loading assignment data: ${res.error}`);
-                  }
-                  // @ts-expect-error
-                  merged[idx] = { ...item, scoring: res.data };
-                }}
-              >
-                <Fa icon={faDownload} />
-              </button>
-            {/if}
-          </div> -->
         {:else}
           <div class="ml-3 flex w-5 justify-center sm:-mr-2">
             <Fa icon={faCalendarCheck} color="#fde047" />
