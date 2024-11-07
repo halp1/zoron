@@ -14,6 +14,8 @@
   import choobs from "../../../assets/choobs.png";
   import { Collapsible } from "$lib/components";
   import { updateChoobsSchedule } from "./choobs";
+  import type { Block } from "$lib/types";
+  import ScheduleBlock from "$lib/components/ScheduleBlock.svelte";
 
   $: schedule = ($page.data.session?.user || {}).schedule;
 
@@ -51,18 +53,6 @@
     "bg-indigo-400"
   ];
 
-  type Block =
-    | ({
-        type: "block";
-        color: string;
-      } & aspen.Types.Schedule.Course)
-    | {
-        type: "free";
-        color: string;
-      }
-    | { type: "i-block"; color: string }
-    | { type: "lunch"; color: string };
-
   const insertLunches = (schedule: aspen.Types.Schedule.Schedule) => {
     const courseColorMap = new Map<string, string>();
     courseColorMap.set("lunch", "bg-gray-400");
@@ -93,6 +83,9 @@
   };
 
   let mode: "full" | "day" = "full";
+	let selectedDay:number = 0;
+	$:generated = schedule ? transpose(insertLunches(schedule), 6, 7) : null as any as Block[];
+
 
   let exportModalOpen = false;
   let exportChoice: null | "choobs" = null;
@@ -104,7 +97,7 @@
   <div class="flex h-full flex-col items-center justify-center gap-3">
     <div class="text-2xl">Your schedule has not been loaded</div>
     <button class="btn-full btn-outlined text-base" on:click={updateSchedule}>Load Schedule</button>
-    <div class="flex max-w-96 flex-wrap items-center gap-1 px-3 text-slate-600 justify-center">
+    <div class="flex max-w-96 flex-wrap items-center justify-center gap-1 px-3 text-slate-600">
       {#each "Once your schedule is loaded, it can updated once every 24 hours via the {icon} button".split(" ") as word}
         {#if word === "{icon}"}
           <Fa icon={faRotateRight} />
@@ -115,8 +108,8 @@
     </div>
   </div>
 {:else}
-  <div class="relative flex h-full items-center gap-3">
-    <div class="flex flex-col items-center gap-3">
+  <div class="relative flex flex-col-reverse md:flex-col h-full items-center gap-3 pt-8">
+    <div class="flex md:flex-col items-center gap-3 -mb-3 md:mb-0">
       <button
         class="btn-circle {mode === 'day' ? 'bg-blue-600 hover:bg-blue-400' : ''}"
         on:click={() => {
@@ -154,38 +147,21 @@
       </button>
     </div>
     {#if mode === "full"}
-      <div class="custom-scroll flex min-h-full flex-1 justify-center overflow-auto">
+      <div class="custom-scroll hidden min-h-full flex-1 justify-center overflow-auto md:flex">
         <div class="grid min-h-full grid-cols-6 border-4 border-slate-800">
-          {#each transpose(insertLunches(schedule), 6, 7) as block, i}
-            <div
-              class="{i >= 42 - 6 ? '' : 'border-b-4'} {i % 6 === 5
-                ? ''
-                : 'border-r-4'} row-span-1 flex flex-col items-center gap-2 border-slate-800 py-2 {block.color} bg-opacity-50"
-            >
-              {#if block.type === "block"}
-                <div
-                  class="relative px-2 text-center text-sm font-bold"
-                  style="word-wrap: break-word;"
-                >
-                  {block.description}
-                </div>
-                <div class="mt-auto flex w-full items-center px-2 text-sm">
-                  <div class="mr-auto">Room <strong>{block.room}</strong></div>
-                  <div class="relative ml-auto inline-flex items-center gap-2">
-                    {#if block.block}
-                      {block.block}
-                    {/if}
-                  </div>
-                </div>
-              {:else}
-                <div class="my-auto text-xl">
-                  {block.type === "lunch" ? "Lunch" : block.type === "i-block" ? "I Block" : "Free"}
-                </div>
-              {/if}
-            </div>
+          {#each generated as block, i}
+            <ScheduleBlock
+              {block}
+              className="{i >= 42 - 6 ? '' : 'border-b-4'} {i % 6 === 5 ? '' : 'border-r-4'}"
+            />
           {/each}
         </div>
       </div>
+			<div class="grid md:hidden min-h-full w-full overflow-auto">
+				{#each generated.filter((_, i) => i % 6 === selectedDay) as block}
+					<ScheduleBlock {block} className="border-2 border-slate-800 text-2xl" freeFontSize="text-3xl" />
+				{/each}
+			</div>
     {:else}
       <div class="custom-scroll flex max-w-96 flex-col gap-5"></div>
     {/if}
