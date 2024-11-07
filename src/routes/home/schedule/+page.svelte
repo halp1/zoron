@@ -12,10 +12,9 @@
   } from "@fortawesome/free-solid-svg-icons";
   import Fa from "svelte-fa";
   import choobs from "../../../assets/choobs.png";
-  import { Collapsible } from "$lib/components";
+  import { Collapsible, Swipeable, ScheduleBlock } from "$lib/components";
   import { updateChoobsSchedule } from "./choobs";
-  import type { Block } from "$lib/types";
-  import ScheduleBlock from "$lib/components/ScheduleBlock.svelte";
+  import type { CalendarEvent, Block } from "$lib/types";
 
   $: schedule = ($page.data.session?.user || {}).schedule;
 
@@ -24,12 +23,12 @@
     if (updating) return toast.error("Schedule is already updating");
     updating = true;
     const currentDate = new Date();
-    const jan25_2024 = new Date(2024, 0, 25); // January is month 0 in JavaScript Date
+    const jan25_2024 = new Date(2025, 0, 25);
     const semester = currentDate >= jan25_2024 ? 2 : 1;
 
-    const { dismiss, update } = toast.loading("Generating schedule (0%)...");
+    const { dismiss, update } = toast.loading(getLoadingText(0));
     const res = await requests.stream("/api/aspen/schedule/gen", { semester }, (step, total) =>
-      update(getLoadingText((step / total) * 100))
+      update(getLoadingText(Math.round((step / total) * 100)))
     );
     if (res.success === true) {
       history.go(0);
@@ -83,14 +82,45 @@
   };
 
   let mode: "full" | "day" = "full";
-	let selectedDay:number = 0;
-	$:generated = schedule ? transpose(insertLunches(schedule), 6, 7) : null as any as Block[];
-
+	let dayViewDay = 
+  let selectedDay: number = 0;
+  $: generated = schedule ? transpose(insertLunches(schedule), 6, 7) : (null as any as Block[]);
 
   let exportModalOpen = false;
   let exportChoice: null | "choobs" = null;
 
   let updating = false;
+  const loadDay = async (date: Date) => {
+    const key = date.toISOString().split("T")[0];
+
+    const res = await requests.get<CalendarEvent>(
+      "https://www.googleapis.com/calendar/v3/calendars/lexingtonma.org_qud45cvitftvgc317tsd2vqctg%40group.calendar.google.com/events",
+      {
+        calendarId: "lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com",
+        singleEvents: true,
+        timeZone: "America/New_York",
+        maxResults: 20,
+        timeMin: `${key}T04:00:00-04:00`,
+        timeMax: `${key}T23:59:59-04:00`,
+        key: "AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs"
+      }
+    );
+
+    if (!res.success) throw res.error;
+    const currentDayEvents = res.data.items.filter((event) => {
+      const eventStartDate = new Date(event.start.dateTime || event.start.date!);
+      const isFullDayEvent = !event.start.dateTime && !event.end.dateTime;
+
+      return (
+        (eventStartDate.getDate() === date.getDate() &&
+          eventStartDate.getMonth() === date.getMonth() &&
+          eventStartDate.getFullYear() === date.getFullYear()) ||
+        isFullDayEvent
+      );
+    });
+		return currentDayEvents;
+  };
+  $: day = 
 </script>
 
 {#if !schedule}
@@ -108,8 +138,8 @@
     </div>
   </div>
 {:else}
-  <div class="relative flex flex-col-reverse md:flex-col h-full items-center gap-3 pt-8">
-    <div class="flex md:flex-col items-center gap-3 -mb-3 md:mb-0">
+  <div class="relative flex h-full flex-col-reverse items-center gap-3 pt-8 md:flex-row md:pt-0">
+    <div class="-mb-3 flex items-center gap-3 md:mb-0 md:flex-col">
       <button
         class="btn-circle {mode === 'day' ? 'bg-blue-600 hover:bg-blue-400' : ''}"
         on:click={() => {
@@ -157,11 +187,17 @@
           {/each}
         </div>
       </div>
-			<div class="grid md:hidden min-h-full w-full overflow-auto">
-				{#each generated.filter((_, i) => i % 6 === selectedDay) as block}
-					<ScheduleBlock {block} className="border-2 border-slate-800 text-2xl" freeFontSize="text-3xl" />
-				{/each}
-			</div>
+      <Swipeable className="md:hidden">
+        <div class="grid min-h-full w-full overflow-auto">
+          {#each generated.filter((_, i) => i % 6 === selectedDay) as block}
+            <ScheduleBlock
+              {block}
+              className="border-2 border-slate-800 text-2xl"
+              freeFontSize="text-3xl"
+            />
+          {/each}
+        </div>
+      </Swipeable>
     {:else}
       <div class="custom-scroll flex max-w-96 flex-col gap-5"></div>
     {/if}
