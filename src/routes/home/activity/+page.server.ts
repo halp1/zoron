@@ -6,7 +6,7 @@ import type { PageServerLoad } from "./$types";
 export const load: PageServerLoad = async ({ locals: { auth } }) => {
   const session = await auth();
   try {
-    return { activity: await activity(session!) };
+    return { activity: activity(session!) };
   } catch {
     return { activity: null };
   }

@@ -6,7 +6,6 @@
   import Fa from "svelte-fa";
   import { requests, toast } from "$lib/web";
   import { onMount } from "svelte";
-  import { replaceState } from "$app/navigation";
 
   interface Class extends aspen.Types.Class {
     expanded: boolean;
@@ -43,9 +42,8 @@
 
   onMount(() => {
     (async () => {
-      const res = await requests.post<any>("/api/aspen/classes");
-      if (!res.success) return toast.error(res.error);
-      data = res.data;
+      const res = await $page.data.classes;
+      data = res
       setTimeout(async () => {
         const name = decodeURIComponent(location.hash).replaceAll("#", "");
         if (!name || name.length === 0 || !classes) return;
@@ -74,7 +72,7 @@
             }),
           300
         );
-        replaceState(location.href.split("#")[0], {});
+        history.replaceState({}, '', location.href.split("#")[0]);
       }, 100);
     })();
   });
@@ -111,7 +109,7 @@
 
   const individualGPA = (letter?: string) => {
     switch (letter) {
-      case "A+":
+		case "A+":
         return 4.33;
       case "A":
         return 4.0;

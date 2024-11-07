@@ -65,6 +65,7 @@
   let animationDirection: "left" | "right" | "none" = "left";
 
   onNavigate((navigation) => {
+		if (!navigation.to?.url.pathname.includes('activity')) (window as any).loadingActivity = false;
     const from = tabs.indexOf(
       [...tabs].reverse().find((tab) => navigation.from?.url.pathname.includes(tab.path))!
     );
