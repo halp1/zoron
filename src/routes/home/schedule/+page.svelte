@@ -82,7 +82,7 @@
   };
 
   let mode: "full" | "day" = "full";
-	let dayViewDay = 
+	let dayViewDay: Date = new Date();
   let selectedDay: number = 0;
   $: generated = schedule ? transpose(insertLunches(schedule), 6, 7) : (null as any as Block[]);
 
@@ -120,7 +120,7 @@
     });
 		return currentDayEvents;
   };
-  $: day = 
+  $: dayPromise = mode === "day" ? loadDay(dayViewDay) : null;
 </script>
 
 {#if !schedule}
@@ -199,7 +199,16 @@
         </div>
       </Swipeable>
     {:else}
-      <div class="custom-scroll flex max-w-96 flex-col gap-5"></div>
+      <div class="custom-scroll flex max-w-96 flex-col gap-5">
+				{#await dayPromise}
+					loading...
+				{:then day}
+				<code>
+				{JSON.stringify(day, null, 2)}</code>
+				{:catch}
+					<div class="text-3xl">There was an error loading this day. please refresh the page</div>
+				{/await}
+			</div>
     {/if}
   </div>
 {/if}
