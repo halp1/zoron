@@ -24,24 +24,25 @@
 
   onMount(() => {
     (async () => {
-			const activity = await $page.data.activity;
+      const activity = await $page.data.activity;
       merged = activity.merged!;
       if (!merged || (window as any).loadingActivity) return;
       (window as any).loadingActivity = true;
       merged.forEach((item, idx) => {
         if (item.type !== "grade") return;
         const existing = existingData.find((existing) => existing.id === item.id);
-        if (!existing) merged![idx] = { ...item, scoring: 0 };
+        if (!existing || !existing.lastLoaded || existing.lastLoaded !== item.grade.trim())
+          merged![idx] = { ...item, scoring: 0 };
         else merged![idx] = { ...item, scoring: existing.data };
       });
+
       const res = await requests.stream(
         "/api/aspen/assignment/all",
         merged
           .filter((item) => item.type === "grade" && typeof item.scoring === "number")
           .map((item) => ({
             assignment: item,
-            studentID:
-              activity.raw["recent-activity-list"]["recent-activity"][0].$.studentoid
+            studentID: activity.raw["recent-activity-list"]["recent-activity"][0].$.studentoid
           })),
         (steps, total, id, data) => {
           try {
@@ -152,8 +153,8 @@
           <div class="font-bold">{item.period}</div>
           <div class="-mr-1">Code:</div>
           <div class="font-bold">{item.code}</div>
+          <div class="h-[2px] flex-1 bg-slate-600" />
         {/if}
-        <div class="ml-auto" />
         <div class="hidden text-slate-400 sm:block">{item.date}</div>
         <div class="text-slate-400 sm:hidden">
           {item.date.split("-")[1]}/{item.date.split("-")[2]}

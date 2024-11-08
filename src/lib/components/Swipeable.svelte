@@ -4,6 +4,7 @@
   const dispatch = createEventDispatcher<{ swipe: "left" | "right" }>();
 
   export let className = "";
+  export let style = "";
 
   const DEADZONE = 50;
   let startX: number | null = null;
@@ -13,12 +14,12 @@
   let endY: number | null = null;
 
   const touchStart = (event: TouchEvent) => {
-		if (touch) return;
-    const t = event.targetTouches[0];
+    if (touch) return;
+    const t = event.changedTouches[0];
     startX = t.clientX;
     startY = t.clientY;
     touch = t.identifier;
-		event.preventDefault();
+    event.preventDefault();
   };
 
   const touchMove = (event: TouchEvent) => {
@@ -26,7 +27,7 @@
       return;
     }
 
-    const t = [...event.targetTouches].find((t) => t.identifier === touch);
+    const t = [...event.changedTouches].find((t) => t.identifier === touch);
 
     if (!t) return;
 
@@ -38,11 +39,11 @@
 
   const touchEnd = (event: TouchEvent) => {
     if (
-      !startX ||
-      !startY ||
-      !endX ||
-      !endY ||
-      ![...event.targetTouches].find((t) => t.identifier === touch)
+      startX === null ||
+      startY === null ||
+      endX === null ||
+      endY === null ||
+      ![...event.changedTouches].find((t) => t.identifier === touch)
     ) {
       return;
     }
@@ -51,6 +52,7 @@
 
     const dx = endX - startX;
     const dy = endY - startY;
+    console.log(dx, dy);
 
     if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > DEADZONE) {
       dispatch("swipe", dx > 0 ? "right" : "left");
@@ -60,16 +62,18 @@
   };
 
   onMount(() => {
-    window.addEventListener("touchmove", touchMove, { passive: false });
-    window.addEventListener("touchend", touchEnd, { passive: false });
+    document.addEventListener("touchmove", touchMove, { passive: false });
+    document.addEventListener("touchend", touchEnd, { passive: false });
+    document.addEventListener("touchcancel", touchEnd, { passive: false });
 
     return () => {
-      window.removeEventListener("touchmove", touchMove);
-      window.removeEventListener("touchend", touchEnd);
+      document.removeEventListener("touchmove", touchMove);
+      document.removeEventListener("touchend", touchEnd);
+      document.removeEventListener("touchcancel", touchEnd);
     };
   });
 </script>
 
-<div class={className} on:touchstart={touchStart}>
+<div {style} class={className} on:touchstart={touchStart}>
   <slot />
 </div>
