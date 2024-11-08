@@ -119,7 +119,32 @@
         isFullDayEvent
       );
     });
-    return currentDayEvents;
+    return currentDayEvents
+      .filter(
+        (event) =>
+          !event.summary.includes("Lunch") &&
+          !event.summary.includes("Day") &&
+          !event.summary.includes("$")
+      )
+      .map((block) => ({
+        block: block.summary,
+        start: new Date(block.start.dateTime || block.start.date!),
+        end: new Date(block.end.dateTime || block.end.date!),
+        duration:
+          (new Date(block.end.dateTime || block.end.date!).getTime() -
+            new Date(block.start.dateTime || block.start.date!).getTime()) /
+          1000 /
+          60,
+        progression:
+          new Date() >= new Date(block.start.dateTime || block.start.date!) &&
+          new Date() <= new Date(block.end.dateTime || block.end.date!)
+            ? ((new Date().getTime() -
+                new Date(block.start.dateTime || block.start.date!).getTime()) /
+                (new Date(block.end.dateTime || block.end.date!).getTime() -
+                  new Date(block.start.dateTime || block.start.date!).getTime())) *
+              100
+            : null
+      }));
   };
   $: dayPromise = mode === "day" ? loadDay(dayViewDay) : null;
 
@@ -227,7 +252,16 @@
         {#await dayPromise}
           loading...
         {:then day}
-          <code> {JSON.stringify(day, null, 2)}</code>
+          {#if !day}
+            An error occured loading your schedule
+          {:else}
+            {#each day as block}
+              <div class="flex gap-3">
+                {block.duration}
+								{block.progression}
+              </div>
+            {/each}
+          {/if}
         {:catch}
           <div class="text-3xl">There was an error loading this day. please refresh the page</div>
         {/await}
