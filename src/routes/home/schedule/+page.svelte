@@ -16,6 +16,7 @@
   import { updateChoobsSchedule } from "./choobs";
   import type { CalendarEvent, Block } from "$lib/types";
   import "./schedule.css";
+  import { onMount } from "svelte";
 
   $: schedule = ($page.data.session?.user || {}).schedule;
 
@@ -57,7 +58,7 @@
     const courseColorMap = new Map<string, string>();
     courseColorMap.set("lunch", "bg-gray-400");
     courseColorMap.set("free", "bg-gray-400");
-    courseColorMap.set("i-block", "bg-cyan-400");
+    courseColorMap.set("I-block", "bg-cyan-400");
     for (const course of schedule.schedule) {
       if (course === null) continue;
       if (course.course === null) continue;
@@ -69,7 +70,7 @@
       .map((item, idx) =>
         item === null
           ? [2, 4, 5].includes(Math.floor(idx / 6)) && idx % 6 === 4
-            ? { type: "i-block", color: courseColorMap.get("i-block")! }
+            ? { type: "I-block", color: courseColorMap.get("I-block")! }
             : { type: "free", color: courseColorMap.get("free")! }
           : { ...item, type: "block", color: courseColorMap.get(item.course)! }
       );
@@ -82,11 +83,12 @@
     return newSchedule;
   };
 
-  let mode: "full" | "day" = "full";
+  let mode: "full" | "day" = "day";
   let dayViewDay: Date = new Date();
   let selectedDay: number = 0;
   $: generated = schedule ? transpose(insertLunches(schedule), 6, 7) : (null as any as Block[]);
 
+  $: console.log(generated);
   let exportModalOpen = false;
   let exportChoice: null | "choobs" = null;
 
@@ -135,18 +137,35 @@
             new Date(block.start.dateTime || block.start.date!).getTime()) /
           1000 /
           60,
-        progression:
-          new Date() >= new Date(block.start.dateTime || block.start.date!) &&
-          new Date() <= new Date(block.end.dateTime || block.end.date!)
-            ? ((new Date().getTime() -
-                new Date(block.start.dateTime || block.start.date!).getTime()) /
-                (new Date(block.end.dateTime || block.end.date!).getTime() -
-                  new Date(block.start.dateTime || block.start.date!).getTime())) *
-              100
-            : null
+        progression: calculateProgression(
+          new Date(block.start.dateTime || block.start.date!),
+          new Date(block.end.dateTime || block.end.date!)
+        ),
+
+        class: generated.find((b) => ((b as any).block || b.type).trim() === block.summary.trim())
       }));
   };
+
+  const calculateProgression = (start: Date, end: Date): number | null =>
+    Date.now() < start.getTime()
+      ? null
+      : Date.now() > end.getTime()
+        ? null
+        : ((Date.now() - start.getTime()) / (end.getTime() - start.getTime())) * 100;
   $: dayPromise = mode === "day" ? loadDay(dayViewDay) : null;
+
+  onMount(() => {
+    const interval = setInterval(async () => {
+      if (mode === "day" && dayPromise)
+        dayPromise = Promise.resolve(
+          (await dayPromise).map((block) => ({
+            ...block,
+            progression: calculateProgression(block.start, block.end)
+          }))
+        );
+    }, 100);
+    return () => clearInterval(interval);
+  });
 
   let swipeDirection: "left" | "right" | "none" = "left";
 </script>
@@ -248,7 +267,7 @@
         {/key}
       </Swipeable>
     {:else}
-      <div class="custom-scroll flex max-w-96 flex-col gap-5">
+      <div class="custom-scroll mx-auto flex max-w-96 flex-col items-center gap-5">
         {#await dayPromise}
           loading...
         {:then day}
@@ -256,9 +275,12 @@
             An error occured loading your schedule
           {:else}
             {#each day as block}
-              <div class="flex gap-3">
+              <div class="flex w-80 flex-col gap-3 border-2 border-dashed border-slate-600 p-5">
+                {block.class?.type === "block"
+                  ? block.class.description
+                  : generated.find((b) => b.type === block.block)?.type}
                 {block.duration}
-								{block.progression}
+                {block.progression}
               </div>
             {/each}
           {/if}
