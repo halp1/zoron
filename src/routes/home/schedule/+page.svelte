@@ -15,6 +15,7 @@
   import { Collapsible, Swipeable, ScheduleBlock } from "$lib/components";
   import { updateChoobsSchedule } from "./choobs";
   import type { CalendarEvent, Block } from "$lib/types";
+  import "./schedule.css";
 
   $: schedule = ($page.data.session?.user || {}).schedule;
 
@@ -82,7 +83,7 @@
   };
 
   let mode: "full" | "day" = "full";
-	let dayViewDay: Date = new Date();
+  let dayViewDay: Date = new Date();
   let selectedDay: number = 0;
   $: generated = schedule ? transpose(insertLunches(schedule), 6, 7) : (null as any as Block[]);
 
@@ -118,9 +119,11 @@
         isFullDayEvent
       );
     });
-		return currentDayEvents;
+    return currentDayEvents;
   };
   $: dayPromise = mode === "day" ? loadDay(dayViewDay) : null;
+
+  let swipeDirection: "left" | "right" | "none" = "left";
 </script>
 
 {#if !schedule}
@@ -138,7 +141,7 @@
     </div>
   </div>
 {:else}
-  <div class="relative flex h-full flex-col-reverse items-center gap-3 pt-8 md:flex-row md:pt-0">
+  <div class="relative flex h-full flex-col-reverse items-center gap-3 md:flex-row md:pt-0">
     <div class="-mb-3 flex items-center gap-3 md:mb-0 md:flex-col">
       <button
         class="btn-circle {mode === 'day' ? 'bg-blue-600 hover:bg-blue-400' : ''}"
@@ -187,28 +190,48 @@
           {/each}
         </div>
       </div>
-      <Swipeable className="md:hidden">
-        <div class="grid min-h-full w-full overflow-auto">
-          {#each generated.filter((_, i) => i % 6 === selectedDay) as block}
-            <ScheduleBlock
-              {block}
-              className="border-2 border-slate-800 text-2xl"
-              freeFontSize="text-3xl"
-            />
-          {/each}
-        </div>
+      <Swipeable
+        className="md:hidden flex-1 relative w-full"
+        on:swipe={(e) => {
+          const applyChange = () => {
+            if (e.detail === "left") selectedDay = Math.min(selectedDay + 1, 6);
+            else selectedDay = Math.max(selectedDay - 1, 0);
+          };
+
+          if (!document.startViewTransition) return applyChange();
+          document.startViewTransition(() => {
+            swipeDirection = e.detail;
+            applyChange();
+            return new Promise((r) => setTimeout(r, 150));
+          });
+        }}
+      >
+        {#key selectedDay}
+          <div
+            class="day-anim-{swipeDirection} grid h-full w-full"
+            style="grid-template-rows: repeat(15, minmax(0, 1fr));"
+          >
+            <div class="-mb-1 text-center text-xl">Day {selectedDay + 1}</div>
+            {#each generated.filter((_, i) => i % 6 === selectedDay) as block}
+              <ScheduleBlock
+                {block}
+                className="border-2 border-slate-800 row-span-2"
+                freeFontSize="text-2xl"
+              />
+            {/each}
+          </div>
+        {/key}
       </Swipeable>
     {:else}
       <div class="custom-scroll flex max-w-96 flex-col gap-5">
-				{#await dayPromise}
-					loading...
-				{:then day}
-				<code>
-				{JSON.stringify(day, null, 2)}</code>
-				{:catch}
-					<div class="text-3xl">There was an error loading this day. please refresh the page</div>
-				{/await}
-			</div>
+        {#await dayPromise}
+          loading...
+        {:then day}
+          <code> {JSON.stringify(day, null, 2)}</code>
+        {:catch}
+          <div class="text-3xl">There was an error loading this day. please refresh the page</div>
+        {/await}
+      </div>
     {/if}
   </div>
 {/if}
@@ -299,3 +322,13 @@
     </div>
   </div>
 {/if}
+
+<style>
+  .day-anim-left {
+    view-transition-name: schedule-in-out-left;
+  }
+
+  .day-anim-right {
+    view-transition-name: schedule-in-out-right;
+  }
+</style>

@@ -17,7 +17,11 @@ const processBatch = async (
     return stream.error("No Aspen credentials, please update your account at /account/update", 401);
   const queue = [...assignments];
   const results: (aspen.Types.AssignmentScore | null)[] = [];
-  const internalResults: { id: string; data: aspen.Types.AssignmentScore | null }[] = [];
+  const internalResults: {
+    id: string;
+    lastLoaded: string;
+    data: aspen.Types.AssignmentScore | null;
+  }[] = [];
   const inProgress = new Set();
   const batchSize = 20;
 
@@ -35,11 +39,19 @@ const processBatch = async (
         true
       );
       stream.tick({ step: t, total: t, id: item.assignment.id, data: result });
-      internalResults.push({ id: item.assignment.id, data: result });
+      internalResults.push({
+        id: item.assignment.id,
+        lastLoaded: item.assignment.grade,
+        data: result
+      });
       return result;
     } catch (error) {
       stream.tick({ step: 0, total: 0, id: item.assignment.id, data: null });
-      internalResults.push({ id: item.assignment.id, data: null });
+      internalResults.push({
+        id: item.assignment.id,
+        lastLoaded: item.assignment.grade,
+        data: null
+      });
       return null;
     } finally {
       inProgress.delete(item);

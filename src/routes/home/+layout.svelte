@@ -62,10 +62,10 @@
 
   $: tabBarWidth = activeTabIndex === -1 ? 0 : tabRefs[activeTabIndex]?.offsetWidth || 0;
 
-  let animationDirection: "left" | "right" | "none" = "left";
+  let animationDirection: "left" | "right" | "none" = "none";
 
   onNavigate((navigation) => {
-		if (!navigation.to?.url.pathname.includes('activity')) (window as any).loadingActivity = false;
+    if (!navigation.to?.url.pathname.includes("activity")) (window as any).loadingActivity = false;
     const from = tabs.indexOf(
       [...tabs].reverse().find((tab) => navigation.from?.url.pathname.includes(tab.path))!
     );
@@ -81,10 +81,12 @@
     if (!document.startViewTransition) return;
 
     return new Promise((resolve) => {
-      document.startViewTransition(async () => {
-        resolve();
-        await navigation.complete;
-      });
+      document
+        .startViewTransition(async () => {
+          resolve();
+          await navigation.complete;
+        })
+        .finished.then(() => (animationDirection = "none"));
     });
   });
   const prompt = PWA.prompt;
