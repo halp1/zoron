@@ -280,7 +280,14 @@
                   ? block.class.description
                   : generated.find((b) => b.type === block.block)?.type}
                 {block.duration}
-                {block.progression}
+                {#if block.progression}
+                  {Math.round(block.progression * 10) / 10}%
+                  {Math.floor(
+                    block.duration - (block.progression / 100) * block.duration
+                  )}:{Math.floor(
+                    ((block.duration - (block.progression / 100) * block.duration) % 1) * 60
+                  )}
+                {/if}
               </div>
             {/each}
           {/if}
