@@ -10,22 +10,22 @@ export const POST: RequestHandler = async ({ locals: { auth }, request }) => {
   if (!session?.user?.email || !session.user.id) return stream.error("Not authenticated", 401);
   if (!session.user.aspen)
     return stream.error("No Aspen credentials, please update your account at /account/update", 401);
-  if (
-    session.user.schedule &&
-    session.user.schedule.updated &&
-    session.user.schedule.updated > Date.now() - 1000 * 60 * 60 * 24
-  )
-    return stream.error(
-      "Schedule updated within the last 24 hours. You may only request a schedule refresh every 24 hours.",
-      400
-    );
+  // if (
+  //   session.user.schedule &&
+  //   session.user.schedule.updated &&
+  //   session.user.schedule.updated > Date.now() - 1000 * 60 * 60 * 24
+  // )
+  //   return stream.error(
+  //     "Schedule updated within the last 24 hours. You may only request a schedule refresh every 24 hours.",
+  //     400
+  //   );
 
   const body = await request.json();
   const semester = body.semester;
   if (!semester) return stream.error("No semester provided", 400);
   if (semester !== 1 && semester !== 2) return stream.error("Invalid semester", 400);
 
-  generateSchedule(session, semester, stream.tick)
+  generateSchedule(session, semester, (step, total) => stream.tick({ step, total }))
     .then((res) => {
       adapter.updateUser!({
         id: session!.user!.id!,

@@ -9,5 +9,5 @@ export type Block =
       type: "free";
       color: string;
     }
-  | { type: "i-block"; color: string }
+  | { type: "I-block"; color: string }
   | { type: "lunch"; color: string };
