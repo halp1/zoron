@@ -275,7 +275,9 @@
             An error occured loading your schedule
           {:else}
             {#each day as block}
-              <div class="flex w-80 flex-col gap-3 border-2 border-dashed border-slate-600 p-5">
+              <div
+                class="flex w-80 flex-col gap-3 border-2 border-dashed border-slate-600 bg-white bg-opacity-10 p-5 backdrop-blur-xl"
+              >
                 {block.class?.type === "block"
                   ? block.class.description
                   : generated.find((b) => b.type === block.block)?.type}

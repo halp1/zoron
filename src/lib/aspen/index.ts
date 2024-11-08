@@ -380,7 +380,7 @@ export namespace aspen {
     const activityXml = await activityRes.text();
     const activity: RecentActivityList = await parseStringPromise(activityXml);
 
-    const attendence = activity["recent-activity-list"]["recent-activity"][0].periodAttendance.map(
+    const attendence = activity["recent-activity-list"]["recent-activity"][0].periodAttendance?.map(
       (period) => {
         return {
           type: "attendance" as const,
@@ -392,9 +392,9 @@ export namespace aspen {
           sscid: period.$.sscoid
         };
       }
-    );
+    ) || [];
 
-    const grades = activity["recent-activity-list"]["recent-activity"][0].gradebookScore.map(
+    const grades = activity["recent-activity-list"]["recent-activity"][0].gradebookScore?.map(
       (score) => {
         return {
           type: "grade" as const,
@@ -407,7 +407,7 @@ export namespace aspen {
           gtmid: score.$.gtmoid
         } satisfies Assignment;
       }
-    );
+    ) || [];
 
     const computeMilliseconds = (date: string): number => {
       const d = new Date(
