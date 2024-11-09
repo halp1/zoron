@@ -53,6 +53,15 @@
     "bg-pink-400",
     "bg-indigo-400"
   ];
+  // @ts-expect-error for the tailwind
+  "border-red-400" ||
+    "border-blue-400" ||
+    "border-purple-400" ||
+    "border-orange-400" ||
+    "border-green-400" ||
+    "border-yellow-400" ||
+    "border-pink-400" ||
+    "border-indigo-400";
 
   const insertLunches = (schedule: aspen.Types.Schedule.Schedule) => {
     const courseColorMap = new Map<string, string>();
@@ -88,13 +97,14 @@
   let selectedDay: number = 0;
   $: generated = schedule ? transpose(insertLunches(schedule), 6, 7) : (null as any as Block[]);
 
-  $: console.log(generated);
   let exportModalOpen = false;
   let exportChoice: null | "choobs" = null;
 
   let updating = false;
   const loadDay = async (date: Date) => {
-    const key = date.toISOString().split("T")[0];
+    const key = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
+      .toISOString()
+      .split("T")[0];
 
     const res = await requests.get<CalendarEvent>(
       "https://www.googleapis.com/calendar/v3/calendars/lexingtonma.org_qud45cvitftvgc317tsd2vqctg%40group.calendar.google.com/events",
@@ -146,13 +156,23 @@
       }));
   };
 
+  const now = () => Date.now() - 1000 * 60 * 60 * 10;
+
   const calculateProgression = (start: Date, end: Date): number | null =>
-    Date.now() < start.getTime()
+    now() < start.getTime()
       ? null
-      : Date.now() > end.getTime()
+      : now() > end.getTime()
         ? null
-        : ((Date.now() - start.getTime()) / (end.getTime() - start.getTime())) * 100;
+        : ((now() - start.getTime()) / (end.getTime() - start.getTime())) * 100;
   $: dayPromise = mode === "day" ? loadDay(dayViewDay) : null;
+
+  const dateToTime = (date: Date) => {
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? "pm" : "am";
+    const hours12 = hours % 12 || 12;
+    return `${hours12}:${minutes.toString().padStart(2, "0")} ${ampm}`;
+  };
 
   onMount(() => {
     const interval = setInterval(async () => {
@@ -267,7 +287,9 @@
         {/key}
       </Swipeable>
     {:else}
-      <div class="custom-scroll mx-auto flex max-w-96 flex-col items-center gap-5">
+      <div
+        class="custom-scroll mx-auto flex max-h-full max-w-96 flex-col items-center gap-5 overflow-y-auto overflow-x-hidden pr-2"
+      >
         {#await dayPromise}
           loading...
         {:then day}
@@ -276,19 +298,47 @@
           {:else}
             {#each day as block}
               <div
-                class="flex w-80 flex-col gap-3 border-2 border-dashed border-slate-600 bg-white bg-opacity-10 p-5 backdrop-blur-xl"
+                class="w-80 border-2 border-dashed {block.class?.type === 'block'
+                  ? block.class.color.replace('bg', 'border')
+                  : 'border-slate-600'} bg-white bg-opacity-10 p-5 shadow-xl backdrop-blur-xl"
               >
-                {block.class?.type === "block"
-                  ? block.class.description
-                  : generated.find((b) => b.type === block.block)?.type}
-                {block.duration}
+                <div class="flex items-center">
+                  <div>
+                    {block.class?.type === "block"
+                      ? block.class.description
+                      : generated.find((b) => b.type === block.block)?.type}
+                  </div>
+                  <div class="ml-auto">
+                    {#if block.class?.type === "block"}
+                      Room: <strong>{block.class.room}</strong>
+                    {/if}
+                  </div>
+                </div>
+
+                <div class="italic">{dateToTime(block.start)} - {dateToTime(block.end)}</div>
+                <div class="italic">
+                  {block.duration} minutes
+                  {#if block.progression},
+                    <span class="ml-1"></span>
+                    {Math.floor(
+                      block.duration - (block.progression / 100) * block.duration
+                    )}:{Math.floor(
+                      ((block.duration - (block.progression / 100) * block.duration) % 1) * 60
+                    )
+                      .toString()
+                      .padStart(2, "0")} remaining
+                  {/if}
+                </div>
                 {#if block.progression}
-                  {Math.round(block.progression * 10) / 10}%
-                  {Math.floor(
-                    block.duration - (block.progression / 100) * block.duration
-                  )}:{Math.floor(
-                    ((block.duration - (block.progression / 100) * block.duration) % 1) * 60
-                  )}
+                  <div class="relative flex h-6 items-center bg-slate-800 text-sm">
+                    <div class="z-10 pl-2">{Math.round(block.progression * 10) / 10}%</div>
+                    <div
+                      class="absolute left-0 top-0 h-full {block.class?.type === 'block'
+                        ? block.class.color
+                        : 'bg-slate-600'}"
+                      style="width: {block.progression}%"
+                    ></div>
+                  </div>
                 {/if}
               </div>
             {/each}

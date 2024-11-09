@@ -52,7 +52,6 @@
 
     const dx = endX - startX;
     const dy = endY - startY;
-    console.log(dx, dy);
 
     if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > DEADZONE) {
       dispatch("swipe", dx > 0 ? "right" : "left");

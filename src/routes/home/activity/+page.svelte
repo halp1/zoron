@@ -1,11 +1,9 @@
 <script lang="ts">
-  import { onNavigate } from "$app/navigation";
   import { page } from "$app/stores";
-  import type { aspen } from "$lib/aspen";
   import type { Assignment, Attendance } from "$lib/aspen/types";
   import Skeleton from "$lib/components/Skeleton.svelte";
   import { requests, toast } from "$lib/web";
-  import { faDownload, faGraduationCap, faCalendarCheck } from "@fortawesome/free-solid-svg-icons";
+  import {faGraduationCap, faCalendarCheck } from "@fortawesome/free-solid-svg-icons";
   import { onMount } from "svelte";
   import Fa from "svelte-fa";
   interface GradeWithData extends Assignment {
