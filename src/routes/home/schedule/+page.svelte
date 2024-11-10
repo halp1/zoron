@@ -440,7 +440,7 @@
               {#each day.blocks as block}
                 <div
                   id={block.progression ? "progression" : ""}
-                  class="w-80 rounded-xl border-2 border-dashed bg-white bg-opacity-10 p-5 shadow-xl backdrop-blur-xl {block
+                  class="w-80 rounded-xl border-2 bg-white bg-opacity-10 p-5 shadow-xl backdrop-blur-xl {block
                     .class?.type === 'block'
                     ? block.class.color.replace('bg', 'border')
                     : 'border-slate-600'}"
