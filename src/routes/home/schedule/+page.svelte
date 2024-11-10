@@ -268,7 +268,7 @@
       >
         <Fa
           icon={faFileExport}
-          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 ml-[2px]"
+          class="absolute left-1/2 top-1/2 ml-[2px] -translate-x-1/2 -translate-y-1/2"
         />
       </button>
       <button
@@ -431,12 +431,12 @@
               <Fa icon={faChevronRight} />
             </button>
           </div>
-          {#if day.day && day.blocks.length !== 0}
-            <div
-              id="day-transition"
-              class="custom-scroll flex flex-col items-center gap-5 overflow-y-auto overflow-x-hidden pr-2"
-              style="view-transition-name: schedule-in-out-{swipeDirection}"
-            >
+          <div
+            id="day-transition"
+            class="min-w-[336px] custom-scroll flex h-[70vh] flex-col items-center gap-5 overflow-y-auto overflow-x-hidden pr-2"
+            style="view-transition-name: schedule-in-out-{swipeDirection}"
+          >
+            {#if day.day && day.blocks.length !== 0}
               {#each day.blocks as block}
                 <div
                   id={block.progression ? "progression" : ""}
@@ -479,7 +479,7 @@
                         ? block.class.color.replace('bg', 'border')
                         : 'border-slate-600'}"
                     >
-                      <div class="z-10 pl-2">{block.progression.toFixed(1)}%</div>
+                      <div class="z-10 pl-2">{block.progression.toFixed(0)}%</div>
                       <div
                         class="absolute left-0 top-0 h-full {block.class?.type === 'block'
                           ? block.class.color
@@ -490,8 +490,8 @@
                   {/if}
                 </div>
               {/each}
-            </div>
-          {/if}
+            {/if}
+          </div>
         {/if}
       </Swipeable>
     {/if}
