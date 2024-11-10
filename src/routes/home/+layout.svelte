@@ -160,16 +160,18 @@
       ? 'pb-7'
       : 'pb-2'}"
   >
-    {#each tabs as tab}
-      <a href={tab.path} class="flex w-20 flex-col items-center justify-center">
-        <div class="relative h-10 w-10 rounded-full bg-white bg-opacity-10">
-          <Fa
-            icon={tab.icon}
-            size="lg"
-            class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-          />
-        </div>
-        <!-- <div class="text-center">{tab.name}</div> -->
+    {#each tabs as tab, idx}
+      <a
+        href={tab.path}
+        class="btn-circle relative h-10 w-10 border-2 border-slate-600"
+        class:bg-blue-700={idx === activeTabIndex}
+        bind:this={tabRefs[idx]}
+      >
+        <Fa
+          icon={tab.icon}
+          size="lg"
+          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+        />
       </a>
     {/each}
   </div>

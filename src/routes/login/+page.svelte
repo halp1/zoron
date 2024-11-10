@@ -25,13 +25,13 @@
 
     if (!usePassword) {
       await signIn("mailgun", {
-        callbackUrl: location.origin + "/account",
+        callbackUrl: location.origin + "/home",
         email
       });
     } else {
       const res = await requests.post("/api/account/login", { email, password });
       if (res.success) {
-        location.href = "/account";
+        location.href = "/home";
       } else {
         toast.error(res.error);
       }
