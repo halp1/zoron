@@ -15,7 +15,7 @@
 
   import "./home.css";
   import { onMount } from "svelte";
-  import { PWA } from "$lib/web";
+  import { isIOS, PWA } from "$lib/web";
   import { Footer } from "$lib/components";
 
   interface Tab {
@@ -155,13 +155,21 @@
       <slot />
     </div>
   {/key}
-  <div class="flex h-20 w-full items-center justify-evenly bg-slate-800 shadow-xl md:hidden">
+  <div
+    class="flex w-full items-center justify-evenly rounded-t-2xl bg-slate-800 pt-2 shadow-xl md:hidden {isIOS()
+      ? 'pb-7'
+      : 'pb-2'}"
+  >
     {#each tabs as tab}
       <a href={tab.path} class="flex w-20 flex-col items-center justify-center">
-        <div class="rounded-full bg-white bg-opacity-10 p-3">
-          <Fa icon={tab.icon} size="lg" />
+        <div class="relative h-10 w-10 rounded-full bg-white bg-opacity-10">
+          <Fa
+            icon={tab.icon}
+            size="lg"
+            class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          />
         </div>
-        <div class="text-center">{tab.name}</div>
+        <!-- <div class="text-center">{tab.name}</div> -->
       </a>
     {/each}
   </div>

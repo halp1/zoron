@@ -19,7 +19,6 @@
     startX = t.clientX;
     startY = t.clientY;
     touch = t.identifier;
-    event.preventDefault();
   };
 
   const touchMove = (event: TouchEvent) => {
@@ -31,10 +30,11 @@
 
     if (!t) return;
 
-    event.preventDefault();
-
     endX = t.clientX;
     endY = t.clientY;
+		if (Math.abs(endX - startX) > DEADZONE) {
+			event.preventDefault();
+		}
   };
 
   const touchEnd = (event: TouchEvent) => {

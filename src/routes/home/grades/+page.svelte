@@ -43,7 +43,7 @@
   onMount(() => {
     (async () => {
       const res = await $page.data.classes;
-      data = res
+      data = res;
       setTimeout(async () => {
         const name = decodeURIComponent(location.hash).replaceAll("#", "");
         if (!name || name.length === 0 || !classes) return;
@@ -72,7 +72,7 @@
             }),
           300
         );
-        history.replaceState({}, '', location.href.split("#")[0]);
+        history.replaceState({}, "", location.href.split("#")[0]);
       }, 100);
     })();
   });
@@ -109,7 +109,7 @@
 
   const individualGPA = (letter?: string) => {
     switch (letter) {
-		case "A+":
+      case "A+":
         return 4.33;
       case "A":
         return 4.0;
@@ -162,7 +162,7 @@
 {#if classes}
   {#if classes && $page.data?.session?.user?.schedule && !$page.data?.session?.user?.settings?.home?.hideGPA}
     <div class="mb-2 text-center text-3xl" style="view-transition-name: gpa;">
-      Quater GPA: {calculateGPA(
+      Quarter GPA: {calculateGPA(
         classes.map((c) => ({ grade: c.grade, courseID: c.course, credit: c.credit }))
       ).toFixed(2)}
     </div>
@@ -375,7 +375,7 @@
                   </div>
                 {:else}
                   <div class="flex flex-1 items-center justify-center py-5 text-slate-400">
-                    You don't have any assignemnts in this class yet...
+                    You don't have any assignments in this class yet...
                   </div>
                 {/if}
               </div>
