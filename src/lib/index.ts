@@ -13,3 +13,11 @@ export const autoCatch = <T>(fn: () => T): T | undefined => {
     return undefined;
   }
 };
+
+export const autoCatchAsync = async <T>(fn: () => Promise<T>): Promise<T | undefined> => {
+	try {
+		return await fn();
+	} catch {
+		return undefined;
+	}
+};

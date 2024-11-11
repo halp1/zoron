@@ -24,6 +24,11 @@ export namespace aspen {
       total: number;
     }
 
+    export interface ClassOptions {
+      year: "current" | "previous";
+      term: 0 | 1 | 2 | 3 | 4;
+    }
+
     export interface Class {
       id: string;
       name: string;
@@ -380,8 +385,8 @@ export namespace aspen {
     const activityXml = await activityRes.text();
     const activity: RecentActivityList = await parseStringPromise(activityXml);
 
-    const attendence = activity["recent-activity-list"]["recent-activity"][0].periodAttendance?.map(
-      (period) => {
+    const attendence =
+      activity["recent-activity-list"]["recent-activity"][0].periodAttendance?.map((period) => {
         return {
           type: "attendance" as const,
           date: period.$.date,
@@ -391,11 +396,10 @@ export namespace aspen {
           id: period.$.oid,
           sscid: period.$.sscoid
         };
-      }
-    ) || [];
+      }) || [];
 
-    const grades = activity["recent-activity-list"]["recent-activity"][0].gradebookScore?.map(
-      (score) => {
+    const grades =
+      activity["recent-activity-list"]["recent-activity"][0].gradebookScore?.map((score) => {
         return {
           type: "grade" as const,
           date: score.$.date,
@@ -406,8 +410,7 @@ export namespace aspen {
           sscid: score.$.sscoid,
           gtmid: score.$.gtmoid
         } satisfies Assignment;
-      }
-    ) || [];
+      }) || [];
 
     const computeMilliseconds = (date: string): number => {
       const d = new Date(
@@ -431,17 +434,75 @@ export namespace aspen {
     };
   };
 
-  export const classes = async (cookie: string): Promise<{ classes: Types.Class[] }> => {
-    const res = await fetch(
-      "https://ma-lexington.myfollett.com/aspen/portalClassList.do?navkey=academics.classes.list",
-      {
+  export const classes = async (
+    cookie: string,
+    options?: Types.ClassOptions | { type: "dom"; dom: JSDOM }
+  ): Promise<{ classes: Types.Class[] }> => {
+    const dom =
+      options && "type" in options && options.type === "dom"
+        ? options.dom
+        : await (async () => {
+            const res = await fetch(
+              "https://ma-lexington.myfollett.com/aspen/portalClassList.do?navkey=academics.classes.list",
+              {
+                headers: {
+                  accept:
+                    "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+                  "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+                  "cache-control": "no-cache",
+                  pragma: "no-cache",
+                  "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+                  "sec-ch-ua-mobile": "?0",
+                  "sec-ch-ua-platform": '"Windows"',
+                  "sec-fetch-dest": "document",
+                  "sec-fetch-mode": "navigate",
+                  "sec-fetch-site": "same-origin",
+                  "sec-fetch-user": "?1",
+                  "upgrade-insecure-requests": "1",
+                  cookie: cookie,
+                  Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
+                  "Referrer-Policy": "strict-origin-when-cross-origin"
+                },
+                body: null,
+                method: "GET"
+              }
+            );
+
+            if (res.status !== 200) {
+              throw new Error(`Failed to get classes: ${res.status}`);
+            }
+
+            const text = await res.text();
+            return new JSDOM(text);
+          })();
+
+    if (options && !("type" in options)) {
+			if (options.year ==='previous' && options.term === 0) {
+				throw new Error("Invalid options: cannot get current term of previous year");
+			}
+      const formData = new dom.window.FormData(dom.window.document.forms["classListForm" as any]);
+      formData.set("userEvent", "950");
+      formData.set("yearFilter", options.year);
+      formData.set(
+        "termFilter",
+        (
+          [...dom.window.document.querySelectorAll("select#termFilter option")].find((option) =>
+            option
+              .textContent!.toLowerCase()
+              .includes(options.term === 0 ? "current" : options.term.toString())
+          ) as HTMLOptionElement
+        ).value
+      );
+      const body = new dom.window.URLSearchParams(formData as any).toString();
+      const res = await fetch("https://ma-lexington.myfollett.com/aspen/portalClassList.do", {
         headers: {
           accept:
             "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
           "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
           "cache-control": "no-cache",
+          "content-type": "application/x-www-form-urlencoded",
           pragma: "no-cache",
-          "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+          "sec-ch-ua": '"Not A(Brand";v="8", "Chromium";v="132", "Google Chrome";v="132"',
           "sec-ch-ua-mobile": "?0",
           "sec-ch-ua-platform": '"Windows"',
           "sec-fetch-dest": "document",
@@ -449,21 +510,22 @@ export namespace aspen {
           "sec-fetch-site": "same-origin",
           "sec-fetch-user": "?1",
           "upgrade-insecure-requests": "1",
-          cookie: cookie,
-          Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
+          cookie,
+          Referer:
+            "https://ma-lexington.myfollett.com/aspen/portalClassList.do?navkey=academics.classes.list&maximized=false",
           "Referrer-Policy": "strict-origin-when-cross-origin"
         },
-        body: null,
-        method: "GET"
-      }
-    );
+        body,
+        method: "POST"
+      });
 
-    if (res.status !== 200) {
-      throw new Error(`Failed to get classes: ${res.status}`);
+      if (res.status !== 200) {
+        throw new Error(`Failed to get classes: ${res.status}`);
+      }
+
+      return await classes(cookie, { type: "dom", dom: new JSDOM(await res.text()) });
     }
 
-    const text = await res.text();
-    const dom = new JSDOM(text);
     const body = dom.window.document.querySelector("#dataGrid table tbody");
     if (!body) throw new Error("Failed to find data");
     const rows = [...body.children].slice(1);
