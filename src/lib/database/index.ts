@@ -18,6 +18,8 @@ const client = new MongoClient(uri, {
 
 let clientPromise: Promise<MongoClient>;
 
+let connectionStart = performance.now();
+
 if (process.env.NODE_ENV === "development") {
   // In development mode, use a global variable so that the value
   // is preserved across module reloads caused by HMR (Hot Module Replacement).
@@ -44,6 +46,7 @@ let connecting: boolean | Promise<MongoClient> = true;
   connecting = client.connect();
   await connecting;
   connecting = false;
+	console.log(`Connected to MongoDB in ${performance.now() - connectionStart}ms`);
 })();
 
 export const query = async <T = any>({

@@ -1,11 +1,12 @@
 <script lang="ts">
   import { page } from "$app/stores";
   import type { aspen } from "$lib/aspen";
-  import { Collapsible, Skeleton } from "$lib/components";
+  import { Collapsible, Skeleton, ListSelect } from "$lib/components";
   import { faChevronRight, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
   import Fa from "svelte-fa";
   import { requests, toast } from "$lib/web";
   import { onMount } from "svelte";
+  import { writable } from "svelte/store";
 
   interface Class extends aspen.Types.Class {
     expanded: boolean;
@@ -75,6 +76,43 @@
         history.replaceState({}, "", location.href.split("#")[0]);
       }, 100);
     })();
+  });
+
+  const loadTerm = async (options: aspen.Types.ClassOptions) => {
+    const res = await requests.post<{ classes: aspen.Types.Class[] }>(
+      "/api/aspen/classes",
+      options
+    );
+    if (!res.success)
+      return toast.error("An error occurred while fetching grade data: " + res.error);
+    data = res.data;
+  };
+
+  let classQuery = writable<aspen.Types.ClassOptions>({
+    year: "current",
+    term: 0
+  });
+
+  onMount(() => {
+    let init = false;
+    const unsubscribe = classQuery.subscribe(async (query) => {
+      if (!init) {
+        init = true;
+        return;
+      }
+      if (query.year === "current" && query.term === 0) {
+        const res = await $page.data.classes;
+        data = res;
+        return;
+      }
+      if (query.year === "previous" && query.term === 0) {
+        return classQuery.set({ year: "previous", term: 1 });
+      }
+			data = null;
+      await loadTerm(query);
+    });
+
+    return unsubscribe;
   });
 
   let loaded = false;
@@ -158,7 +196,32 @@
 <svelte:head>
   <title>Grades | A+spen</title>
 </svelte:head>
-
+<div class="mb-2 flex items-center justify-center gap-5">
+  <ListSelect
+    items={[
+      { value: "current", label: "This Year" },
+      { value: "previous", label: "Last Year" }
+    ]}
+    bind:value={$classQuery.year}
+  />
+  <ListSelect
+    items={$classQuery.year === "current"
+      ? [
+          { value: 0, label: "Current Term" },
+          { value: 1, label: "Q1" },
+          { value: 2, label: "Q2" },
+          { value: 3, label: "Q3" },
+          { value: 4, label: "Q4" }
+        ]
+      : [
+          { value: 1, label: "Q1" },
+          { value: 2, label: "Q2" },
+          { value: 3, label: "Q3" },
+          { value: 4, label: "Q4" }
+        ]}
+    bind:value={$classQuery.term}
+  />
+</div>
 {#if classes}
   {#if classes && $page.data?.session?.user?.schedule && !$page.data?.session?.user?.settings?.home?.hideGPA}
     <div class="mb-2 text-center text-3xl" style="view-transition-name: gpa;">

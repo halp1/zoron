@@ -3,11 +3,11 @@ import { adapter } from "$lib/auth";
 
 import type { Session } from "@auth/sveltekit";
 
-export const classes = async (session: Session) => {
+export const classes = async (session: Session, options?: aspen.Types.ClassOptions) => {
   if (!session.user?.email || !session.user.aspen) throw new Error("Not authenticated");
   try {
     if (!session?.user?.session?.cookie) throw new Error();
-    return await aspen.classes(session.user.session.cookie);
+    return await aspen.classes(session.user.session.cookie, options);
   } catch {
     const { username, password } = aspen.decrypt(session.user.email, session.user.aspen);
     const apsenSession = await aspen.authenticate(username, password);
@@ -20,6 +20,7 @@ export const classes = async (session: Session) => {
       }
     });
 
-    return await aspen.classes(apsenSession.cookie);
+    return await aspen.classes(apsenSession.cookie, options);
   }
 };
+ 
