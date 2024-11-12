@@ -19,8 +19,9 @@
   import type { CalendarEvent, Block } from "$lib/types";
   import "./schedule.css";
   import { onMount } from "svelte";
+  import type { User } from "@auth/sveltekit";
 
-  $: schedule = ($page.data.session?.user || {}).schedule;
+  $: schedule = $page.data.schedule as User["schedule"];
 
   const getLoadingText = (percentage: number) => `Generating schedule (${percentage}%)...`;
   const updateSchedule = async () => {
@@ -174,7 +175,7 @@
         : ((now().getTime() - start.getTime()) / (end.getTime() - start.getTime())) * 100;
 
   let day: Awaited<ReturnType<typeof loadDay>> | null = null;
-  $: mode === "day" && loadDay(dayViewDay).then((d) => (day = d));
+  $: mode === "day" && $page.data.schedule && loadDay(dayViewDay).then((d) => (day = d));
 
   const dateToTime = (date: Date) => {
     const hours = date.getHours();

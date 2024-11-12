@@ -4,18 +4,36 @@ import { html, text, validEmail } from "$lib/email";
 import Mailgun from "@auth/sveltekit/providers/mailgun";
 
 import { DOMAIN, MAILGUN_KEY } from "$env/static/private";
+import { decode, encode } from "@auth/core/jwt";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import { SvelteKitAuth, type SvelteKitAuthConfig } from "@auth/sveltekit";
+import { SvelteKitAuth, type SvelteKitAuthConfig, type User } from "@auth/sveltekit";
 
 export const adapter = MongoDBAdapter(dbClient, {
   databaseName
+});
+
+export const trimUser = (user: User) => ({
+  id: user.id,
+  name: user.name,
+  password: !!user.password,
+  email: user.email,
+  image: user.image,
+  aspen: user.aspen,
+  session: user.session,
+  settings: user.settings,
+  devices: user.devices
 });
 
 export const auth = {
   trustHost: true,
   session: {
     maxAge: 30 * 24 * 60 * 60, // 30 days
-    generateSessionToken: () => crypto.randomUUID()
+    generateSessionToken: () => crypto.randomUUID(),
+    strategy: "jwt"
+  },
+  jwt: {
+    encode,
+    decode
   },
   adapter,
   pages: {
@@ -62,10 +80,12 @@ export const auth = {
     })
   ],
   callbacks: {
-    session({ session, user }) {
-      if (session?.user) {
-        session.user = { ...user, ...session.user };
-      }
+    jwt: async ({ token, user }) => {
+      if (!user) token.user = trimUser((await adapter.getUser!(token.sub!))!);
+      return token;
+    },
+    session({ session, token }) {
+      session.user = token.user as any;
 
       if (session.user.password) session.user.password = true as any;
 
