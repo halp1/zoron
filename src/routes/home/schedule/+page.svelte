@@ -97,8 +97,7 @@
 
   let mode: "full" | "day" = "day";
 
-  // const now = () => new Date(Date.now() - 1000 * 60 * 60 * 27.5);
-  const now = () => new Date(Date.now());
+  const now = () => new Date(Date.now() + ($page.data.constants?.timeDelta || 0));
 
   let dayViewDay: Date = now();
   let selectedDay: number = 0;
@@ -348,7 +347,7 @@
           });
         }}
       >
-        <div class="text-slate-400">
+        <div class="-my-3 text-xl text-slate-400">
           {dayViewDay.toLocaleDateString("en-US", { weekday: "long" })},
           {[
             "January",
@@ -376,6 +375,10 @@
                 return "th";
             }
           })()}, {dayViewDay.getFullYear()}
+        </div>
+        <div class="text-slate-600">
+          School clocks are {Math.abs(($page.data.constants?.timeDelta || 0) / 1000).toFixed(1)} seconds
+          {($page.data.constants?.timeDelta || 0) < 0 ? "behind" : "ahead"}
         </div>
 
         {#if !day}
