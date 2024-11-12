@@ -477,9 +477,9 @@ export namespace aspen {
           })();
 
     if (options && !("type" in options)) {
-			if (options.year ==='previous' && options.term === 0) {
-				throw new Error("Invalid options: cannot get current term of previous year");
-			}
+      if (options.year === "previous" && options.term === 0) {
+        throw new Error("Invalid options: cannot get current term of previous year");
+      }
       const formData = new dom.window.FormData(dom.window.document.forms["classListForm" as any]);
       formData.set("userEvent", "950");
       formData.set("yearFilter", options.year);

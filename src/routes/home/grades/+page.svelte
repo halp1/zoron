@@ -108,7 +108,7 @@
       if (query.year === "previous" && query.term === 0) {
         return classQuery.set({ year: "previous", term: 1 });
       }
-			data = null;
+      data = null;
       await loadTerm(query);
     });
 
@@ -189,6 +189,13 @@
       .filter((g) => g.weight && g.gpa !== null)
       .reduce((a, b, _, arr) => a + (b.gpa * b.weight) / arr.reduce((a, b) => a + b.weight, 0), 0);
 
+  const preloadLength =
+    ($page.data.session?.user?.schedule?.schedule?.reduce(
+      (prev, cur) =>
+        !prev.find((item) => cur === null || item?.course === cur?.course) ? [...prev, cur] : prev,
+      [] as (aspen.Types.Schedule.Course | null)[]
+    ).length || 8) + 1;
+
   // pre-load classes for tailwind
   ("grid-cols-1 grid-cols-2 grid-cols-3 grid-cols-4 grid-cols-5 grid-cols-6 grid-cols-7 grid-cols-8 grid-cols-9 grid-cols-10 grid-cols-11 grid-cols-12 border-b-0");
 </script>
@@ -221,15 +228,32 @@
         ]}
     bind:value={$classQuery.term}
   />
-</div>
-{#if classes}
-  {#if classes && $page.data?.session?.user?.schedule && !$page.data?.session?.user?.settings?.home?.hideGPA}
-    <div class="mb-2 text-center text-3xl" style="view-transition-name: gpa;">
-      Quarter GPA: {calculateGPA(
-        classes.map((c) => ({ grade: c.grade, courseID: c.course, credit: c.credit }))
-      ).toFixed(2)}
+  <Collapsible
+    direction="horizontal"
+    open={!!(
+      (classes &&
+        $page.data?.session?.user?.schedule &&
+        $classQuery.year !== "previous" &&
+        !$page.data?.session?.user?.settings?.home?.hideGPA &&
+        calculateGPA(
+          classes.map((c) => ({ grade: c.grade, courseID: c.course, credit: c.credit }))
+        ) !== 0) ||
+      typeof window === "undefined"
+    )}
+  >
+    <div class="whitespace-nowrap text-center text-3xl" style="view-transition-name: gpa;">
+      Quarter GPA: {#if classes && $page.data?.session?.user?.schedule && $classQuery.year !== "previous" && !$page.data?.session?.user?.settings?.home?.hideGPA && calculateGPA(classes.map( (c) => ({ grade: c.grade, courseID: c.course, credit: c.credit }) )) !== 0}
+        {calculateGPA(
+          classes.map((c) => ({ grade: c.grade, courseID: c.course, credit: c.credit }))
+        ).toFixed(2)}
+      {:else}
+        0.00
+      {/if}
     </div>
-  {/if}
+  </Collapsible>
+</div>
+
+{#if classes}
   <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
     {#each classes as c}
       <div
@@ -241,7 +265,7 @@
       >
         <div class={(c.expanded && c.data && "sm:flex sm:items-end") || ""}>
           <div class="flex items-center">
-            <div>
+            <div class="overflow-auto">
               <div class="flex items-center">
                 <button
                   on:click={async () => {
@@ -280,13 +304,16 @@
                       });
                     }
                   }}
-                  class="btn-circle -ml-2 mr-1"
-                  ><Fa
+                  class="btn-circle z-10 -ml-2 mr-1"
+                >
+                  <Fa
                     icon={faChevronRight}
-                    class="transition-all {c.expanded ? 'rotate-90' : 'rotate-0'}"
+                    class="z-10 transition-all {c.expanded ? 'rotate-90' : 'rotate-0'}"
                   />
                 </button>
-                <div class="text-xl">{c.name}</div>
+                <div class="overflow-hidden text-ellipsis whitespace-nowrap text-xl">
+                  {c.name}
+                </div>
                 {#if c.credit && c.expanded && c.data && window.matchMedia("(min-width: 640px)").matches}
                   <div class="ml-3 text-slate-400">
                     {c.credit.toFixed(2)} credits
@@ -294,10 +321,12 @@
                 {/if}
               </div>
               <div class="flex items-center">
-                <div class="mr-2 border-r-2 border-slate-600 pr-2 text-sm text-slate-400">
+                <div
+                  class="mr-2 whitespace-nowrap border-r-2 border-slate-600 pr-2 text-sm text-slate-400"
+                >
                   {c.course}
                 </div>
-                <div>
+                <div class="overflow-hidden text-ellipsis whitespace-nowrap">
                   {#if c.teachers.length === 1}
                     {c.teachers[0].first} {c.teachers[0].last}
                   {:else}
@@ -577,9 +606,54 @@
     {/each}
   </div>
 {:else}
-  <div class="space-y-4">
-    {#each Array.from({ length: 10 }) as _}
-      <Skeleton class="h-4" style="width: {50 + Math.random() * 50}%" />
+  <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    {#each Array.from({ length: preloadLength }) as _}
+      <div class="mb-auto flex h-[143.2px] flex-col items-stretch border-2 border-slate-600 p-3">
+        <div class="flex items-center">
+          <div class="overflow-auto">
+            <div class="flex items-center">
+              <button disabled class="btn-circle mr-1">
+                <Skeleton class="rounded-full p-3" />
+              </button>
+              <div class="overflow-hidden text-ellipsis whitespace-nowrap text-xl">
+                <Skeleton class="h-4 w-36" />
+              </div>
+            </div>
+            <div class="mt-2 flex items-center">
+              <Skeleton class="h-3 w-48" />
+            </div>
+          </div>
+          <div class="ml-auto mt-1 flex flex-col border-r-2 border-transparent pr-1 text-slate-400">
+            <div class="mb-2">
+              <Skeleton class="h-3 w-10" />
+            </div>
+            <Skeleton class="h-3 w-10" />
+          </div>
+        </div>
+        <div class="mt-auto flex gap-0">
+          <div class="-ml-2 mt-auto flex flex-col justify-end">
+            <div class="flex items-center gap-2 pl-2">
+              <Skeleton class="h-4 w-24" />
+            </div>
+            <div class="relative mx-2 -mb-3 mr-auto flex items-center text-xl">
+              <Skeleton class="my-2 h-5 w-24" />
+            </div>
+          </div>
+          <div
+            class="-mb-1 ml-auto flex flex-col items-end justify-center gap-2 border-l-0 border-dashed border-transparent pl-0 text-slate-400"
+          >
+            <div class="flex gap-2">
+              <Skeleton class="h-3 w-16" />
+            </div>
+            <div class="flex gap-2">
+              <Skeleton class="h-3 w-12" />
+            </div>
+            <div class="flex gap-2">
+              <Skeleton class="h-3 w-20" />
+            </div>
+          </div>
+        </div>
+      </div>
     {/each}
   </div>
 {/if}
