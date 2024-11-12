@@ -1,6 +1,7 @@
-import { adapter, auth, verifyPassword } from "$lib/auth";
+import { adapter, auth, trimUser, verifyPassword } from "$lib/auth";
 import { api } from "$lib/server";
 
+import { AUTH_SECRET } from "$env/static/private";
 import "@auth/sveltekit";
 
 import type { RequestHandler } from "./$types";
@@ -25,18 +26,22 @@ export const POST: RequestHandler = async ({ request }) => {
     return api.error("Invalid password.", 401);
   }
 
-  const token = auth.session.generateSessionToken();
-  await adapter.createSession!({
-    userId: user.id,
-    sessionToken: token,
-    expires: new Date(Date.now() + auth.session.maxAge * 1000)
+  const token = {
+    sub: user.id.toString(),
+    user: trimUser(user)
+  };
+
+  const jwt = await auth.jwt.encode({
+    salt: auth.cookies.sessionToken.name,
+    secret: AUTH_SECRET,
+    token
   });
 
   const response = api.json({ user });
   const cookieOptions = auth.cookies.sessionToken.options;
   response.headers.set(
     "set-cookie",
-    `${auth.cookies.sessionToken.name}=${token}; Domain=${cookieOptions.domain}; Path=${cookieOptions.path}; HttpOnly=${cookieOptions.httpOnly}; SameSite=${cookieOptions.sameSite}; Secure=${cookieOptions.secure}`
+    `${auth.cookies.sessionToken.name}=${jwt}; Domain=${cookieOptions.domain}; Path=${cookieOptions.path}; HttpOnly=${cookieOptions.httpOnly}; SameSite=${cookieOptions.sameSite}; Secure=${cookieOptions.secure}`
   );
 
   return response;
