@@ -21,7 +21,8 @@ export const trimUser = (user: User) => ({
   aspen: user.aspen,
   session: user.session,
   settings: user.settings,
-  devices: user.devices
+  devices: user.devices,
+	role: user.role
 });
 
 export const auth = {

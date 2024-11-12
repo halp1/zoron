@@ -24,7 +24,7 @@
               ...c,
               expanded: false,
               height: -1,
-              credit: $page.data?.session?.user?.schedule?.schedule?.find(
+              credit: $page.data.schedule?.schedule?.find(
                 (a) => a?.course === c.course
               )?.credit
             }) satisfies Class
@@ -232,7 +232,7 @@
     direction="horizontal"
     open={!!(
       (classes &&
-        $page.data?.session?.user?.schedule &&
+        $page.data.schedule &&
         $classQuery.year !== "previous" &&
         !$page.data?.session?.user?.settings?.home?.hideGPA &&
         calculateGPA(
@@ -242,7 +242,7 @@
     )}
   >
     <div class="whitespace-nowrap text-center text-3xl" style="view-transition-name: gpa;">
-      Quarter GPA: {#if classes && $page.data?.session?.user?.schedule && $classQuery.year !== "previous" && !$page.data?.session?.user?.settings?.home?.hideGPA && calculateGPA(classes.map( (c) => ({ grade: c.grade, courseID: c.course, credit: c.credit }) )) !== 0}
+      Quarter GPA: {#if classes && $page.data.schedule && $classQuery.year !== "previous" && !$page.data?.session?.user?.settings?.home?.hideGPA && calculateGPA(classes.map( (c) => ({ grade: c.grade, courseID: c.course, credit: c.credit }) )) !== 0}
         {calculateGPA(
           classes.map((c) => ({ grade: c.grade, courseID: c.course, credit: c.credit }))
         ).toFixed(2)}

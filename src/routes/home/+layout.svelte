@@ -9,7 +9,8 @@
     faHome,
     faCalendar,
     faChartLine,
-    faList
+		faList,
+    faShieldAlt
   } from "@fortawesome/free-solid-svg-icons";
   import { signOut } from "@auth/sveltekit/client";
 
@@ -34,11 +35,13 @@
     return () => window.removeEventListener("resize", listener);
   });
 
+
   const tabs: Tab[] = [
     { name: "Home", path: "/home?page=home", icon: faHome },
     { name: "Schedule", path: "/home/schedule", icon: faCalendar },
     { name: "Grades", path: "/home/grades", icon: faChartLine },
     { name: "Activity", path: "/home/activity", icon: faList },
+		...($page.data.session?.user?.role === 'admin' ? [{ name: "Admin", path: "/home/admin", icon: faShieldAlt }] : []),
     { name: "Account", path: "/account", icon: faUser, mobileOnly: true }
   ];
 

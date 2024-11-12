@@ -13,6 +13,10 @@ declare global {
         vapid: string;
       };
       hideFooter: boolean;
+			schedule?: aspen.Types.Schedule.Schedule & { updated: number };
+			constants?: {
+				timeDelta: number;
+			}
     }
     // interface PageState {}
     // interface Platform {}
@@ -23,6 +27,7 @@ export {};
 
 declare module "@auth/sveltekit" {
   interface User {
+		role?: "user" | "admin";
     devices?: Subscription[];
     aspen?: string;
     session?: { cookie: string; token: string };
