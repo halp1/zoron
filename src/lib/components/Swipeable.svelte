@@ -32,9 +32,9 @@
 
     endX = t.clientX;
     endY = t.clientY;
-		if (Math.abs(endX - startX) > DEADZONE) {
-			event.preventDefault();
-		}
+    if (Math.abs(endX - startX) > DEADZONE) {
+      event.preventDefault();
+    }
   };
 
   const touchEnd = (event: TouchEvent) => {

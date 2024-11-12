@@ -97,56 +97,58 @@
 </svelte:head>
 
 <main class="activity-container flex h-screen w-full flex-col items-center justify-center">
-  <div class="hidden md:block">
-    <div class="h-12"></div>
-    <div
-      class="fixed left-0 top-0 z-10 flex h-12 w-full items-center gap-4 bg-slate-800 px-3 shadow-2xl"
-      style="view-transition-name: header;"
-      bind:this={tabContainer}
-    >
-      <div class="flex w-60 items-center text-3xl">
-        <img src="/favicon.png" alt="Site Icon" class="h-8" />
-        <div class="ml-2 font-bold">A+</div>
-        <div>spen</div>
-      </div>
-      <div class="ml-auto"></div>
-      {#each tabs.filter((tab) => !tab.mobileOnly) as tab, idx}
-        <a
-          href={tab.path}
-          class="text-xl"
-          class:active={activeTabIndex === tabs.indexOf(tab)}
-          bind:this={tabRefs[idx]}
-        >
-          {tab.name}
-        </a>
-      {/each}
-      <div class="mr-auto"></div>
-      <div class="flex w-60 items-center justify-end gap-2">
-        <a
-          class="flex h-8 w-32 items-center justify-center gap-2 rounded-full border-2 border-blue-400 bg-white bg-opacity-0 transition-all hover:bg-opacity-10"
-          href="/account"
-        >
-          <Fa icon={faUser} />
-          My Account
-        </a>
-        <a
-          class="flex h-8 w-[100px] items-center justify-center gap-2 rounded-full border-2 border-blue-400 bg-white bg-opacity-0 transition-all hover:bg-opacity-10"
-          href="/logout"
-        >
-          <Fa icon={faSignOut} />
-          Log Out
-        </a>
-      </div>
+  {#if typeof window === "undefined" || windowWidth >= 768}
+    <div class="hidden md:block">
+      <div class="h-12"></div>
       <div
-        class="absolute bottom-1 h-[2px] rounded-full bg-white transition-all"
-        style="width: {tabBarWidth}px; left: {(tabRefs[activeTabIndex]?.getBoundingClientRect()
-          .left || 0) -
-          (tabContainer?.getBoundingClientRect().left || 0) -
-          windowWidth +
-          windowWidth}px"
-      ></div>
+        class="fixed left-0 top-0 z-10 flex h-12 w-full items-center gap-4 bg-slate-800 px-3 shadow-2xl"
+        style="view-transition-name: header;"
+        bind:this={tabContainer}
+      >
+        <div class="flex w-60 items-center text-3xl">
+          <img src="/favicon.png" alt="Site Icon" class="h-8" />
+          <div class="ml-2 font-bold">A+</div>
+          <div>spen</div>
+        </div>
+        <div class="ml-auto"></div>
+        {#each tabs.filter((tab) => !tab.mobileOnly) as tab, idx}
+          <a
+            href={tab.path}
+            class="text-xl"
+            class:active={activeTabIndex === tabs.indexOf(tab)}
+            bind:this={tabRefs[idx]}
+          >
+            {tab.name}
+          </a>
+        {/each}
+        <div class="mr-auto"></div>
+        <div class="flex w-60 items-center justify-end gap-2">
+          <a
+            class="flex h-8 w-32 items-center justify-center gap-2 rounded-full border-2 border-blue-400 bg-white bg-opacity-0 transition-all hover:bg-opacity-10"
+            href="/account"
+          >
+            <Fa icon={faUser} />
+            My Account
+          </a>
+          <a
+            class="flex h-8 w-[100px] items-center justify-center gap-2 rounded-full border-2 border-blue-400 bg-white bg-opacity-0 transition-all hover:bg-opacity-10"
+            href="/logout"
+          >
+            <Fa icon={faSignOut} />
+            Log Out
+          </a>
+        </div>
+        <div
+          class="absolute bottom-1 h-[2px] rounded-full bg-white transition-all"
+          style="width: {tabBarWidth}px; left: {(tabRefs[activeTabIndex]?.getBoundingClientRect()
+            .left || 0) -
+            (tabContainer?.getBoundingClientRect().left || 0) -
+            windowWidth +
+            windowWidth}px"
+        ></div>
+      </div>
     </div>
-  </div>
+  {/if}
 
   {#key $page.url}
     <div
@@ -155,26 +157,28 @@
       <slot />
     </div>
   {/key}
-  <div
-    class="flex w-full items-center justify-evenly rounded-t-2xl bg-slate-800 pt-2 shadow-xl md:hidden {isIOS()
-      ? 'pb-7'
-      : 'pb-2'}"
-  >
-    {#each tabs as tab, idx}
-      <a
-        href={tab.path}
-        class="btn-circle relative h-10 w-10 border-2 border-slate-600"
-        class:bg-blue-700={idx === activeTabIndex}
-        bind:this={tabRefs[idx]}
-      >
-        <Fa
-          icon={tab.icon}
-          size="lg"
-          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-        />
-      </a>
-    {/each}
-  </div>
+  {#if typeof window === "undefined" || windowWidth < 768}
+    <div
+      class="flex w-full items-center justify-evenly rounded-t-2xl bg-slate-800 pt-2 shadow-xl md:hidden {isIOS()
+        ? 'pb-7'
+        : 'pb-2'}"
+    >
+      {#each tabs as tab, idx}
+        <a
+          href={tab.path}
+          class="btn-circle relative h-10 w-10 border-2 border-slate-600"
+          class:bg-blue-700={idx === activeTabIndex}
+          bind:this={tabRefs[idx]}
+        >
+          <Fa
+            icon={tab.icon}
+            size="lg"
+            class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          />
+        </a>
+      {/each}
+    </div>
+  {/if}
   <!-- <Footer className="hidden md:flex" hideable /> -->
   <!-- PWA popup -->
   <div

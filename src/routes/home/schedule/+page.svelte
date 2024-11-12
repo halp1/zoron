@@ -433,7 +433,7 @@
           </div>
           <div
             id="day-transition"
-            class="min-w-[336px] custom-scroll flex h-[70vh] flex-col items-center gap-5 overflow-y-auto overflow-x-hidden pr-2"
+            class="custom-scroll flex h-[70vh] min-w-[336px] flex-col items-center gap-5 overflow-y-auto overflow-x-hidden pr-2"
             style="view-transition-name: schedule-in-out-{swipeDirection}"
           >
             {#if day.day && day.blocks.length !== 0}

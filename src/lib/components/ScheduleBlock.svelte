@@ -4,13 +4,17 @@
   export let block: Block;
 
   export let className = "";
-	export let freeFontSize = "text-xl";
-	
-	import { twMerge } from "tailwind-merge";
+  export let freeFontSize = "text-xl";
+
+  import { twMerge } from "tailwind-merge";
 </script>
 
 <div
-  class={twMerge("row-span-1 flex flex-col items-center gap-2 border-slate-800 py-2 text-sm bg-opacity-50", block.color, className)}
+  class={twMerge(
+    "row-span-1 flex flex-col items-center gap-2 border-slate-800 bg-opacity-50 py-2 text-sm",
+    block.color,
+    className
+  )}
 >
   {#if block.type === "block"}
     <div class="relative px-2 text-center font-bold" style="word-wrap: break-word;">

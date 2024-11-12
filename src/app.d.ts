@@ -31,7 +31,11 @@ declare module "@auth/sveltekit" {
     notified?: {
       activity: string[];
     };
-    activity?: { id: string; lastLoaded: string, data: { scored: number; total: number; percentage: number } | null }[];
+    activity?: {
+      id: string;
+      lastLoaded: string;
+      data: { scored: number; total: number; percentage: number } | null;
+    }[];
     password?: { hash: string; salt: string };
   }
 }

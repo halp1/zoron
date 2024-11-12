@@ -46,7 +46,7 @@ let connecting: boolean | Promise<MongoClient> = true;
   connecting = client.connect();
   await connecting;
   connecting = false;
-	console.log(`Connected to MongoDB in ${performance.now() - connectionStart}ms`);
+  console.log(`Connected to MongoDB in ${performance.now() - connectionStart}ms`);
 })();
 
 export const query = async <T = any>({

@@ -23,4 +23,3 @@ export const classes = async (session: Session, options?: aspen.Types.ClassOptio
     return await aspen.classes(apsenSession.cookie, options);
   }
 };
- 

@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { HTMLAttributes } from "svelte/elements";
+  import { twMerge } from "tailwind-merge";
 
   type $$Props = HTMLAttributes<HTMLDivElement>;
 
@@ -7,4 +8,4 @@
   export { className as class };
 </script>
 
-<div class="animate-pulse rounded-md bg-slate-700 {className}" {...$$restProps}></div>
+<div class={twMerge("animate-pulse rounded-md bg-slate-700", className)} {...$$restProps}></div>

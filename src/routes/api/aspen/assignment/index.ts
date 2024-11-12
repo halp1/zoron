@@ -9,12 +9,13 @@ export const assignment = async (
   assignment: Assignment,
   studentID: string,
   onProgress?: aspen.Types.ProgressCallback,
-	skipCache?: boolean
+  skipCache?: boolean
 ) => {
   if (!session.user?.email || !session.user.aspen) throw new Error("Not authenticated");
   if (!assignment) throw new Error("No assignment provided");
   try {
-    if (!session?.user?.session?.cookie || !session.user.session.cookie || skipCache) throw new Error();
+    if (!session?.user?.session?.cookie || !session.user.session.cookie || skipCache)
+      throw new Error();
     return await aspen.assignment({
       cookie: session.user.session.cookie,
       token: session.user.session.token,
