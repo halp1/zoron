@@ -184,9 +184,12 @@
     return `${hours12}:${minutes.toString().padStart(2, "0")} ${ampm}`;
   };
 
+  let key = 0;
+
   onMount(() => {
     let frame: number;
     const tick = async () => {
+      key++;
       if (mode === "day" && day) {
         // dayPromise = Promise.resolve({
         //   ...dp,
@@ -376,9 +379,11 @@
             }
           })()}, {dayViewDay.getFullYear()}
         </div>
-        <div class="text-slate-600">
-          School clocks are {Math.abs(($page.data.constants?.timeDelta || 0) / 1000).toFixed(1)} seconds
-          {($page.data.constants?.timeDelta || 0) < 0 ? "behind" : "ahead"}
+        <div class="text-sm text-slate-500">
+          {#key key}
+            School clocks are {Math.abs(($page.data.constants?.timeDelta || 0) / 1000).toFixed(0)} seconds
+            {($page.data.constants?.timeDelta || 0) < 0 ? "behind" : "ahead"}: {now().toLocaleTimeString()}
+          {/key}
         </div>
 
         {#if !day}

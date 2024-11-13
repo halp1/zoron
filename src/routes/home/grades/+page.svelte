@@ -201,7 +201,7 @@
 </script>
 
 <svelte:head>
-  <title>Grades | A+spen</title>
+  <title>Grades | {$page.data.env.name}</title>
 </svelte:head>
 <div class="mb-2 flex items-center justify-center gap-5">
   <ListSelect

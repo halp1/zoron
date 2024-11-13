@@ -3,6 +3,7 @@
   import Fa from "svelte-fa";
   import { faInfoCircle, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
   import type { AccountUpdateRes } from "../../api/account/update/+server";
+    import { page } from "$app/stores";
 
   let username = "";
   let password = "";
@@ -49,7 +50,7 @@
 </script>
 
 <svelte:head>
-  <title>Update your credentials | A+spen</title>
+  <title>Update your credentials | {$page.data.env.name}</title>
 </svelte:head>
 
 <main class="flex h-screen w-screen flex-col items-center justify-center">

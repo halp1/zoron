@@ -1,4 +1,6 @@
 // Edit at: https://mjml.io/try-it-live/uYS4Ny8brv
+import { CONSTANTS } from "$lib/constants";
+
 
 export const html = (url: string) => `<!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -60,9 +62,9 @@ export const html = (url: string) => `<!doctype html>
         </style>
         <![endif]-->
   <!--[if !mso]><!-->
-  <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap" rel="stylesheet" type="text/css">
   <style type="text/css">
-    @import url(https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700);
+    @import url('https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap');
   </style>
   <!--<![endif]-->
   <style type="text/css">
@@ -98,7 +100,7 @@ export const html = (url: string) => `<!doctype html>
                     <!-- <mj-image width="100px" src="/assets/img/logo-small.png"></mj-image> -->
                     <tr>
                       <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                        <div style="font-family:helvetica;font-size:40px;line-height:1;text-align:center;color:#60a5fa;">Log in to A+spen</div>
+                        <div style="font-family:helvetica;font-size:40px;line-height:1;text-align:center;color:#60a5fa;">Log in to ${CONSTANTS.name}</div>
                       </td>
                     </tr>
                     <tr>
@@ -114,7 +116,7 @@ export const html = (url: string) => `<!doctype html>
                         <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%;">
                           <tr>
                             <td align="center" bgcolor="#60a5fa" role="presentation" style="border:none;border-radius:3px;cursor:auto;mso-padding-alt:10px 25px;background:#60a5fa;" valign="middle">
-                              <a href="${url}" style="display:inline-block;background:#60a5fa;color:white;font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:25px;font-weight:normal;line-height:120%;margin:0;text-decoration:none;text-transform:none;padding:10px 25px;mso-padding-alt:0px;border-radius:3px;" target="_blank"> Log in </a>
+                              <a href="${url}" style="display:inline-block;background:#60a5fa;color:white;font-family:SUSE, Helvetica, Arial, sans-serif;font-size:25px;font-weight:normal;line-height:120%;margin:0;text-decoration:none;text-transform:none;padding:10px 25px;mso-padding-alt:0px;border-radius:3px;" target="_blank"> Log in </a>
                             </td>
                           </tr>
                         </table>
@@ -141,7 +143,7 @@ export const html = (url: string) => `<!doctype html>
 </html>`;
 
 export const text = (url: string) => {
-  return `Sign in to A+spen at \n${url}\n\n`;
+  return `Sign in to ${CONSTANTS.name} at \n${url}\n\n`;
 };
 
 export const validEmail = (email: string) => {

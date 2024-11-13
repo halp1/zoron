@@ -7,6 +7,7 @@ import { DOMAIN, MAILGUN_KEY } from "$env/static/private";
 import { decode, encode } from "@auth/core/jwt";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import { SvelteKitAuth, type SvelteKitAuthConfig, type User } from "@auth/sveltekit";
+import { CONSTANTS } from "$lib/constants";
 
 export const adapter = MongoDBAdapter(dbClient, {
   databaseName
@@ -55,9 +56,9 @@ export const auth = {
         if (!domain) throw new Error("malformed Mailgun domain");
 
         const form = new FormData();
-        form.append("from", `A+spen system <${provider.from}>`);
+        form.append("from", `${CONSTANTS.name} system <${provider.from}>`);
         form.append("to", to);
-        form.append("subject", `Sign in to A+spen (https://aplus.haelp.dev)`);
+        form.append("subject", `Sign in to ${CONSTANTS.name} (https://${CONSTANTS.url})`);
         if (validEmail(to)) {
           form.append("html", html(url));
           form.append("text", text(url));

@@ -30,7 +30,7 @@
     </div>
   {:else}
     <div class="my-auto {freeFontSize}">
-      {block.type === "lunch" ? "Lunch" : block.type === "i-block" ? "I Block" : "Free"}
+      {block.type === "lunch" ? "Lunch" : block.type === "I-block" ? "I Block" : "Free"}
     </div>
   {/if}
 </div>

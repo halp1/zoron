@@ -1,4 +1,5 @@
 import { aspen } from "$lib/aspen";
+import { CONSTANTS } from "$lib/constants";
 
 import { VAPID_PUBLIC } from "$env/static/private";
 
@@ -13,7 +14,8 @@ export const load: LayoutServerLoad = async (event) => {
     session: auth,
     username: aspenName,
     env: {
-      vapid: VAPID_PUBLIC
+      vapid: VAPID_PUBLIC,
+      name: CONSTANTS.name
     },
     hideFooter: event.cookies.get("hide-footer") === "1"
   };

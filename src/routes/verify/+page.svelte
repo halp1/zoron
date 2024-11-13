@@ -25,11 +25,7 @@
     <div class="flex flex-col items-center justify-center gap-3 rounded-3xl bg-slate-800 p-6">
       <div class="text-center text-2xl">Check your email</div>
       <div class="text-center text-base">
-        We've sent a verification link to your email. Click the link to verify your account.
-      </div>
-      <div class="text-center text-base">
-        Having trouble signing in with email on the app? Add a password to your account on the
-        website, then use that to sign in <a href="/login" class="underline">here</a>.
+        We've sent a verification link to your email. Click the link to access your account.
       </div>
       <div class="relative flex items-center justify-center gap-3">
         <a href="/home" class="btn-full btn-outlined border-green-400 text-base">I'm logged in</a>

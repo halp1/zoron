@@ -1,6 +1,6 @@
 {
-  "name": "A+spen",
-  "short_name": "A+spen",
+  "name": "{{name}}",
+  "short_name": "{{name}}",
   "start_url": "/home",
   "orientation": "portrait",
   "icons": [

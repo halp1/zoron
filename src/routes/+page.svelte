@@ -1,9 +1,10 @@
 <script lang="ts">
+  import { page } from "$app/stores";
   import BubbleButton from "$lib/components/BubbleButton.svelte";
 </script>
 
 <svelte:head>
-  <title>A+spen</title>
+  <title>{$page.data.env.name}</title>
 </svelte:head>
 
 <main
@@ -16,6 +17,6 @@
   </div>
   <div class="mt-10 text-center text-3xl">The better Aspen experience you've always wanted.</div>
   <div class="mt-10 flex items-center gap-10">
-    <BubbleButton type="a" href="/login">Get Started</BubbleButton>
+    <BubbleButton type="a" href="/register">Get Started</BubbleButton>
   </div>
 </main>

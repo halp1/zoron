@@ -68,7 +68,7 @@
 </script>
 
 <svelte:head>
-  <title>Activity | A+spen</title>
+  <title>Activity | {$page.data.env.name}</title>
 </svelte:head>
 <div class="no-scroll flex w-full flex-1 flex-col gap-2 overflow-auto border-l-4 border-slate-600">
   {#if !merged}

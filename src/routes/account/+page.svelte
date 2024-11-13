@@ -26,7 +26,7 @@
 </script>
 
 <svelte:head>
-  <title>Account | A+spen</title>
+  <title>Account | {$page.data.env.name}</title>
 </svelte:head>
 
 <main>
@@ -45,7 +45,7 @@
           href="/home"
           class="btn-full btn-outlined mx-auto flex items-center justify-center gap-3 border-green-400 text-base"
         >
-          <Fa icon={faHome} /> My A+spen
+          <Fa icon={faHome} /> My {$page.data.env.name}
         </a>
         <div class="border-b-2 border-dashed border-slate-600"></div>
         <div class="grid grid-cols-2 gap-2">
