@@ -6,7 +6,7 @@ export const defaultSettings: Settings = {
     grades: false
   },
   home: {
-    default: "home",
+    default: "schedule",
     hideGPA: false
   }
 };

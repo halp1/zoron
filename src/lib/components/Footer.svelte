@@ -8,7 +8,7 @@
   let hidden = $page.data.hideFooter;
 </script>
 
-{#if !hidden && hideable}
+{#if !hideable || !hidden}
   <div
     class="{fixed
       ? 'fixed bottom-0 left-0'

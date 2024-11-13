@@ -6,7 +6,7 @@
 </script>
 
 <svelte:head>
-  <title>Home | A+spen</title>
+  <title>Home | {$page.data.env.name}</title>
 </svelte:head>
 
 <div class="flex h-full flex-col items-center">
@@ -22,7 +22,7 @@
           PWA.hidePrompt();
         }}
       >
-        Install A+spen
+        Install {$page.data.env.name}
       </button>
     {/if}
   {:else}

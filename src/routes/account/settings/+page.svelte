@@ -41,7 +41,7 @@
 </script>
 
 <svelte:head>
-  <title>Settings | A+spen</title>
+  <title>Settings | {$page.data.env.name}</title>
 </svelte:head>
 
 <main>
@@ -84,7 +84,7 @@
             class="rounded-md border-2 border-slate-600 bg-transparent outline-none focus-within:outline-none"
           >
             <option value="home" class="bg-slate-800 text-white">Home</option>
-            <option value="assignments" class="bg-slate-800 text-white">Assignments</option>
+            <option value="schedule" class="bg-slate-800 text-white">Schedule</option>
             <option value="grades" class="bg-slate-800 text-white">Grades</option>
             <option value="activity" class="bg-slate-800 text-white">Activity</option>
           </select>

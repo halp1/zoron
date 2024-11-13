@@ -2,6 +2,7 @@
   import { requests, toast } from "$lib/web";
   import Fa from "svelte-fa";
   import { faInfoCircle, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+    import { page } from "$app/stores";
 
   let password = "";
   let confirm = "";
@@ -35,12 +36,12 @@
 </script>
 
 <svelte:head>
-  <title>Update your credentials | A+spen</title>
+  <title>Update your credentials | {$page.data.env.name}</title>
 </svelte:head>
 
 <main class="flex h-screen w-screen flex-col items-center justify-center">
   <img src="/favicon.png" alt="Site icon" class="mb-3 w-32" />
-  <h1 class="mb-10 text-4xl">Update your credentials</h1>
+  <h1 class="mb-10 text-4xl">Update your password</h1>
   <form class="flex w-96 flex-col gap-2" on:submit={submit}>
     <input
       on:keydown={(e) => {
@@ -85,8 +86,7 @@
     </div>
     <div class="mb-3 text-sm text-slate-400">
       <Fa icon={faInfoCircle} class="float-left mr-2 mt-[3px]" />
-      You will always be able to log in with your email. Your password provides a secondary way to log
-      in.
+      If you ever lose your password, you will always be able to recover your account via your email.
     </div>
     <button
       class="btn-full btn-outlined"

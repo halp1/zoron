@@ -11,6 +11,7 @@ declare global {
       username?: string;
       env: {
         vapid: string;
+				name: string;
       };
       hideFooter: boolean;
 			schedule?: aspen.Types.Schedule.Schedule & { updated: number };

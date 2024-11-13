@@ -96,7 +96,7 @@
 </script>
 
 <svelte:head>
-  <title>Schedule | A+spen</title>
+  <title>Schedule | {$page.data.env.name}</title>
 </svelte:head>
 
 <main class="activity-container flex h-screen w-full flex-col items-center justify-center">
@@ -190,11 +190,11 @@
       : 'hidden'} items-center justify-center backdrop-blur-md"
   >
     <div class="flex flex-col items-center justify-center rounded-md bg-slate-800 p-10">
-      <div class="mb-5 text-xl">Install A+spen?</div>
+      <div class="mb-5 text-xl">Install {$page.data.env.name}?</div>
       <div class="text-center">
         You appear to be on a mobile device.
         <br />
-        A+spen works better when installed as an app.
+        {$page.data.env.name} works better when installed as an app.
       </div>
       <div class="mt-3 flex items-center justify-center gap-3">
         <button

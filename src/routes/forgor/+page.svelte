@@ -1,12 +1,16 @@
 <script lang="ts">
+  import { signIn } from "@auth/sveltekit/client";
   import { toast } from "$lib/web";
   import { validEmail } from "$lib/email";
   import Footer from "$lib/components/Footer.svelte";
+  import { Collapsible, Toggle } from "$lib/components";
   import { requests } from "$lib/web";
-    import { page } from "$app/stores";
+  import { page } from "$app/stores";
+  import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+  import Fa from "svelte-fa";
 
   let email = "";
-  let password = "";
+  let agreed = false;
 
   const handleSubmission = async (
     e: SubmitEvent & {
@@ -16,32 +20,27 @@
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const email = data.get("email") as string;
+
     if (!email || email.length === 0) {
       toast.error("Please enter an email", { position: "bottom-right" });
       return;
     }
 
-    if (!password || password.length === 0) {
-      toast.error("Please enter a password", { position: "bottom-right" });
-      return;
-    }
-
-    const res = await requests.post("/api/account/login", { email, password });
-    if (res.success) {
-      location.href = "/home";
-    } else {
-      toast.error(res.error);
-    }
+    await signIn("mailgun", {
+      email,
+      redirect: true,
+      callbackUrl: "/verify"
+    });
   };
 </script>
 
 <svelte:head>
-  <title>Login | {$page.data.env.name}</title>
+  <title>Account Recovery | {$page.data.env.name}</title>
 </svelte:head>
 
 <main class="flex h-screen w-screen flex-col items-center justify-center px-5">
   <img src="/favicon.png" alt="Site icon" class="mb-3 w-32" />
-  <h1 class="mb-10 text-center text-4xl">Log in to {$page.data.env.name}</h1>
+  <h1 class="mb-10 text-center text-4xl">Recover your {$page.data.env.name} account</h1>
   <form on:submit={handleSubmission} class="flex w-96 flex-col gap-2">
     <input
       class="w-full rounded-lg border-2 border-dashed border-blue-400 bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
@@ -56,24 +55,21 @@
     >
       Please enter a valid lexingtonma.org email address.
     </div>
-    <input
-      class="mb-3 w-full rounded-lg border-2 border-dashed border-blue-400 bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
-      name="password"
-      bind:value={password}
-      placeholder="Password"
-      type="password"
-      required
-    />
-    <button
-      class="btn-full btn-outlined"
-      disabled={!validEmail(email) || password.length === 0}
-      type="submit"
-    >
-      Log in
+
+    <div class="mb-1 text-sm text-slate-400">
+      <Fa icon={faInfoCircle} class="float-left mr-2 mt-[3px]" />
+      You will recieve an email with a link to log in to your account. Once you are logged in to your
+      account, head to your account settings at /account and the click the "update password" buttton.
+      If you have not set a password, this button may say "add password".
+    </div>
+    <div class="flex items-center gap-3">
+      <Toggle color="bg-blue-400" bind:checked={agreed} /> I understand
+    </div>
+    <button class="btn-full btn-outlined" disabled={!validEmail(email) || !agreed} type="submit">
+      Send Recovery Email
     </button>
     <div class="flex items-center">
-			<a href="/forgor" class="text-slate-400 underline">Forgot password?</a>
-      <a href="/register" class="text-slate-400 underline ml-auto">Register</a>
+      <a href="/login" class="text-slate-400 underline">Log in</a>
     </div>
   </form>
 </main>

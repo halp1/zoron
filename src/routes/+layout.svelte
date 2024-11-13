@@ -3,6 +3,7 @@
   import { Toaster } from "svelte-french-toast";
   import { PWA } from "$lib/web";
   import "../app.css";
+    import { page } from "$app/stores";
 
   onMount(() => {
     document.body.classList.add("suse");
@@ -16,7 +17,7 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="shortcut icon" href="/favicon.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <meta name="apple-mobile-web-app-title" content="A+spen" />
+  <meta name="apple-mobile-web-app-title" content={$page.data.env.name} />
   <link rel="manifest" href="/site.webmanifest" />
 </svelte:head>
 
