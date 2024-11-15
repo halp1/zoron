@@ -12,9 +12,10 @@ export const POST: RequestHandler = async ({ locals: { auth }, request }) => {
   const requiredArgs = ["classID"];
   if (!requiredArgs.every((arg) => arg in body))
     return api.error("Missing required arguments", 400);
+  let assignments = body.assignments;
 
   try {
-    return api.json(await classDetail(session, { classID: body.classID }));
+    return api.json(await classDetail(session, { classID: body.classID, assignments }));
   } catch (e) {
     console.error(e);
     return api.error("Failed to get class detail", 500);

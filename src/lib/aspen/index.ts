@@ -589,7 +589,10 @@ export namespace aspen {
     cookie,
     classID,
     onProgress,
-    assignments
+    assignments = {
+      category: "All",
+      term: 0
+    }
   }: {
     cookie: string;
     classID: string;
@@ -847,21 +850,78 @@ export namespace aspen {
           );
         };
 
-        const document = new JSDOM(await initialRes.text()).window.document;
-        const defaultTerm = parseInt(
-          (document.querySelector("#gradeTermOid") as HTMLSelectElement).value.slice(-1)
-        );
+        const window = new JSDOM(await initialRes.text()).window;
+        const document = window.document;
 
         if (
           !assignments ||
           (assignments.category === undefined && assignments.term === undefined) ||
-          (assignments.category === "All" &&
-            (assignments.term === undefined || assignments.term === defaultTerm))
+          (assignments.category === "All" && assignments.term === undefined)
         ) {
           return parseAssignements(document);
         } else {
-          // for now
-          return parseAssignements(document);
+          const form = document.forms["portalAssignemntListForm" as any];
+          const formData = new window.FormData(form);
+          const termString =
+            assignments.term === 0 || assignments.term === undefined
+              ? "All"
+              : `T${assignments.term}`;
+          formData.set("userEvent", "2210");
+          const termID = (
+            [...(document.getElementById("gradeTermOid")?.children || [])].find(
+              (item) => item.textContent === termString
+            )! as HTMLOptionElement
+          )?.value;
+
+          formData.set("gradeTermOid", termID || "");
+
+          const categoryString = assignments.category || "All";
+          const categoryID = (
+            [...(document.getElementById("categoryOid")?.children || [])].find(
+              (item) => item.textContent === categoryString
+            )! as HTMLOptionElement
+          )?.value;
+					
+          formData.set("categoryOid", categoryID || "");
+
+          const body = new window.URLSearchParams(formData as any).toString();
+
+          const newAssignmentsRes = await fetch(
+            "https://ma-lexington.myfollett.com/aspen/portalAssignmentList.do",
+            {
+              headers: {
+                accept:
+                  "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+                "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+                "cache-control": "no-cache",
+                "content-type": "application/x-www-form-urlencoded",
+                pragma: "no-cache",
+                "sec-ch-ua": '"Not A(Brand";v="8", "Chromium";v="132", "Google Chrome";v="132"',
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": '"Windows"',
+                "sec-fetch-dest": "document",
+                "sec-fetch-mode": "navigate",
+                "sec-fetch-site": "none",
+                "sec-fetch-user": "?1",
+                "upgrade-insecure-requests": "1",
+                cookie,
+                Referer: "https://ma-lexington.myfollett.com/aspen/portalAssignmentList.do",
+                "Referrer-Policy": "strict-origin-when-cross-origin"
+              },
+              body,
+              method: "POST"
+            }
+          );
+
+          if (newAssignmentsRes.status !== 200) {
+            throw new Error(
+              `Failed to get new assignments based on query (${categoryString} and ${termString}): ${newAssignmentsRes.status}`
+            );
+          }
+
+          const newAssignmentsText = await newAssignmentsRes.text();
+          const newAssignmentsDom = new JSDOM(newAssignmentsText);
+          return parseAssignements(newAssignmentsDom.window.document);
         }
       })()
     ] as const);

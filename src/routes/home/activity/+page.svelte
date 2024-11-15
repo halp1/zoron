@@ -3,7 +3,11 @@
   import type { Assignment, Attendance } from "$lib/aspen/types";
   import Skeleton from "$lib/components/Skeleton.svelte";
   import { requests, toast } from "$lib/web";
-  import { faGraduationCap, faCalendarCheck } from "@fortawesome/free-solid-svg-icons";
+  import {
+    faGraduationCap,
+    faCalendarCheck,
+    faInfoCircle
+  } from "@fortawesome/free-solid-svg-icons";
   import { onMount } from "svelte";
   import Fa from "svelte-fa";
   interface GradeWithData extends Assignment {
@@ -160,4 +164,9 @@
       </div>
     {/each}
   {/if}
+  <div class="ml-4 text-sm text-slate-400">
+    <Fa icon={faInfoCircle} class="float-left mr-2 mt-[3px]" />
+    Activity only goes back 60 days. To see more, visit
+    <a href="/home/grades" class="underline">your grades</a>.
+  </div>
 </div>
