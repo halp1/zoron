@@ -97,5 +97,6 @@ export const POST: RequestHandler = async ({ request, locals: { auth } }) => {
     if (!item.studentID) return stream.error("No student ID provided", 400);
   }
 
+
   return processBatch(session, body, stream);
 };

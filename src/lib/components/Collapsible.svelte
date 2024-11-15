@@ -29,15 +29,25 @@
   });
 </script>
 
-<div
-  style="overflow-x: hidden; position: relative; transition: height 0.3s ease-in-out, width 0.3s ease-in-out; {direction ===
-  'vertical'
-    ? 'height'
-    : 'width'}: {height}; {direction === 'horizontal' ? 'height' : 'width'}: {width};"
->
-  {#key key}
-    <div bind:this={content} class="absolute left-0 top-0">
-      <slot />
-    </div>
-  {/key}
-</div>
+{#if direction === "horizontal"}
+  <div
+    style="overflow-x: hidden; position: relative; transition: height 0.3s ease-in-out, width 0.3s ease-in-out; width: {height}; height: {width};"
+  >
+    {#key key}
+      <div bind:this={content} class="absolute left-0 top-0">
+        <slot />
+      </div>
+    {/key}
+  </div>
+{:else}
+  <div
+    style="overflow-x: hidden; position: relative; 
+		transition: height 0.3s ease-in-out, width 0.3s ease-in-out; height: {height};"
+  >
+    {#key key}
+      <div bind:this={content}>
+        <slot />
+      </div>
+    {/key}
+  </div>
+{/if}

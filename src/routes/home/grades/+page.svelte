@@ -34,7 +34,10 @@
 
   const loadClassData = async (c: Class) => {
     const res = await requests.post<aspen.Types.ClassDetail>("/api/aspen/class", {
-      classID: c.id
+      classID: c.id,
+			assignments: {
+				term: 0
+			}
     });
 
     if (!res.success) toast.error("An error occurred while fetching class data: " + res.error);
