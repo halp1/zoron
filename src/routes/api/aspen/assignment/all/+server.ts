@@ -62,7 +62,7 @@ const processBatch = async (
       } else if (inProgress.size === 0) {
         stream.end(results);
         // upload results to db
-        const current = session.user!.activity || [];
+        const current = (await adapter.getUser!(session.user?.id!))?.activity || [];
         const merged = current
           .filter((a) => !internalResults.some((b) => a.id === b.id))
           .concat(internalResults);

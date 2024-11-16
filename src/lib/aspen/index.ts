@@ -860,7 +860,7 @@ export namespace aspen {
         ) {
           return parseAssignements(document);
         } else {
-          const form = document.forms["portalAssignemntListForm" as any];
+          const form = document.forms["portalAssignmentListForm" as any];
           const formData = new window.FormData(form);
           const termString =
             assignments.term === 0 || assignments.term === undefined
@@ -881,7 +881,7 @@ export namespace aspen {
               (item) => item.textContent === categoryString
             )! as HTMLOptionElement
           )?.value;
-					
+
           formData.set("categoryOid", categoryID || "");
 
           const body = new window.URLSearchParams(formData as any).toString();
@@ -901,11 +901,12 @@ export namespace aspen {
                 "sec-ch-ua-platform": '"Windows"',
                 "sec-fetch-dest": "document",
                 "sec-fetch-mode": "navigate",
-                "sec-fetch-site": "none",
+                "sec-fetch-site": "same-origin",
                 "sec-fetch-user": "?1",
                 "upgrade-insecure-requests": "1",
                 cookie,
-                Referer: "https://ma-lexington.myfollett.com/aspen/portalAssignmentList.do",
+                Referer:
+                  "https://ma-lexington.myfollett.com/aspen/portalAssignmentList.do?navkey=academics.classes.list.gcd",
                 "Referrer-Policy": "strict-origin-when-cross-origin"
               },
               body,

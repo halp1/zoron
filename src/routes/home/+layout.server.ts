@@ -22,6 +22,7 @@ export const load: LayoutServerLoad = async ({ locals: { auth } }) => {
           })
         )[0] || { name: "timeDelta", data: 0, _id: new ObjectId() }
       ).data
-    }
+    },
+    preloadedActivity: (await adapter.getUser!(session.user.id))?.activity
   };
 };

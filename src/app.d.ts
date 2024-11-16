@@ -2,6 +2,12 @@
 import type { aspen } from "$lib/aspen";
 import type { Item, Settings, Subscription } from "$lib/types";
 
+interface ActivityRecord {
+  id: string;
+  lastLoaded: string;
+  data: { scored: number; total: number; percentage: number } | null;
+}
+
 // for information about these interfaces
 declare global {
   namespace App {
@@ -11,13 +17,14 @@ declare global {
       username?: string;
       env: {
         vapid: string;
-				name: string;
+        name: string;
       };
       hideFooter: boolean;
-			schedule?: aspen.Types.Schedule.Schedule & { updated: number };
-			constants?: {
-				timeDelta: number;
-			}
+      schedule?: aspen.Types.Schedule.Schedule & { updated: number };
+      constants?: {
+        timeDelta: number;
+      };
+      preloadedActivity?: ActivityRecord[];
     }
     // interface PageState {}
     // interface Platform {}
@@ -28,7 +35,7 @@ export {};
 
 declare module "@auth/sveltekit" {
   interface User {
-		role?: "user" | "admin";
+    role?: "user" | "admin";
     devices?: Subscription[];
     aspen?: string;
     session?: { cookie: string; token: string };
@@ -37,11 +44,7 @@ declare module "@auth/sveltekit" {
     notified?: {
       activity: string[];
     };
-    activity?: {
-      id: string;
-      lastLoaded: string;
-      data: { scored: number; total: number; percentage: number } | null;
-    }[];
+    activity?: ActivityRecord[];
     password?: { hash: string; salt: string };
   }
 }

@@ -31,7 +31,7 @@
 
 {#if direction === "horizontal"}
   <div
-    style="overflow-x: hidden; position: relative; transition: height 0.3s ease-in-out, width 0.3s ease-in-out; width: {height}; height: {width};"
+    style="overflow: hidden; position: relative; transition: height 0.3s ease-in-out, width 0.3s ease-in-out; width: {height}; height: {width};"
   >
     {#key key}
       <div bind:this={content} class="absolute left-0 top-0">

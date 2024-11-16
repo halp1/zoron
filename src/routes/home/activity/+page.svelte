@@ -21,7 +21,7 @@
       | null;
   }
 
-  const existingData = $page.data.session?.user?.activity || [];
+  const existingData = $page.data?.preloadedActivity || [];
   let merged = undefined as (GradeWithData | Attendance)[] | undefined;
 
   onMount(() => {
@@ -64,10 +64,6 @@
         return toast.error(`Error loading assignment data: ${res.error}`);
       }
     })();
-
-    // onNavigate(() => {
-    //   (window as any).loadingActivity = false;
-    // });
   });
 </script>
 
@@ -85,7 +81,7 @@
     {/each}
   {:else}
     {#each merged as item, idx}
-      <div class="flex items-center gap-3">
+      <div class="flex min-h-8 items-center gap-3">
         {#if item.type === "grade"}
           <div class="ml-3 flex w-5 justify-center sm:-mr-2">
             <Fa icon={faGraduationCap} color="#4ade80" />
