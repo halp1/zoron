@@ -24,9 +24,7 @@
               ...c,
               expanded: false,
               height: -1,
-              credit: $page.data.schedule?.schedule?.find(
-                (a) => a?.course === c.course
-              )?.credit
+              credit: $page.data.schedule?.schedule?.find((a) => a?.course === c.course)?.credit
             }) satisfies Class
         )
       : null
@@ -35,9 +33,9 @@
   const loadClassData = async (c: Class) => {
     const res = await requests.post<aspen.Types.ClassDetail>("/api/aspen/class", {
       classID: c.id,
-			assignments: {
-				term: 0
-			}
+      assignments: {
+        term: 0
+      }
     });
 
     if (!res.success) toast.error("An error occurred while fetching class data: " + res.error);
@@ -544,8 +542,12 @@
                         ""}
                     >
                       {#if avg}
-                        {avg.number.toFixed(2)}
-                        <div class="ml-1">({avg.letter})</div>
+                        {#if avg.number}
+                          {avg.number.toFixed(2)}
+                          <div class="ml-1">({avg.letter})</div>
+                        {:else}
+                          {JSON.stringify(avg)}
+                        {/if}
                       {:else}
                         <div class="select-none text-transparent">.</div>
                       {/if}

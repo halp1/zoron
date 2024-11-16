@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from "$app/stores";
+  import Toggle from "$lib/components/Toggle.svelte";
   import { requests, toast } from "$lib/web";
   // "border-red-400" ||
   //   "border-blue-400" ||
@@ -46,7 +47,6 @@
             0
           );
           const delta = target.getTime() - new Date().getTime();
-          console.log(new Date().getTime(), target.getTime(), delta);
           const res = await requests.post("/api/admin/time-delta", { delta });
           if (res.success === true) {
             toast.success("Time delta updated");
@@ -93,6 +93,59 @@
         </select>
       </div>
       <button type="submit" class="btn-outlined btn-full mt-2 w-full border-red-400 text-base">
+        Update
+      </button>
+    </form>
+  </div>
+  <div class="flex flex-wrap gap-1 rounded-3xl border-2 border-red-400 bg-slate-800 p-5">
+    <form
+      class="flex flex-1 flex-wrap gap-2"
+      on:submit={async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+
+        const name = formData.get("name") || "";
+        const email = formData.get("email") || "";
+        if (name === "" && email === "") {
+          toast.error("One of name or email required");
+          return;
+        }
+        if (name !== "" && email !== "") {
+          toast.error("Please enter only one of name or email");
+          return;
+        }
+
+        const target = name === "" ? { email } : { name };
+        const tokenRes = await requests.post("/api/admin/impersonate/token");
+        if (tokenRes.success === false)
+          return toast.error("Failed to get token: " + tokenRes.error);
+        // @ts-expect-error property not exist
+        target.token = tokenRes.data.token;
+        const res = await requests.post("/api/admin/impersonate", target);
+        if (res.success === true) {
+          // @ts-expect-error implicit any
+          toast.success("Impersonating " + (target[Object.keys(target)[0]] || ""));
+          history.go(0);
+        } else {
+          toast.error("Failed to impersonate: " + res.error);
+        }
+      }}
+    >
+      <div class="text-2xl">Impersonate</div>
+
+      <input
+        type="text"
+        name="name"
+        class="w-full rounded-full border-2 border-dashed border-slate-600 bg-transparent px-2 text-center outline-none focus-within:border-solid"
+        placeholder="Name"
+      />
+      <input
+        type="text"
+        name="email"
+        class="w-full rounded-full border-2 border-dashed border-slate-600 bg-transparent px-2 text-center outline-none focus-within:border-solid"
+        placeholder="Email"
+      />
+      <button type="submit" class="btn-outlined btn-full mt-auto w-full border-red-400 text-base">
         Update
       </button>
     </form>

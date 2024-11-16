@@ -1,9 +1,12 @@
 <script lang="ts">
+  import { twMerge } from "tailwind-merge";
+
   export let checked = false;
   export let color = "bg-orange-400";
+  export let className = "";
 </script>
 
-<label class="flex cursor-pointer items-center">
+<label class={twMerge("flex cursor-pointer items-center", className)}>
   <div class="relative h-6 w-10 rounded-full bg-slate-600">
     <input type="checkbox" bind:checked class="peer hidden" />
     <div

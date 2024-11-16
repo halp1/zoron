@@ -55,6 +55,8 @@
     "bg-yellow-400",
     "bg-pink-400",
     "bg-indigo-400"
+    // "bg-lime-400",
+    // "bg-teal-400"
   ];
   // @ts-expect-error for the tailwind
   "border-red-400" ||
@@ -65,6 +67,8 @@
     "border-yellow-400" ||
     "border-pink-400" ||
     "border-indigo-400";
+  ("border-lime-400");
+  ("border-teal-400");
 
   const insertLunches = (schedule: aspen.Types.Schedule.Schedule) => {
     const courseColorMap = new Map<string, string>();
@@ -160,7 +164,11 @@
             new Date(block.end.dateTime || block.end.date!)
           ),
 
-          class: generated.find((b) => ((b as any).block || b.type).trim() === block.summary.trim())
+          class: generated.find(
+            (b) =>
+              ((b as any).block || b.type).trim() === block.summary.trim() ||
+              ((b as any).schedule?.trim() === "HR" && block.summary.trim() === "Advisory")
+          )
         }))
     };
   };
@@ -191,13 +199,6 @@
     const tick = async () => {
       key++;
       if (mode === "day" && day) {
-        // dayPromise = Promise.resolve({
-        //   ...dp,
-        //   blocks: dp.blocks.map((block) => ({
-        //     ...block,
-        //     progression: calculateProgression(block.start, block.end)
-        //   }))
-        // });
         for (let i = 0; i < day.blocks.length; i++) {
           day.blocks[i].progression = calculateProgression(day.blocks[i].start, day.blocks[i].end);
         }
