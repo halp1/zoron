@@ -448,7 +448,7 @@
                             .
                             <div
                               class="absolute left-0 top-0 h-full bg-green-400 bg-opacity-80"
-                              style="width: {assignment.score.percentage}%"
+                              style="width: {Math.min(assignment.score.percentage, 100)}%"
                             ></div>
                             <div
                               class="absolute right-0 top-1/2 z-10 -translate-y-1/2 font-bold text-white"
