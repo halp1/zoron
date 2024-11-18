@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from "$app/stores";
-  import type { Assignment, Attendance } from "$lib/aspen/types";
+  import type { Assignment, Attendance, PeriodAttendance, PostedGrade } from "$lib/aspen/types";
+	import type {aspen} from "$lib/aspen";
   import Skeleton from "$lib/components/Skeleton.svelte";
   import { requests, toast } from "$lib/web";
   import {
@@ -22,7 +23,7 @@
   }
 
   const existingData = $page.data?.preloadedActivity || [];
-  let merged = undefined as (GradeWithData | Attendance)[] | undefined;
+  let merged = undefined as (Attendance | PeriodAttendance | GradeWithData | PostedGrade)[] | undefined;
 
   onMount(() => {
     (async () => {
@@ -134,7 +135,7 @@
               ></div>
             </div>
           {/if}
-        {:else}
+        {:else if item.type === "periodAttendance"}
           <div class="ml-3 flex w-5 justify-center sm:-mr-2">
             <Fa icon={faCalendarCheck} color="#fde047" />
           </div>
