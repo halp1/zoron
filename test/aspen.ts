@@ -160,7 +160,7 @@ export namespace aspen {
     require("fs").writeFileSync("activity.html", activityXml);
     const activity: RecentActivityList = await parseStringPromise(activityXml);
 
-    const attendence = activity["recent-activity-list"]["recent-activity"][0].periodAttendance.map(
+    const attendance = activity["recent-activity-list"]["recent-activity"][0].periodAttendance.map(
       (period) => {
         return {
           type: "attendance" as const,
@@ -198,12 +198,12 @@ export namespace aspen {
       return d.getTime();
     };
 
-    const mergedActivity = [...attendence, ...grades].sort(
+    const mergedActivity = [...attendance, ...grades].sort(
       (a, b) => computeMilliseconds(b.date) - computeMilliseconds(a.date)
     );
     return {
       merged: mergedActivity,
-      attendence: attendence.sort(
+      attendance: attendance.sort(
         (a, b) => computeMilliseconds(b.date) - computeMilliseconds(a.date)
       ),
       grades: grades.sort((a, b) => computeMilliseconds(b.date) - computeMilliseconds(a.date)),

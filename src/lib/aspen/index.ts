@@ -3,7 +3,14 @@ import Parser, { type Page, type Text } from "pdf2json";
 import { parseStringPromise } from "xml2js";
 
 import { decrypt as _decrypt, encrypt as _encrypt } from "./crypt";
-import type { Assignment, Attendance, AuthResponse, RecentActivityList } from "./types";
+import type {
+  Assignment,
+  Attendance,
+  AuthResponse,
+  PeriodAttendance,
+  PostedGrade,
+  RecentActivityList
+} from "./types";
 
 export namespace aspen {
   export namespace Types {
@@ -385,23 +392,40 @@ export namespace aspen {
     const activityXml = await activityRes.text();
     const activity: RecentActivityList = await parseStringPromise(activityXml);
 
-    const attendence =
+    const attendance =
+      activity["recent-activity-list"]["recent-activity"][0].attendance?.map((period) => {
+        return {
+          type: "attendance",
+          date: period.$.date,
+          code: period.$.code,
+          absent: period.$.absent === "true",
+          dismissed: period.$.dismissed === "true",
+          tardy: period.$.tardy === "true",
+          excused: period.$.excused === "true",
+          portionabsent: parseFloat(period.$.portionabsent),
+          id: period.$.oid
+        } satisfies Attendance;
+      }) || [];
+
+    const periodAttendance =
       activity["recent-activity-list"]["recent-activity"][0].periodAttendance?.map((period) => {
         return {
-          type: "attendance" as const,
+          type: "period-attendance",
           date: period.$.date,
           period: period.$.period,
           code: period.$.code,
           class: period.$.classname,
           id: period.$.oid,
           sscid: period.$.sscoid
-        };
+        } satisfies PeriodAttendance;
       }) || [];
+
+    console.log(activity["recent-activity-list"]["recent-activity"][0].gradePost);
 
     const grades =
       activity["recent-activity-list"]["recent-activity"][0].gradebookScore?.map((score) => {
         return {
-          type: "grade" as const,
+          type: "grade",
           date: score.$.date,
           assignment: score.$.assignmentname,
           class: score.$.classname,
@@ -410,6 +434,21 @@ export namespace aspen {
           sscid: score.$.sscoid,
           gtmid: score.$.gtmoid
         } satisfies Assignment;
+      }) || [];
+			const postedGrades =
+      activity["recent-activity-list"]["recent-activity"][0].gradePost?.map((score) => {
+        return {
+          type: "posted-grade",
+          date: score.$.date,
+					classname: score.$.classname,
+					oid: score.$.oid,
+					teacher: {
+						first: score.$.teacherfirst,
+						last: score.$.teacherlast
+					},
+					postType: parseInt(score.$.type),
+					sscid: score.$.sscoid
+        } satisfies PostedGrade;
       }) || [];
 
     const computeMilliseconds = (date: string): number => {
@@ -421,12 +460,15 @@ export namespace aspen {
       return d.getTime();
     };
 
-    const mergedActivity: (Assignment | Attendance)[] = [...attendence, ...grades].sort(
-      (a, b) => computeMilliseconds(b.date) - computeMilliseconds(a.date)
-    );
+    const mergedActivity: (Assignment | PeriodAttendance | Attendance | PostedGrade)[] = [
+      ...attendance,
+      ...grades,
+			...periodAttendance,
+			...postedGrades
+    ].sort((a, b) => computeMilliseconds(b.date) - computeMilliseconds(a.date));
     return {
       merged: mergedActivity,
-      attendence: attendence.sort(
+      attendance: attendance.sort(
         (a, b) => computeMilliseconds(b.date) - computeMilliseconds(a.date)
       ),
       grades: grades.sort((a, b) => computeMilliseconds(b.date) - computeMilliseconds(a.date)),
