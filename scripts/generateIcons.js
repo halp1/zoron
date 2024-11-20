@@ -41,25 +41,25 @@ const icons = sizes.map((size) => {
 });
 
 const altFiles = [
-	{ name: "apple-touch-icon-precomposed.png", size: 180 },
-	{ name: "apple-touch-icon.png", size: 180 },
-	{ name: "favicon-48x48.png", size: 48 },
-	{ name: "favicon.ico", size: 16 },
-	{ name: "web-app-manifest-192x192.png", size: 192 },
-	{ name: "web-app-manifest-512x512.png", size: 512 },
+  { name: "apple-touch-icon-precomposed.png", size: 180 },
+  { name: "apple-touch-icon.png", size: 180 },
+  { name: "favicon-48x48.png", size: 48 },
+  { name: "favicon.ico", size: 16 },
+  { name: "web-app-manifest-192x192.png", size: 192 },
+  { name: "web-app-manifest-512x512.png", size: 512 }
 ];
 
 altFiles.forEach(({ name, size }) => {
-	const outputFile = path.resolve(outputDir, '../', name);
-	sharp(inputPath)
-		.resize(size, size)
-		.toFile(outputFile, (err) => {
-			if (err) {
-				console.error(`Error processing ${name}:`, err);
-			} else {
-				console.log(`${name} generated successfully!`);
-			}
-		});
+  const outputFile = path.resolve(outputDir, "../", name);
+  sharp(inputPath)
+    .resize(size, size)
+    .toFile(outputFile, (err) => {
+      if (err) {
+        console.error(`Error processing ${name}:`, err);
+      } else {
+        console.log(`${name} generated successfully!`);
+      }
+    });
 });
 
 // Update the manifest file

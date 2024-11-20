@@ -1,7 +1,6 @@
 // Edit at: https://mjml.io/try-it-live/uYS4Ny8brv
 import { CONSTANTS } from "$lib/constants";
 
-
 export const html = (url: string) => `<!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 

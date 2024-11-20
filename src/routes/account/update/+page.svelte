@@ -3,7 +3,7 @@
   import Fa from "svelte-fa";
   import { faInfoCircle, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
   import type { AccountUpdateRes } from "../../api/account/update/+server";
-    import { page } from "$app/stores";
+  import { page } from "$app/stores";
 
   let username = "";
   let password = "";

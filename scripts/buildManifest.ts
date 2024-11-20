@@ -11,5 +11,5 @@ const __dirname = path.dirname(new URL(import.meta.url).pathname);
     { name: CONSTANTS.name },
     path.resolve(__dirname, "../.svelte-kit/output/client/site.webmanifest")
   );
-	process.exit(0);
+  process.exit(0);
 })();

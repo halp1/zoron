@@ -117,6 +117,8 @@
         {#each tabs.filter((tab) => !tab.mobileOnly) as tab, idx}
           <a
             href={tab.path}
+            data-sveltekit-preload-code
+						data-sveltekit-preload-data
             class="text-xl"
             class:active={activeTabIndex === tabs.indexOf(tab)}
             bind:this={tabRefs[idx]}
@@ -169,6 +171,8 @@
       {#each tabs as tab, idx}
         <a
           href={tab.path}
+					data-sveltekit-preload-code
+					data-sveltekit-preload-data
           class="btn-circle relative h-10 w-10 border-2 border-slate-600"
           class:bg-blue-700={idx === activeTabIndex}
           bind:this={tabRefs[idx]}

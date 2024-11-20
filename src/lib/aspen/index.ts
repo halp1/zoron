@@ -418,7 +418,7 @@ export namespace aspen {
           id: period.$.oid,
           sscid: period.$.sscoid
         } satisfies PeriodAttendance;
-      }) || [];	
+      }) || [];
 
     const grades =
       activity["recent-activity-list"]["recent-activity"][0].gradebookScore?.map((score) => {
@@ -433,19 +433,19 @@ export namespace aspen {
           gtmid: score.$.gtmoid
         } satisfies Assignment;
       }) || [];
-			const postedGrades =
+    const postedGrades =
       activity["recent-activity-list"]["recent-activity"][0].gradePost?.map((score) => {
         return {
           type: "posted-grade",
           date: score.$.date,
-					classname: score.$.classname,
-					oid: score.$.oid,
-					teacher: {
-						first: score.$.teacherfirst,
-						last: score.$.teacherlast
-					},
-					postType: parseInt(score.$.type),
-					sscid: score.$.sscoid
+          classname: score.$.classname,
+          oid: score.$.oid,
+          teacher: {
+            first: score.$.teacherfirst,
+            last: score.$.teacherlast
+          },
+          postType: parseInt(score.$.type),
+          sscid: score.$.sscoid
         } satisfies PostedGrade;
       }) || [];
 
@@ -461,8 +461,8 @@ export namespace aspen {
     const mergedActivity: (Assignment | PeriodAttendance | Attendance | PostedGrade)[] = [
       ...attendance,
       ...grades,
-			...periodAttendance,
-			...postedGrades
+      ...periodAttendance,
+      ...postedGrades
     ].sort((a, b) => computeMilliseconds(b.date) - computeMilliseconds(a.date));
     return {
       merged: mergedActivity,
@@ -786,7 +786,7 @@ export namespace aspen {
               item && item.length > 0
                 ? ({
                     number: Math.round(100 * parseFloat(item.split(" ")[0])) / 100,
-                    letter: item.split(" ")[1]
+                    letter: item.split(" ")[1] ?? item
                   } satisfies Types.Grade)
                 : undefined
             );
@@ -798,7 +798,7 @@ export namespace aspen {
               item && item.length > 0
                 ? ({
                     number: Math.round(100 * parseFloat(item.split(" ")[0])) / 100,
-                    letter: item.split(" ")[1]
+                    letter: item.split(" ")[1] ?? item
                   } satisfies Types.Grade)
                 : undefined
             );

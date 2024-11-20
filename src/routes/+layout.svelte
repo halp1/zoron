@@ -3,7 +3,7 @@
   import { Toaster } from "svelte-french-toast";
   import { PWA } from "$lib/web";
   import "../app.css";
-    import { page } from "$app/stores";
+  import { page } from "$app/stores";
 
   onMount(() => {
     document.body.classList.add("suse");
