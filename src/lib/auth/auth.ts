@@ -1,3 +1,4 @@
+import { CONSTANTS } from "$lib/constants";
 import { database as databaseName, dbClient } from "$lib/database";
 import { html, text, validEmail } from "$lib/email";
 
@@ -7,7 +8,6 @@ import { DOMAIN, MAILGUN_KEY } from "$env/static/private";
 import { decode, encode } from "@auth/core/jwt";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import { SvelteKitAuth, type SvelteKitAuthConfig, type User } from "@auth/sveltekit";
-import { CONSTANTS } from "$lib/constants";
 
 export const adapter = MongoDBAdapter(dbClient, {
   databaseName
@@ -23,7 +23,7 @@ export const trimUser = (user: User) => ({
   session: user.session,
   settings: user.settings,
   devices: user.devices,
-	role: user.role
+  role: user.role
 });
 
 export const auth = {

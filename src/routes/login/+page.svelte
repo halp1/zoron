@@ -3,7 +3,7 @@
   import { validEmail } from "$lib/email";
   import Footer from "$lib/components/Footer.svelte";
   import { requests } from "$lib/web";
-    import { page } from "$app/stores";
+  import { page } from "$app/stores";
 
   let email = "";
   let password = "";
@@ -72,8 +72,8 @@
       Log in
     </button>
     <div class="flex items-center">
-			<a href="/forgor" class="text-slate-400 underline">Forgot password?</a>
-      <a href="/register" class="text-slate-400 underline ml-auto">Register</a>
+      <a href="/forgor" class="text-slate-400 underline">Forgot password?</a>
+      <a href="/register" class="ml-auto text-slate-400 underline">Register</a>
     </div>
   </form>
 </main>

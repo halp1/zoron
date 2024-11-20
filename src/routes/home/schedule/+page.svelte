@@ -28,7 +28,7 @@
     if (updating) return toast.error("Schedule is already updating");
     updating = true;
     const currentDate = new Date();
-    const jan25_2024 = new Date(2025, 0, 25);
+    const jan25_2024 = new Date(2025, 0, 25); 
     const semester = currentDate >= jan25_2024 ? 2 : 1;
 
     const { dismiss, update } = toast.loading(getLoadingText(0));
@@ -237,7 +237,9 @@
   </div>
 {:else}
   <div class="relative flex h-full flex-col-reverse items-center gap-3 md:flex-row md:pt-0">
-    <div class="hidden -mb-3 md:flex items-center gap-3 rounded-full bg-slate-800 p-2 md:mb-0 md:flex-col">
+    <div
+      class="-mb-3 hidden items-center gap-3 rounded-full bg-slate-800 p-2 md:mb-0 md:flex md:flex-col"
+    >
       <button
         class="btn-circle relative border-2 border-slate-600 {mode === 'day'
           ? 'bg-blue-600 hover:bg-blue-400'
@@ -446,7 +448,7 @@
           </div>
           <div
             id="day-transition"
-            class="no-scroll flex min-w-[336px] pb-5 flex-col items-center gap-5 overflow-y-auto overflow-x-hidden pr-2"
+            class="no-scroll flex min-w-[336px] flex-col items-center gap-5 overflow-y-auto overflow-x-hidden pb-5 pr-2"
             style="view-transition-name: schedule-in-out-{swipeDirection}"
           >
             {#if day.day && day.blocks.length !== 0}

@@ -2,7 +2,7 @@
   import { requests, toast } from "$lib/web";
   import Fa from "svelte-fa";
   import { faInfoCircle, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-    import { page } from "$app/stores";
+  import { page } from "$app/stores";
 
   let password = "";
   let confirm = "";

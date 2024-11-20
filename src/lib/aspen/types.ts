@@ -105,7 +105,7 @@ export interface PeriodAttendance {
 }
 
 export interface Attendance {
-	type: "attendance";
+  type: "attendance";
   date: string;
   code: string;
   dismissed: boolean;
@@ -117,7 +117,7 @@ export interface Attendance {
 }
 
 export interface PostedGrade {
-	type: "posted-grade";
+  type: "posted-grade";
   date: string;
   classname: string;
   teacher: aspen.Types.Name;

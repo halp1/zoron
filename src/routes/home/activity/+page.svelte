@@ -8,9 +8,7 @@
     faGraduationCap,
     faCalendarCheck,
     faInfoCircle,
-
     faCheckCircle
-
   } from "@fortawesome/free-solid-svg-icons";
   import { onMount } from "svelte";
   import Fa from "svelte-fa";
@@ -167,36 +165,36 @@
           </div>
           <div class="-mr-1">Code:</div>
           <div class="font-bold">{item.code}</div>
-					{#if item.absent}
+          {#if item.absent}
             <div class="text-sm text-slate-400">Absent,</div>
           {/if}
-					{#if item.tardy}
+          {#if item.tardy}
             <div class="text-sm text-slate-400">Tardy,</div>
           {/if}
-					{#if item.dismissed}
+          {#if item.dismissed}
             <div class="text-sm text-slate-400">Dismissed Early,</div>
           {/if}
           {#if item.excused}
-            <div class="text-sm text-slate-400 -ml-2">Excused</div>
+            <div class="-ml-2 text-sm text-slate-400">Excused</div>
           {:else}
-						<div class="text-sm text-slate-400 -ml-2">Unexcused</div>
-					{/if}
+            <div class="-ml-2 text-sm text-slate-400">Unexcused</div>
+          {/if}
 
           <div class="h-[2px] flex-1 bg-slate-600" />
         {:else if item.type === "posted-grade"}
-					<div class="ml-3 flex w-5 justify-center sm:-mr-2">
-						<Fa icon={faCheckCircle} color="#c4b5fd" />
-					</div>
-					<div class="hiddenpx-2 sm:block">
-						<span class="text-violet-300">Grades Posted</span> -
-						<a
-							href="/home/grades#{encodeURIComponent(item.classname)}"
-							class="border-b-2 border-slate-600 border-opacity-0 text-blue-300 hover:border-opacity-100"
-							>{item.classname}</a
-						>
-					</div>
-					<div class="h-[2px] flex-1 bg-slate-600" />
-				{/if}
+          <div class="ml-3 flex w-5 justify-center sm:-mr-2">
+            <Fa icon={faCheckCircle} color="#c4b5fd" />
+          </div>
+          <div class="hiddenpx-2 sm:block">
+            <span class="text-violet-300">Grades Posted</span> -
+            <a
+              href="/home/grades#{encodeURIComponent(item.classname)}"
+              class="border-b-2 border-slate-600 border-opacity-0 text-blue-300 hover:border-opacity-100"
+              >{item.classname}</a
+            >
+          </div>
+          <div class="h-[2px] flex-1 bg-slate-600" />
+        {/if}
         <div class="hidden text-slate-400 sm:block">{item.date}</div>
         <div class="text-slate-400 sm:hidden">
           {item.date.split("-")[1]}/{item.date.split("-")[2]}
@@ -207,6 +205,13 @@
   <div class="ml-4 text-sm text-slate-400">
     <Fa icon={faInfoCircle} class="float-left mr-2 mt-[3px]" />
     Activity only goes back 60 days. To see more, visit
-    <a href="/home/grades" class="underline">your grades</a>.
+    <a
+      href="/home/grades"
+      class="underline"
+      data-sveltekit-preload-code
+      data-sveltekit-preload-data
+    >
+      your grades
+    </a>.
   </div>
 </div>

@@ -26,8 +26,8 @@
   });
 </script>
 
-<div class="text-center text-4xl mt-10 mb-3">Admin Panel</div>
-<div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-10">
+<div class="mb-3 mt-10 text-center text-4xl">Admin Panel</div>
+<div class="mb-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
   <div class="rounded-3xl border-2 border-red-400 bg-slate-800 p-5">
     <div class="text-2xl">Time Delta</div>
     <form
