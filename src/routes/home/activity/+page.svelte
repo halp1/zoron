@@ -74,7 +74,7 @@
 <svelte:head>
   <title>Activity | {$page.data.env.name}</title>
 </svelte:head>
-<div class=" my-10 flex w-full flex-1 flex-col gap-2 border-l-4 border-slate-600">
+<div class="my-10 flex w-full flex-1 flex-col gap-2 border-l-4 border-slate-600 lg:max-w-[1024px] mx-auto">
   {#if !merged}
     {#each Array.from({ length: 60 }) as _}
       <div class="my-2 flex items-center gap-3">
