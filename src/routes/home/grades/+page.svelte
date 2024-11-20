@@ -204,7 +204,7 @@
 <svelte:head>
   <title>Grades | {$page.data.env.name}</title>
 </svelte:head>
-<div class="mb-2 flex items-center justify-center gap-5">
+<div class="mb-2 flex items-center justify-center gap-5 pt-10 flex-wrap">
   <ListSelect
     items={[
       { value: "current", label: "This Year" },
@@ -255,7 +255,7 @@
 </div>
 
 {#if classes}
-  <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+  <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 pb-10">
     {#each classes as c}
       <div
         id="c-{c.id}"

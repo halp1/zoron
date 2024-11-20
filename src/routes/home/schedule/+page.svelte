@@ -168,7 +168,10 @@
             (b) =>
               ((b as any).block || b.type).trim() === block.summary.trim() ||
               ((b as any).schedule?.trim() === "HR" && block.summary.trim() === "Advisory")
-          )
+          ) || {
+            type: "free",
+            color: "bg-gray-400"
+          }
         }))
     };
   };
@@ -234,7 +237,7 @@
   </div>
 {:else}
   <div class="relative flex h-full flex-col-reverse items-center gap-3 md:flex-row md:pt-0">
-    <div class="-mb-3 flex items-center gap-3 rounded-full bg-slate-800 p-2 md:mb-0 md:flex-col">
+    <div class="hidden -mb-3 md:flex items-center gap-3 rounded-full bg-slate-800 p-2 md:mb-0 md:flex-col">
       <button
         class="btn-circle relative border-2 border-slate-600 {mode === 'day'
           ? 'bg-blue-600 hover:bg-blue-400'
@@ -351,7 +354,7 @@
           });
         }}
       >
-        <div class="-my-3 text-xl text-slate-400">
+        <div class="-mb-3 mt-3 text-xl text-slate-400">
           {dayViewDay.toLocaleDateString("en-US", { weekday: "long" })},
           {[
             "January",
@@ -443,7 +446,7 @@
           </div>
           <div
             id="day-transition"
-            class="custom-scroll flex h-[70vh] min-w-[336px] flex-col items-center gap-5 overflow-y-auto overflow-x-hidden pr-2"
+            class="no-scroll flex min-w-[336px] pb-5 flex-col items-center gap-5 overflow-y-auto overflow-x-hidden pr-2"
             style="view-transition-name: schedule-in-out-{swipeDirection}"
           >
             {#if day.day && day.blocks.length !== 0}
@@ -453,13 +456,21 @@
                   class="w-80 rounded-xl border-2 bg-white bg-opacity-10 p-5 shadow-xl backdrop-blur-xl {block
                     .class?.type === 'block'
                     ? block.class.color.replace('bg', 'border')
-                    : 'border-slate-600'}"
+                    : block.class?.type === 'I-block'
+                      ? 'border-cyan-400'
+                      : 'border-slate-600'}"
                 >
                   <div class="flex items-center">
                     <div>
-                      {block.class?.type === "block"
-                        ? block.class.description
-                        : generated.find((b) => b.type === block.block)?.type}
+                      {#if block.class?.type === "block"}
+                        {block.class.description}
+                      {:else if block.class.type === "free"}
+                        Free
+                      {:else if block.class.type === "I-block"}
+                        I Block
+                      {:else}
+                        {block.block}
+                      {/if}
                     </div>
                     <div class="ml-auto">
                       {#if block.class?.type === "block"}

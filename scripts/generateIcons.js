@@ -2,6 +2,8 @@ import fs from "fs";
 import path from "path";
 import sharp from "sharp";
 
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
+
 const relative = (p) => path.resolve(__dirname, "../static", p);
 
 const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
@@ -36,6 +38,28 @@ const icons = sizes.map((size) => {
     sizes: `${size}x${size}`,
     type: "image/png"
   };
+});
+
+const altFiles = [
+	{ name: "apple-touch-icon-precomposed.png", size: 180 },
+	{ name: "apple-touch-icon.png", size: 180 },
+	{ name: "favicon-48x48.png", size: 48 },
+	{ name: "favicon.ico", size: 16 },
+	{ name: "web-app-manifest-192x192.png", size: 192 },
+	{ name: "web-app-manifest-512x512.png", size: 512 },
+];
+
+altFiles.forEach(({ name, size }) => {
+	const outputFile = path.resolve(outputDir, '../', name);
+	sharp(inputPath)
+		.resize(size, size)
+		.toFile(outputFile, (err) => {
+			if (err) {
+				console.error(`Error processing ${name}:`, err);
+			} else {
+				console.log(`${name} generated successfully!`);
+			}
+		});
 });
 
 // Update the manifest file
