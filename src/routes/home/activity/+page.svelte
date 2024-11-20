@@ -1,13 +1,16 @@
 <script lang="ts">
   import { page } from "$app/stores";
   import type { Assignment, Attendance, PeriodAttendance, PostedGrade } from "$lib/aspen/types";
-	import type {aspen} from "$lib/aspen";
+  import type { aspen } from "$lib/aspen";
   import Skeleton from "$lib/components/Skeleton.svelte";
   import { requests, toast } from "$lib/web";
   import {
     faGraduationCap,
     faCalendarCheck,
-    faInfoCircle
+    faInfoCircle,
+
+    faCheckCircle
+
   } from "@fortawesome/free-solid-svg-icons";
   import { onMount } from "svelte";
   import Fa from "svelte-fa";
@@ -23,7 +26,9 @@
   }
 
   const existingData = $page.data?.preloadedActivity || [];
-  let merged = undefined as (Attendance | PeriodAttendance | GradeWithData | PostedGrade)[] | undefined;
+  let merged = undefined as
+    | (Attendance | PeriodAttendance | GradeWithData | PostedGrade)[]
+    | undefined;
 
   onMount(() => {
     (async () => {
@@ -49,8 +54,8 @@
           })),
         (steps, total, id, data) => {
           try {
-            const item = merged!.find((item) => item.id === id);
-            if (!item || item.type === "attendance") return;
+            const item = merged!.find((item) => (item as any).id === id);
+            if (!item || item.type !== "grade") return;
             if (data || data === null) {
               merged![merged!.indexOf(item)] = { ...item, scoring: data };
             } else {
@@ -71,7 +76,7 @@
 <svelte:head>
   <title>Activity | {$page.data.env.name}</title>
 </svelte:head>
-<div class="no-scroll flex w-full flex-1 flex-col gap-2 overflow-auto border-l-4 border-slate-600">
+<div class=" my-10 flex w-full flex-1 flex-col gap-2 border-l-4 border-slate-600">
   {#if !merged}
     {#each Array.from({ length: 60 }) as _}
       <div class="my-2 flex items-center gap-3">
@@ -135,7 +140,7 @@
               ></div>
             </div>
           {/if}
-        {:else if item.type === "periodAttendance"}
+        {:else if item.type === "period-attendance"}
           <div class="ml-3 flex w-5 justify-center sm:-mr-2">
             <Fa icon={faCalendarCheck} color="#fde047" />
           </div>
@@ -153,7 +158,45 @@
           <div class="-mr-1">Code:</div>
           <div class="font-bold">{item.code}</div>
           <div class="h-[2px] flex-1 bg-slate-600" />
-        {/if}
+        {:else if item.type === "attendance"}
+          <div class="ml-3 flex w-5 justify-center sm:-mr-2">
+            <Fa icon={faCalendarCheck} color="#fde047" />
+          </div>
+          <div class="hidden border-r-4 border-slate-600 px-2 sm:block">
+            <span class="text-yellow-300">Attendance</span>
+          </div>
+          <div class="-mr-1">Code:</div>
+          <div class="font-bold">{item.code}</div>
+					{#if item.absent}
+            <div class="text-sm text-slate-400">Absent,</div>
+          {/if}
+					{#if item.tardy}
+            <div class="text-sm text-slate-400">Tardy,</div>
+          {/if}
+					{#if item.dismissed}
+            <div class="text-sm text-slate-400">Dismissed Early,</div>
+          {/if}
+          {#if item.excused}
+            <div class="text-sm text-slate-400 -ml-2">Excused</div>
+          {:else}
+						<div class="text-sm text-slate-400 -ml-2">Unexcused</div>
+					{/if}
+
+          <div class="h-[2px] flex-1 bg-slate-600" />
+        {:else if item.type === "posted-grade"}
+					<div class="ml-3 flex w-5 justify-center sm:-mr-2">
+						<Fa icon={faCheckCircle} color="#c4b5fd" />
+					</div>
+					<div class="hiddenpx-2 sm:block">
+						<span class="text-violet-300">Grades Posted</span> -
+						<a
+							href="/home/grades#{encodeURIComponent(item.classname)}"
+							class="border-b-2 border-slate-600 border-opacity-0 text-blue-300 hover:border-opacity-100"
+							>{item.classname}</a
+						>
+					</div>
+					<div class="h-[2px] flex-1 bg-slate-600" />
+				{/if}
         <div class="hidden text-slate-400 sm:block">{item.date}</div>
         <div class="text-slate-400 sm:hidden">
           {item.date.split("-")[1]}/{item.date.split("-")[2]}

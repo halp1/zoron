@@ -418,9 +418,7 @@ export namespace aspen {
           id: period.$.oid,
           sscid: period.$.sscoid
         } satisfies PeriodAttendance;
-      }) || [];
-
-    console.log(activity["recent-activity-list"]["recent-activity"][0].gradePost);
+      }) || [];	
 
     const grades =
       activity["recent-activity-list"]["recent-activity"][0].gradebookScore?.map((score) => {

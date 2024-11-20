@@ -9,7 +9,7 @@
     faHome,
     faCalendar,
     faChartLine,
-		faList,
+    faList,
     faShieldAlt
   } from "@fortawesome/free-solid-svg-icons";
   import { signOut } from "@auth/sveltekit/client";
@@ -35,13 +35,14 @@
     return () => window.removeEventListener("resize", listener);
   });
 
-
   const tabs: Tab[] = [
     { name: "Home", path: "/home?page=home", icon: faHome },
     { name: "Schedule", path: "/home/schedule", icon: faCalendar },
     { name: "Grades", path: "/home/grades", icon: faChartLine },
     { name: "Activity", path: "/home/activity", icon: faList },
-		...($page.data.session?.user?.role === 'admin' ? [{ name: "Admin", path: "/home/admin", icon: faShieldAlt }] : []),
+    ...($page.data.session?.user?.role === "admin"
+      ? [{ name: "Admin", path: "/home/admin", icon: faShieldAlt }]
+      : []),
     { name: "Account", path: "/account", icon: faUser, mobileOnly: true }
   ];
 
@@ -110,8 +111,7 @@
       >
         <div class="flex w-60 items-center text-3xl">
           <img src="/favicon.png" alt="Site Icon" class="h-8" />
-          <div class="ml-2 font-bold">A+</div>
-          <div>spen</div>
+          <div class="ml-2">{$page.data.env.name}</div>
         </div>
         <div class="ml-auto"></div>
         {#each tabs.filter((tab) => !tab.mobileOnly) as tab, idx}
@@ -155,7 +155,7 @@
 
   {#key $page.url}
     <div
-      class="view-anim-{animationDirection} no-scroll flex w-full flex-1 flex-col gap-2 overflow-auto p-10"
+      class="view-anim-{animationDirection} no-scroll flex w-full flex-1 flex-col gap-2 overflow-auto px-10"
     >
       <slot />
     </div>

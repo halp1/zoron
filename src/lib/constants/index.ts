@@ -1,4 +1,4 @@
 export namespace CONSTANTS {
-  export const name = "A+spen";
+  export const name = "Zoron";
   export const url = "aplus.haelp.dev";
 }
