@@ -1,6 +1,6 @@
 {
-  "name": "{{name}}",
-  "short_name": "{{name}}",
+  "name": "Zoron",
+  "short_name": "Zoron",
   "start_url": "/home",
   "orientation": "portrait",
   "icons": [
