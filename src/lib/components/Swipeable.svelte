@@ -48,7 +48,7 @@
       return;
     }
 
-    event.preventDefault();
+    event.cancelable && event.preventDefault();
 
     const dx = endX - startX;
     const dy = endY - startY;
