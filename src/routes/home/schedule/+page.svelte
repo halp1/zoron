@@ -28,7 +28,7 @@
     if (updating) return toast.error("Schedule is already updating");
     updating = true;
     const currentDate = new Date();
-    const jan25_2024 = new Date(2025, 0, 25); 
+    const jan25_2024 = new Date(2025, 0, 25);
     const semester = currentDate >= jan25_2024 ? 2 : 1;
 
     const { dismiss, update } = toast.loading(getLoadingText(0));
@@ -111,6 +111,99 @@
   let exportChoice: null | "choobs" = null;
 
   let updating = false;
+
+  const generateBlocks = (date: Date, calendar: CalendarEvent) => {
+    if (!schedule) return { day: "", blocks: [] };
+    const currentDayEvents = calendar.items.filter((event) => {
+      const eventStartDate = new Date(event.start.dateTime || event.start.date!);
+      const isFullDayEvent = !event.start.dateTime && !event.end.dateTime;
+
+      return (
+        (eventStartDate.getDate() === date.getDate() &&
+          eventStartDate.getMonth() === date.getMonth() &&
+          eventStartDate.getFullYear() === date.getFullYear()) ||
+        isFullDayEvent
+      );
+    });
+    const day = currentDayEvents.find((event) => event.summary.includes("Day"))?.summary!;
+    const allEvents = currentDayEvents
+      .filter((event) => !event.summary.includes("Day"))
+      .map((event) => ({
+        name: event.summary.trim(),
+        start: new Date(event.start.dateTime || event.start.date!),
+        end: new Date(event.end.dateTime || event.end.date!)
+      }))
+      .map((event) => ({
+        ...event,
+        duration: (event.end.getTime() - event.start.getTime()) / 1000 / 60,
+        progression: calculateProgression(event.start, event.end)
+      }));
+
+    const dayNumber =
+      (day.includes("Day 1")
+        ? 1
+        : day.includes("Day 2")
+          ? 2
+          : day.includes("Day 3")
+            ? 3
+            : day.includes("Day 4")
+              ? 4
+              : day.includes("Day 5")
+                ? 5
+                : 6) - 1;
+
+    const today = $page.data.schedule!.schedule!.slice(dayNumber * 6, (dayNumber + 1) * 6);
+    const blocks = today
+      .filter((block) => block?.block || block?.schedule)
+      .map((block) => block!.block || block!.schedule)
+      .map((item) => (item === "HR" ? "Advisory" : item));
+
+    const filtered = allEvents.filter(
+      (event) => blocks.includes(event.name) || event.name === "I-block"
+    );
+
+    const blockEvents = filtered.map((event) => ({
+      ...event,
+      class: generated.find(
+        (b) =>
+          ((b as any).block || b.type).trim() === event.name ||
+          ((b as any).schedule?.trim() === "HR" && event.name === "Advisory")
+      ) || {
+        type: (console.log(event.name), event.name || "free") as Exclude<string, "block">,
+        color: "bg-gray-400"
+      }
+    }));
+    if (day.includes("Half Day")) {
+      const last = blockEvents.at(-1);
+      if (last && last.class.type === "block" && "room" in last.class) {
+        if (!Number.isNaN(parseInt(last.class.room)) && parseInt(last.class.room) >= 500) {
+          // second lunch
+          return {
+            day,
+            blocks: [
+              ...blockEvents,
+              allEvents.find((event) => event.name.includes("Lunch 2"))!
+            ].sort((a, b) => a.start.getTime() - b.start.getTime())
+          };
+        }
+      }
+      return {
+        day,
+        blocks: [...blockEvents, allEvents.find((event) => event.name.includes("Lunch 1"))!].sort(
+          (a, b) => a.start.getTime() - b.start.getTime()
+        )
+      };
+    } else {
+      const targetLunch = schedule?.lunches[dayNumber - 1];
+      return {
+        day,
+        blocks: [
+          ...blockEvents,
+          {type: "lunch", ...allEvents.find((event) => event.name.includes(`Lunch ${targetLunch}`))!}
+        ].sort((a, b) => a.start.getTime() - b.start.getTime())
+      };
+    }
+  };
   const loadDay = async (date: Date) => {
     const key = new Date(date.getFullYear(), date.getMonth(), date.getDate())
       .toISOString()
@@ -130,50 +223,7 @@
     );
 
     if (!res.success) throw res.error;
-    const currentDayEvents = res.data.items.filter((event) => {
-      const eventStartDate = new Date(event.start.dateTime || event.start.date!);
-      const isFullDayEvent = !event.start.dateTime && !event.end.dateTime;
-
-      return (
-        (eventStartDate.getDate() === date.getDate() &&
-          eventStartDate.getMonth() === date.getMonth() &&
-          eventStartDate.getFullYear() === date.getFullYear()) ||
-        isFullDayEvent
-      );
-    });
-    return {
-      day: currentDayEvents.find((event) => event.summary.includes("Day"))?.summary,
-      blocks: currentDayEvents
-        .filter(
-          (event) =>
-            !event.summary.includes("Lunch") &&
-            !event.summary.includes("Day") &&
-            !event.summary.includes("$")
-        )
-        .map((block) => ({
-          block: block.summary,
-          start: new Date(block.start.dateTime || block.start.date!),
-          end: new Date(block.end.dateTime || block.end.date!),
-          duration:
-            (new Date(block.end.dateTime || block.end.date!).getTime() -
-              new Date(block.start.dateTime || block.start.date!).getTime()) /
-            1000 /
-            60,
-          progression: calculateProgression(
-            new Date(block.start.dateTime || block.start.date!),
-            new Date(block.end.dateTime || block.end.date!)
-          ),
-
-          class: generated.find(
-            (b) =>
-              ((b as any).block || b.type).trim() === block.summary.trim() ||
-              ((b as any).schedule?.trim() === "HR" && block.summary.trim() === "Advisory")
-          ) || {
-            type: "free",
-            color: "bg-gray-400"
-          }
-        }))
-    };
+    return generateBlocks(date, res.data);
   };
 
   const calculateProgression = (start: Date, end: Date): number | null =>
@@ -185,7 +235,10 @@
         : ((now().getTime() - start.getTime()) / (end.getTime() - start.getTime())) * 100;
 
   let day: Awaited<ReturnType<typeof loadDay>> | null = null;
-  $: mode === "day" && $page.data.schedule && loadDay(dayViewDay).then((d) => (day = d));
+  $: mode === "day" &&
+    $page.data.schedule &&
+    typeof window !== "undefined" &&
+    loadDay(dayViewDay).then((d) => (day = d));
 
   const dateToTime = (date: Date) => {
     const hours = date.getHours();
