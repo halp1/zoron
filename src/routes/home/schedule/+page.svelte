@@ -126,6 +126,7 @@
       );
     });
     const day = currentDayEvents.find((event) => event.summary.includes("Day"))?.summary!;
+    if (!day) return { day: "", blocks: [] };
     const allEvents = currentDayEvents
       .filter((event) => !event.summary.includes("Day"))
       .map((event) => ({
@@ -138,6 +139,7 @@
         duration: (event.end.getTime() - event.start.getTime()) / 1000 / 60,
         progression: calculateProgression(event.start, event.end)
       }));
+    if (allEvents.length === 0) return { day, blocks: [] };
 
     const dayNumber =
       (day.includes("Day 1")
@@ -169,29 +171,48 @@
           ((b as any).block || b.type).trim() === event.name ||
           ((b as any).schedule?.trim() === "HR" && event.name === "Advisory")
       ) || {
-        type: (console.log(event.name), event.name || "free") as Exclude<string, "block">,
-        color: "bg-gray-400"
+        type: "other" as const,
+        color: "bg-gray-400" as const,
+        block: event.name
       }
     }));
     if (day.includes("Half Day")) {
       const last = blockEvents.at(-1);
-      if (last && last.class.type === "block" && "room" in last.class) {
-        if (!Number.isNaN(parseInt(last.class.room)) && parseInt(last.class.room) >= 500) {
-          // second lunch
-          return {
-            day,
-            blocks: [
-              ...blockEvents,
-              allEvents.find((event) => event.name.includes("Lunch 2"))!
-            ].sort((a, b) => a.start.getTime() - b.start.getTime())
-          };
-        }
+      if (
+        !last ||
+        (last.class.type === "block" &&
+          "room" in last.class &&
+          !Number.isNaN(parseInt(last.class.room)) &&
+          parseInt(last.class.room) < 500)
+      ) {
+        if (last) last.end = new Date(last.end.getTime() - 1000 * 60 * 30);
+        // second lunch
+        return {
+          day,
+          blocks: [
+            ...blockEvents,
+            {
+              ...allEvents.find((event) => event.name.includes("Lunch 2"))!,
+              class: { type: "lunch" as const, lunch: 2 as const }
+            }
+          ].sort((a, b) => a.start.getTime() - b.start.getTime())
+        };
       }
+
+      // first lunch
+      last.start = new Date(last.start.getTime() + 1000 * 60 * 30);
       return {
         day,
-        blocks: [...blockEvents, allEvents.find((event) => event.name.includes("Lunch 1"))!].sort(
-          (a, b) => a.start.getTime() - b.start.getTime()
-        )
+        blocks: [
+          ...blockEvents,
+          {
+            ...allEvents.find((event) => event.name.includes("Lunch 1"))!,
+            class: {
+              type: "lunch" as const,
+              lunch: 1 as const
+            }
+          }
+        ].sort((a, b) => a.start.getTime() - b.start.getTime())
       };
     } else {
       const targetLunch = schedule?.lunches[dayNumber - 1];
@@ -199,7 +220,13 @@
         day,
         blocks: [
           ...blockEvents,
-          {type: "lunch", ...allEvents.find((event) => event.name.includes(`Lunch ${targetLunch}`))!}
+          {
+            ...allEvents.find((event) => event.name.includes(`Lunch ${targetLunch}`))!,
+            class: {
+              type: "lunch" as const,
+              lunch: targetLunch
+            }
+          }
         ].sort((a, b) => a.start.getTime() - b.start.getTime())
       };
     }
@@ -523,8 +550,17 @@
                         Free
                       {:else if block.class.type === "I-block"}
                         I Block
+                      {:else if block.class.type === "lunch"}
+                        {#if "lunch" in block.class}
+                          {block.class.lunch === 1
+                            ? "First"
+                            : block.class.lunch === 2
+                              ? "Second"
+                              : "Third"}
+                        {/if}
+                        Lunch
                       {:else}
-                        {block.block}
+                        {"block" in block ? block.block : block.name}
                       {/if}
                     </div>
                     <div class="ml-auto">
@@ -553,7 +589,9 @@
                       class="relative mt-2 flex h-6 items-center border-2 bg-slate-800 text-sm {block
                         .class?.type === 'block'
                         ? block.class.color.replace('bg', 'border')
-                        : 'border-slate-600'}"
+                        : block.class?.type === 'I-block'
+                          ? 'border-cyan-400'
+                          : 'border-slate-600'}"
                     >
                       <div class="z-10 pl-2">{block.progression.toFixed(0)}%</div>
                       <div
