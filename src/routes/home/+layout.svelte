@@ -112,6 +112,7 @@
         <div class="flex w-60 items-center text-3xl">
           <img src="/favicon.png" alt="Site Icon" class="h-8" />
           <div class="ml-2">{$page.data.env.name}</div>
+					<div class="ml-2 text-slate-600 font-mono mt-[2px]">BETA</div>
         </div>
         <div class="ml-auto"></div>
         {#each tabs.filter((tab) => !tab.mobileOnly) as tab, idx}
