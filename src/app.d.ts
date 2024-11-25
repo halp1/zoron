@@ -1,6 +1,8 @@
 // See https://kit.svelte.dev/docs/types#app
 import type { aspen } from "$lib/aspen";
+import type { Passkey } from "$lib/auth/webauthn/types";
 import type { Item, Settings, Subscription } from "$lib/types";
+import type { PublicKeyCredentialCreationOptionsJSON } from "@simplewebauthn/types";
 
 interface ActivityRecord {
   id: string;
@@ -46,5 +48,9 @@ declare module "@auth/sveltekit" {
     };
     activity?: ActivityRecord[];
     password?: { hash: string; salt: string };
+    webauthn?: {
+      passkeys: Passkey[];
+      options: PublicKeyCredentialCreationOptionsJSON;
+    };
   }
 }

@@ -26,7 +26,9 @@
       return;
     }
 
+		const {dismiss} = toast.loading("Logging in...");
     const res = await requests.post("/api/account/login", { email, password });
+		dismiss();
     if (res.success) {
       location.href = "/home";
     } else {

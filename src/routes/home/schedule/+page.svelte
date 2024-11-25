@@ -535,7 +535,10 @@
               {#each day.blocks as block}
                 <div
                   id={block.progression ? "progression" : ""}
-                  class="w-80 rounded-xl border-2 bg-white bg-opacity-10 p-5 shadow-xl backdrop-blur-xl {block
+                  style={block.class?.type === "lunch"
+                    ? "border: double 3px transparent; background-clip: padding-box, border-box; background-image: linear-gradient(#263048E5, #263048E5), linear-gradient(45deg, #fc4778e5, #3952f5e5); background-origin: border-box;"
+                    : ""}
+                  class="w-80 rounded-xl border-2 bg-[#263048] bg-opacity-90 p-5 shadow-xl backdrop-blur-xl {block
                     .class?.type === 'block'
                     ? block.class.color.replace('bg', 'border')
                     : block.class?.type === 'I-block'
