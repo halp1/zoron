@@ -9,7 +9,10 @@
     faRightFromBracket,
     faUserSlash,
     faUserEdit,
-    faGear
+    faGear,
+
+    faFingerprint
+
   } from "@fortawesome/free-solid-svg-icons";
   import Fa from "svelte-fa";
 
@@ -32,7 +35,7 @@
 <main>
   <div class="flex h-screen w-screen flex-col items-center justify-center">
     {#if $page.data && $page.data.session && $page.data.session.user}
-      <div class="relative flex flex-col gap-5 sm:w-[450px]">
+      <div class="relative flex flex-col gap-5 sm:w-[550px]">
         <div class="mx-auto border-b-2 border-slate-600 pb-1 text-3xl">
           Hello, {$page.data.session.user.name}.
         </div>
@@ -73,9 +76,16 @@
               Add a password
             </a>
           {/if}
+					<a
+            href="/account/passkeys"
+            class="btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-orange-400 text-base"
+          >
+            <Fa icon={faFingerprint} />
+            Passkeys
+          </a>
           <a
             href="/account/update"
-            class="btn-full btn-outlined col-span-2 flex flex-1 items-center justify-center gap-3 border-orange-400 text-base"
+            class="btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-orange-400 text-base"
           >
             <Fa icon={faUserEdit} />
             Update Aspen credentials
