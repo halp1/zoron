@@ -19,6 +19,8 @@
   import { isIOS, PWA } from "$lib/web";
   import { Footer } from "$lib/components";
 
+	import bgSrc from "../../assets/bg.png"
+
   interface Tab {
     name: string;
     path: string;
@@ -221,7 +223,7 @@
     </div>
   </div>
 </main>
-
+<img src={bgSrc} alt="" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[70vh] -z-10 opacity-10 blur-xl mb-12 md:mt-12">
 <style>
   .view-anim-left {
     view-transition-name: slide-in-out-left;

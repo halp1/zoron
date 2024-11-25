@@ -37,6 +37,8 @@
     "@fingerprintjs/fingerprintjs": "^4.5.1",
     "@fortawesome/free-brands-svg-icons": "^6.7.1",
     "@fortawesome/free-solid-svg-icons": "^6.7.1",
+    "@simplewebauthn/browser": "^11.0.0-alpha3",
+    "@simplewebauthn/server": "^11.0.0-alpha3",
     "@sveltejs/adapter-node": "^5.2.9",
     "@sveltejs/adapter-vercel": "^5.4.7",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
