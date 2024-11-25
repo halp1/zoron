@@ -2,7 +2,7 @@ import { register } from "$lib/auth/webauthn/server";
 import { api } from "$lib/server";
 import type { RequestHandler } from "./$types";
 
-export const GET: RequestHandler = async ({locals: {auth}, request}) => {
+export const POST: RequestHandler = async ({locals: {auth}, request}) => {
 	const session = await auth();
 	try {
 		const data = await register(session, await request.json());

@@ -1,5 +1,7 @@
 import { adapter } from "$lib/auth";
+import { insert, query, transformID } from "$lib/database";
 
+import { DOMAIN } from "$env/static/private";
 import type { Session, User } from "@auth/sveltekit";
 import {
   generateAuthenticationOptions,
@@ -12,15 +14,14 @@ import type {
   PublicKeyCredentialCreationOptionsJSON,
   PublicKeyCredentialRequestOptionsJSON
 } from "@simplewebauthn/types";
-
-import type { Passkey, UserModel } from "./types";
-import { query, transformID, insert } from "$lib/database";
 import { ObjectId } from "mongodb";
 
+import type { Passkey, UserModel } from "./types";
+
 const rp = {
-  name: "SimpleWebAuthn Example",
-  id: "simplewebauthn.dev",
-  origin: `https://simplewebauthn.dev`
+  name: "Zoron",
+  id: DOMAIN,
+  origin: `http${DOMAIN.includes("localhost") ? "" : "s"}://${DOMAIN}`
 };
 
 // Note: Create this index in MongoDB UI using:
@@ -139,7 +140,7 @@ export const register = async (session: Session | null, body: any) => {
 
 export const addChallenge = async (challenge: string) => {
   const randomSessionID = Math.random().toString(36).slice(2);
-  
+
   // Set expiration to 5 minutes from now
   // MongoDB will remove the document when this timestamp is reached
   // due to the TTL index created with expireAfterSeconds: 0
@@ -162,9 +163,68 @@ export const authenticationOptions = async () => {
     allowCredentials: []
   });
 
+  const sessionID = await addChallenge(options.challenge);
 
-	return options;
+  return { sessionID, options };
 };
 
-export const authenticate = async (sessionID: string, body: any) => {
-}
+export const authenticate = async (sessionID: string, body: AuthenticationResponseJSON) => {
+  // Get the challenge from the database
+  const challengeDoc = (
+    await query({ collection: "challenges", query: { session: sessionID } })
+  )[0];
+  if (!challengeDoc) {
+    throw new Error("Challenge not found or expired");
+  }
+
+  // Get the authenticating passkey
+  const passkey = (
+    await query({ collection: "users", query: { "webauthn.passkeys.id": body.id } })
+  )[0];
+  if (!passkey) {
+    throw new Error("Passkey not found");
+  }
+
+  const userPasskeys: Passkey[] = passkey.webauthn.passkeys;
+  console.log(passkey, userPasskeys);
+  const authenticatingPasskey = userPasskeys.find((pk) => pk.id === body.id);
+  if (!authenticatingPasskey) {
+    throw new Error("Authenticating passkey not found");
+  }
+
+  // Verify the authentication response
+  const verification = await verifyAuthenticationResponse({
+    response: body,
+    expectedChallenge: challengeDoc.challenge,
+    expectedOrigin: rp.origin,
+    expectedRPID: rp.id,
+    credential: {
+      id: authenticatingPasskey.id,
+      publicKey: authenticatingPasskey.publicKey,
+      counter: authenticatingPasskey.counter,
+      transports: authenticatingPasskey.transports
+    },
+    requireUserVerification: false
+  });
+
+  if (!verification.verified) {
+    throw new Error("Authentication failed");
+  }
+
+  // Update the credential counter
+  authenticatingPasskey.counter = verification.authenticationInfo.newCounter;
+
+  // Update the passkey in the database
+  await adapter.updateUser!({
+    id: passkey._id,
+    webauthn: {
+      passkeys: userPasskeys,
+      options: null
+    }
+  } as any);
+
+  return {
+    verified: true,
+    user: authenticatingPasskey.user.id
+  };
+};

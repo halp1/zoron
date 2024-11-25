@@ -27,6 +27,7 @@ declare global {
         timeDelta: number;
       };
       preloadedActivity?: ActivityRecord[];
+			passkeys?: Passkey[];
     }
     // interface PageState {}
     // interface Platform {}

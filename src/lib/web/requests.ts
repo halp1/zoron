@@ -16,7 +16,7 @@ export namespace requests {
     data: Record<string, any> = {}
   ): Promise<{ success: true; data: T } | { success: false; error: string }> => {
     try {
-      const url = new URL(uri);
+      const url = new URL(uri, location.origin);
       for (const key in data) {
         url.searchParams.append(key, data[key]);
       }
@@ -25,7 +25,8 @@ export namespace requests {
         res = JSON.parse(res.message);
       }
       return !("success" in res) ? { success: true, data: res } : res;
-    } catch {
+    } catch (e: any) {
+			console.error(e);
       return { success: false, error: "Network Error" };
     }
   };
