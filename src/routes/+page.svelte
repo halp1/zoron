@@ -18,5 +18,7 @@
   <div class="mt-10 text-center text-3xl">The better Aspen experience you've always wanted.</div>
   <div class="mt-10 flex items-center gap-10">
     <BubbleButton type="a" href="/register">Get Started</BubbleButton>
+		<span class="-mx-3">or</span>
+    <BubbleButton type="a" href="/login">Log in</BubbleButton>
   </div>
 </main>
