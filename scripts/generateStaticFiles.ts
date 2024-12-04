@@ -28,7 +28,7 @@ const relativePaths = allFiles.map((file) => "/" + relative(staticDir, file).rep
 
 const serviceWorkerContent = await readFile(serviceWorkerPath, "utf-8");
 const lines = serviceWorkerContent.split("\n");
-lines[7] = `const assets = ${JSON.stringify(relativePaths)};`;
+lines[8] = `const assets = ${JSON.stringify(relativePaths)};`;
 
 await writeFile(serviceWorkerPath, lines.join("\n"), "utf-8");
 console.log("Static assets list updated successfully");

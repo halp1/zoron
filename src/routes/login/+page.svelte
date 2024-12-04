@@ -83,7 +83,7 @@
       disabled={!validEmail(email) || password.length === 0}
       type="submit"
     >
-      Log in with password
+      Log in
     </button>
     <!-- <button class="btn-full btn-outlined mt-2" type="button" on:click={handlePasskeyLogin}>
       Log in with passkey

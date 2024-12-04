@@ -1,4 +1,5 @@
 import { MONGODB_URI } from "$env/static/private";
+import { zoron } from "$lib";
 import { MongoClient, ServerApiVersion } from "mongodb";
 import type { Document, Filter, OptionalId, WithId } from "mongodb";
 
@@ -40,13 +41,14 @@ if (process.env.NODE_ENV === "development") {
 export { clientPromise as dbClient };
 
 let connecting: boolean | Promise<MongoClient> = true;
+const logger = zoron.logger("MongoDB");
 
 (async () => {
   // Connect to the MongoDB cluster
   connecting = client.connect();
   await connecting;
   connecting = false;
-  console.log(`Connected to MongoDB in ${performance.now() - connectionStart}ms`);
+  logger.log(`Connected in ${Math.round(performance.now() - connectionStart)}ms`);
 })();
 
 export const createIndex = async (
