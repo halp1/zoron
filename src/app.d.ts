@@ -2,6 +2,7 @@
 import type { aspen } from "$lib/aspen";
 import type { Passkey } from "$lib/auth/webauthn/types";
 import type { Item, Settings, Subscription } from "$lib/types";
+
 import type { PublicKeyCredentialCreationOptionsJSON } from "@simplewebauthn/types";
 
 interface ActivityRecord {
@@ -27,7 +28,7 @@ declare global {
         timeDelta: number;
       };
       preloadedActivity?: ActivityRecord[];
-			passkeys?: Passkey[];
+      passkeys?: Passkey[];
     }
     // interface PageState {}
     // interface Platform {}

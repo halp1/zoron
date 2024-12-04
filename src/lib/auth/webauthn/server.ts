@@ -21,7 +21,7 @@ import type { Passkey, UserModel } from "./types";
 const rp = {
   name: "Zoron",
   id: DOMAIN,
-  origin: `http${DOMAIN.includes("localhost") ? "" : "s"}://${DOMAIN}`
+  origin: `http${DOMAIN.includes("localhost") ? "" : "s"}://${DOMAIN}${DOMAIN.includes("localhost") ? ":5173" : ""}`
 };
 
 // Note: Create this index in MongoDB UI using:
@@ -29,7 +29,7 @@ const rp = {
 // The expireAfterSeconds: 0 means "remove as soon as the expires timestamp is reached"
 // The actual 5-minute expiration comes from the expires field we set in addChallenge
 
-const getUserPasskeys = async (uid: string) => {
+export const getUserPasskeys = async (uid: string) => {
   const dbUser = (await adapter.getUser!(uid)) as unknown as User;
   return (dbUser?.webauthn?.passkeys ?? []) as Passkey[];
 };
@@ -53,6 +53,7 @@ export const registrationOptions = async (session: Session | null) => {
   };
 
   const userPasskeys: Passkey[] = await getUserPasskeys(user.id);
+  console.log(userPasskeys);
 
   const options = await generateRegistrationOptions({
     rpName: rp.name,
@@ -81,7 +82,7 @@ export const registrationOptions = async (session: Session | null) => {
   return options;
 };
 
-export const register = async (session: Session | null, body: any) => {
+export const register = async (session: Session | null, body: { name: string } & any) => {
   if (!session?.user?.id) throw new Error("User not found");
 
   const currentOptions = await getCurrentRegistrationOptions(session.user.id);
@@ -110,6 +111,7 @@ export const register = async (session: Session | null, body: any) => {
     id: session.user.id,
     username: session.user.email!
   };
+  console.log(credential.transports);
 
   // Create new passkey entry
   const newPasskey: Passkey = {
@@ -120,7 +122,8 @@ export const register = async (session: Session | null, body: any) => {
     counter: credential.counter,
     transports: credential.transports,
     deviceType: credentialDeviceType,
-    backedUp: credentialBackedUp
+    backedUp: credentialBackedUp,
+    name: body.name
   };
 
   // Add the new passkey to the user's existing passkeys
@@ -176,6 +179,8 @@ export const authenticate = async (sessionID: string, body: AuthenticationRespon
   if (!challengeDoc) {
     throw new Error("Challenge not found or expired");
   }
+
+  console.log(body);
 
   // Get the authenticating passkey
   const passkey = (

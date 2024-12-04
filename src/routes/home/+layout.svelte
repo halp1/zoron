@@ -19,7 +19,7 @@
   import { isIOS, PWA } from "$lib/web";
   import { Footer } from "$lib/components";
 
-	import bgSrc from "../../assets/bg.png"
+  import bgSrc from "../../assets/bg.png";
 
   interface Tab {
     name: string;
@@ -114,14 +114,14 @@
         <div class="flex w-60 items-center text-3xl">
           <img src="/favicon.png" alt="Site Icon" class="h-8" />
           <div class="ml-2">{$page.data.env.name}</div>
-					<div class="ml-2 text-slate-600 font-mono mt-[2px]">BETA</div>
+          <div class="ml-2 mt-[2px] font-mono text-slate-600">BETA</div>
         </div>
         <div class="ml-auto"></div>
         {#each tabs.filter((tab) => !tab.mobileOnly) as tab, idx}
           <a
             href={tab.path}
             data-sveltekit-preload-code
-						data-sveltekit-preload-data
+            data-sveltekit-preload-data
             class="text-xl"
             class:active={activeTabIndex === tabs.indexOf(tab)}
             bind:this={tabRefs[idx]}
@@ -174,8 +174,8 @@
       {#each tabs as tab, idx}
         <a
           href={tab.path}
-					data-sveltekit-preload-code
-					data-sveltekit-preload-data
+          data-sveltekit-preload-code
+          data-sveltekit-preload-data
           class="btn-circle relative h-10 w-10 border-2 border-slate-600"
           class:bg-blue-700={idx === activeTabIndex}
           bind:this={tabRefs[idx]}
@@ -223,7 +223,12 @@
     </div>
   </div>
 </main>
-<img src={bgSrc} alt="" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[70vh] -z-10 opacity-10 blur-xl mb-12 md:mt-12">
+<img
+  src={bgSrc}
+  alt=""
+  class="fixed left-1/2 top-1/2 -z-10 mb-12 h-[70vh] -translate-x-1/2 -translate-y-1/2 opacity-10 blur-xl md:mt-12"
+/>
+
 <style>
   .view-anim-left {
     view-transition-name: slide-in-out-left;

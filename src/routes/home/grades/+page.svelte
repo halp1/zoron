@@ -546,7 +546,7 @@
                           {avg.number.toFixed(2)}
                           <div class="ml-1">({avg.letter})</div>
                         {:else}
-													{avg.letter}
+                          {avg.letter}
                         {/if}
                       {:else}
                         <div class="select-none text-transparent">.</div>

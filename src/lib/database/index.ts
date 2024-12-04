@@ -49,7 +49,11 @@ let connecting: boolean | Promise<MongoClient> = true;
   console.log(`Connected to MongoDB in ${performance.now() - connectionStart}ms`);
 })();
 
-export const createIndex = async (collection: string, field: string | Document, options: Document = {}) => {
+export const createIndex = async (
+  collection: string,
+  field: string | Document,
+  options: Document = {}
+) => {
   if (connecting) await connecting;
   return await client.db(database).collection(collection).createIndex(field, options);
 };

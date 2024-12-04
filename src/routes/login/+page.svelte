@@ -4,6 +4,7 @@
   import Footer from "$lib/components/Footer.svelte";
   import { requests } from "$lib/web";
   import { page } from "$app/stores";
+  import { usePasskey } from "$lib/auth/webauthn/browser";
 
   let email = "";
   let password = "";
@@ -26,14 +27,25 @@
       return;
     }
 
-		const {dismiss} = toast.loading("Logging in...");
+    const { dismiss } = toast.loading("Logging in...");
     const res = await requests.post("/api/account/login", { email, password });
-		dismiss();
+    dismiss();
     if (res.success) {
       location.href = "/home";
     } else {
       toast.error(res.error);
     }
+  };
+
+  const handlePasskeyLogin = async () => {
+    const { dismiss } = toast.loading("Using passkey...");
+    try {
+      await usePasskey();
+      location.href = "/home";
+    } catch (error) {
+      toast.error("Failed to use passkey: " + (error as Error).message);
+    }
+    dismiss();
   };
 </script>
 
@@ -71,8 +83,11 @@
       disabled={!validEmail(email) || password.length === 0}
       type="submit"
     >
-      Log in
+      Log in with password
     </button>
+    <!-- <button class="btn-full btn-outlined mt-2" type="button" on:click={handlePasskeyLogin}>
+      Log in with passkey
+    </button> -->
     <div class="flex items-center">
       <a href="/forgor" class="text-slate-400 underline">Forgot password?</a>
       <a href="/register" class="ml-auto text-slate-400 underline">Register</a>
