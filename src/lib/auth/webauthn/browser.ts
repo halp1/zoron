@@ -1,4 +1,5 @@
 import { requests } from "$lib/web";
+
 import { startAuthentication, startRegistration } from "@simplewebauthn/browser";
 import type { VerifiedRegistrationResponse } from "@simplewebauthn/server";
 import type {
@@ -10,9 +11,10 @@ import type {
 
 /**
  * Adds a new passkey for the current user
+ * @param name The user-friendly name for the passkey
  * @returns true if the passkey was successfully added
  */
-export async function addPasskey(): Promise<boolean> {
+export async function addPasskey(name: string): Promise<boolean> {
   try {
     // Get registration options from server
     const optionsRes = await requests.get<PublicKeyCredentialCreationOptionsJSON>(
@@ -21,6 +23,7 @@ export async function addPasskey(): Promise<boolean> {
     if (!optionsRes.success) {
       throw new Error("Failed to get registration options: " + optionsRes.error);
     }
+    console.log(optionsRes.data);
 
     // Create credential using SimpleWebAuthn
     const responseData = await startRegistration({
@@ -30,7 +33,7 @@ export async function addPasskey(): Promise<boolean> {
     // Send response to server for verification
     const verifyRes = await requests.post<VerifiedRegistrationResponse>(
       "/api/account/passkeys/verify",
-      responseData
+      { ...responseData, name }
     );
 
     if (!verifyRes.success) {
@@ -48,7 +51,7 @@ export async function addPasskey(): Promise<boolean> {
  * Uses an existing passkey to authenticate
  * @returns The authenticated user ID if successful
  */
-export async function usePasskey(): Promise<string> {
+export const usePasskey = async (): Promise<string> => {
   try {
     // Get authentication options from server
     const optionsRes = await requests.get<{
@@ -65,7 +68,7 @@ export async function usePasskey(): Promise<string> {
       optionsJSON: options
     });
 
-		console.log(sessionID)
+    console.log(sessionID);
     // Send response to server for verification
     const verifyRes = await requests.post<{ verified: true; user: string }>(
       "/api/account/passkeys/auth/verify",
@@ -89,4 +92,4 @@ export async function usePasskey(): Promise<string> {
     console.error("Error using passkey:", error);
     throw error;
   }
-}
+};

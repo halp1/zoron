@@ -10,9 +10,7 @@
     faUserSlash,
     faUserEdit,
     faGear,
-
     faFingerprint
-
   } from "@fortawesome/free-solid-svg-icons";
   import Fa from "svelte-fa";
 
@@ -76,16 +74,16 @@
               Add a password
             </a>
           {/if}
-					<a
+          <!-- <a
             href="/account/passkeys"
             class="btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-orange-400 text-base"
           >
             <Fa icon={faFingerprint} />
             Passkeys
-          </a>
+          </a> -->
           <a
             href="/account/update"
-            class="btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-orange-400 text-base"
+            class="btn-full btn-outlined col-span-2 flex flex-1 items-center justify-center gap-3 border-orange-400 text-base"
           >
             <Fa icon={faUserEdit} />
             Update Aspen credentials

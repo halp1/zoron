@@ -1,106 +1,133 @@
 <script lang="ts">
-import { addPasskey, usePasskey } from "$lib/auth/webauthn/browser";
-import { page } from "$app/stores";
-import { toast } from "$lib/web";
+  import { addPasskey } from "$lib/auth/webauthn/browser";
+  import { page } from "$app/stores";
+  import { requests, toast } from "$lib/web";
+  import { faArrowLeft, faTrash } from "@fortawesome/free-solid-svg-icons";
+  import Fa from "svelte-fa";
 
-let loading = false;
-let testing = false;
+  let loading = false;
+  let showNameDialog = false;
+  let passkeyName = "";
 
-const handleAddPasskey = async () => {
-  loading = true;
-  
-  try {
-    const result = await usePasskey();
-    if (result) {
-      toast.success("Passkey added successfully!");
-      // Refresh the page to show the new passkey
-      window.location.reload();
-    } else {
-      toast.error("Failed to add passkey");
+  const handleAddPasskey = async () => {
+    if (!passkeyName.trim()) {
+      toast.error("Please enter a name for your passkey");
+      return;
     }
-  } catch (e) {
-    toast.error((e as Error).message);
-  } finally {
-    loading = false;
-  }
-};
 
-const handleTestPasskey = async () => {
-  testing = true;
-  
-  try {
-    const userId = await usePasskey();
-    if (userId) {
-      toast.success("Passkey authentication successful!");
-    } else {
-      toast.error("Passkey authentication failed");
+    loading = true;
+    showNameDialog = false;
+
+    try {
+      const result = await addPasskey(passkeyName);
+      if (result) {
+        toast.success("Passkey added successfully!");
+        // Refresh the page to show the new passkey
+        window.location.reload();
+      } else {
+        toast.error("Failed to add passkey");
+      }
+    } catch (e) {
+      toast.error((e as Error).message);
+    } finally {
+      loading = false;
+      passkeyName = "";
     }
-  } catch (e) {
-    toast.error((e as Error).message);
-  } finally {
-    testing = false;
-  }
-};
+  };
 
-// Get passkeys from the session data
-$: passkeys = $page.data?.passkeys ?? [];
+  const handleDeletePasskey = async (passkeyId: string) => {
+    try {
+      const res = await requests.post("/api/account/passkeys/delete", { passkeyId });
+      if (res.success) {
+        toast.success("Passkey deleted successfully!");
+        window.location.reload();
+      } else {
+        toast.error("Failed to delete passkey");
+      }
+    } catch (e) {
+      toast.error((e as Error).message);
+    }
+  };
+
+  // Get passkeys from the session data
+  $: passkeys = $page.data?.passkeys ?? [];
 </script>
 
-<main class="flex h-screen w-screen flex-col items-center justify-center p-4">
-  <div class="w-full max-w-md space-y-6">
-    <h1 class="text-2xl font-bold text-center">Manage Passkeys</h1>
+<svelte:head>
+  <title>Passkeys | {$page.data.env.name}</title>
+</svelte:head>
 
-    <div class="bg-white shadow rounded-lg p-6 space-y-4">
-      <div class="flex justify-between items-center">
-        <h2 class="text-lg font-semibold">Your Passkeys</h2>
+<main>
+  <div class="flex h-screen w-screen flex-col items-center justify-center">
+    <div class="relative flex w-96 flex-col gap-3 rounded-2xl bg-slate-800 p-10">
+      <a class="btn-circle absolute left-5 top-5" href="/account">
+        <Fa icon={faArrowLeft} />
+      </a>
+      <div class="border-b-2 border-slate-600 pb-1 text-center text-4xl">Passkeys</div>
+      <div class="flex flex-1 flex-col gap-3">
         <button
-          on:click={handleAddPasskey}
+          on:click={() => (showNameDialog = true)}
           disabled={loading}
-          class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
+          class="btn-full btn-outlined w-full text-base"
         >
-          {loading ? 'Adding...' : 'Add Passkey'}
+          {loading ? "Adding..." : "Add Passkey"}
         </button>
-      </div>
 
-      {#if passkeys.length === 0}
-        <p class="text-gray-500 text-center py-4">
-          You haven't added any passkeys yet.
-        </p>
-      {:else}
-        <ul class="divide-y divide-gray-200">
-          {#each passkeys as passkey}
-            <li class="py-4">
-              <div class="flex justify-between items-center">
-                <div>
-                  <p class="font-medium">Device Type: {passkey.deviceType}</p>
-                  <p class="text-sm text-gray-500">
-                    Backed up: {passkey.backedUp ? 'Yes' : 'No'}
+        <div class="flex flex-col items-stretch border-2 border-dashed border-slate-600 p-2">
+          {#if passkeys.length === 0}
+            <div class="text-center">No passkeys registered</div>
+          {:else}
+            {#each passkeys as passkey}
+              <div class="flex items-center justify-between py-2">
+                <div class="flex-1">
+                  <p class="font-medium">{passkey.name}</p>
+                  <p class="text-sm text-slate-400">
+                    Device Type: {passkey.deviceType}
                   </p>
-                  {#if passkey.transports}
-                    <p class="text-sm text-gray-500">
-                      Transports: {passkey.transports.join(', ')}
-                    </p>
-                  {/if}
+                  <p class="text-sm text-slate-400">
+                    Backed up: {passkey.backedUp ? "Yes" : "No"}
+                  </p>
                 </div>
-                <button
-                  on:click={handleTestPasskey}
-                  disabled={testing}
-                  class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50 ml-4"
-                >
-                  {testing ? 'Testing...' : 'Test Passkey'}
+                <button class="btn-circle ml-2" on:click={() => handleDeletePasskey(passkey.id)}>
+                  <Fa icon={faTrash} />
                 </button>
               </div>
-            </li>
-          {/each}
-        </ul>
-      {/if}
-    </div>
-
-    <div class="text-center text-sm text-gray-500">
-      <p>
-        Passkeys are a secure alternative to passwords. They use biometric authentication 
-        or your device's screen lock to protect your account.
-      </p>
+            {/each}
+          {/if}
+        </div>
+      </div>
     </div>
   </div>
 </main>
+
+{#if showNameDialog}
+  <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="w-96 rounded-2xl bg-slate-800 p-10">
+      <h2 class="mb-4 text-2xl">Name Your Passkey</h2>
+      <input
+        type="text"
+        bind:value={passkeyName}
+        placeholder="Enter a name for your passkey"
+        class="mb-4 w-full rounded-lg border-2 border-dashed border-blue-400 bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
+      />
+      <div class="flex justify-end gap-2">
+        <button
+          class="btn-full btn-outlined text-base"
+          on:click={() => {
+            showNameDialog = false;
+            passkeyName = "";
+          }}
+        >
+          Cancel
+        </button>
+        <button
+          class="btn-full btn-outlined text-base"
+          on:click={handleAddPasskey}
+          disabled={!passkeyName.trim()}
+        >
+          Add
+        </button>
+      </div>
+    </div>
+  </div>
+{/if}

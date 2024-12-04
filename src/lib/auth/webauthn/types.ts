@@ -40,4 +40,6 @@ export type Passkey = {
   // SQL: `VARCHAR(255)` and store string array as a CSV string
   // Ex: ['ble' | 'cable' | 'hybrid' | 'internal' | 'nfc' | 'smart-card' | 'usb']
   transports?: AuthenticatorTransportFuture[];
+  // SQL: `VARCHAR(255)` for storing a user-friendly name for the passkey
+  name: string;
 };

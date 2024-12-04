@@ -2,17 +2,8 @@
   import { page } from "$app/stores";
   import Toggle from "$lib/components/Toggle.svelte";
   import { requests, toast } from "$lib/web";
-  // "border-red-400" ||
-  //   "border-blue-400" ||
-  //   "border-purple-400" ||
-  //   "border-orange-400" ||
-  //   "border-green-400" ||
-  //   "border-yellow-400" ||
-  //   "border-pink-400" ||
-
   import { onMount } from "svelte";
 
-  //   "border-indigo-400";
   let tick = 0;
   onMount(() => {
     let frame;
@@ -97,7 +88,9 @@
       </button>
     </form>
   </div>
-  <div class="flex flex-wrap gap-1 rounded-3xl border-2 border-red-400 bg-slate-800 p-5">
+
+  <div class="rounded-3xl border-2 border-red-400 bg-slate-800 p-5">
+    <div class="text-2xl">Debug</div>
     <form
       class="flex flex-1 flex-wrap gap-2"
       on:submit={async (e) => {
@@ -124,15 +117,13 @@
         const res = await requests.post("/api/admin/impersonate", target);
         if (res.success === true) {
           // @ts-expect-error implicit any
-          toast.success("Impersonating " + (target[Object.keys(target)[0]] || ""));
-          history.go(0);
+          toast.success("Debugging " + (target[Object.keys(target)[0]] || ""));
+          location.href = "/home/schedule";
         } else {
           toast.error("Failed to impersonate: " + res.error);
         }
       }}
     >
-      <div class="text-2xl">Debug</div>
-
       <input
         type="text"
         name="name"
@@ -147,6 +138,53 @@
       />
       <button type="submit" class="btn-outlined btn-full mt-auto w-full border-red-400 text-base">
         Go
+      </button>
+    </form>
+  </div>
+
+  <div class="rounded-3xl border-2 border-red-400 bg-slate-800 p-5">
+    <div class="text-2xl">Copy User</div>
+    <form
+      class="flex flex-1 flex-wrap gap-2"
+      on:submit={async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const name = formData.get("copy-name") || "";
+        const email = formData.get("copy-email") || "";
+
+        if (name === "" && email === "") {
+          toast.error("One of name or email required");
+          return;
+        }
+        if (name !== "" && email !== "") {
+          toast.error("Please enter only one of name or email");
+          return;
+        }
+
+        const res = await requests.post("/api/admin/copy-user", { name, email });
+        if (res.success === true) {
+          toast.success("User copied successfully");
+					// @ts-expect-error you can't use as, etc in inline event handlers in svelte
+          e.target.reset();
+        } else {
+          toast.error("Failed to copy user: " + res.error);
+        }
+      }}
+    >
+      <input
+        type="text"
+        name="copy-name"
+        class="w-full rounded-full border-2 border-dashed border-slate-600 bg-transparent px-2 text-center outline-none focus-within:border-solid"
+        placeholder="Name"
+      />
+      <input
+        type="text"
+        name="copy-email"
+        class="w-full rounded-full border-2 border-dashed border-slate-600 bg-transparent px-2 text-center outline-none focus-within:border-solid"
+        placeholder="Email"
+      />
+      <button type="submit" class="btn-outlined btn-full mt-2 w-full border-red-400 text-base">
+        Copy to Dev DB
       </button>
     </form>
   </div>

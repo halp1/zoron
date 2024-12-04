@@ -136,7 +136,10 @@
       }))
       .map((event) => ({
         ...event,
-        duration: (event.end.getTime() - event.start.getTime()) / 1000 / 60,
+				get duration() {
+					// @ts-expect-error ts is buggin
+					return (this.end.getTime() - this.start.getTime()) / 1000 / 60;
+				},
         progression: calculateProgression(event.start, event.end)
       }));
     if (allEvents.length === 0) return { day, blocks: [] };
@@ -158,7 +161,8 @@
     const blocks = today
       .filter((block) => block?.block || block?.schedule)
       .map((block) => block!.block || block!.schedule)
-      .map((item) => (item === "HR" ? "Advisory" : item));
+      .map((item) => (item === "HR" ? "Advisory" : item))
+      .map((item, idx) => ((idx < 2 || idx > 3) && item ? item.replace("$", "") : item));
 
     const filtered = allEvents.filter(
       (event) => blocks.includes(event.name) || event.name === "I-block"
@@ -168,7 +172,8 @@
       ...event,
       class: generated.find(
         (b) =>
-          ((b as any).block || b.type).trim() === event.name ||
+          ((b as any).block?.replace("$", "") || b.type).trim() === event.name ||
+					((b as any).block || b.type).trim() === event.name||
           ((b as any).schedule?.trim() === "HR" && event.name === "Advisory")
       ) || {
         type: "other" as const,
@@ -348,7 +353,7 @@
           class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
         />
       </button>
-      <button
+      <!-- <button
         class="btn-circle relative border-2 border-slate-600"
         on:click={() => {
           exportModalOpen = true;
@@ -359,7 +364,7 @@
           icon={faFileExport}
           class="absolute left-1/2 top-1/2 ml-[2px] -translate-x-1/2 -translate-y-1/2"
         />
-      </button>
+      </button> -->
       <button
         class="btn-circle relative border-2 border-slate-600"
         on:click={updateSchedule}
@@ -373,7 +378,9 @@
       </button>
     </div>
     {#if mode === "full"}
-      <div class="custom-scroll hidden min-h-full flex-1 justify-center overflow-auto md:flex">
+      <div
+        class="custom-scroll hidden min-h-full flex-1 justify-center overflow-auto py-10 md:flex"
+      >
         <div class="grid min-h-full grid-cols-6 border-4 border-slate-800">
           {#each generated as block, i}
             <ScheduleBlock

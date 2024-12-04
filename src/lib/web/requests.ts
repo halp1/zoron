@@ -26,7 +26,7 @@ export namespace requests {
       }
       return !("success" in res) ? { success: true, data: res } : res;
     } catch (e: any) {
-			console.error(e);
+      console.error(e);
       return { success: false, error: "Network Error" };
     }
   };
