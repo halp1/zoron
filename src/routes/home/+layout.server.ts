@@ -12,6 +12,7 @@ export const load: LayoutServerLoad = async ({ locals: { auth } }) => {
   if (!session.user.aspen) return redirect(302, "/account/update");
 
   return {
+		// @ts-expect-error
     schedule: (await adapter.getUser!(session.user.id))?.schedule,
     constants: {
       timeDelta: transformID(
@@ -23,6 +24,7 @@ export const load: LayoutServerLoad = async ({ locals: { auth } }) => {
         )[0] || { name: "timeDelta", data: 0, _id: new ObjectId() }
       ).data
     },
+		// @ts-expect-error
     preloadedActivity: (await adapter.getUser!(session.user.id))?.activity
   };
 };
