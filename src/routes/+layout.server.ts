@@ -1,7 +1,7 @@
 import { aspen } from "$lib/aspen";
 import { CONSTANTS } from "$lib/constants";
 
-import { VAPID_PUBLIC } from "$env/static/private";
+import { SUPABASE_ID, SUPABASE_PUBLIC_KEY, VAPID_PUBLIC } from "$env/static/private";
 
 import type { LayoutServerLoad } from "./$types";
 
@@ -15,7 +15,11 @@ export const load: LayoutServerLoad = async (event) => {
     username: aspenName,
     env: {
       vapid: VAPID_PUBLIC,
-      name: CONSTANTS.name
+      name: CONSTANTS.name,
+      supabase: {
+        id: SUPABASE_ID,
+        key: SUPABASE_PUBLIC_KEY
+      }
     },
     hideFooter: event.cookies.get("hide-footer") === "1"
   };

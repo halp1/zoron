@@ -21,6 +21,10 @@ declare global {
       env: {
         vapid: string;
         name: string;
+				supabase: {
+					id: string;
+					key: string;
+				}
       };
       hideFooter: boolean;
       schedule?: aspen.Types.Schedule.Schedule & { updated: number };
