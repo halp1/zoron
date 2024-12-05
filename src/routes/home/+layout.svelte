@@ -10,14 +10,13 @@
     faCalendar,
     faChartLine,
     faList,
-    faShieldAlt
+    faShieldAlt,
+		faComments
   } from "@fortawesome/free-solid-svg-icons";
-  import { signOut } from "@auth/sveltekit/client";
 
   import "./home.css";
   import { onMount } from "svelte";
   import { isIOS, PWA } from "$lib/web";
-  import { Footer } from "$lib/components";
 
   import bgSrc from "../../assets/bg.png";
 
@@ -42,6 +41,7 @@
     { name: "Schedule", path: "/home/schedule", icon: faCalendar },
     { name: "Grades", path: "/home/grades", icon: faChartLine },
     { name: "Activity", path: "/home/activity", icon: faList },
+		{ name :"Chat", path: "/home/chat", icon: faComments },
     ...($page.data.session?.user?.role === "admin"
       ? [{ name: "Admin", path: "/home/admin", icon: faShieldAlt }]
       : []),
