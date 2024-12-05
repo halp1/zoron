@@ -136,10 +136,10 @@
       }))
       .map((event) => ({
         ...event,
-				get duration() {
-					// @ts-expect-error ts is buggin
-					return (this.end.getTime() - this.start.getTime()) / 1000 / 60;
-				},
+        get duration() {
+          // @ts-expect-error ts is buggin
+          return (this.end.getTime() - this.start.getTime()) / 1000 / 60;
+        },
         progression: calculateProgression(event.start, event.end)
       }));
     if (allEvents.length === 0) return { day, blocks: [] };
@@ -173,7 +173,7 @@
       class: generated.find(
         (b) =>
           ((b as any).block?.replace("$", "") || b.type).trim() === event.name ||
-					((b as any).block || b.type).trim() === event.name||
+          ((b as any).block || b.type).trim() === event.name ||
           ((b as any).schedule?.trim() === "HR" && event.name === "Advisory")
       ) || {
         type: "other" as const,

@@ -164,7 +164,7 @@
         const res = await requests.post("/api/admin/copy-user", { name, email });
         if (res.success === true) {
           toast.success("User copied successfully");
-					// @ts-expect-error you can't use as, etc in inline event handlers in svelte
+          // @ts-expect-error you can't use as, etc in inline event handlers in svelte
           e.target.reset();
         } else {
           toast.error("Failed to copy user: " + res.error);
