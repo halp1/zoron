@@ -3,19 +3,22 @@ import { type Writable, get, writable } from "svelte/store";
 import { createClient } from "@supabase/supabase-js";
 
 export let supabase: Writable<ReturnType<typeof createClient> | null> = writable(null);
-export const supabaseConnect = (id: string, key: string) => {
+export const supabaseConnect = (id: string, key: string, store = true) => {
+	console.log(`https://${id}.supabase.co`, key);
   const c = createClient(`https://${id}.supabase.co`, key);
   c.realtime.connect();
-  supabase.set(c as any);
-
-  setTimeout(async () => {
-    console.log("waiting for connection:", c.realtime.connectionState());
-    while (!c.realtime.isConnected()) {
-      console.log("waiting for connection:", c.realtime.connectionState());
-      await new Promise((r) => setTimeout(r, 100));
-    }
+  if (store) {
     supabase.set(c as any);
-  }, 1);
+
+    setTimeout(async () => {
+      console.log("waiting for connection:", c.realtime.connectionState());
+      while (!c.realtime.isConnected()) {
+        console.log("waiting for connection:", c.realtime.connectionState());
+        await new Promise((r) => setTimeout(r, 100));
+      }
+      supabase.set(c as any);
+    }, 1);
+  }
   return c;
 };
 

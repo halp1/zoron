@@ -22,7 +22,7 @@ declare global {
         vapid: string;
         name: string;
         supabase: {
-          id: string;
+          uri: string;
           key: string;
         };
       };

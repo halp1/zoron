@@ -4,7 +4,7 @@
   import { page } from "$app/stores";
 
   onMount(() => {
-    const client = supabaseConnect($page.data.env.supabase.id, $page.data.env.supabase.key);
+    const client = supabaseConnect($page.data.env.supabase.uri, $page.data.env.supabase.key);
 		client.auth.setSession($page.data.supabase.session);
     return () => {
       client.removeAllChannels();

@@ -11,7 +11,7 @@ export const load: LayoutServerLoad = async ({ locals: { auth } }) => {
 
   if (!session?.user?.aspen) return redirect(302, "/account");
 
-  const supabase = supabaseConnect(SUPABASE_ID, SUPABASE_SERVICE_KEY);
+  const supabase = supabaseConnect(SUPABASE_ID, SUPABASE_SERVICE_KEY, false);
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email: session.user.email!,
