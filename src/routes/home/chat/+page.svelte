@@ -2,23 +2,25 @@
   import { supabase } from "$lib/supabase";
   $: if ($supabase) {
     const channel = $supabase.channel("chat/global", {
-			config: {
-				broadcast: {
-					self: true
-				}
+      config: {
+        broadcast: {
+					ack: true,
+          self: true
+        }
+      }
+    });
+    channel.subscribe(async (status) => {
+			if (status !== "SUBSCRIBED") {
+				return null;
 			}
-		});
-    channel.subscribe((status) => {
-      console.log(status);
-
-      // if (status !== "SUBSCRIBED") {
-      //   return null;
-      // }
+      channel.on("broadcast", { event: "message" }, (message) => {
+        console.log(message.payload);
+      });
 
       // Send a message once the client is subscribed
-      channel.send({
+      await channel.send({
         type: "broadcast",
-        event: "test",
+        event: "message",
         payload: { message: "hello, world" }
       });
     });

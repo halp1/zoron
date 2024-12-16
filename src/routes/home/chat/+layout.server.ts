@@ -1,7 +1,7 @@
 import { aspen } from "$lib/aspen";
 import { supabaseConnect } from "$lib/supabase";
 
-import { SUPABASE_ID, SUPABASE_SERVICE_KEY } from "$env/static/private";
+import { SUPABASE_URI, SUPABASE_SERVICE_KEY } from "$env/static/private";
 import { redirect } from "@sveltejs/kit";
 
 import type { LayoutServerLoad } from "./$types";
@@ -11,7 +11,7 @@ export const load: LayoutServerLoad = async ({ locals: { auth } }) => {
 
   if (!session?.user?.aspen) return redirect(302, "/account");
 
-  const supabase = supabaseConnect(SUPABASE_ID, SUPABASE_SERVICE_KEY, false);
+  const supabase = supabaseConnect(SUPABASE_URI, SUPABASE_SERVICE_KEY, false);
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email: session.user.email!,
