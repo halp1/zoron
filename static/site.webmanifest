@@ -4,7 +4,9 @@
   "short_name": "Zoron",
   "start_url": "/home",
   "orientation": "portrait",
-  "display_override": ["window-control-overlay"],
+  "display_override": [
+    "window-control-overlay"
+  ],
   "icons": [
     {
       "src": "icons/icon-72x72.png",

@@ -6,7 +6,7 @@ import { version } from "$service-worker";
 /// <reference lib="webworker" />
 
 // prettier-ignore
-const assets = ["/apple-touch-icon-precomposed.png","/site.webmanifest","/favicon.ico","/web-app-manifest-512x512.png","/fonts/suse/regular.ttf","/fonts/suse/bold.ttf","/favicon-48x48.png","/apple-touch-icon.png","/favicon.png","/web-app-manifest-192x192.png","/icons/icon-152x152.png","/icons/icon-512x512.png","/icons/icon-72x72.png","/icons/icon-144x144.png","/icons/icon-192x192.png","/icons/icon-96x96.png","/icons/icon-384x384.png","/icons/icon-128x128.png"];
+const assets = ["/favicon-48x48.png","/web-app-manifest-192x192.png","/web-app-manifest-512x512.png","/favicon.png","/site.webmanifest","/apple-touch-icon.png","/icons/icon-96x96.png","/icons/icon-192x192.png","/icons/icon-152x152.png","/icons/icon-512x512.png","/icons/icon-384x384.png","/icons/icon-128x128.png","/icons/icon-72x72.png","/icons/icon-144x144.png","/favicon.ico","/apple-touch-icon-precomposed.png","/fonts/suse/bold.ttf","/fonts/suse/regular.ttf"];
 
 const sw = /** @type {ServiceWorkerGlobalScope} */ (/** @type {unknown} */ (self));
 
