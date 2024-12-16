@@ -1,7 +1,7 @@
 import { aspen } from "$lib/aspen";
 import { CONSTANTS } from "$lib/constants";
 
-import { SUPABASE_ID, SUPABASE_PUBLIC_KEY, VAPID_PUBLIC } from "$env/static/private";
+import { SUPABASE_PUBLIC_KEY, SUPABASE_URI, VAPID_PUBLIC } from "$env/static/private";
 
 import type { LayoutServerLoad } from "./$types";
 
@@ -17,7 +17,7 @@ export const load: LayoutServerLoad = async (event) => {
       vapid: VAPID_PUBLIC,
       name: CONSTANTS.name,
       supabase: {
-        id: SUPABASE_ID,
+        id: SUPABASE_URI,
         key: SUPABASE_PUBLIC_KEY
       }
     },
