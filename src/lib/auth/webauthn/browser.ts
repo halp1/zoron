@@ -23,7 +23,6 @@ export async function addPasskey(name: string): Promise<boolean> {
     if (!optionsRes.success) {
       throw new Error("Failed to get registration options: " + optionsRes.error);
     }
-    console.log(optionsRes.data);
 
     // Create credential using SimpleWebAuthn
     const responseData = await startRegistration({
@@ -68,7 +67,6 @@ export const usePasskey = async (): Promise<string> => {
       optionsJSON: options
     });
 
-    console.log(sessionID);
     // Send response to server for verification
     const verifyRes = await requests.post<{ verified: true; user: string }>(
       "/api/account/passkeys/auth/verify",

@@ -53,7 +53,6 @@ export const registrationOptions = async (session: Session | null) => {
   };
 
   const userPasskeys: Passkey[] = await getUserPasskeys(user.id);
-  console.log(userPasskeys);
 
   const options = await generateRegistrationOptions({
     rpName: rp.name,
@@ -111,7 +110,6 @@ export const register = async (session: Session | null, body: { name: string } &
     id: session.user.id,
     username: session.user.email!
   };
-  console.log(credential.transports);
 
   // Create new passkey entry
   const newPasskey: Passkey = {
@@ -180,7 +178,6 @@ export const authenticate = async (sessionID: string, body: AuthenticationRespon
     throw new Error("Challenge not found or expired");
   }
 
-  console.log(body);
 
   // Get the authenticating passkey
   const passkey = (
@@ -191,7 +188,6 @@ export const authenticate = async (sessionID: string, body: AuthenticationRespon
   }
 
   const userPasskeys: Passkey[] = passkey.webauthn.passkeys;
-  console.log(passkey, userPasskeys);
   const authenticatingPasskey = userPasskeys.find((pk) => pk.id === body.id);
   if (!authenticatingPasskey) {
     throw new Error("Authenticating passkey not found");
