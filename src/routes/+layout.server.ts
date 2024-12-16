@@ -17,7 +17,7 @@ export const load: LayoutServerLoad = async (event) => {
       vapid: VAPID_PUBLIC,
       name: CONSTANTS.name,
       supabase: {
-        id: SUPABASE_URI,
+        uri: SUPABASE_URI,
         key: SUPABASE_PUBLIC_KEY
       }
     },
