@@ -3,7 +3,7 @@
   import { Toggle } from "$lib/components";
   import { supabase, supabaseConnect } from "$lib/supabase";
   import type { Settings } from "$lib/types";
-  import { getDeviceInfo, requests, toast, type Device } from "$lib/web";
+  import { getDeviceInfo, requests, toast, type Device, compressImage } from "$lib/web";
   import _ from "lodash";
   import { onMount } from "svelte";
   import { writable } from "svelte/store";
@@ -42,7 +42,7 @@
     if (!res.success) toast.error("An error occurred while saving your settings: " + res.error);
     else toast.success("Updated settings");
   });
-  
+
   const devices = $page.data.session?.user?.devices || [];
   const matchingDevice = devices.find(
     (d) => device && (device.fingerprint === d.device.fingerprint || device.id === d.device.id)
@@ -58,51 +58,67 @@
 
     const supabaseClient = $supabase;
     if (!supabaseClient) {
-      toast.error('Supabase client not initialized');
+      toast.error("Supabase client not initialized");
       return;
     }
 
     uploading = true;
+    const { dismiss } = toast.loading("Updating profile picture...");
     try {
-      // Upload to Supabase storage
-      const fileExt = file.name.split('.').pop();
       const userId = $page.data.session?.user?.id;
-      const filePath = `${userId}/profile-picture.${fileExt}`;
+      const filePath = `${userId}/profile-picture.jpg`; // Always use jpg since we convert in compressImage
 
+      // First delete the existing profile picture if it exists
+      const { error: deleteError } = await supabaseClient.storage.from("pfps").remove([filePath]);
+
+      if (deleteError && deleteError.message !== "Object not found") {
+        throw deleteError;
+      }
+
+      // Process the new image
+      const processedImageBlob = await compressImage(file);
+
+      // Create a new File object from the blob
+      const processedFile = new File([processedImageBlob], file.name, {
+        type: "image/jpeg"
+      });
+
+      // Upload processed image to Supabase storage
       const { error: uploadError, data } = await supabaseClient.storage
-        .from('pfps')
-        .upload(filePath, file, { upsert: true });
+        .from("pfps")
+        .upload(filePath, processedFile);
 
       if (uploadError) throw uploadError;
 
       // Get the public URL
-      const { data: { publicUrl } } = supabaseClient.storage
-        .from('pfps')
-        .getPublicUrl(filePath);
+      const {
+        data: { publicUrl }
+      } = supabaseClient.storage.from("pfps").getPublicUrl(filePath);
 
       // Update user's profile picture URL
-      const response = await fetch('/api/account/settings/profile-picture', {
-        method: 'POST',
+      const response = await fetch("/api/account/settings/profile-picture", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify({ imageUrl: publicUrl }),
+        body: JSON.stringify({ imageUrl: publicUrl + "?t=" + Date.now() })
       });
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || 'Failed to update profile picture');
+        throw new Error(data.error || "Failed to update profile picture");
       }
 
-      toast.success('Profile picture updated successfully');
+      toast.success("Profile picture updated successfully");
       // Reload the page to reflect changes
       window.location.reload();
     } catch (error) {
-      console.error('Error:', error);
-      toast.error('Failed to update profile picture');
+      console.error("Error:", error);
+      toast.error("Failed to update profile picture");
     } finally {
+      dismiss();
       uploading = false;
-      if (fileInput) fileInput.value = '';
+      if (fileInput) fileInput.value = "";
     }
   };
 </script>
@@ -118,12 +134,12 @@
         <Fa icon={faArrowLeft} />
       </a>
       <div class="border-b-2 border-slate-600 pb-1 text-center text-4xl">Settings</div>
-      
+
       <!-- Profile Picture Section -->
       <div class="flex flex-col items-center gap-3 border-b-2 border-slate-600 pb-4">
         <div class="relative">
           <img
-            src={$page.data.session?.user?.image || '/favicon.png'}
+            src={$page.data.session?.user?.image || "/favicon.png"}
             alt="Profile"
             class="h-24 w-24 rounded-full object-cover"
           />

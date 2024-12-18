@@ -1,5 +1,5 @@
-export const compressImage = (image: File, size = 32) =>
-  new Promise<string>((resolve, reject) => {
+export const compressImage = async (image: File, size = 128) => {
+  return new Promise<Blob>((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (event) => {
       const img = new Image();
@@ -20,27 +20,26 @@ export const compressImage = (image: File, size = 32) =>
 
         if (aspectRatio > 1) {
           // Image is wider than it is tall
+          // Crop from center
           sx = (img.width - img.height) / 2;
           sWidth = img.height;
         } else {
           // Image is taller than it is wide
+          // Crop from center
           sy = (img.height - img.width) / 2;
           sHeight = img.width;
         }
 
+        // First crop by drawing the center square portion
         ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, size, size);
+        
+        // Then the scaling is handled automatically by the canvas size
         canvas.convertToBlob({ type: "image/jpeg", quality: 0.8 }).then((blob) => {
-          resolve(
-            blob.arrayBuffer().then((buffer) => {
-              const base64 = btoa(
-                new Uint8Array(buffer).reduce((data, byte) => data + String.fromCharCode(byte), "")
-              );
-              return `data:image/jpeg;base64,${base64}`;
-            })
-          );
+          resolve(blob);
         });
       };
       img.src = event.target?.result as string;
     };
     reader.readAsDataURL(image);
   });
+};

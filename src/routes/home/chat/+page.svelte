@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { page } from "$app/stores";
   import { supabase } from "$lib/supabase";
   let connected = false;
   $: if ($supabase) {
@@ -18,6 +19,10 @@
     });
   }
 </script>
+
+<svelte:head>
+  <title>Chat | {$page.data.env.name}</title>
+</svelte:head>
 
 <div class="flex flex-grow flex-col items-center justify-center">
   <div class="text-4xl">Welcome to Zoron Chat.</div>

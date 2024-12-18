@@ -6,12 +6,13 @@ export let supabase: Writable<ReturnType<typeof createClient> | null> = writable
 export const supabaseConnect = (uri: string, key: string, store = true) => {
   const c = createClient(uri, key);
   c.realtime.connect();
+	supabase.set(c as any);
   if (store) {
     setTimeout(async () => {
+			console.log("waiting for connection: ", c.realtime.endPoint);
       while (!c.realtime.isConnected()) {
         await new Promise((r) => setTimeout(r, 100));
       }
-      supabase.set(c as any);
     }, 1);
   }
   return c;
