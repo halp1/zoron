@@ -101,7 +101,7 @@
 
   let mode: "full" | "day" = "day";
 
-  const now = () => new Date(Date.now() + ($page.data.constants?.timeDelta || 0) - 60 * 1000 * 50);
+  const now = () => new Date(Date.now() + ($page.data.constants?.timeDelta || 0));
 
   let dayViewDay: Date = now();
   let selectedDay: number = 0;
