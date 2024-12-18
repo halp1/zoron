@@ -1,3 +1,4 @@
+import { SUPABASE_URI } from "$env/static/private";
 import { adapter } from "$lib/auth";
 import { api } from "$lib/server";
 import type { RequestHandler } from "./$types";
@@ -9,9 +10,8 @@ export const POST: RequestHandler = async ({ request, locals: { auth } }) => {
     const { imageUrl } = await request.json();
     
     // Validate that the URL is from Supabase storage
-    const supabaseUrl = process.env.PUBLIC_SUPABASE_URL;
-    if (!imageUrl.startsWith(`${supabaseUrl}/storage/v1/object/public/`)) {
-        return api.error("Invalid image URL", 400);
+    if (!imageUrl.startsWith(`${SUPABASE_URI}/storage/v1/object/public/`)) {
+        return api.error("Invalid image URL: " + imageUrl, 400);
     }
 
     try {

@@ -84,6 +84,10 @@
   };
 </script>
 
+<svelte:head>
+  <title>Chat | {$page.data.env.name}</title>
+</svelte:head>
+
 <div class="flex flex-grow flex-col">
   <div class="flex-grow overflow-y-auto p-4">
     {#each messages as message (message.id)}

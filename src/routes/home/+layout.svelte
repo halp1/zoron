@@ -23,7 +23,7 @@
   interface Tab {
     name: string;
     path: string;
-    icon: IconDefinition;
+    icon: IconDefinition | string;
     mobileOnly?: boolean;
   }
   let windowWidth = 0;
@@ -45,7 +45,12 @@
     ...($page.data.session?.user?.role === "admin"
       ? [{ name: "Admin", path: "/home/admin", icon: faShieldAlt }]
       : []),
-    { name: "Account", path: "/account", icon: faUser, mobileOnly: true }
+    {
+      name: "Account",
+      path: "/account",
+      icon: $page.data.session?.user?.image || faUser,
+      mobileOnly: true
+    }
   ];
 
   $: activeTabIndex = $page.url?.pathname
@@ -135,7 +140,11 @@
             class="flex h-8 w-32 items-center justify-center gap-2 rounded-full border-2 border-blue-400 bg-white bg-opacity-0 transition-all hover:bg-opacity-10"
             href="/account"
           >
-            <Fa icon={faUser} />
+            {#if typeof $page.data.session?.user?.image === "string"}
+              <img src={$page.data.session?.user?.image} alt="Profile" class="h-6 rounded-full" />
+            {:else}
+              <Fa icon={faUser} />
+            {/if}
             My Account
           </a>
           <a
@@ -180,11 +189,19 @@
           class:bg-blue-700={idx === activeTabIndex}
           bind:this={tabRefs[idx]}
         >
-          <Fa
-            icon={tab.icon}
-            size="lg"
-            class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-          />
+          {#if typeof tab.icon === "string"}
+            <img
+              src={tab.icon}
+              alt=""
+              class="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full"
+            />
+          {:else}
+            <Fa
+              icon={tab.icon}
+              size="lg"
+              class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+            />
+          {/if}
         </a>
       {/each}
     </div>

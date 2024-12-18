@@ -101,7 +101,7 @@
 
   let mode: "full" | "day" = "day";
 
-  const now = () => new Date(Date.now() + ($page.data.constants?.timeDelta || 0));
+  const now = () => new Date(Date.now() + ($page.data.constants?.timeDelta || 0) - 60 * 1000 * 50);
 
   let dayViewDay: Date = now();
   let selectedDay: number = 0;
@@ -220,7 +220,7 @@
         ].sort((a, b) => a.start.getTime() - b.start.getTime())
       };
     } else {
-      const targetLunch = schedule?.lunches[dayNumber - 1];
+      const targetLunch = schedule?.lunches[dayNumber];
       return {
         day,
         blocks: [
@@ -583,6 +583,14 @@
                   <div class="italic">{dateToTime(block.start)} - {dateToTime(block.end)}</div>
                   <div class="italic">
                     {block.duration} minutes
+                    {#if now().getTime() - block.start.getTime() < 0 && now().getTime() - block.start.getTime() >= -1000 * 60 * 5}
+                      <span class="ml-1"></span>
+                      Starts in {Math.floor(
+                        (block.start.getTime() - now().getTime()) / 1000 / 60
+                      )}:{Math.floor((((block.start.getTime() - now().getTime()) / 1000 / 60) % 1) * 60)
+                        .toString()
+                        .padStart(2, "0")}
+                    {/if}
                     {#if block.progression},
                       <span class="ml-1"></span>
                       {Math.floor(
