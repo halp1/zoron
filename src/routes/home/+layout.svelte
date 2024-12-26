@@ -19,6 +19,7 @@
   import { isIOS, PWA } from "$lib/web";
 
   import bgSrc from "../../assets/bg.png";
+    import { changelog } from "../changelog/changelog";
 
   interface Tab {
     name: string;
@@ -119,7 +120,10 @@
         <div class="flex w-60 items-center text-3xl">
           <img src="/favicon.png" alt="Site Icon" class="h-8" />
           <div class="ml-2">{$page.data.env.name}</div>
+					{#if changelog[0].version[0] === "0"}
           <div class="ml-2 mt-[2px] font-mono text-slate-600">BETA</div>
+					{/if}
+					<div class="ml-2 text-slate-600 font-mono text-sm mt-auto mb-[3px]">v{changelog[0].version}</div>
         </div>
         <div class="ml-auto"></div>
         {#each tabs.filter((tab) => !tab.mobileOnly) as tab, idx}
@@ -169,7 +173,7 @@
 
   {#key $page.url}
     <div
-      class="view-anim-{animationDirection} no-scroll flex w-full flex-1 flex-col gap-2 overflow-auto px-10"
+      class="view-anim-{animationDirection} no-scroll flex w-full flex-1 flex-col gap-2 overflow-y-auto overflow-x-hidden px-10"
     >
       <slot />
     </div>
