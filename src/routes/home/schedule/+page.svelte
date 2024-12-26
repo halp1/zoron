@@ -20,6 +20,8 @@
   import "./schedule.css";
   import { onMount } from "svelte";
   import type { User } from "@auth/sveltekit";
+  import { fade } from "svelte/transition";
+  import _ from "lodash";
 
   $: schedule = $page.data.schedule as User["schedule"];
 
@@ -190,7 +192,10 @@
           !Number.isNaN(parseInt(last.class.room)) &&
           parseInt(last.class.room) < 500)
       ) {
-        if (last) last.end = new Date(last.end.getTime() - 1000 * 60 * 30);
+        if (last) {
+          last.end = new Date(last.end.getTime() - 1000 * 60 * 30);
+          last.duration = (last.end.getTime() - last.start.getTime()) / 1000 / 60;
+        }
         // second lunch
         return {
           day,
@@ -206,6 +211,7 @@
 
       // first lunch
       last.start = new Date(last.start.getTime() + 1000 * 60 * 30);
+      last.duration = (last.end.getTime() - last.start.getTime()) / 1000 / 60;
       return {
         day,
         blocks: [
@@ -266,11 +272,35 @@
         ? null
         : ((now().getTime() - start.getTime()) / (end.getTime() - start.getTime())) * 100;
 
+  let dayCache = new Map<string, Awaited<ReturnType<typeof loadDay>>>();
   let day: Awaited<ReturnType<typeof loadDay>> | null = null;
+  let dayKey = 0;
   $: mode === "day" &&
     $page.data.schedule &&
     typeof window !== "undefined" &&
-    loadDay(dayViewDay).then((d) => (day = d));
+    (async () => {
+      if (dayCache.has(dayViewDay.toISOString())) {
+        day = dayCache.get(dayViewDay.toISOString())!;
+        dayKey++;
+        return;
+      }
+      const d = await loadDay(dayViewDay);
+      day = d;
+      dayKey++;
+      dayCache.set(dayViewDay.toISOString(), d);
+
+      // load day to left and right
+      const left = new Date(dayViewDay.getTime() - 1000 * 60 * 60 * 24);
+      const right = new Date(dayViewDay.getTime() + 1000 * 60 * 60 * 24);
+      if (!dayCache.has(left.toISOString())) {
+        const d = await loadDay(left);
+        dayCache.set(left.toISOString(), d);
+      }
+      if (!dayCache.has(right.toISOString())) {
+        const d = await loadDay(right);
+        dayCache.set(right.toISOString(), d);
+      }
+    })();
 
   const dateToTime = (date: Date) => {
     const hours = date.getHours();
@@ -300,10 +330,30 @@
       300
     );
 
-    return () => cancelAnimationFrame(frame);
+    // keybinds
+    const keydown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        dayViewDay = new Date(dayViewDay.getTime() - 1000 * 60 * 60 * 24);
+        swipeDirection = "right";
+      } else if (e.key === "ArrowRight") {
+        dayViewDay = new Date(dayViewDay.getTime() + 1000 * 60 * 60 * 24);
+        swipeDirection = "left";
+      }
+    };
+    window.addEventListener("keydown", keydown);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("keydown", keydown);
+    };
   });
 
-  let swipeDirection: "left" | "right" | "none" = "left";
+  let swipeDirection: "left" | "right" = "left";
+
+  let swipeStart: {
+    x: number;
+    y: number;
+  } | null = null;
 </script>
 
 {#if !schedule}
@@ -423,26 +473,7 @@
         {/key}
       </Swipeable>
     {:else}
-      <Swipeable
-        className="mx-auto flex h-full w-80 flex-col items-center gap-5"
-        on:swipe={(e) => {
-          const applyChange = () => {
-            if (e.detail === "left")
-              dayViewDay = new Date(dayViewDay.getTime() + 1000 * 60 * 60 * 24);
-            else dayViewDay = new Date(dayViewDay.getTime() - 1000 * 60 * 60 * 24);
-          };
-
-          swipeDirection = e.detail === "left" ? "right" : "left";
-          const container = document.getElementById("day-transition");
-          if (container) container.style.viewTransitionName = `schedule-in-out-${swipeDirection}`;
-
-          if (!document.startViewTransition) return applyChange();
-          document.startViewTransition(() => {
-            applyChange();
-            return new Promise((r) => setTimeout(r, 150));
-          });
-        }}
-      >
+      <div class="mx-auto flex h-full w-80 flex-col items-center gap-5 overflow-x-visible">
         <div class="-mb-3 mt-3 text-xl text-slate-400">
           {dayViewDay.toLocaleDateString("en-US", { weekday: "long" })},
           {[
@@ -485,21 +516,15 @@
           <div class="flex w-full justify-center">
             <button
               class="btn-circle border-2 border-slate-600"
-              on:click={() => {
-                const applyChange = () => {
-                  dayViewDay = new Date(dayViewDay.getTime() - 1000 * 60 * 60 * 24);
-                };
+              on:click={async () => {
+                // @ts-expect-error
+                document.querySelector("#day-transition").style.transform =
+                  // @ts-expect-error
+                  "translateX(100vw)" + document.querySelector("#day-transition").style.transform;
+                await new Promise((r) => setTimeout(r, 200));
 
-                swipeDirection = "left";
-                const container = document.getElementById("day-transition");
-                if (container)
-                  container.style.viewTransitionName = `schedule-in-out-${swipeDirection}`;
-
-                if (!document.startViewTransition) return applyChange();
-                document.startViewTransition(() => {
-                  applyChange();
-                  return new Promise((r) => setTimeout(r, 150));
-                });
+                dayViewDay = new Date(dayViewDay.getTime() - 1000 * 60 * 60 * 24);
+                swipeDirection = "right";
               }}
             >
               <Fa icon={faChevronLeft} />
@@ -513,119 +538,176 @@
             </div>
             <button
               class="btn-circle border-2 border-slate-600"
-              on:click={() => {
-                const applyChange = () => {
-                  dayViewDay = new Date(dayViewDay.getTime() + 1000 * 60 * 60 * 24);
-                };
-
-                swipeDirection = "right";
-                const container = document.getElementById("day-transition");
-                if (container)
-                  container.style.viewTransitionName = `schedule-in-out-${swipeDirection}`;
-
-                if (!document.startViewTransition) return applyChange();
-                document.startViewTransition(() => {
-                  applyChange();
-                  return new Promise((r) => setTimeout(r, 150));
-                });
+              on:click={async () => {
+                // @ts-expect-error
+                document.querySelector("#day-transition").style.transform =
+                  // @ts-expect-error
+                  "translateX(-100vw)" + document.querySelector("#day-transition").style.transform;
+                await new Promise((r) => setTimeout(r, 200));
+                dayViewDay = new Date(dayViewDay.getTime() + 1000 * 60 * 60 * 24);
+                swipeDirection = "left";
               }}
             >
               <Fa icon={faChevronRight} />
             </button>
           </div>
-          <div
-            id="day-transition"
-            class="no-scroll flex min-w-[336px] flex-col items-center gap-5 overflow-y-auto overflow-x-hidden pb-5 pr-2"
-            style="view-transition-name: schedule-in-out-{swipeDirection}"
-          >
-            {#if day.day && day.blocks.length !== 0}
-              {#each day.blocks as block}
-                <div
-                  id={block.progression ? "progression" : ""}
-                  style={block.class?.type === "lunch"
-                    ? "border: double 3px transparent; background-clip: padding-box, border-box; background-image: linear-gradient(#263048E5, #263048E5), linear-gradient(45deg, #fc4778e5, #3952f5e5); background-origin: border-box;"
-                    : ""}
-                  class="w-80 rounded-xl border-2 bg-[#263048] bg-opacity-90 p-5 shadow-xl backdrop-blur-xl {block
-                    .class?.type === 'block'
-                    ? block.class.color.replace('bg', 'border')
-                    : block.class?.type === 'I-block'
-                      ? 'border-cyan-400'
-                      : 'border-slate-600'}"
-                >
-                  <div class="flex items-center">
-                    <div>
-                      {#if block.class?.type === "block"}
-                        {block.class.description}
-                      {:else if block.class.type === "free"}
-                        Free
-                      {:else if block.class.type === "I-block"}
-                        I Block
-                      {:else if block.class.type === "lunch"}
-                        {#if "lunch" in block.class}
-                          {block.class.lunch === 1
-                            ? "First"
-                            : block.class.lunch === 2
-                              ? "Second"
-                              : "Third"}
-                        {/if}
-                        Lunch
-                      {:else}
-                        {"block" in block ? block.block : block.name}
-                      {/if}
-                    </div>
-                    <div class="ml-auto">
-                      {#if block.class?.type === "block"}
-                        Room: <strong>{block.class.room}</strong>
-                      {/if}
-                    </div>
-                  </div>
-
-                  <div class="italic">{dateToTime(block.start)} - {dateToTime(block.end)}</div>
-                  <div class="italic">
-                    {block.duration} minutes
-                    {#if now().getTime() - block.start.getTime() < 0 && now().getTime() - block.start.getTime() >= -1000 * 60 * 5}
-                      <span class="ml-1"></span>
-                      Starts in {Math.floor(
-                        (block.start.getTime() - now().getTime()) / 1000 / 60
-                      )}:{Math.floor((((block.start.getTime() - now().getTime()) / 1000 / 60) % 1) * 60)
-                        .toString()
-                        .padStart(2, "0")}
-                    {/if}
-                    {#if block.progression},
-                      <span class="ml-1"></span>
-                      {Math.floor(
-                        block.duration - (block.progression / 100) * block.duration
-                      )}:{Math.floor(
-                        ((block.duration - (block.progression / 100) * block.duration) % 1) * 60
-                      )
-                        .toString()
-                        .padStart(2, "0")} remaining
-                    {/if}
-                  </div>
-                  {#if block.progression}
+          {#key dayKey}
+            <div
+              id="day-transition"
+              class="no-scroll overflow-x-visible overflow-y-scroll"
+              style="padding: 0 10000px 0 10000px; margin: 0 -10000px 0 -10000px;"
+            >
+              <div
+                class="flex min-h-[60vh] min-w-[336px] flex-col items-center gap-5 pb-5 pr-2 animate-in-{swipeDirection}"
+                style="transition: inherit;"
+                on:touchstart={(e) => {
+                  e.preventDefault();
+                  swipeStart = {
+                    x: e.touches[0].clientX,
+                    y:
+                      e.touches[0].clientY -
+                      parseInt(e.currentTarget.getAttribute("data-swipe") || "0")
+                  };
+                  e.currentTarget.style.transition = "none";
+                }}
+                on:touchmove={(e) => {
+                  if (!swipeStart) return;
+                  const x = e.touches[0].clientX;
+                  const y = e.touches[0].clientY;
+                  const deltaX = x - swipeStart.x;
+                  const deltaY = y - swipeStart.y;
+                  if (Math.abs(deltaX) > 50 && deltaY < 50) {
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+                  }
+                  e.currentTarget.style.transform = `translateX(${deltaX}px) translateY(${deltaY}px) scale(${Math.max(0, (1000 - Math.abs(deltaX)) / 1000)})`;
+                }}
+                on:touchend={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.style.transition = "inherit";
+                  if (!swipeStart) return;
+                  const x = e.changedTouches[0].clientX;
+                  const y = e.changedTouches[0].clientY;
+                  const deltaX = x - swipeStart.x;
+                  const deltaY = y - swipeStart.y;
+                  if (Math.abs(deltaX) > 100) {
+                    if (deltaX > 0) {
+                      dayViewDay = new Date(dayViewDay.getTime() - 1000 * 60 * 60 * 24);
+                      swipeDirection = "right";
+                      e.currentTarget.style.transform = `translateX(100vw) translateY(${deltaY}px) scale(0)`;
+                    } else {
+                      dayViewDay = new Date(dayViewDay.getTime() + 1000 * 60 * 60 * 24);
+                      swipeDirection = "left";
+                      e.currentTarget.style.transform = `translateX(-100vw) translateY(${deltaY}px) scale(0)`;
+                    }
+                  } else {
+                    const clamped = _.clamp(
+                      deltaY,
+                      -(
+                        (e.currentTarget.parentElement?.scrollHeight || 0) -
+                        (e.currentTarget.parentElement?.offsetHeight || 0)
+                      ),
+                      0
+                    );
+                    e.currentTarget.style.transform = `translateY(${clamped}px) scale(1)`;
+                    e.currentTarget.setAttribute("data-swipe", clamped.toString());
+                  }
+                  swipeStart = null;
+                }}
+              >
+                {#if day.day && day.blocks.length !== 0}
+                  {#each day.blocks as block}
                     <div
-                      class="relative mt-2 flex h-6 items-center border-2 bg-slate-800 text-sm {block
+                      id={block.progression ? "progression" : ""}
+                      style={block.class?.type === "lunch"
+                        ? "border: double 3px transparent; background-clip: padding-box, border-box; background-image: linear-gradient(#263048E5, #263048E5), linear-gradient(45deg, #fc4778e5, #3952f5e5); background-origin: border-box;"
+                        : ""}
+                      class="w-80 rounded-xl border-2 bg-[#263048] bg-opacity-90 p-5 shadow-xl backdrop-blur-xl {block
                         .class?.type === 'block'
                         ? block.class.color.replace('bg', 'border')
                         : block.class?.type === 'I-block'
                           ? 'border-cyan-400'
                           : 'border-slate-600'}"
                     >
-                      <div class="z-10 pl-2">{block.progression.toFixed(0)}%</div>
-                      <div
-                        class="absolute left-0 top-0 h-full {block.class?.type === 'block'
-                          ? block.class.color
-                          : 'bg-slate-600'}"
-                        style="width: {block.progression}%"
-                      ></div>
+                      <div class="flex items-center">
+                        <div>
+                          {#if block.class?.type === "block"}
+                            {block.class.description}
+                          {:else if block.class.type === "free"}
+                            Free
+                          {:else if block.class.type === "I-block"}
+                            I Block
+                          {:else if block.class.type === "lunch"}
+                            {#if "lunch" in block.class}
+                              {block.class.lunch === 1
+                                ? "First"
+                                : block.class.lunch === 2
+                                  ? "Second"
+                                  : "Third"}
+                            {/if}
+                            Lunch
+                          {:else}
+                            {"block" in block ? block.block : block.name}
+                          {/if}
+                        </div>
+                        <div class="ml-auto">
+                          {#if block.class?.type === "block"}
+                            Room: <strong>{block.class.room}</strong>
+                          {/if}
+                        </div>
+                      </div>
+
+                      <div class="italic">{dateToTime(block.start)} - {dateToTime(block.end)}</div>
+                      <div class="italic">
+                        {block.duration} minutes
+                        {#if now().getTime() - block.start.getTime() < 0 && now().getTime() - block.start.getTime() >= -1000 * 60 * 5}
+                          <span class="ml-1"></span>
+                          Starts in {Math.floor(
+                            (block.start.getTime() - now().getTime()) / 1000 / 60
+                          )}:{Math.floor(
+                            (((block.start.getTime() - now().getTime()) / 1000 / 60) % 1) * 60
+                          )
+                            .toString()
+                            .padStart(2, "0")}
+                        {/if}
+                        {#if block.progression},
+                          <span class="ml-1"></span>
+                          {Math.floor(
+                            block.duration - (block.progression / 100) * block.duration
+                          )}:{Math.floor(
+                            ((block.duration - (block.progression / 100) * block.duration) % 1) * 60
+                          )
+                            .toString()
+                            .padStart(2, "0")} remaining
+                        {/if}
+                      </div>
+                      {#if block.progression}
+                        <div
+                          class="relative mt-2 flex h-6 items-center border-2 bg-slate-800 text-sm {block
+                            .class?.type === 'block'
+                            ? block.class.color.replace('bg', 'border')
+                            : block.class?.type === 'I-block'
+                              ? 'border-cyan-400'
+                              : 'border-slate-600'}"
+                        >
+                          <div class="z-10 pl-2">{block.progression.toFixed(0)}%</div>
+                          <div
+                            class="absolute left-0 top-0 h-full {block.class?.type === 'block'
+                              ? block.class.color
+                              : 'bg-slate-600'}"
+                            style="width: {block.progression}%"
+                          ></div>
+                        </div>
+                      {/if}
                     </div>
-                  {/if}
-                </div>
-              {/each}
-            {/if}
-          </div>
+                  {/each}
+                {/if}
+              </div>
+            </div>
+          {/key}
         {/if}
-      </Swipeable>
+      </div>
     {/if}
   </div>
 {/if}
@@ -724,5 +806,30 @@
 
   .day-anim-right {
     view-transition-name: schedule-in-out-right;
+  }
+
+  @keyframes slide-in-left {
+    from {
+      transform: translateX(-100vw);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slide-in-right {
+    from {
+      transform: translateX(100vw);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  .animate-in-left {
+    animation: slide-in-right 0.3s;
+  }
+  .animate-in-right {
+    animation: slide-in-left 0.3s;
   }
 </style>
