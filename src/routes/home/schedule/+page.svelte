@@ -5,7 +5,6 @@
   import {
     faCalendarDay,
     faCalendarDays,
-    faFileExport,
     faClose,
     faInfoCircle,
     faRotateRight,
@@ -20,8 +19,8 @@
   import "./schedule.css";
   import { onMount } from "svelte";
   import type { User } from "@auth/sveltekit";
-  import { fade } from "svelte/transition";
   import _ from "lodash";
+  import { randomPlaceholderImage } from "../../../assets/placeholders";
 
   $: schedule = $page.data.schedule as User["schedule"];
 
@@ -331,11 +330,22 @@
     );
 
     // keybinds
-    const keydown = (e: KeyboardEvent) => {
+    const keydown = async (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") {
-        dayViewDay = new Date(dayViewDay.getTime() - 1000 * 60 * 60 * 24);
-        swipeDirection = "right";
+				// @ts-expect-error
+				document.querySelector("#day-transition").style.transform =
+					// @ts-expect-error
+					"translateX(100vw)" + document.querySelector("#day-transition").style.transform;
+				await new Promise((r) => setTimeout(r, 200));
+
+				dayViewDay = new Date(dayViewDay.getTime() - 1000 * 60 * 60 * 24);
+				swipeDirection = "right";
       } else if (e.key === "ArrowRight") {
+        // @ts-expect-error
+        document.querySelector("#day-transition").style.transform =
+          // @ts-expect-error
+          "translateX(-100vw)" + document.querySelector("#day-transition").style.transform;
+        await new Promise((r) => setTimeout(r, 200));
         dayViewDay = new Date(dayViewDay.getTime() + 1000 * 60 * 60 * 24);
         swipeDirection = "left";
       }
@@ -702,6 +712,10 @@
                       {/if}
                     </div>
                   {/each}
+                {:else}
+                  <div class="rounded-3xl bg-slate-700 p-3 backdrop-blur-3xl">
+                    <img src={randomPlaceholderImage()} class="h-80 w-80" alt="placeholder" />
+                  </div>
                 {/if}
               </div>
             </div>
