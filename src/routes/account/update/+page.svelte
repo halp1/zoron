@@ -35,7 +35,6 @@
     const res = await requests.post<AccountUpdateRes>("/api/account/update", {
       username,
       password,
-			secret: localStorage.getItem("password"),
     });
     dismiss();
     submitting = false;
