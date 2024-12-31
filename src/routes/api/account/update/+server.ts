@@ -21,13 +21,13 @@ export const POST: RequestHandler = async ({ locals: { auth }, request }) => {
   const session = await auth();
 
   if (!session || !session.user || !session.user.id) api.error("Not authorized", 401);
-  const data: { username: string; password: string, secret: string } = await request.json();
+  const data: { username: string; password: string; secret: string } = await request.json();
   if (!data.username || typeof data.username !== "string" || data.username.length === 0)
     return api.error("Missing username", 400);
   if (!data.password || typeof data.password !== "string" || data.password.length === 0)
     return api.error("Missing password", 400);
-	if (!data.secret || typeof data.secret !== "string" || data.secret.length === 0)
-		return api.error("Missing secret", 400);
+  if (!data.secret || typeof data.secret !== "string" || data.secret.length === 0)
+    return api.error("Missing secret. Try logging out and logging back in again.", 400);
 
   try {
     const account = await aspen.authenticate(data.username, data.password);
