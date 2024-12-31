@@ -5,6 +5,7 @@ import type { Session } from "@auth/sveltekit";
 
 export const generateSchedule = async (
   session: Session,
+	secret: string,
   semester: aspen.Types.Schedule.Semester,
   onProgress?: aspen.Types.ProgressCallback
 ) => {
@@ -14,7 +15,7 @@ export const generateSchedule = async (
     return await aspen.schedule.pdf(session.user.session.cookie, semester, onProgress);
   } catch {
     const total = aspen.constants.steps.authenticate + aspen.constants.steps.schedule.pdf;
-    const { username, password } = aspen.decrypt(session.user.email, session.user.aspen);
+    const { username, password } = aspen.decrypt(secret, session.user.aspen);
     const aspenSession = await aspen.authenticate(
       username,
       password,

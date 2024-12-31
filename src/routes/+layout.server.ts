@@ -7,8 +7,9 @@ import type { LayoutServerLoad } from "./$types";
 
 export const load: LayoutServerLoad = async (event) => {
   const auth = await event.locals.auth();
-  const aspenName = auth?.user?.aspen
-    ? aspen.decrypt(auth.user.email!, auth.user.aspen).username
+	const cookies = event.cookies;
+  const aspenName = auth?.user?.aspen && cookies.get("secret")
+    ? aspen.decrypt(cookies.get("secret")!, auth.user.aspen).username
     : undefined;
   return {
     session: auth,

@@ -1,30 +1,24 @@
-import { adapter } from "$lib/auth";
-import { query, transformID } from "$lib/database";
+import { fromCookies } from "$lib/auth";
 
-import { redirect } from "@sveltejs/kit";
-import { ObjectId } from "mongodb";
+import { isRedirect, redirect } from "@sveltejs/kit";
 
 import type { LayoutServerLoad } from "./$types";
 
-export const load: LayoutServerLoad = async ({ locals: { auth } }) => {
-  const session = await auth();
-  if (!session?.user?.email || !session.user.id) return redirect(302, "/login");
-  if (!session.user.aspen) return redirect(302, "/account/update");
+export const load: LayoutServerLoad = async ({ locals: { auth }, request, cookies }) => {
+  try {
+    const session = await auth();
+    if (cookies.get("active-session")) {
+      return {};
+    }
+    if (!session?.user?.email || !session.user.id) return redirect(302, "/login");
+    if (!session.user.aspen) return redirect(302, "/account/update");
 
-  return {
-    // @ts-expect-error
-    schedule: (await adapter.getUser!(session.user.id))?.schedule,
-    constants: {
-      timeDelta: transformID(
-        (
-          await query<{ name: "timeDelta"; data: number }>({
-            collection: "app",
-            query: { name: "timeDelta" }
-          })
-        )[0] || { name: "timeDelta", data: 0, _id: new ObjectId() }
-      ).data
-    },
-    // @ts-expect-error
-    preloadedActivity: (await adapter.getUser!(session.user.id))?.activity
-  };
+		const uri = new URL(request.url);
+		const path = uri.pathname;
+
+		redirect(302, "/launch?path=" + encodeURIComponent(path));
+  } catch (e) {
+    if (isRedirect(e)) throw e;
+    return {};
+  }
 };

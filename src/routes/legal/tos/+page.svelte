@@ -1,5 +1,5 @@
 <script>
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
 </script>
 
 <div class="mx-auto my-10 max-w-[800px]">
@@ -8,10 +8,10 @@
   <section class="mb-6">
     <h2 class="mb-2 text-xl font-bold">1. Introduction</h2>
     <p>
-      Welcome to <strong>{$page.data.env.name}</strong>. By accessing and using this app, you agree
+      Welcome to <strong>{page.data.env.name}</strong>. By accessing and using this app, you agree
       to these Terms of Service (“Terms”). This app provides a simplified way for students to view
       their school schedules, grades, and attendance by linking their MyFollett Aspen accounts.
-      <strong>{$page.data.env.name}</strong> is an independent tool and is not affiliated with MyFollett
+      <strong>{page.data.env.name}</strong> is an independent tool and is not affiliated with MyFollett
       Aspen or your school.
     </p>
   </section>
@@ -20,7 +20,7 @@
     <h2 class="mb-2 text-xl font-bold">2. Parental Consent for Minors</h2>
     <p>
       By creating an account, you confirm that you have received permission from a parent or
-      guardian to use <strong>{$page.data.env.name}</strong>. If you are under the age of 18, you
+      guardian to use <strong>{page.data.env.name}</strong>. If you are under the age of 18, you
       must have this consent before using the app.
     </p>
   </section>
@@ -36,7 +36,7 @@
   <section class="mb-6">
     <h2 class="mb-2 text-xl font-bold">4. Acceptable Use</h2>
     <p>
-      You may only use <strong>{$page.data.env.name}</strong> to access your own academic data. Attempting
+      You may only use <strong>{page.data.env.name}</strong> to access your own academic data. Attempting
       to access data that is not your own or to misuse the app in any way is prohibited.
     </p>
   </section>
@@ -44,11 +44,11 @@
   <section class="mb-6">
     <h2 class="mb-2 text-xl font-bold">5. Data Accuracy and Third-Party Dependencies</h2>
     <p>
-      <strong>{$page.data.env.name}</strong> relies on MyFollett Aspen for data retrieval. We cannot
+      <strong>{page.data.env.name}</strong> relies on MyFollett Aspen for data retrieval. We cannot
       guarantee the accuracy, completeness, or timeliness of the data displayed, and
-      <strong>{$page.data.env.name}</strong>
+      <strong>{page.data.env.name}</strong>
       is offered on an “as-is” basis. Service interruptions or restrictions from MyFollett Aspen may
-      impact the app’s functionality, and <strong>{$page.data.env.name}</strong> holds no liability for
+      impact the app’s functionality, and <strong>{page.data.env.name}</strong> holds no liability for
       such issues.
     </p>
   </section>
@@ -66,10 +66,10 @@
   <section class="mb-6">
     <h2 class="mb-2 text-xl font-bold">7. Limitation of Liability</h2>
     <p>
-      In no event shall <strong>{$page.data.env.name}</strong> be liable for any damages arising
-      from the use of this app, including but not limited to inaccuracies, service interruptions, or
-      data breaches beyond our control. Users accept all risks associated with using
-      <strong>{$page.data.env.name}</strong>.
+      In no event shall <strong>{page.data.env.name}</strong> be liable for any damages arising from
+      the use of this app, including but not limited to inaccuracies, service interruptions, or data
+      breaches beyond our control. Users accept all risks associated with using
+      <strong>{page.data.env.name}</strong>.
     </p>
   </section>
 

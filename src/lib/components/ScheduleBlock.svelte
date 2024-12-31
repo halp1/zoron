@@ -1,12 +1,17 @@
 <script lang="ts">
+  import { motion } from "$lib/motion";
   import type { Block } from "$lib/types";
-
-  export let block: Block;
-
-  export let className = "";
-  export let freeFontSize = "text-xl";
+  import { fly } from "svelte/transition";
 
   import { twMerge } from "tailwind-merge";
+  interface Props {
+    block: Block;
+    index: number;
+    className?: string;
+    freeFontSize?: string;
+  }
+
+  let { block, className = "", freeFontSize = "text-xl", index }: Props = $props();
 </script>
 
 <div
@@ -15,6 +20,13 @@
     block.color,
     className
   )}
+  in:fly|global={{
+    delay: 100 + index * 10,
+    duration: 1000,
+    opacity: 0,
+    y: -20,
+    easing: motion.transitions.spring(400, 20)
+  }}
 >
   {#if block.type === "block"}
     <div class="relative px-2 text-center font-bold" style="word-wrap: break-word;">

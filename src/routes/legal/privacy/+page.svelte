@@ -1,5 +1,5 @@
 <script>
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
 </script>
 
 <div class="mx-auto my-10 max-w-[800px]">
@@ -8,9 +8,9 @@
   <section class="mb-6">
     <h2 class="mb-2 text-xl font-bold">1. Introduction</h2>
     <p>
-      <strong>{$page.data.env.name}</strong> is committed to protecting your privacy. This Privacy
+      <strong>{page.data.env.name}</strong> is committed to protecting your privacy. This Privacy
       Policy outlines how we handle your data when you use the app.
-      <strong>{$page.data.env.name}</strong> is an independent project and is not affiliated with MyFollett
+      <strong>{page.data.env.name}</strong> is an independent project and is not affiliated with MyFollett
       Aspen or your school.
     </p>
   </section>
@@ -28,7 +28,7 @@
     <h2 class="mb-2 text-xl font-bold">3. Parental Consent for Minors</h2>
     <p>
       If you are under 18 years of age, you must have parental or guardian consent to use <strong
-        >{$page.data.env.name}</strong
+        >{page.data.env.name}</strong
       >. By creating an account, you confirm that you have received this consent.
     </p>
   </section>
@@ -45,7 +45,7 @@
   <section class="mb-6">
     <h2 class="mb-2 text-xl font-bold">5. Use of Data and Data Sharing</h2>
     <p>
-      <strong>{$page.data.env.name}</strong> only uses your data to provide the app’s intended functions.
+      <strong>{page.data.env.name}</strong> only uses your data to provide the app’s intended functions.
       We do not sell, share, or distribute your data to any third parties. Access to data is limited
       to authorized personnel strictly for the purpose of maintaining the app.
     </p>
@@ -64,7 +64,7 @@
   <section class="mb-6">
     <h2 class="mb-2 text-xl font-bold">7. FERPA Compliance Disclaimer</h2>
     <p>
-      <strong>{$page.data.env.name}</strong> is not affiliated with or officially recognized by
+      <strong>{page.data.env.name}</strong> is not affiliated with or officially recognized by
       MyFollett Aspen or your school. While we aim to handle student data responsibly, we cannot
       guarantee FERPA compliance. We encourage users to consult with parents or guardians regarding
       data use in this app. Contact us at

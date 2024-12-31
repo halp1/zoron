@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import { signIn, signOut } from "@auth/sveltekit/client";
   import { requests, toast } from "$lib/web";
   import {
@@ -9,12 +9,11 @@
     faRightFromBracket,
     faUserSlash,
     faUserEdit,
-    faGear,
-    faFingerprint
+    faGear
   } from "@fortawesome/free-solid-svg-icons";
   import Fa from "svelte-fa";
 
-  if (!$page.data?.session || !$page.data.session?.user) {
+  if (!page.data?.session || !page.data.session?.user) {
     signIn();
   }
 
@@ -27,26 +26,26 @@
 </script>
 
 <svelte:head>
-  <title>Account | {$page.data.env.name}</title>
+  <title>Account | {page.data.env.name}</title>
 </svelte:head>
 
 <main>
   <div class="flex h-screen w-screen flex-col items-center justify-center">
-    {#if $page.data && $page.data.session && $page.data.session.user}
+    {#if page.data && page.data.session && page.data.session.user}
       <div class="relative flex flex-col gap-5 sm:w-[550px]">
         <div class="mx-auto border-b-2 border-slate-600 pb-1 text-3xl">
-          Hello, {$page.data.session.user.name}.
+          Hello, {page.data.session.user.name}.
         </div>
         <div class="flex items-center justify-center gap-3 text-xl">
           Your aspen account: <div class="border-2 border-slate-500 px-2 py-1">
-            {$page.data.username || "Unset"}
+            {page.data.username || "Unset"}
           </div>
         </div>
         <a
           href="/home"
           class="btn-full btn-outlined mx-auto flex items-center justify-center gap-3 border-green-400 text-base"
         >
-          <Fa icon={faHome} /> My {$page.data.env.name}
+          <Fa icon={faHome} /> My {page.data.env.name}
         </a>
         <div class="border-b-2 border-dashed border-slate-600"></div>
         <div class="grid grid-cols-2 gap-2">
@@ -57,7 +56,7 @@
             <Fa icon={faGear} />
             Account settings
           </a>
-          {#if $page.data.session.user.password}
+          {#if page.data.session.user.password}
             <a
               href="/account/password"
               class="btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-blue-400 text-base"
@@ -140,7 +139,7 @@
         >
         <div class="text-2xl">Delete your account?</div>
         <div class="text-sm text-slate-400">This action is irreversible.</div>
-        <button
+        <div
           class="btn-full btn-outlined relative mt-5 flex w-72 items-center justify-center overflow-hidden border-red-500 text-base text-transparent"
         >
           Delete account
@@ -177,7 +176,7 @@
           >
             Delete account
           </button>
-        </button>
+        </div>
       </div>
     </div>
   {/if}

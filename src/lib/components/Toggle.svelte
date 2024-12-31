@@ -1,9 +1,13 @@
 <script lang="ts">
   import { twMerge } from "tailwind-merge";
 
-  export let checked = false;
-  export let color = "bg-orange-400";
-  export let className = "";
+  interface Props {
+    checked?: boolean;
+    color?: string;
+    className?: string;
+  }
+
+  let { checked = $bindable(false), color = "bg-orange-400", className = "" }: Props = $props();
 </script>
 
 <label class={twMerge("flex cursor-pointer items-center", className)}>

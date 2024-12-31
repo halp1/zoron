@@ -5,6 +5,7 @@ import type { Session } from "@auth/sveltekit";
 
 export const classDetail = async (
   session: Session,
+	secret: string,
   args: Omit<Parameters<typeof aspen.classDetail>[0], "cookie">
 ) => {
   if (!session.user?.email || !session.user.aspen) throw new Error("Not authenticated");
@@ -15,7 +16,7 @@ export const classDetail = async (
       ...args
     });
   } catch {
-    const { username, password } = aspen.decrypt(session.user.email, session.user.aspen);
+    const { username, password } = aspen.decrypt(secret, session.user.aspen);
     const apsenSession = await aspen.authenticate(username, password);
 
     await adapter.updateUser!({

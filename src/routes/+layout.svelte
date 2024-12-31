@@ -1,9 +1,14 @@
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
   import { Toaster } from "svelte-french-toast";
   import { PWA } from "$lib/web";
   import "../app.css";
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
+  interface Props {
+    children?: import("svelte").Snippet;
+  }
+
+  let { children }: Props = $props();
 
   onMount(() => {
     document.body.classList.add("suse");
@@ -16,9 +21,9 @@
   <link rel="icon" type="image/png" href="/favicon-48x48.png" sizes="48x48" />
   <link rel="shortcut icon" href="/favicon.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <meta name="apple-mobile-web-app-title" content={$page.data.env.name} />
+  <meta name="apple-mobile-web-app-title" content={page.data.env.name} />
   <link rel="manifest" href="/site.webmanifest" />
 </svelte:head>
 
 <Toaster />
-<slot />
+{@render children?.()}

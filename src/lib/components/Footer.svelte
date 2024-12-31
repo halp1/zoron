@@ -1,11 +1,15 @@
 <script lang="ts">
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import { requests, toast } from "$lib/web";
 
-  export let fixed = false;
-  export let className = "";
-  export let hideable = false;
-  let hidden = $page.data.hideFooter;
+  interface Props {
+    fixed?: boolean;
+    className?: string;
+    hideable?: boolean;
+  }
+
+  let { fixed = false, className = "", hideable = false }: Props = $props();
+  let hidden = $state(page.data.hideFooter);
 </script>
 
 {#if !hideable || !hidden}
@@ -22,7 +26,7 @@
         {#if hideable}
           <button
             class="text-sm underline sm:ml-auto"
-            on:click={async () => {
+            onclick={async () => {
               hidden = true;
               const res = await requests.post("/api/hideFooter");
               if (res.success === false) {

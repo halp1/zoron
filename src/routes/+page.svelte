@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import BubbleButton from "$lib/components/BubbleButton.svelte";
 </script>
 
 <svelte:head>
-  <title>{$page.data.env.name}</title>
+  <title>{page.data.env.name}</title>
 </svelte:head>
 
 <main
@@ -13,7 +13,7 @@
 >
   <div class="flex items-center gap-10 text-6xl sm:text-8xl">
     <img src="/favicon.png" alt="icon" class="w-28" />
-    <div>{$page.data.env.name}</div>
+    <div>{page.data.env.name}</div>
   </div>
   <div class="mt-10 text-center text-3xl">The better Aspen experience you've always wanted.</div>
   <div class="mt-10 flex items-center gap-10">

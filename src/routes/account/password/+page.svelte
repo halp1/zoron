@@ -2,12 +2,12 @@
   import { requests, toast } from "$lib/web";
   import Fa from "svelte-fa";
   import { faInfoCircle, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
 
-  let password = "";
-  let confirm = "";
+  let password = $state("");
+  let confirm = $state("");
 
-  let submitting = false;
+  let submitting = $state(false);
 
   const submit = async (e: { preventDefault: () => void }) => {
     if (submitting) return toast.error("Please wait for the previous request to finish.");
@@ -32,19 +32,19 @@
     }
   };
 
-  let showPassword = false;
+  let showPassword = $state(false);
 </script>
 
 <svelte:head>
-  <title>Update your credentials | {$page.data.env.name}</title>
+  <title>Update your credentials | {page.data.env.name}</title>
 </svelte:head>
 
 <main class="flex h-screen w-screen flex-col items-center justify-center">
   <img src="/favicon.png" alt="Site icon" class="mb-3 w-32" />
   <h1 class="mb-10 text-4xl">Update your password</h1>
-  <form class="flex w-96 flex-col gap-2" on:submit={submit}>
+  <form class="flex w-96 flex-col gap-2" onsubmit={submit}>
     <input
-      on:keydown={(e) => {
+      onkeydown={(e) => {
         if (e.key === "Enter") {
           submit(e);
         }
@@ -58,7 +58,7 @@
     />
     <div class="relative">
       <input
-        on:keydown={(e) => {
+        onkeydown={(e) => {
           if (e.key === "Enter") {
             submit(e);
           }
@@ -72,7 +72,7 @@
       />
       <button
         class="btn-circle absolute right-2 top-1/2 -translate-y-1/2"
-        on:click={(e) => {
+        onclick={(e) => {
           e.preventDefault();
           showPassword = !showPassword;
         }}><Fa icon={showPassword ? faEyeSlash : faEye} /></button

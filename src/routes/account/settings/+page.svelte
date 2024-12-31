@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import { Toggle } from "$lib/components";
   import { supabase, supabaseConnect } from "$lib/supabase";
   import type { Settings } from "$lib/types";
@@ -20,11 +20,11 @@
   });
 
   let mounted = false;
-  const settings = writable(_.merge(defaultSettings, $page.data.session?.user?.settings));
+  const settings = writable(_.merge(defaultSettings, page.data.session?.user?.settings));
 
   onMount(() => {
-    const client = supabaseConnect($page.data.env.supabase.uri, $page.data.env.supabase.key);
-    client.auth.setSession($page.data.supabase.session);
+    const client = supabaseConnect(page.data.env.supabase.uri, page.data.env.supabase.key);
+    client.auth.setSession(page.data.supabase.session);
     mounted = true;
     return () => {
       client.removeAllChannels();
@@ -43,13 +43,13 @@
     else toast.success("Updated settings");
   });
 
-  const devices = $page.data.session?.user?.devices || [];
+  const devices = page.data.session?.user?.devices || [];
   const matchingDevice = devices.find(
     (d) => device && (device.fingerprint === d.device.fingerprint || device.id === d.device.id)
   );
 
-  let uploading = false;
-  let fileInput: HTMLInputElement;
+  let uploading = $state(false);
+  let fileInput: HTMLInputElement = $state();
 
   const handleFileUpload = async (event: Event) => {
     const target = event.target as HTMLInputElement;
@@ -65,7 +65,7 @@
     uploading = true;
     const { dismiss } = toast.loading("Updating profile picture...");
     try {
-      const userId = $page.data.session?.user?.id;
+      const userId = page.data.session?.user?.id;
       const filePath = `${userId}/profile-picture.jpg`; // Always use jpg since we convert in compressImage
 
       // First delete the existing profile picture if it exists
@@ -124,7 +124,7 @@
 </script>
 
 <svelte:head>
-  <title>Settings | {$page.data.env.name}</title>
+  <title>Settings | {page.data.env.name}</title>
 </svelte:head>
 
 <main>
@@ -139,7 +139,7 @@
       <div class="flex flex-col items-center gap-3 border-b-2 border-slate-600 pb-4">
         <div class="relative">
           <img
-            src={$page.data.session?.user?.image || "/favicon.png"}
+            src={page.data.session?.user?.image || "/favicon.png"}
             alt="Profile"
             class="h-24 w-24 rounded-full object-cover"
           />
@@ -152,7 +152,7 @@
               accept="image/*"
               class="hidden"
               bind:this={fileInput}
-              on:change={handleFileUpload}
+              onchange={handleFileUpload}
               disabled={uploading}
             />
           </label>
