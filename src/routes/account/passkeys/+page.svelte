@@ -1,13 +1,13 @@
 <script lang="ts">
   import { addPasskey } from "$lib/auth/webauthn/browser";
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import { requests, toast } from "$lib/web";
   import { faArrowLeft, faTrash } from "@fortawesome/free-solid-svg-icons";
   import Fa from "svelte-fa";
 
-  let loading = false;
-  let showNameDialog = false;
-  let passkeyName = "";
+  let loading = $state(false);
+  let showNameDialog = $state(false);
+  let passkeyName = $state("");
 
   const handleAddPasskey = async () => {
     if (!passkeyName.trim()) {
@@ -50,11 +50,11 @@
   };
 
   // Get passkeys from the session data
-  $: passkeys = $page.data?.passkeys ?? [];
+  let passkeys = $derived(page.data?.passkeys ?? []);
 </script>
 
 <svelte:head>
-  <title>Passkeys | {$page.data.env.name}</title>
+  <title>Passkeys | {page.data.env.name}</title>
 </svelte:head>
 
 <main>
@@ -66,7 +66,7 @@
       <div class="border-b-2 border-slate-600 pb-1 text-center text-4xl">Passkeys</div>
       <div class="flex flex-1 flex-col gap-3">
         <button
-          on:click={() => (showNameDialog = true)}
+          onclick={() => (showNameDialog = true)}
           disabled={loading}
           class="btn-full btn-outlined w-full text-base"
         >
@@ -88,7 +88,7 @@
                     Backed up: {passkey.backedUp ? "Yes" : "No"}
                   </p>
                 </div>
-                <button class="btn-circle ml-2" on:click={() => handleDeletePasskey(passkey.id)}>
+                <button class="btn-circle ml-2" onclick={() => handleDeletePasskey(passkey.id)}>
                   <Fa icon={faTrash} />
                 </button>
               </div>
@@ -113,7 +113,7 @@
       <div class="flex justify-end gap-2">
         <button
           class="btn-full btn-outlined text-base"
-          on:click={() => {
+          onclick={() => {
             showNameDialog = false;
             passkeyName = "";
           }}
@@ -122,7 +122,7 @@
         </button>
         <button
           class="btn-full btn-outlined text-base"
-          on:click={handleAddPasskey}
+          onclick={handleAddPasskey}
           disabled={!passkeyName.trim()}
         >
           Add

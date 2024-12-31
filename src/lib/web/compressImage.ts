@@ -32,7 +32,7 @@ export const compressImage = async (image: File, size = 128) => {
 
         // First crop by drawing the center square portion
         ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, size, size);
-        
+
         // Then the scaling is handled automatically by the canvas size
         canvas.convertToBlob({ type: "image/jpeg", quality: 0.8 }).then((blob) => {
           resolve(blob);

@@ -5,12 +5,12 @@
   import Footer from "$lib/components/Footer.svelte";
   import { Collapsible, Toggle } from "$lib/components";
   import { requests } from "$lib/web";
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
   import Fa from "svelte-fa";
 
-  let email = "";
-  let agreed = false;
+  let email = $state("");
+  let agreed = $state(false);
 
   const handleSubmission = async (
     e: SubmitEvent & {
@@ -35,13 +35,13 @@
 </script>
 
 <svelte:head>
-  <title>Account Recovery | {$page.data.env.name}</title>
+  <title>Account Recovery | {page.data.env.name}</title>
 </svelte:head>
 
 <main class="flex h-screen w-screen flex-col items-center justify-center px-5">
   <img src="/favicon.png" alt="Site icon" class="mb-3 w-32" />
-  <h1 class="mb-10 text-center text-4xl">Recover your {$page.data.env.name} account</h1>
-  <form on:submit={handleSubmission} class="flex w-96 flex-col gap-2">
+  <h1 class="mb-10 text-center text-4xl">Recover your {page.data.env.name} account</h1>
+  <form onsubmit={handleSubmission} class="flex w-96 flex-col gap-2">
     <input
       class="w-full rounded-lg border-2 border-dashed border-blue-400 bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
       name="email"

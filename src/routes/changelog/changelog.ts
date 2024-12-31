@@ -2,6 +2,23 @@ import type { ChangelogEntry } from "./types";
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "1.0.0",
+    date: "12/30/2024",
+    overview: "Official Release",
+    changes: [
+      "Overhauled the authentication system to make it impossible to decrypt user data without the user's device. (You will be able to read more about this on the upcoming article)",
+      "Zoron now loads all of the inital data all at once when launching, making the app and navigation faster.",
+      "Added a loading screen when launching the app.",
+      "Added entry animations to all parts of the dashboard and other parts of the site."
+    ],
+    bugfixes: [
+      "Fixed a bug where loading the activty page more than once would leave unloaded grades blank until reloading the page",
+      "Fixed a bug where navigating back would sometimes cause the site to load an api route instead an actual page",
+      "Several small bugfixes relating to the schedule page",
+      "Fixed a bug where the navbar on mobile would sometimes not show the correct page being highlighted"
+    ]
+  },
+  {
     version: "0.1.0",
     date: "12/24/2024",
     overview: "The beginning",

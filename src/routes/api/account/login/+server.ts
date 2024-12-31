@@ -6,10 +6,10 @@ import "@auth/sveltekit";
 
 import type { RequestHandler } from "./$types";
 
-export const POST: RequestHandler = async ({ request }) => {
-  const { email, password } = await request.json();
+export const POST: RequestHandler = async ({ request, cookies }) => {
+  const { email, password, secret } = await request.json();
 
-  if (!email || !password || email === "" || password === "") {
+  if (!email || !password || !secret || email === "" || password === "" || secret === "") {
     return api.error("Missing email or password", 400);
   }
 
@@ -39,10 +39,17 @@ export const POST: RequestHandler = async ({ request }) => {
 
   const response = api.json({ user });
   const cookieOptions = auth.cookies.sessionToken.options;
-  response.headers.set(
-    "set-cookie",
-    `${auth.cookies.sessionToken.name}=${jwt}; Domain=${cookieOptions.domain}; Path=${cookieOptions.path}; HttpOnly=${cookieOptions.httpOnly}; SameSite=${cookieOptions.sameSite}; Secure=${cookieOptions.secure}`
-  );
+  cookies.set(auth.cookies.sessionToken.name, jwt, {
+    domain: cookieOptions.domain,
+    path: cookieOptions.path,
+    httpOnly: cookieOptions.httpOnly,
+    sameSite: cookieOptions.sameSite,
+    secure: cookieOptions.secure
+  });
+  cookies.set("secret", secret, {
+    path: "/",
+		expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
+  });
 
   return response;
 };

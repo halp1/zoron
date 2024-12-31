@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/web-manifest-combined.json",
   "name": "Zoron",
   "short_name": "Zoron",
-  "start_url": "/home",
+  "start_url": "/launch",
   "orientation": "portrait",
   "display_override": [
     "window-control-overlay"

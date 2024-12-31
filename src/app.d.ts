@@ -27,11 +27,6 @@ declare global {
         };
       };
       hideFooter: boolean;
-      schedule?: aspen.Types.Schedule.Schedule & { updated: number };
-      constants?: {
-        timeDelta: number;
-      };
-      preloadedActivity?: ActivityRecord[];
       passkeys?: Passkey[];
     }
     // interface PageState {}

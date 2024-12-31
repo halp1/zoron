@@ -27,7 +27,6 @@ async function ensureStoragePolicy(supabase: ReturnType<typeof supabaseConnect>)
     `);
 
     // Create policies if they don't exist
-    
   } catch (error) {
     console.error("Error ensuring storage policy:", error);
     // Don't throw error as this shouldn't block the page load
@@ -43,13 +42,13 @@ export const load: PageServerLoad = async ({ locals: { auth } }) => {
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email: session.user.email!,
-    password: aspen.decrypt(session.user.email!, session.user.aspen).password
+    password: session.user.aspen
   });
 
   if (error) {
     await supabase.auth.signUp({
       email: session.user.email!,
-      password: aspen.decrypt(session.user.email!, session.user.aspen).password
+      password: session.user.aspen
     });
   }
 
@@ -62,7 +61,7 @@ export const load: PageServerLoad = async ({ locals: { auth } }) => {
       (
         await supabase.auth.signInWithPassword({
           email: session.user.email!,
-          password: aspen.decrypt(session.user.email!, session.user.aspen).password
+          password: session.user.aspen
         })
       ).data
   };

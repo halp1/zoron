@@ -1,12 +1,14 @@
 <script lang="ts">
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import type { aspen } from "$lib/aspen";
   import { Collapsible, Skeleton, ListSelect } from "$lib/components";
   import { faChevronRight, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
   import Fa from "svelte-fa";
-  import { requests, toast } from "$lib/web";
+  import { requests, toast, zoron } from "$lib/web";
   import { onMount } from "svelte";
   import { writable } from "svelte/store";
+  import { fly } from "svelte/transition";
+  import { motion } from "$lib/motion";
 
   interface Class extends aspen.Types.Class {
     expanded: boolean;
@@ -15,20 +17,17 @@
     height: number;
   }
 
-  let data = null as { classes: aspen.Types.Class[] } | null;
-  $: classes = (
-    data
-      ? data.classes.map(
-          (c) =>
-            ({
-              ...c,
-              expanded: false,
-              height: -1,
-              credit: $page.data.schedule?.schedule?.find((a) => a?.course === c.course)?.credit
-            }) satisfies Class
-        )
-      : null
-  ) as Class[] | null;
+  let classes: Class[] | null = $state(
+    $zoron.classes.map(
+      (c) =>
+        ({
+          ...c,
+          expanded: false,
+          height: -1,
+          credit: $zoron.schedule?.schedule?.find((a) => a?.course === c.course)?.credit
+        }) satisfies Class
+    ) as Class[] | null
+  );
 
   const loadClassData = async (c: Class) => {
     const res = await requests.post<aspen.Types.ClassDetail>("/api/aspen/class", {
@@ -44,8 +43,8 @@
 
   onMount(() => {
     (async () => {
-      const res = await $page.data.classes;
-      data = res;
+      // const res = await $zoron.classes;
+      // data = res;
       setTimeout(async () => {
         const name = decodeURIComponent(location.hash).replaceAll("#", "");
         if (!name || name.length === 0 || !classes) return;
@@ -86,7 +85,15 @@
     );
     if (!res.success)
       return toast.error("An error occurred while fetching grade data: " + res.error);
-    data = res.data;
+    classes = res.data.classes.map(
+      (c) =>
+        ({
+          ...c,
+          expanded: false,
+          height: -1,
+          credit: $zoron.schedule?.schedule?.find((a) => a?.course === c.course)?.credit
+        }) satisfies Class
+    );
   };
 
   let classQuery = writable<aspen.Types.ClassOptions>({
@@ -102,21 +109,28 @@
         return;
       }
       if (query.year === "current" && query.term === 0) {
-        const res = await $page.data.classes;
-        data = res;
+        classes = $zoron.classes.map(
+          (c) =>
+            ({
+              ...c,
+              expanded: false,
+              height: -1,
+              credit: $zoron.schedule?.schedule?.find((a) => a?.course === c.course)?.credit
+            }) satisfies Class
+        );
         return;
       }
       if (query.year === "previous" && query.term === 0) {
         return classQuery.set({ year: "previous", term: 1 });
       }
-      data = null;
+      classes = null;
       await loadTerm(query);
     });
 
     return unsubscribe;
   });
 
-  let loaded = false;
+  let loaded = $state(false);
 
   onMount(() => {
     const items = classes?.map((c) => `class-${c.id}`);
@@ -191,7 +205,7 @@
       .reduce((a, b, _, arr) => a + (b.gpa * b.weight) / arr.reduce((a, b) => a + b.weight, 0), 0);
 
   const preloadLength =
-    ($page.data.session?.user?.schedule?.schedule?.reduce(
+    (page.data.session?.user?.schedule?.schedule?.reduce(
       (prev, cur) =>
         !prev.find((item) => cur === null || item?.course === cur?.course) ? [...prev, cur] : prev,
       [] as (aspen.Types.Schedule.Course | null)[]
@@ -202,7 +216,7 @@
 </script>
 
 <svelte:head>
-  <title>Grades | {$page.data.env.name}</title>
+  <title>Grades | {page.data.env.name}</title>
 </svelte:head>
 <div class="mb-2 flex flex-wrap items-center justify-center gap-5 pt-10">
   <ListSelect
@@ -211,6 +225,18 @@
       { value: "previous", label: "Last Year" }
     ]}
     bind:value={$classQuery.year}
+    transition={{
+      in: {
+        function: fly,
+        properties: {
+          delay: 250,
+          duration: 1000,
+          opacity: 0,
+          y: -20,
+          easing: motion.transitions.spring(400, 20)
+        }
+      }
+    }}
   />
   <ListSelect
     items={$classQuery.year === "current"
@@ -228,22 +254,46 @@
           { value: 4, label: "Q4" }
         ]}
     bind:value={$classQuery.term}
+    transition={{
+      in: {
+        function: fly,
+        properties: {
+          delay: 300,
+          duration: 1000,
+          opacity: 0,
+          y: -20,
+          easing: motion.transitions.spring(400, 20)
+        }
+      }
+    }}
   />
   <Collapsible
     direction="horizontal"
     open={!!(
       (classes &&
-        $page.data.schedule &&
+        $zoron.schedule &&
         $classQuery.year !== "previous" &&
-        !$page.data?.session?.user?.settings?.home?.hideGPA &&
+        !page.data?.session?.user?.settings?.home?.hideGPA &&
         calculateGPA(
           classes.map((c) => ({ grade: c.grade, courseID: c.course, credit: c.credit }))
         ) !== 0) ||
       typeof window === "undefined"
     )}
+    transition={{
+      in: {
+        function: fly,
+        properties: {
+          delay: 350,
+          duration: 1000,
+          opacity: 0,
+          y: -20,
+          easing: motion.transitions.spring(400, 20)
+        }
+      }
+    }}
   >
     <div class="whitespace-nowrap text-center text-3xl" style="view-transition-name: gpa;">
-      Quarter GPA: {#if classes && $page.data.schedule && $classQuery.year !== "previous" && !$page.data?.session?.user?.settings?.home?.hideGPA && calculateGPA(classes.map( (c) => ({ grade: c.grade, courseID: c.course, credit: c.credit }) )) !== 0}
+      Quarter GPA: {#if classes && $zoron.schedule && $classQuery.year !== "previous" && !page.data?.session?.user?.settings?.home?.hideGPA && calculateGPA(classes.map( (c) => ({ grade: c.grade, courseID: c.course, credit: c.credit }) )) !== 0}
         {calculateGPA(
           classes.map((c) => ({ grade: c.grade, courseID: c.course, credit: c.credit }))
         ).toFixed(2)}
@@ -256,42 +306,54 @@
 
 {#if classes}
   <div class="grid grid-cols-1 gap-5 pb-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-    {#each classes as c}
+    {#each classes as c, idx}
       <div
         id="c-{c.id}"
         class="{c.expanded && c.data
           ? 'col-span-1 sm:pt-1 md:col-span-2 lg:col-span-3 xl:col-span-4'
           : ''} mb-auto border-2 border-slate-600 p-3"
         style={loaded ? `view-transition-name: class-${c.id}` : ""}
+        in:fly|global={{
+          delay: 400 + 50 * (idx + 1),
+          duration: 1000,
+          opacity: 0,
+          y: -20,
+          easing: motion.transitions.spring(400, 20, 0.2)
+        }}
       >
         <div class={(c.expanded && c.data && "sm:flex sm:items-end") || ""}>
           <div class="flex items-center">
             <div class="overflow-auto">
               <div class="flex items-center">
                 <button
-                  on:click={async () => {
+                  onclick={async () => {
                     if (!c.expanded) {
                       if (!c.data) {
                         c.expanded = true;
+                        classes;
+                        console.log("expanded");
+
                         const data = await loadClassData(c);
-                        document.startViewTransition(
+                        console.log(data);
+                        const transition = document.startViewTransition(
                           () =>
-                            new Promise((r) => {
+                            new Promise<void>((r) => {
                               c.data = data;
                               c.height = -1;
                               if (!c.data) c.expanded = false;
                               const interval = setInterval(() => {
                                 if (document.querySelector(`#grades-${c.id}`)) {
                                   c.height =
-                                    // @ts-expect-error offsetheight blah blah
-                                    document.querySelector(`#grades-${c.id}`)?.offsetHeight || 400;
+                                    (document.querySelector(`#grades-${c.id}`) as HTMLDivElement)
+                                      ?.offsetHeight || 400;
                                   clearInterval(interval);
-                                  // @ts-expect-error didn't put void
                                   r();
                                 }
                               }, 10);
                             })
                         );
+
+                        console.log(await transition.finished);
                       } else {
                         document.startViewTransition(() => {
                           c.expanded = true;
@@ -365,7 +427,7 @@
               {#if c.grade && !Number.isNaN(c.grade.number) && typeof c.grade.number === "number"}
                 <div class="relative mx-2 mr-auto flex items-center text-xl">
                   {c.grade.number.toFixed(2)}: {c.grade.letter}
-                  <div class="absolute bottom-0 h-[3px] w-full bg-slate-600" />
+                  <div class="absolute bottom-0 h-[3px] w-full bg-slate-600"></div>
                 </div>
               {:else}
                 <div class="mx-2 text-slate-400">No grades available</div>
@@ -612,7 +674,7 @@
   </div>
 {:else}
   <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-    {#each Array.from({ length: preloadLength }) as _}
+    {#each Array.from({ length: preloadLength }) as _, idx}
       <div class="mb-auto flex h-[143.2px] flex-col items-stretch border-2 border-slate-600 p-3">
         <div class="flex items-center">
           <div class="overflow-auto">

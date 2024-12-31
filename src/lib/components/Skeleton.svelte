@@ -4,8 +4,12 @@
 
   type $$Props = HTMLAttributes<HTMLDivElement>;
 
-  let className: $$Props["class"] = undefined;
-  export { className as class };
+  interface Props {
+    class?: $$Props["class"];
+    [key: string]: any;
+  }
+
+  let { class: className = undefined, ...rest }: Props = $props();
 </script>
 
-<div class={twMerge("animate-pulse rounded-md bg-slate-700", className)} {...$$restProps}></div>
+<div class={twMerge("animate-pulse rounded-md bg-slate-700", className)} {...rest}></div>

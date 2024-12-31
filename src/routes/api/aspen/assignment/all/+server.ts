@@ -10,6 +10,7 @@ import type { RequestHandler } from "./$types";
 
 const processBatch = async (
   session: Session,
+  secret: string,
   assignments: { assignment: Assignment; studentID: string }[],
   stream: Awaited<ReturnType<typeof streamPromise<(aspen.Types.AssignmentScore | null)[]>>>
 ) => {
@@ -30,6 +31,7 @@ const processBatch = async (
       let t = 0;
       const result = await assignment(
         session,
+        secret,
         item.assignment,
         item.studentID,
         (step, total) => {
@@ -83,10 +85,10 @@ const processBatch = async (
   return stream.response();
 };
 
-export const POST: RequestHandler = async ({ request, locals: { auth } }) => {
+export const POST: RequestHandler = async ({ request, locals: { auth }, cookies }) => {
   const stream = await streamPromise<(aspen.Types.AssignmentScore | null)[]>();
   const session = await auth();
-  if (!session?.user?.email) return stream.error("Unauthorized", 401);
+  if (!session?.user?.email || !cookies.get("secret")) return stream.error("Unauthorized", 401);
   if (!session.user.aspen)
     return stream.error("No Aspen credentials, please update your account at /account/update", 401);
 
@@ -97,5 +99,5 @@ export const POST: RequestHandler = async ({ request, locals: { auth } }) => {
     if (!item.studentID) return stream.error("No student ID provided", 400);
   }
 
-  return processBatch(session, body, stream);
+  return processBatch(session, cookies.get("secret")!, body, stream);
 };

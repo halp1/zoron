@@ -1,7 +1,9 @@
 <script lang="ts">
-  import { page } from "$app/stores";
+  import { run } from "svelte/legacy";
+
+  import { page } from "$app/state";
   import type { aspen } from "$lib/aspen";
-  import { requests, toast } from "$lib/web";
+  import { requests, toast, zoron } from "$lib/web";
   import {
     faCalendarDay,
     faCalendarDays,
@@ -21,8 +23,10 @@
   import type { User } from "@auth/sveltekit";
   import _ from "lodash";
   import { randomPlaceholderImage } from "../../../assets/placeholders";
+  import { motion } from "$lib/motion";
+  import { fly } from "svelte/transition";
 
-  $: schedule = $page.data.schedule as User["schedule"];
+  let schedule = $derived($zoron.schedule as User["schedule"]);
 
   const getLoadingText = (percentage: number) => `Generating schedule (${percentage}%)...`;
   const updateSchedule = async () => {
@@ -100,18 +104,20 @@
     return newSchedule;
   };
 
-  let mode: "full" | "day" = "day";
+  let mode: "full" | "day" = $state("day");
 
-  const now = () => new Date(Date.now() + ($page.data.constants?.timeDelta || 0));
+  const now = () => new Date(Date.now() + ($zoron.constants?.timeDelta || 0));
 
-  let dayViewDay: Date = now();
-  let selectedDay: number = 0;
-  $: generated = schedule ? transpose(insertLunches(schedule), 6, 7) : (null as any as Block[]);
+  let dayViewDay: Date = $state(now());
+  let selectedDay: number = $state(0);
+  let generated = $derived(
+    schedule ? transpose(insertLunches(schedule), 6, 7) : (null as any as Block[])
+  );
 
-  let exportModalOpen = false;
-  let exportChoice: null | "choobs" = null;
+  let exportModalOpen = $state(false);
+  let exportChoice: null | "choobs" = $state(null);
 
-  let updating = false;
+  let updating = $state(false);
 
   const generateBlocks = (date: Date, calendar: CalendarEvent) => {
     if (!schedule) return { day: "", blocks: [] };
@@ -158,7 +164,7 @@
                 ? 5
                 : 6) - 1;
 
-    const today = $page.data.schedule!.schedule!.slice(dayNumber * 6, (dayNumber + 1) * 6);
+    const today = $zoron.schedule!.schedule!.slice(dayNumber * 6, (dayNumber + 1) * 6);
     const blocks = today
       .filter((block) => block?.block || block?.schedule)
       .map((block) => block!.block || block!.schedule)
@@ -272,34 +278,36 @@
         : ((now().getTime() - start.getTime()) / (end.getTime() - start.getTime())) * 100;
 
   let dayCache = new Map<string, Awaited<ReturnType<typeof loadDay>>>();
-  let day: Awaited<ReturnType<typeof loadDay>> | null = null;
-  let dayKey = 0;
-  $: mode === "day" &&
-    $page.data.schedule &&
-    typeof window !== "undefined" &&
-    (async () => {
-      if (dayCache.has(dayViewDay.toISOString())) {
-        day = dayCache.get(dayViewDay.toISOString())!;
+  let day: Awaited<ReturnType<typeof loadDay>> | null = $state(null);
+  let dayKey = $state(0);
+  run(() => {
+    mode === "day" &&
+      $zoron.schedule &&
+      typeof window !== "undefined" &&
+      (async () => {
+        if (dayCache.has(dayViewDay.toISOString())) {
+          day = dayCache.get(dayViewDay.toISOString())!;
+          dayKey++;
+          return;
+        }
+        const d = await loadDay(dayViewDay);
+        day = d;
         dayKey++;
-        return;
-      }
-      const d = await loadDay(dayViewDay);
-      day = d;
-      dayKey++;
-      dayCache.set(dayViewDay.toISOString(), d);
+        dayCache.set(dayViewDay.toISOString(), d);
 
-      // load day to left and right
-      const left = new Date(dayViewDay.getTime() - 1000 * 60 * 60 * 24);
-      const right = new Date(dayViewDay.getTime() + 1000 * 60 * 60 * 24);
-      if (!dayCache.has(left.toISOString())) {
-        const d = await loadDay(left);
-        dayCache.set(left.toISOString(), d);
-      }
-      if (!dayCache.has(right.toISOString())) {
-        const d = await loadDay(right);
-        dayCache.set(right.toISOString(), d);
-      }
-    })();
+        // load day to left and right
+        const left = new Date(dayViewDay.getTime() - 1000 * 60 * 60 * 24);
+        const right = new Date(dayViewDay.getTime() + 1000 * 60 * 60 * 24);
+        if (!dayCache.has(left.toISOString())) {
+          const d = await loadDay(left);
+          dayCache.set(left.toISOString(), d);
+        }
+        if (!dayCache.has(right.toISOString())) {
+          const d = await loadDay(right);
+          dayCache.set(right.toISOString(), d);
+        }
+      })();
+  });
 
   const dateToTime = (date: Date) => {
     const hours = date.getHours();
@@ -309,7 +317,7 @@
     return `${hours12}:${minutes.toString().padStart(2, "0")} ${ampm}`;
   };
 
-  let key = 0;
+  let key = $state(0);
 
   onMount(() => {
     let frame: number;
@@ -324,22 +332,17 @@
     };
     frame = requestAnimationFrame(tick);
 
-    setTimeout(
-      () => document.getElementById("progression")?.scrollIntoView({ behavior: "smooth" }),
-      300
-    );
-
     // keybinds
     const keydown = async (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") {
-				// @ts-expect-error
-				document.querySelector("#day-transition").style.transform =
-					// @ts-expect-error
-					"translateX(100vw)" + document.querySelector("#day-transition").style.transform;
-				await new Promise((r) => setTimeout(r, 200));
+        // @ts-expect-error
+        document.querySelector("#day-transition").style.transform =
+          // @ts-expect-error
+          "translateX(100vw)" + document.querySelector("#day-transition").style.transform;
+        await new Promise((r) => setTimeout(r, 200));
 
-				dayViewDay = new Date(dayViewDay.getTime() - 1000 * 60 * 60 * 24);
-				swipeDirection = "right";
+        dayViewDay = new Date(dayViewDay.getTime() - 1000 * 60 * 60 * 24);
+        swipeDirection = "right";
       } else if (e.key === "ArrowRight") {
         // @ts-expect-error
         document.querySelector("#day-transition").style.transform =
@@ -358,24 +361,140 @@
     };
   });
 
-  let swipeDirection: "left" | "right" = "left";
+  let swipeDirection: "left" | "right" = $state("left");
 
   let swipeStart: {
     x: number;
     y: number;
-  } | null = null;
+  } | null = $state(null);
+
+  let dayViewRef: HTMLDivElement | null = $state(null);
+
+  $effect(() => {
+    const touchStart = (
+      e: TouchEvent & {
+        currentTarget: EventTarget & HTMLDivElement;
+      }
+    ) => {
+      e.preventDefault();
+      swipeStart = {
+        x: e.touches[0].clientX,
+        y: e.touches[0].clientY - parseInt(e.currentTarget.getAttribute("data-swipe") || "0")
+      };
+      e.currentTarget.style.transition = "none";
+    };
+    const touchMove = (
+      e: TouchEvent & {
+        currentTarget: EventTarget & HTMLDivElement;
+      }
+    ) => {
+      if (!swipeStart) return;
+      const x = e.touches[0].clientX;
+      const y = e.touches[0].clientY;
+      const deltaX = x - swipeStart.x;
+      const deltaY = y - swipeStart.y;
+      if (Math.abs(deltaX) > 50 && deltaY < 50) {
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        e.preventDefault();
+      }
+      e.currentTarget.style.transform = `translateX(${deltaX}px) translateY(${deltaY}px) scale(${Math.max(0, (1000 - Math.abs(deltaX)) / 1000)})`;
+    };
+    const touchEnd = (
+      e: TouchEvent & {
+        currentTarget: EventTarget & HTMLDivElement;
+      }
+    ) => {
+      e.preventDefault();
+      e.currentTarget.style.transition = "inherit";
+      if (!swipeStart) return;
+      const x = e.changedTouches[0].clientX;
+      const y = e.changedTouches[0].clientY;
+      const deltaX = x - swipeStart.x;
+      const deltaY = y - swipeStart.y;
+      if (Math.abs(deltaX) > 100) {
+        if (deltaX > 0) {
+          dayViewDay = new Date(dayViewDay.getTime() - 1000 * 60 * 60 * 24);
+          swipeDirection = "right";
+          e.currentTarget.style.transform = `translateX(100vw) translateY(${deltaY}px) scale(0)`;
+        } else {
+          dayViewDay = new Date(dayViewDay.getTime() + 1000 * 60 * 60 * 24);
+          swipeDirection = "left";
+          e.currentTarget.style.transform = `translateX(-100vw) translateY(${deltaY}px) scale(0)`;
+        }
+      } else {
+        const clamped = _.clamp(
+          deltaY,
+          -(
+            (e.currentTarget.parentElement?.scrollHeight || 0) -
+            (e.currentTarget.parentElement?.offsetHeight || 0)
+          ),
+          0
+        );
+        e.currentTarget.style.transform = `translateY(${clamped}px) scale(1)`;
+        e.currentTarget.setAttribute("data-swipe", clamped.toString());
+      }
+      swipeStart = null;
+    };
+
+    dayViewRef?.addEventListener("touchstart", touchStart as any, { passive: false });
+    dayViewRef?.addEventListener("touchmove", touchMove as any, { passive: false });
+    dayViewRef?.addEventListener("touchend", touchEnd as any, { passive: false });
+    return () => {
+      dayViewRef?.removeEventListener("touchstart", touchStart as any);
+      dayViewRef?.removeEventListener("touchmove", touchMove as any);
+      dayViewRef?.removeEventListener("touchend", touchEnd as any);
+    };
+  });
 </script>
 
 {#if !schedule}
   <div class="flex h-full flex-col items-center justify-center gap-3">
-    <div class="text-2xl">Your schedule has not been loaded</div>
-    <button class="btn-full btn-outlined text-base" on:click={updateSchedule}>Load Schedule</button>
+    <div
+      class="text-2xl"
+      in:fly|global={{
+        delay: 250,
+        duration: 1000,
+        opacity: 0,
+        y: -20,
+        easing: motion.transitions.spring(400, 20)
+      }}
+    >
+      Your schedule has not been loaded
+    </div>
+    <button
+      class="btn-full btn-outlined text-base"
+      onclick={updateSchedule}
+      in:fly|global={{
+        delay: 350,
+        duration: 1000,
+        opacity: 0,
+        y: -20,
+        easing: motion.transitions.spring(400, 20)
+      }}>Load Schedule</button
+    >
     <div class="flex max-w-96 flex-wrap items-center justify-center gap-1 px-3 text-slate-600">
-      {#each "Once your schedule is loaded, it can updated once every 24 hours via the {icon} button".split(" ") as word}
+      {#each "Once your schedule is loaded, it can updated once every 24 hours via the {icon} button".split(" ") as word, idx}
         {#if word === "{icon}"}
-          <Fa icon={faRotateRight} />
+          <span
+            in:fly|global={{
+              delay: 450 + idx * 30,
+              duration: 1000,
+              opacity: 0,
+              x: -20,
+              easing: motion.transitions.spring(400, 20)
+            }}><Fa icon={faRotateRight} /></span
+          >
         {:else}
-          <span>{word}</span>
+          <span
+            in:fly|global={{
+              delay: 450 + idx * 30,
+              duration: 1000,
+              opacity: 0,
+              x: -20,
+              easing: motion.transitions.spring(400, 20)
+            }}>{word}</span
+          >
         {/if}
       {/each}
     </div>
@@ -389,7 +508,7 @@
         class="btn-circle relative border-2 border-slate-600 {mode === 'day'
           ? 'bg-blue-600 hover:bg-blue-400'
           : ''}"
-        on:click={() => {
+        onclick={() => {
           mode = "day";
         }}
         title="Single day view"
@@ -400,10 +519,11 @@
         />
       </button>
       <button
+        ontouchstart={(e) => e}
         class="btn-circle relative border-2 border-slate-600 {mode === 'full'
           ? 'bg-blue-600 hover:bg-blue-400'
           : ''}"
-        on:click={() => {
+        onclick={() => {
           mode = "full";
         }}
         title="Full schedule view"
@@ -427,7 +547,7 @@
       </button> -->
       <button
         class="btn-circle relative border-2 border-slate-600"
-        on:click={updateSchedule}
+        onclick={updateSchedule}
         disabled={updating}
         title="Refresh schedule"
       >
@@ -441,11 +561,14 @@
       <div
         class="custom-scroll hidden min-h-full flex-1 justify-center overflow-auto py-10 md:flex"
       >
-        <div class="grid min-h-full grid-cols-6 border-4 border-slate-800">
+        <div class="grid min-h-full grid-cols-6 border-0 border-slate-800">
           {#each generated as block, i}
             <ScheduleBlock
+              index={i}
               {block}
-              className="{i >= 42 - 6 ? '' : 'border-b-4'} {i % 6 === 5 ? '' : 'border-r-4'}"
+              className="border-b-4 border-r-4 {i <= 5 ? 'border-t-4' : ''} {i % 6 === 0
+                ? 'border-l-4'
+                : ''}"
             />
           {/each}
         </div>
@@ -472,8 +595,9 @@
             style="grid-template-rows: repeat(15, minmax(0, 1fr));"
           >
             <div class="-mb-1 text-center text-xl">Day {selectedDay + 1}</div>
-            {#each generated.filter((_, i) => i % 6 === selectedDay) as block}
+            {#each generated.filter((_, i) => i % 6 === selectedDay) as block, idx}
               <ScheduleBlock
+                index={idx}
                 {block}
                 className="border-2 border-slate-800 row-span-2"
                 freeFontSize="text-2xl"
@@ -484,7 +608,16 @@
       </Swipeable>
     {:else}
       <div class="mx-auto flex h-full w-80 flex-col items-center gap-5 overflow-x-visible">
-        <div class="-mb-3 mt-3 text-xl text-slate-400">
+        <div
+          class="-mb-3 mt-3 text-xl text-slate-400"
+          in:fly|global={{
+            delay: 250,
+            duration: 1000,
+            opacity: 0,
+            y: -20,
+            easing: motion.transitions.spring(400, 20)
+          }}
+        >
           {dayViewDay.toLocaleDateString("en-US", { weekday: "long" })},
           {[
             "January",
@@ -513,20 +646,46 @@
             }
           })()}, {dayViewDay.getFullYear()}
         </div>
-        <div class="text-sm text-slate-500">
+        <div
+          class="text-sm text-slate-500"
+          in:fly|global={{
+            delay: 350,
+            duration: 1000,
+            opacity: 0,
+            y: -20,
+            easing: motion.transitions.spring(400, 20)
+          }}
+        >
           {#key key}
-            School clocks are {Math.abs(($page.data.constants?.timeDelta || 0) / 1000).toFixed(0)} seconds
-            {($page.data.constants?.timeDelta || 0) < 0 ? "behind" : "ahead"}: {now().toLocaleTimeString()}
+            School clocks are {Math.abs(($zoron.constants?.timeDelta || 0) / 1000).toFixed(0)} seconds
+            {($zoron.constants?.timeDelta || 0) < 0 ? "behind" : "ahead"}: {now().toLocaleTimeString()}
           {/key}
         </div>
 
         {#if !day}
-          loading...
+          <div
+            in:fly|global={{
+              delay: 450,
+              duration: 1000,
+              opacity: 0,
+              y: -20,
+              easing: motion.transitions.spring(400, 20)
+            }}
+          >
+            loading...
+          </div>
         {:else}
           <div class="flex w-full justify-center">
             <button
+              in:fly|global={{
+                delay: 450,
+                duration: 1000,
+                opacity: 0,
+                y: -20,
+                easing: motion.transitions.spring(400, 20)
+              }}
               class="btn-circle border-2 border-slate-600"
-              on:click={async () => {
+              onclick={async () => {
                 // @ts-expect-error
                 document.querySelector("#day-transition").style.transform =
                   // @ts-expect-error
@@ -539,7 +698,16 @@
             >
               <Fa icon={faChevronLeft} />
             </button>
-            <div class="mx-auto text-center text-2xl">
+            <div
+              class="mx-auto text-center text-2xl"
+              in:fly|global={{
+                delay: 500,
+                duration: 1000,
+                opacity: 0,
+                y: -20,
+                easing: motion.transitions.spring(400, 20)
+              }}
+            >
               {#if !day.day || day.blocks.length === 0}
                 No school
               {:else}
@@ -547,8 +715,15 @@
               {/if}
             </div>
             <button
+              in:fly|global={{
+                delay: 550,
+                duration: 1000,
+                opacity: 0,
+                y: -20,
+                easing: motion.transitions.spring(400, 20)
+              }}
               class="btn-circle border-2 border-slate-600"
-              on:click={async () => {
+              onclick={async () => {
                 // @ts-expect-error
                 document.querySelector("#day-transition").style.transform =
                   // @ts-expect-error
@@ -570,61 +745,7 @@
               <div
                 class="flex min-h-[60vh] min-w-[336px] flex-col items-center gap-5 pb-5 pr-2 animate-in-{swipeDirection}"
                 style="transition: inherit;"
-                on:touchstart={(e) => {
-                  e.preventDefault();
-                  swipeStart = {
-                    x: e.touches[0].clientX,
-                    y:
-                      e.touches[0].clientY -
-                      parseInt(e.currentTarget.getAttribute("data-swipe") || "0")
-                  };
-                  e.currentTarget.style.transition = "none";
-                }}
-                on:touchmove={(e) => {
-                  if (!swipeStart) return;
-                  const x = e.touches[0].clientX;
-                  const y = e.touches[0].clientY;
-                  const deltaX = x - swipeStart.x;
-                  const deltaY = y - swipeStart.y;
-                  if (Math.abs(deltaX) > 50 && deltaY < 50) {
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
-                    e.preventDefault();
-                  }
-                  e.currentTarget.style.transform = `translateX(${deltaX}px) translateY(${deltaY}px) scale(${Math.max(0, (1000 - Math.abs(deltaX)) / 1000)})`;
-                }}
-                on:touchend={(e) => {
-                  e.preventDefault();
-                  e.currentTarget.style.transition = "inherit";
-                  if (!swipeStart) return;
-                  const x = e.changedTouches[0].clientX;
-                  const y = e.changedTouches[0].clientY;
-                  const deltaX = x - swipeStart.x;
-                  const deltaY = y - swipeStart.y;
-                  if (Math.abs(deltaX) > 100) {
-                    if (deltaX > 0) {
-                      dayViewDay = new Date(dayViewDay.getTime() - 1000 * 60 * 60 * 24);
-                      swipeDirection = "right";
-                      e.currentTarget.style.transform = `translateX(100vw) translateY(${deltaY}px) scale(0)`;
-                    } else {
-                      dayViewDay = new Date(dayViewDay.getTime() + 1000 * 60 * 60 * 24);
-                      swipeDirection = "left";
-                      e.currentTarget.style.transform = `translateX(-100vw) translateY(${deltaY}px) scale(0)`;
-                    }
-                  } else {
-                    const clamped = _.clamp(
-                      deltaY,
-                      -(
-                        (e.currentTarget.parentElement?.scrollHeight || 0) -
-                        (e.currentTarget.parentElement?.offsetHeight || 0)
-                      ),
-                      0
-                    );
-                    e.currentTarget.style.transform = `translateY(${clamped}px) scale(1)`;
-                    e.currentTarget.setAttribute("data-swipe", clamped.toString());
-                  }
-                  swipeStart = null;
-                }}
+                bind:this={dayViewRef}
               >
                 {#if day.day && day.blocks.length !== 0}
                   {#each day.blocks as block}
@@ -727,11 +848,11 @@
 {/if}
 
 {#if exportModalOpen}
-  <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <!-- svelte-ignore a11y-no-static-element-interactions -->
+  <!-- svelte-ignore a11y_click_events_have_key_events -->
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
     class="fixed bottom-0 left-0 right-0 top-0 grid place-items-center bg-slate-900 bg-opacity-20 backdrop-blur-xl"
-    on:click={({ currentTarget, target }) => {
+    onclick={({ currentTarget, target }) => {
       if (currentTarget === target) {
         exportModalOpen = false;
         exportChoice = null;
@@ -741,7 +862,7 @@
     <div class="relative flex flex-col items-center rounded-lg bg-slate-800 p-5">
       <button
         class="btn-circle absolute right-2 top-2"
-        on:click={() => {
+        onclick={() => {
           exportModalOpen = false;
           exportChoice = null;
         }}><Fa icon={faClose} /></button
@@ -753,7 +874,7 @@
       <Collapsible open={exportChoice === null}>
         <div class="pb-3">
           <button
-            on:click={() => {
+            onclick={() => {
               exportChoice = "choobs";
             }}
             class="btn-full btn-outlined mt-3 flex items-center justify-center gap-2 px-1 py-1 text-base"
@@ -765,19 +886,19 @@
       </Collapsible>
       <Collapsible open={exportChoice === "choobs"}>
         <form
-          on:submit={async (e) => {
+          onsubmit={async (e) => {
             e.preventDefault();
             if (!schedule?.schedule) return toast.error("Schedule not loaded");
             // @ts-expect-error chooobs not a property of target
             const password = e.target?.choobs?.value;
             if (!password || typeof password !== "string" || password.length <= 0)
               return toast.error("Password is required");
-            if (!$page.data.session?.user?.email) return toast.error("User not logged in");
+            if (!page.data.session?.user?.email) return toast.error("User not logged in");
             const { dismiss } = toast.loading("Exporting schedule...");
             try {
               await updateChoobsSchedule(
                 schedule.schedule,
-                $page.data.session?.user?.email,
+                page.data.session?.user?.email,
                 password
               );
               toast.success("Schedule exported successfully");

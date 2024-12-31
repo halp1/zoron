@@ -5,15 +5,15 @@ const makeBuffer32 = (buffer: Buffer) => Buffer.concat([buffer, Buffer.alloc(32)
 
 const algorithm = "aes-256-cbc" as const;
 
-export const encrypt = (email: string, username: string, password: string) => {
+export const encrypt = (secret: string, username: string, password: string) => {
   const merged = `${username}:${password}`;
   const key = ASPEN_KEY!;
   const iv = ASPEN_IV!;
-  // first, aes 256 encrypt against the email
-  const email32 = makeBuffer32(
-    Buffer.from(crypto.createHash("sha256").update(email).digest("hex"), "hex")
+  // first, aes 256 encrypt against the secret
+  const secret32 = makeBuffer32(
+    Buffer.from(crypto.createHash("sha256").update(secret).digest("hex"), "hex")
   );
-  const cipher = crypto.createCipheriv(algorithm, email32, Buffer.from(iv, "hex"));
+  const cipher = crypto.createCipheriv(algorithm, secret32, Buffer.from(iv, "hex"));
   const encrypted = Buffer.concat([cipher.update(merged, "utf8"), cipher.final()]);
   // then, aes 256 encrypt against the key
   const keyBuffer = Buffer.from(key, "hex");
@@ -22,9 +22,9 @@ export const encrypt = (email: string, username: string, password: string) => {
   return encrypted2.toString("hex");
 };
 
-export const decrypt = (email: string, encrypted: string) => {
-  const email32 = makeBuffer32(
-    Buffer.from(crypto.createHash("sha256").update(email).digest("hex"), "hex")
+export const decrypt = (secret: string, encrypted: string) => {
+  const secret32 = makeBuffer32(
+    Buffer.from(crypto.createHash("sha256").update(secret).digest("hex"), "hex")
   );
   const key = ASPEN_KEY!;
   const iv = ASPEN_IV!;
@@ -34,7 +34,7 @@ export const decrypt = (email: string, encrypted: string) => {
     decipher.update(Buffer.from(encrypted, "hex")),
     decipher.final()
   ]);
-  const decipher2 = crypto.createDecipheriv(algorithm, email32, Buffer.from(iv, "hex"));
+  const decipher2 = crypto.createDecipheriv(algorithm, secret32, Buffer.from(iv, "hex"));
   const decrypted2 = Buffer.concat([decipher2.update(decrypted), decipher2.final()]);
   const [username, password] = decrypted2.toString("utf8").split(":");
   return { username, password };

@@ -1,12 +1,40 @@
 <script>
+  import { motion } from "$lib/motion";
+  import { fly } from "svelte/transition";
   import { changelog } from "./changelog";
+  import { page } from "$app/state";
 </script>
 
+<svelte:head>
+  <title>Changelog | {page.data.env.name}</title>
+</svelte:head>
+
 <div class="mx-auto my-10 max-w-[800px]">
-  <h1 class="mb-4 text-center text-4xl">Changelog</h1>
+  <h1
+    class="mb-4 text-center text-4xl"
+    in:fly|global={{
+      delay: 0,
+      duration: 1000,
+      opacity: 0,
+      y: -20,
+      easing: motion.transitions.spring(400, 20)
+    }}
+  >
+    Changelog
+  </h1>
   <div class="flex flex-col space-y-4">
-    {#each changelog as entry}
-      <div class="space-y-2 rounded-xl bg-slate-700 p-5" id={entry.version}>
+    {#each changelog as entry, idx}
+      <div
+        class="space-y-2 rounded-xl bg-slate-700 p-5"
+        id={entry.version}
+        in:fly|global={{
+          delay: 100 * (idx + 1),
+          duration: 1000,
+          opacity: 0,
+          y: -20,
+          easing: motion.transitions.spring(400, 20)
+        }}
+      >
         <div class="flex justify-between">
           <h2 class="text-2xl">Version {entry.version} - {entry.overview}</h2>
           <p class="text-slate-400">{entry.date}</p>

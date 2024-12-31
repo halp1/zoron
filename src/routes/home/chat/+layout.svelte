@@ -1,16 +1,24 @@
 <script lang="ts">
   import { supabaseConnect } from "$lib/supabase";
   import { onMount } from "svelte";
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import { faGlobe } from "@fortawesome/free-solid-svg-icons/faGlobe";
   import type { IconDefinition } from "@fortawesome/fontawesome-common-types";
   import Fa from "svelte-fa";
+  import { motion } from "$lib/motion";
+  import { fly } from "svelte/transition";
+  interface Props {
+    children?: import("svelte").Snippet;
+  }
 
-  let chats: (({ title: string } | { icon: IconDefinition }) & { id: string })[] | null = null;
+  let { children }: Props = $props();
+
+  let chats: (({ title: string } | { icon: IconDefinition }) & { id: string })[] | null =
+    $state(null);
 
   onMount(() => {
-    const client = supabaseConnect($page.data.env.supabase.uri, $page.data.env.supabase.key);
-    client.auth.setSession($page.data.supabase.session);
+    const client = supabaseConnect(page.data.env.supabase.uri, page.data.env.supabase.key);
+    client.auth.setSession(page.data.supabase.session);
     chats = [{ id: "global", icon: faGlobe }];
     return () => {
       client.removeAllChannels();
@@ -18,7 +26,7 @@
     };
   });
 
-  $: currentChatId = $page.params.id;
+  let currentChatId = $derived(page.params.id);
 </script>
 
 <div class="chat-container -mx-10 flex h-full flex-col-reverse items-stretch md:flex-row">
@@ -27,10 +35,20 @@
     style="view-transition-name: none"
   >
     {#if chats}
-      {#each chats as chat}
+      {#each chats as chat, idx}
         <a
+          in:fly|global={{
+            delay: 250 + idx * 50,
+            duration: 1000,
+            opacity: 0,
+            y: -20,
+            easing: motion.transitions.spring(400, 20)
+          }}
           href="/home/chat/chat/{chat.id}"
-          class="my-auto flex h-12 w-12 cursor-pointer items-center justify-center rounded-full {currentChatId === chat.id ? 'bg-blue-600 hover:bg-blue-700' : 'bg-slate-900 hover:bg-slate-800'} md:mx-auto md:my-0"
+          class="my-auto flex h-12 w-12 cursor-pointer items-center justify-center rounded-full {currentChatId ===
+          chat.id
+            ? 'bg-blue-600 hover:bg-blue-700'
+            : 'bg-slate-900 hover:bg-slate-800'} md:mx-auto md:my-0"
         >
           {#if "icon" in chat}
             <Fa icon={chat.icon} class="text-2xl text-white" />
@@ -52,5 +70,5 @@
       </div>
     {/if}
   </div>
-  <slot />
+  {@render children?.()}
 </div>

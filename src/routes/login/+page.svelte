@@ -3,11 +3,17 @@
   import { validEmail } from "$lib/email";
   import Footer from "$lib/components/Footer.svelte";
   import { requests } from "$lib/web";
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import { usePasskey } from "$lib/auth/webauthn/browser";
 
-  let email = "";
-  let password = "";
+  const encryptPassword = async (password: string) =>
+    Array.from(
+      new Uint8Array(await crypto.subtle.digest("SHA-512", new TextEncoder().encode(password)))
+    )
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+  let email = $state("");
+  let password = $state("");
 
   const handleSubmission = async (
     e: SubmitEvent & {
@@ -27,11 +33,14 @@
       return;
     }
 
+		const secret = await encryptPassword(password);
+
     const { dismiss } = toast.loading("Logging in...");
-    const res = await requests.post("/api/account/login", { email, password });
+    const res = await requests.post("/api/account/login", { email, password, secret });
     dismiss();
     if (res.success) {
-      location.href = "/home";
+      localStorage.setItem("secret", secret);
+      location.href = "/launch";
     } else {
       toast.error(res.error);
     }
@@ -50,13 +59,13 @@
 </script>
 
 <svelte:head>
-  <title>Login | {$page.data.env.name}</title>
+  <title>Login | {page.data.env.name}</title>
 </svelte:head>
 
 <main class="flex h-screen w-screen flex-col items-center justify-center px-5">
   <img src="/favicon.png" alt="Site icon" class="mb-3 w-32" />
-  <h1 class="mb-10 text-center text-4xl">Log in to {$page.data.env.name}</h1>
-  <form on:submit={handleSubmission} class="flex w-96 flex-col gap-2">
+  <h1 class="mb-10 text-center text-4xl">Log in to {page.data.env.name}</h1>
+  <form onsubmit={handleSubmission} class="flex w-96 flex-col gap-2">
     <input
       class="w-full rounded-lg border-2 border-dashed border-blue-400 bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
       name="email"

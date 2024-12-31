@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
 
-  const error = $page.error!;
-  const status = $page.status!;
+  const error = page.error!;
+  const status = page.status!;
 
   const customErrorMessages: { [k: number]: string } = {};
 
@@ -11,7 +11,7 @@
 </script>
 
 <svelte:head>
-  <title>{message} | {$page.data.env.name}</title>
+  <title>{message} | {page.data.env.name}</title>
 </svelte:head>
 
 <main class="grid h-screen w-screen place-items-center">

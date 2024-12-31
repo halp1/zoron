@@ -178,7 +178,6 @@ export const authenticate = async (sessionID: string, body: AuthenticationRespon
     throw new Error("Challenge not found or expired");
   }
 
-
   // Get the authenticating passkey
   const passkey = (
     await query({ collection: "users", query: { "webauthn.passkeys.id": body.id } })

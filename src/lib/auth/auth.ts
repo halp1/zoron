@@ -4,10 +4,11 @@ import { html, text, validEmail } from "$lib/email";
 
 import Mailgun from "@auth/sveltekit/providers/mailgun";
 
-import { DOMAIN, MAILGUN_KEY } from "$env/static/private";
+import { AUTH_SECRET, DOMAIN, MAILGUN_KEY } from "$env/static/private";
 import { decode, encode } from "@auth/core/jwt";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import { SvelteKitAuth, type SvelteKitAuthConfig, type User } from "@auth/sveltekit";
+import type { Cookies } from "@sveltejs/kit";
 
 export const adapter = MongoDBAdapter(dbClient, {
   databaseName
@@ -108,3 +109,17 @@ export const auth = {
   }
 } satisfies SvelteKitAuthConfig;
 export const { handle, signIn, signOut } = SvelteKitAuth(auth);
+
+export const fromCookie = async (cookie: string) => {
+  const decoded = await decode({
+    token: cookie,
+    secret: AUTH_SECRET,
+    salt: "next-auth.session-token"
+  });
+  return { user: decoded?.user as User, expires: decoded?.exp };
+};
+
+export const fromCookies = async (cookies: Cookies) => {
+  const cookie = cookies.get("next-auth.session-token");
+  return cookie ? fromCookie(cookie) : null;
+};

@@ -1,39 +1,43 @@
 <script lang="ts">
+  import { run } from "svelte/legacy";
+
   import { supabase } from "$lib/supabase";
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import type { Chat } from "$lib/types";
   import { toast } from "$lib/web";
   import { RealtimeChannel } from "@supabase/supabase-js";
 
-  const id = $page.params.id;
-  let channel: RealtimeChannel | null = null;
+  const id = page.params.id;
+  let channel: RealtimeChannel | null = $state(null);
 
-  let messages: Chat.Message[] = [];
+  let messages: Chat.Message[] = $state([]);
 
-  $: if ($supabase) {
-    channel = $supabase?.realtime?.channel("chat/" + id, {
-			config: {
-				broadcast: {
-					ack: true,
-					self: true
-				}
-			}
-		});
-    channel.subscribe(async (status) => {
-      if (status !== "SUBSCRIBED") {
-        return null;
-      }
-      channel!.on(
-        "broadcast",
-        {
-          event: "message"
-        },
-        (message) => {
-          messages = [...messages, message.payload];
+  run(() => {
+    if ($supabase) {
+      channel = $supabase?.realtime?.channel("chat/" + id, {
+        config: {
+          broadcast: {
+            ack: true,
+            self: true
+          }
         }
-      );
-    });
-  }
+      });
+      channel.subscribe(async (status) => {
+        if (status !== "SUBSCRIBED") {
+          return null;
+        }
+        channel!.on(
+          "broadcast",
+          {
+            event: "message"
+          },
+          (message) => {
+            messages = [...messages, message.payload];
+          }
+        );
+      });
+    }
+  });
 
   const chat = (message: string) => {
     channel!.send({
@@ -47,8 +51,8 @@
           "-" +
           Math.random().toString(36).substring(7),
         user: {
-          name: $page.data.session?.user?.name!,
-          icon: $page.data.session?.user?.image!
+          name: page.data.session?.user?.name!,
+          icon: page.data.session?.user?.image!
         },
         message,
         timestamp: Date.now()
@@ -56,11 +60,11 @@
     });
   };
 
-  let input: HTMLTextAreaElement;
+  let input: HTMLTextAreaElement = $state();
 
   const formatTimestamp = (timestamp: number) => {
     const date = new Date(timestamp);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
   const getInitial = (name: string) => {
@@ -70,22 +74,22 @@
   // Generate a consistent color based on username
   const getAvatarColor = (name: string) => {
     const colors = [
-      'bg-blue-500',
-      'bg-green-500',
-      'bg-yellow-500',
-      'bg-red-500',
-      'bg-purple-500',
-      'bg-pink-500',
-      'bg-indigo-500',
-      'bg-teal-500'
+      "bg-blue-500",
+      "bg-green-500",
+      "bg-yellow-500",
+      "bg-red-500",
+      "bg-purple-500",
+      "bg-pink-500",
+      "bg-indigo-500",
+      "bg-teal-500"
     ];
-    const index = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % colors.length;
+    const index = name.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) % colors.length;
     return colors[index];
   };
 </script>
 
 <svelte:head>
-  <title>Chat | {$page.data.env.name}</title>
+  <title>Chat | {page.data.env.name}</title>
 </svelte:head>
 
 <div class="flex flex-grow flex-col">
@@ -93,13 +97,13 @@
     {#each messages as message (message.id)}
       <div class="mb-4 flex items-start">
         {#if message.user.icon}
-          <img
-            src={message.user.icon}
-            alt={message.user.name}
-            class="h-10 w-10 rounded-full"
-          />
+          <img src={message.user.icon} alt={message.user.name} class="h-10 w-10 rounded-full" />
         {:else}
-          <div class="flex h-10 w-10 items-center justify-center rounded-full {getAvatarColor(message.user.name)}">
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-full {getAvatarColor(
+              message.user.name
+            )}"
+          >
             <span class="text-lg font-medium text-white">{getInitial(message.user.name)}</span>
           </div>
         {/if}
@@ -118,7 +122,7 @@
       bind:this={input}
       class="flex-grow resize-none overflow-y-hidden bg-transparent p-2 text-white outline-none focus-within:outline-none"
       cols="1"
-      on:keydown={(e) => {
+      onkeydown={(e) => {
         if (e.key === "Enter") {
           if (!e.shiftKey) {
             e.preventDefault();
@@ -129,7 +133,7 @@
           }
         }
       }}
-      on:input={(e) => {
+      oninput={(e) => {
         e.currentTarget.style.height = "auto";
         e.currentTarget.style.height = e.currentTarget.scrollHeight + "px";
       }}

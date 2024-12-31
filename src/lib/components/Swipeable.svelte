@@ -3,8 +3,13 @@
 
   const dispatch = createEventDispatcher<{ swipe: "left" | "right" }>();
 
-  export let className = "";
-  export let style = "";
+  interface Props {
+    className?: string;
+    style?: string;
+    children?: import("svelte").Snippet;
+  }
+
+  let { className = "", style = "", children }: Props = $props();
 
   const DEADZONE = 50;
   let startX: number | null = null;
@@ -73,6 +78,6 @@
   });
 </script>
 
-<div {style} class={className} on:touchstart={touchStart}>
-  <slot />
+<div {style} class={className} ontouchstart={touchStart}>
+  {@render children?.()}
 </div>

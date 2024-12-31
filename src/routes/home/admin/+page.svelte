@@ -1,10 +1,12 @@
 <script lang="ts">
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import Toggle from "$lib/components/Toggle.svelte";
+  import { motion } from "$lib/motion";
   import { requests, toast } from "$lib/web";
   import { onMount } from "svelte";
+  import { fly } from "svelte/transition";
 
-  let tick = 0;
+  let tick = $state(0);
   onMount(() => {
     let frame;
     const t = () => {
@@ -17,12 +19,32 @@
   });
 </script>
 
-<div class="mb-3 mt-10 text-center text-4xl">Admin Panel</div>
+<div
+  class="mb-3 mt-10 text-center text-4xl"
+  in:fly|global={{
+    delay: 250,
+    duration: 1000,
+    opacity: 0,
+    y: -20,
+    easing: motion.transitions.spring(400, 20)
+  }}
+>
+  Admin Panel
+</div>
 <div class="mb-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-  <div class="rounded-3xl border-2 border-red-400 bg-slate-800 p-5">
+  <div
+    class="rounded-3xl border-2 border-red-400 bg-slate-800 p-5"
+    in:fly|global={{
+      delay: 350,
+      duration: 1000,
+      opacity: 0,
+      y: -20,
+      easing: motion.transitions.spring(400, 20)
+    }}
+  >
     <div class="text-2xl">Time Delta</div>
     <form
-      on:submit={async (e) => {
+      onsubmit={async (e) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
 
@@ -60,7 +82,7 @@
         <div>
           △ Time:
           {#key tick}
-            {($page.data.timeDelta.data / 1000).toFixed(1)} seconds
+            {(page.data.timeDelta.data / 1000).toFixed(1)} seconds
           {/key}
         </div>
       </div>
@@ -89,11 +111,20 @@
     </form>
   </div>
 
-  <div class="rounded-3xl border-2 border-red-400 bg-slate-800 p-5">
+  <div
+    class="rounded-3xl border-2 border-red-400 bg-slate-800 p-5"
+    in:fly|global={{
+      delay: 450,
+      duration: 1000,
+      opacity: 0,
+      y: -20,
+      easing: motion.transitions.spring(400, 20)
+    }}
+  >
     <div class="text-2xl">Debug</div>
     <form
       class="flex flex-1 flex-wrap gap-2"
-      on:submit={async (e) => {
+      onsubmit={async (e) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
 
@@ -142,11 +173,20 @@
     </form>
   </div>
 
-  <div class="rounded-3xl border-2 border-red-400 bg-slate-800 p-5">
+  <div
+    class="rounded-3xl border-2 border-red-400 bg-slate-800 p-5"
+    in:fly|global={{
+      delay: 550,
+      duration: 1000,
+      opacity: 0,
+      y: -20,
+      easing: motion.transitions.spring(400, 20)
+    }}
+  >
     <div class="text-2xl">Copy User</div>
     <form
       class="flex flex-1 flex-wrap gap-2"
-      on:submit={async (e) => {
+      onsubmit={async (e) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const name = formData.get("copy-name") || "";
