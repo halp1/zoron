@@ -47,8 +47,12 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     secure: cookieOptions.secure
   });
   cookies.set("secret", secret, {
-    path: "/",
-		expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
+    path: cookieOptions.path,
+    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
+    domain: cookieOptions.domain,
+    sameSite: cookieOptions.sameSite,
+    secure: cookieOptions.secure,
+    httpOnly: cookieOptions.httpOnly
   });
 
   return response;

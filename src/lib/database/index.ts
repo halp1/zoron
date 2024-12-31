@@ -1,7 +1,4 @@
 import { zoron } from "$lib";
-
-
-
 import { MONGODB_URI } from "$env/static/private";
 import { MongoClient, ServerApiVersion } from "mongodb";
 import type { Document, Filter, OptionalId, WithId } from "mongodb";
@@ -117,4 +114,4 @@ export const transformID = <T>(object: WithId<T>) => {
     _id: string;
   };
 };
-// update("users", {}, { $unset: { activity: "" } });
+// update("users", {}, { $unset: { aspen: "" } });
