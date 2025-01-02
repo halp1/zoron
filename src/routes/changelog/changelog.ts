@@ -2,6 +2,17 @@ import type { ChangelogEntry } from "./types";
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "1.0.1",
+    date: "01/01/2025",
+    overview: "IOS App instruction and minor bugfixes",
+    changes: [
+      "Added instructions on how to install the IOS app on the home page (because the install button doesn't show up on IOS :( )"
+    ],
+    bugfixes: [
+      'Fixed a bug where logging in with "forgot password" or when creating a new account would not load the secret decryption key'
+    ]
+  },
+  {
     version: "1.0.0",
     date: "12/30/2024",
     overview: "Official Release",
