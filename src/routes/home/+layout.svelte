@@ -253,10 +253,9 @@
     </div>
   {/key}
   {#if typeof window === "undefined" || windowWidth < 768}
+    <div class="h-14 md:hidden {isIOS() ? 'pb-5' : ''}"></div>
     <div
-      class="flex w-full items-center justify-evenly rounded-t-2xl bg-slate-800 pt-2 shadow-xl md:hidden {isIOS()
-        ? 'pb-7'
-        : 'pb-2'}"
+      class="fixed bottom-0 left-0 right-0 flex w-full items-center justify-evenly rounded-t-2xl bg-slate-800 pb-2 pt-2 shadow-xl md:hidden"
     >
       {#each tabs as tab, idx}
         <a
@@ -270,7 +269,9 @@
           href={tab.path}
           data-sveltekit-preload-code
           data-sveltekit-preload-data
-          class="btn-circle relative h-10 w-10 border-2 border-slate-600 {idx === activeTabIndex ? "bg-blue-600 hover:bg-blue-600" : ""}"
+          class="btn-circle relative h-10 w-10 border-2 border-slate-600 {idx === activeTabIndex
+            ? 'bg-blue-600 hover:bg-blue-600'
+            : ''}"
         >
           {#if typeof tab.icon === "string"}
             <img

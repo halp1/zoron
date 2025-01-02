@@ -67,6 +67,11 @@ export const getDeviceInfo = async (): Promise<Device> => {
   return { browser, os, fingerprint: (await (await Fingerprint.load()).get()).visitorId, id };
 };
 
+export const isMobile = () =>
+	typeof navigator !== "undefined" &&
+	/Mobi/.test(navigator.userAgent) &&
+	/Android/.test(navigator.userAgent);
+
 export const isIOS = () =>
   typeof navigator !== "undefined" &&
   (["iPad Simulator", "iPhone Simulator", "iPod Simulator", "iPad", "iPhone", "iPod"].includes(
