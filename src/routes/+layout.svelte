@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { Toaster } from "svelte-french-toast";
-  import { PWA } from "$lib/web";
+  import { isMobile, PWA } from "$lib/web";
   import "../app.css";
   import { page } from "$app/state";
   interface Props {
@@ -9,6 +9,7 @@
   }
 
   let { children }: Props = $props();
+  let maxHeight: null | number = $state(null);
 
   onMount(() => {
     document.body.classList.add("suse");
@@ -26,4 +27,13 @@
 </svelte:head>
 
 <Toaster />
-{@render children?.()}
+<div style={maxHeight ? `max-height: ${maxHeight}px;` : ""}>
+  {@render children?.()}
+</div>
+
+<style>
+  :root {
+    --sat: env(safe-area-inset-top);
+    --sab: env(safe-area-inset-bottom);
+  }
+</style>
