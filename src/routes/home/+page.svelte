@@ -80,17 +80,17 @@
       >
         {#each changelog as update}
           <a
-            class="flex items-center gap-3 rounded-full px-2 hover:bg-slate-50 hover:bg-opacity-5"
+            class="relative flex items-center gap-3 rounded-full px-2 hover:bg-slate-50 hover:bg-opacity-5"
             href="/changelog#{update.version}"
           >
-            <div class="border-r-2 border-slate-600 pr-2">
-              {update.version}
-            </div>
-            <div class="ml-auto flex flex-wrap justify-end gap-2 text-lg">
+            <div class="flex h-full items-center border-r-2 border-slate-600 pr-2">
               <div>
-                {update.overview}
+                {update.version}
               </div>
-              <div class="text-slate-400">{update.date}</div>
+            </div>
+            <div class="ml-auto text-lg">
+              {update.overview}
+              <div class="float-right ml-2 text-slate-400">{update.date}</div>
             </div>
           </a>
         {/each}
@@ -150,7 +150,7 @@
       }
     }}
   >
-    <div class="custom-scroll w-96 rounded-lg p-5 bg-slate-800 overflow-y-auto max-h-[80vh]">
+    <div class="custom-scroll max-h-[80vh] w-96 overflow-y-auto rounded-lg bg-slate-800 p-5">
       <div class="text-2xl">Instructions</div>
       <div class="mt-5 flex flex-col gap-5">
         <div>

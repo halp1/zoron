@@ -10,7 +10,8 @@ export const changelog: ChangelogEntry[] = [
     ],
     bugfixes: [
       'Fixed a bug where logging in with "forgot password" or when creating a new account would not load the secret decryption key',
-      "Fixed the sizing and placement of the navigation bar on mobile browsers"
+      "Fixed the sizing and placement of the navigation bar on mobile browsers",
+			"Fixed a visual bug with displaying the changelog on the homepage"
     ]
   },
   {
