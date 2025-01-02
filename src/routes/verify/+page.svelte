@@ -44,6 +44,11 @@
           {/each}
         </div>
       </div>
+			<div class="text-slate-400">
+				If you can't find the email, check your spam folder and report the email as not spam.<br/>
+				Make sure to open the link in this browser, which might require copying and pasting the
+        link into the browser.
+			</div>
     </div>
   </main>
   <Footer />

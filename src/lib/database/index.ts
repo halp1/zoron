@@ -1,8 +1,8 @@
 import { zoron } from "$lib";
+
 import { MONGODB_URI } from "$env/static/private";
 import { MongoClient, ServerApiVersion } from "mongodb";
 import type { Document, Filter, OptionalId, WithId } from "mongodb";
-
 
 const uri = MONGODB_URI;
 
@@ -50,7 +50,6 @@ const logger = zoron.logger("MongoDB");
   await connecting;
   connecting = false;
   logger.log(`Connected in ${Math.round(performance.now() - connectionStart)}ms`);
-	
 })();
 
 export const createIndex = async (
@@ -85,7 +84,7 @@ export const query = async <T = any>({
 
 export const update = async (collection: string, query: any, update: any) => {
   if (connecting) await connecting;
-  return await client.db(database).collection(collection).updateOne(query, update);
+  return await client.db(database).collection(collection).updateMany(query, update);
 };
 
 export const insert = async (collection: string, doc: OptionalId<Document>) => {

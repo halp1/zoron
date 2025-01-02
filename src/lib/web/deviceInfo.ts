@@ -74,3 +74,5 @@ export const isIOS = () =>
   ) ||
     // iPad on iOS 13 detection
     (navigator.userAgent.includes("Mac") && "ontouchend" in document));
+
+export const isIOSStandalone = () => isIOS() && (window as any).navigator.standalone;

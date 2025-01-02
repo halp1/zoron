@@ -1,5 +1,7 @@
 import { writable } from "svelte/store";
 
+import { isIOS, isIOSStandalone } from "./deviceInfo";
+
 export namespace PWA {
   interface BeforeInstallPromptEvent extends Event {
     readonly platforms: string[];
@@ -12,6 +14,7 @@ export namespace PWA {
 
   export const prompt = writable<BeforeInstallPromptEvent | null>(null);
   export const overridePrompt = writable<BeforeInstallPromptEvent | null>(null);
+	export const showIOSPopup = writable<boolean>(false);
 
   const showAllowed = () =>
     !window.matchMedia("(display-mode: standalone)").matches &&
@@ -26,6 +29,7 @@ export namespace PWA {
       }
       overridePrompt.set(event as BeforeInstallPromptEvent);
     });
+    showIOSPopup.set(isIOS() && !isIOSStandalone());
   };
 
   export const hidePrompt = () => {
