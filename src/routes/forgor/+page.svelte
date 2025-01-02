@@ -62,6 +62,10 @@
       account, head to your account settings at /account and the click the "update password" buttton.
       If you have not set a password, this button may say "add password".
     </div>
+		<div class="mb-1 text-sm text-slate-400">
+      <Fa icon={faInfoCircle} class="float-left mr-2 mt-[3px]" />
+      You will need to re-add your Aspen credentials after you have updated your password.
+    </div>
     <div class="flex items-center gap-3">
       <Toggle color="bg-blue-400" bind:checked={agreed} /> I understand
     </div>

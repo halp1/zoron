@@ -4,8 +4,14 @@
   import { fly } from "svelte/transition";
   import { changelog } from "../changelog/changelog";
   import { motion } from "$lib/motion";
+  import iosInstructions1 from "../../assets/instructions/pwa/ios/1.png";
+  import iosInstructions2 from "../../assets/instructions/pwa/ios/2.png";
+  import iosInstructions3 from "../../assets/instructions/pwa/ios/3.png";
+  import { onMount } from "svelte";
   const name = page.data?.session?.user?.name;
   const prompt = PWA.overridePrompt;
+  const showIOSPopup = PWA.showIOSPopup;
+  let iosInstructionsOpen = $state(false);
 </script>
 
 <svelte:head>
@@ -108,7 +114,78 @@
         Install {page.data.env.name}
       </button>
     {/if}
+    {#if $showIOSPopup}
+      <button
+        in:fly|global={{
+          delay: 250,
+          duration: 1000,
+          opacity: 0,
+          y: 20,
+          easing: motion.transitions.spring(400, 20)
+        }}
+        class="btn-full btn-outlined mb-10 mt-auto w-80 border-green-400 text-base"
+        onclick={() => {
+          iosInstructionsOpen = true;
+        }}
+      >
+        Install {page.data.env.name} on IOS
+      </button>
+    {/if}
   {:else}
     An error occurred.
   {/if}
 </div>
+{#if iosInstructionsOpen}
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
+  <div
+    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
+    onkeydown={(e) => {
+      if (e.key === "Escape") {
+        iosInstructionsOpen = false;
+      }
+    }}
+    onclick={(e) => {
+      if (e.target === e.currentTarget) {
+        iosInstructionsOpen = false;
+      }
+    }}
+  >
+    <div class="custom-scroll w-96 rounded-lg p-5 bg-slate-800 overflow-y-auto max-h-[80vh]">
+      <div class="text-2xl">Instructions</div>
+      <div class="mt-5 flex flex-col gap-5">
+        <div>
+          <div class="text-lg">1. Tap the share button</div>
+          <img
+            src={iosInstructions1}
+            alt="Tap share button"
+            class="mt-2 rounded-lg border border-slate-200"
+          />
+        </div>
+        <div>
+          <div class="text-lg">2. Tap "Add to Home Screen"</div>
+          <img
+            src={iosInstructions2}
+            alt="Tap Add to Home Screen"
+            class="mt-2 rounded-lg border border-slate-200"
+          />
+        </div>
+        <div>
+          <div class="text-lg">3. Tap "Add"</div>
+          <img
+            src={iosInstructions3}
+            alt="Tap Add"
+            class="mt-2 rounded-lg border border-slate-200"
+          />
+        </div>
+      </div>
+      <button
+        class="btn-full btn-outlined mt-5"
+        onclick={() => {
+          iosInstructionsOpen = false;
+        }}
+      >
+        Close
+      </button>
+    </div>
+  </div>
+{/if}

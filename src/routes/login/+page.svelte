@@ -5,6 +5,7 @@
   import { requests } from "$lib/web";
   import { page } from "$app/state";
   import { usePasskey } from "$lib/auth/webauthn/browser";
+  import { onMount } from "svelte";
 
   const encryptPassword = async (password: string) =>
     Array.from(
@@ -33,7 +34,7 @@
       return;
     }
 
-		const secret = await encryptPassword(password);
+    const secret = await encryptPassword(password);
 
     const { dismiss } = toast.loading("Logging in...");
     const res = await requests.post("/api/account/login", { email, password, secret });
@@ -56,6 +57,23 @@
     }
     dismiss();
   };
+
+  onMount(() => {
+    const error = new URLSearchParams(location.search).get("error");
+    if (error && error.length !== 0) {
+      const errorMap = {
+        "no-secret":
+          "Zoron couldn't find your secret decryption key. Log in again to fix this issue."
+      };
+
+      toast.error(
+        errorMap[error as keyof typeof errorMap] || "An error occurred while logging in: " + error,
+        {
+          duration: 10000
+        }
+      );
+    }
+  });
 </script>
 
 <svelte:head>
