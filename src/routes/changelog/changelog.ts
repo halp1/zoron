@@ -9,7 +9,8 @@ export const changelog: ChangelogEntry[] = [
       "Added instructions on how to install the IOS app on the home page (because the install button doesn't show up on IOS :( )"
     ],
     bugfixes: [
-      'Fixed a bug where logging in with "forgot password" or when creating a new account would not load the secret decryption key'
+      'Fixed a bug where logging in with "forgot password" or when creating a new account would not load the secret decryption key',
+      "Fixed the sizing and placement of the navigation bar on mobile browsers"
     ]
   },
   {
