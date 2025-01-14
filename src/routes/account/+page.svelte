@@ -9,9 +9,13 @@
     faRightFromBracket,
     faUserSlash,
     faUserEdit,
-    faGear
+    faGear,
+    faUserFriends
   } from "@fortawesome/free-solid-svg-icons";
   import Fa from "svelte-fa";
+  import { motion } from "$lib/motion";
+  import { fade, fly, scale } from "svelte/transition";
+  import { quadIn } from "svelte/easing";
 
   if (!page.data?.session || !page.data.session?.user) {
     signIn();
@@ -33,56 +37,143 @@
   <div class="flex h-screen w-screen flex-col items-center justify-center">
     {#if page.data && page.data.session && page.data.session.user}
       <div class="relative flex flex-col gap-5 sm:w-[550px]">
-        <div class="mx-auto border-b-2 border-slate-600 pb-1 text-3xl">
+        <div
+          class="mx-auto border-b-2 border-slate-600 pb-1 text-3xl"
+          in:fly|global={{
+            delay: 250,
+            duration: 1000,
+            opacity: 0,
+            y: -20,
+            easing: motion.transitions.spring(400, 20, 1.2)
+          }}
+        >
           Hello, {page.data.session.user.name}.
         </div>
-        <div class="flex items-center justify-center gap-3 text-xl">
-          Your aspen account: <div class="border-2 border-slate-500 px-2 py-1">
+        <div
+          class="flex items-center justify-center gap-3 text-xl"
+          in:fly|global={{
+            delay: 350,
+            duration: 1000,
+            opacity: 0,
+            y: -20,
+            easing: motion.transitions.spring(400, 20)
+          }}
+        >
+          Your aspen account: <div
+            class="border-2 border-slate-500 px-2 py-1"
+            in:fly|global={{
+              delay: 400,
+              duration: 1000,
+              opacity: 0,
+              y: -20,
+              easing: motion.transitions.spring(400, 20)
+            }}
+          >
             {page.data.username || "Unset"}
           </div>
         </div>
         <a
           href="/home"
           class="btn-full btn-outlined mx-auto flex items-center justify-center gap-3 border-green-400 text-base"
+          in:fly|global={{
+            delay: 450,
+            duration: 1000,
+            opacity: 0,
+            y: -20,
+            easing: motion.transitions.spring(400, 20)
+          }}
         >
-          <Fa icon={faHome} /> My {page.data.env.name}
+          <span
+            in:scale|global={{
+              delay: 500,
+              duration: 1000,
+              opacity: 0,
+              start: 0,
+              easing: motion.transitions.spring(400, 20)
+            }}><Fa icon={faHome} /></span
+          >
+          My {page.data.env.name}
         </a>
-        <div class="border-b-2 border-dashed border-slate-600"></div>
+        <div
+          class="border-b-2 border-dashed border-slate-600"
+          in:fly|global={{
+            delay: 550,
+            duration: 1000,
+            opacity: 0,
+            y: -20,
+            easing: motion.transitions.spring(400, 20)
+          }}
+        ></div>
         <div class="grid grid-cols-2 gap-2">
           <a
             href="/account/settings"
             class="btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-blue-400 text-base"
+            in:fly|global={{
+              delay: 600,
+              duration: 1000,
+              opacity: 0,
+              y: -20,
+              easing: motion.transitions.spring(400, 20)
+            }}
           >
             <Fa icon={faGear} />
             Account settings
           </a>
+          <a
+            href="/account/friends"
+            class="btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-blue-400 text-base"
+            in:fly|global={{
+              delay: 700,
+              duration: 1000,
+              opacity: 0,
+              y: -20,
+              easing: motion.transitions.spring(400, 20)
+            }}
+          >
+            <Fa icon={faUserFriends} />
+            Friends
+          </a>
           {#if page.data.session.user.password}
             <a
               href="/account/password"
-              class="btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-blue-400 text-base"
+              class="btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-orange-400 text-base"
+              in:fly|global={{
+                delay: 800,
+                duration: 1000,
+                opacity: 0,
+                y: -20,
+                easing: motion.transitions.spring(400, 20)
+              }}
             >
               <Fa icon={faKey} />
               Update password
             </a>
           {:else}
             <a
-              href="/account/password"
-              class="btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-blue-400 text-base"
+              href="/account/p assword"
+              class="btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-orange-400 text-base"
+              in:fly|global={{
+                delay: 800,
+                duration: 1000,
+                opacity: 0,
+                y: -20,
+                easing: motion.transitions.spring(400, 20)
+              }}
             >
               <Fa icon={faKey} />
               Add a password
             </a>
           {/if}
-          <!-- <a
-            href="/account/passkeys"
-            class="btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-orange-400 text-base"
-          >
-            <Fa icon={faFingerprint} />
-            Passkeys
-          </a> -->
           <a
             href="/account/update"
-            class="btn-full btn-outlined col-span-2 flex flex-1 items-center justify-center gap-3 border-orange-400 text-base"
+            class="btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-orange-400 text-base"
+            in:fly|global={{
+              delay: 900,
+              duration: 1000,
+              opacity: 0,
+              y: -20,
+              easing: motion.transitions.spring(400, 20)
+            }}
           >
             <Fa icon={faUserEdit} />
             Update Aspen credentials
@@ -94,6 +185,13 @@
               toast.success("You have been signed out.");
             }}
             class="btn-full btn-outlined col-span-1 flex flex-1 items-center justify-center gap-3 border-red-500 text-base"
+            in:fly|global={{
+              delay: 1000,
+              duration: 1000,
+              opacity: 0,
+              y: -20,
+              easing: motion.transitions.spring(400, 20)
+            }}
           >
             <Fa icon={faRightFromBracket} />
             Sign out
@@ -103,6 +201,13 @@
               deleting = 0;
             }}
             class="btn-full btn-outlined col-span-1 flex flex-1 items-center justify-center gap-3 border-red-500 text-base"
+            in:fly|global={{
+              delay: 1100,
+              duration: 1000,
+              opacity: 0,
+              y: -20,
+              easing: motion.transitions.spring(400, 20)
+            }}
           >
             <Fa icon={faUserSlash} />
             Delete account
@@ -112,6 +217,13 @@
     {:else}
       <button
         class="btn-full"
+        in:fly|global={{
+          delay: 100,
+          duration: 1000,
+          opacity: 0,
+          y: -20,
+          easing: motion.transitions.spring(400, 20)
+        }}
         on:click={async () => {
           signIn();
         }}
@@ -126,6 +238,9 @@
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
       class="fixed bottom-0 left-0 right-0 top-0 grid place-items-center backdrop-blur-md"
+      transition:fade={{
+        duration: 200
+      }}
       on:click={({ currentTarget, target }) => {
         if (currentTarget === target) deleting = -1;
       }}
@@ -135,12 +250,50 @@
           class="btn-circle absolute right-2 top-2"
           on:click={() => {
             deleting = -1;
-          }}><Fa icon={faClose} /></button
+          }}
+          in:fly|global={{
+            delay: 250,
+            duration: 1000,
+            opacity: 0,
+            y: -20,
+            easing: motion.transitions.spring(400, 20)
+          }}
         >
-        <div class="text-2xl">Delete your account?</div>
-        <div class="text-sm text-slate-400">This action is irreversible.</div>
+          <Fa icon={faClose} />
+        </button>
+        <div
+          class="text-2xl"
+          in:fly|global={{
+            delay: 350,
+            duration: 1000,
+            opacity: 0,
+            y: -20,
+            easing: motion.transitions.spring(400, 20)
+          }}
+        >
+          Delete your account?
+        </div>
+        <div
+          class="text-sm text-slate-400"
+          in:fly|global={{
+            delay: 450,
+            duration: 1000,
+            opacity: 0,
+            y: -20,
+            easing: motion.transitions.spring(400, 20)
+          }}
+        >
+          This action is irreversible.
+        </div>
         <div
           class="btn-full btn-outlined relative mt-5 flex w-72 items-center justify-center overflow-hidden border-red-500 text-base text-transparent"
+          in:fly|global={{
+            delay: 550,
+            duration: 1000,
+            opacity: 0,
+            y: -20,
+            easing: motion.transitions.spring(400, 20)
+          }}
         >
           Delete account
           <div

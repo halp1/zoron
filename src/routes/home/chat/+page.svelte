@@ -71,10 +71,9 @@
       y: -20,
       easing: motion.transitions.spring(400, 20)
     }}
-    class="text-slate-400 text-center text-sm mt-3"
+    class="mt-3 text-center text-sm text-slate-400"
   >
     {page.data.env.name} is a heavy work in progress.<br />
-		Chat will not connect on the LHS school
-    wifi.
+    Chat will not connect on the LHS school wifi.
   </div>
 </div>

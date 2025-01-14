@@ -34,7 +34,7 @@
 
     const res = await requests.post<AccountUpdateRes>("/api/account/update", {
       username,
-      password,
+      password
     });
     dismiss();
     submitting = false;

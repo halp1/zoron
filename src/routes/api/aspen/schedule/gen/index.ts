@@ -5,7 +5,7 @@ import type { Session } from "@auth/sveltekit";
 
 export const generateSchedule = async (
   session: Session,
-	secret: string,
+  secret: string,
   semester: aspen.Types.Schedule.Semester,
   onProgress?: aspen.Types.ProgressCallback
 ) => {

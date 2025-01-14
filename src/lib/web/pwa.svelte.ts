@@ -14,7 +14,7 @@ export namespace PWA {
 
   export const prompt = writable<BeforeInstallPromptEvent | null>(null);
   export const overridePrompt = writable<BeforeInstallPromptEvent | null>(null);
-	export const showIOSPopup = writable<boolean>(false);
+  export const showIOSPopup = writable<boolean>(false);
 
   const showAllowed = () =>
     !window.matchMedia("(display-mode: standalone)").matches &&

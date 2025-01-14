@@ -22,11 +22,17 @@ export const POST: RequestHandler = async ({ request, locals: { auth } }) => {
     settingsToUpdate.notifications.grades = body.notifications.grades;
   if (
     typeof body?.home?.default === "string" &&
-    ["home", "calendar", "grades", "activity"].includes(body.home.default)
+    ["home", "schedule", "grades", "activity"].includes(body.home.default)
   ) {
     settingsToUpdate.home.default = body.home.default;
   }
   if (typeof body?.home?.hideGPA === "boolean") settingsToUpdate.home.hideGPA = body.home.hideGPA;
+  if (
+    typeof body?.social?.schedule === "string" &&
+    ["all", "friends", "none"].includes(body.social.schedule)
+  ) {
+    settingsToUpdate.social.schedule = body.social.schedule;
+  }
 
   await adapter.updateUser!({ id: session.user.id!, settings: settingsToUpdate });
 

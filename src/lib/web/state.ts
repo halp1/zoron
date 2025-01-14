@@ -9,7 +9,7 @@ export interface AppState {
   constants: {
     timeDelta: number;
   };
-  preloadedActivity: User["activity"];
+  preloadedActivity: NonNullable<User["activity"]>;
   session: {
     cookie: string;
     token: string;

@@ -6,7 +6,7 @@ import type { Session } from "@auth/sveltekit";
 
 export const assignment = async (
   session: Session,
-	secret: string,
+  secret: string,
   assignment: Assignment,
   studentID: string,
   onProgress?: aspen.Types.ProgressCallback,

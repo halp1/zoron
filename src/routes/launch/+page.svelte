@@ -5,6 +5,7 @@
   import { onMount } from "svelte";
   import { scale } from "svelte/transition";
   import { goto } from "$app/navigation";
+    import { page } from "$app/state";
 
   let loaded = false;
 
@@ -27,6 +28,10 @@
     })();
   });
 </script>
+
+<svelte:head>
+	<title>{page.data.env.name}</title>
+</svelte:head>
 
 <main class="flex h-screen w-full items-center justify-center">
   {#if loaded}

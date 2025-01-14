@@ -15,4 +15,14 @@ export interface Settings {
     default: "home" | "schedule" | "grades" | "activity";
     hideGPA: boolean;
   };
+  social: {
+    schedule: 'all' | 'friends' | 'none';
+  };
+}
+
+
+export interface Relationship {
+	user: string;
+	type: "request" | "friend" | "block"
+	since: Date;
 }

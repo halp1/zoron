@@ -28,13 +28,13 @@ export const GET: RequestHandler = async ({ locals: { auth }, cookies }) => {
         )[0] || { name: "timeDelta", data: 0, _id: new ObjectId() }
       ).data
     },
-    preloadedActivity: user?.activity,
+    preloadedActivity: user?.activity || [],
     session: {
       cookie: aspenSession.cookie,
       token: aspenSession.token
     },
-		classes: (await aspen.classes(aspenSession.cookie)).classes,
-		activity: await aspen.activity(aspenSession.cookie)
+    classes: (await aspen.classes(aspenSession.cookie)).classes,
+    activity: await aspen.activity(aspenSession.cookie)
   });
 
   cookies.set("active-session", session.user.aspen, {
