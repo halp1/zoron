@@ -5,7 +5,7 @@ import type { Session } from "@auth/sveltekit";
 
 export const classDetail = async (
   session: Session,
-	secret: string,
+  secret: string,
   args: Omit<Parameters<typeof aspen.classDetail>[0], "cookie">
 ) => {
   if (!session.user?.email || !session.user.aspen) throw new Error("Not authenticated");

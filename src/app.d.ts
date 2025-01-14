@@ -1,7 +1,7 @@
 // See https://kit.svelte.dev/docs/types#app
 import type { aspen } from "$lib/aspen";
 import type { Passkey } from "$lib/auth/webauthn/types";
-import type { Item, Settings, Subscription } from "$lib/types";
+import type { Item, Relationship, Settings, Subscription } from "$lib/types";
 
 import type { PublicKeyCredentialCreationOptionsJSON } from "@simplewebauthn/types";
 
@@ -53,5 +53,6 @@ declare module "@auth/sveltekit" {
       passkeys: Passkey[];
       options: PublicKeyCredentialCreationOptionsJSON;
     };
+		relationships: Relationship[]
   }
 }

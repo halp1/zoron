@@ -25,7 +25,7 @@
       | null;
   }
 
-  const existingData = $zoron?.preloadedActivity || [];
+  const existingData = $zoron.preloadedActivity || [];
   let merged: (Attendance | PeriodAttendance | GradeWithData | PostedGrade)[] = $state(
     $zoron.activity.merged.map((item) => {
       if (item.type !== "grade") return item;
@@ -56,6 +56,12 @@
               merged![merged!.indexOf(item)] = { ...item, scoring: data };
             } else {
               merged![merged!.indexOf(item)] = { ...item, scoring: steps / total };
+            }
+            const itemIdx = $zoron.preloadedActivity?.findIndex((item) => item.id === id) ?? -1;
+            if (itemIdx !== -1) {
+              const copy = $zoron.preloadedActivity;
+              copy![itemIdx].data = data;
+              zoron.update((state) => ({ ...state, preloadedActivity: copy }));
             }
           } catch (e) {
             console.error(e);

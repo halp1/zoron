@@ -44,7 +44,6 @@ export const auth = {
     signOut: "/logout",
     verifyRequest: "/verify"
   },
-	
 
   providers: [
     Mailgun({
@@ -52,11 +51,12 @@ export const auth = {
       apiKey: MAILGUN_KEY,
       from: "system@mail.haelp.dev",
 
-      async sendVerificationRequest({ identifier: to, provider, url }) {
+      async sendVerificationRequest({ identifier: to, provider, url: initialURL }) {
         const domain = provider.from!.split("@").at(1);
 
         if (!domain) throw new Error("malformed Mailgun domain");
-
+        const url = `${initialURL.slice(0, initialURL.replace(`http${initialURL.includes("https://") ? "s" : ""}://`, "").indexOf("/") + `http${initialURL.includes("https://") ? "s" : ""}://`.length)}/api/fwdVerify?user=${encodeURIComponent(to)}&target=${encodeURIComponent(btoa(encodeURIComponent(initialURL)))}`;
+        console.log("sending target:", url);
         const form = new FormData();
         form.append("from", `${CONSTANTS.name} system <${provider.from}>`);
         form.append("to", to);

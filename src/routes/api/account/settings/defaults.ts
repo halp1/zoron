@@ -8,5 +8,8 @@ export const defaultSettings: Settings = {
   home: {
     default: "schedule",
     hideGPA: false
-  }
+  },
+	social: {
+		schedule: 'all'
+	}
 };

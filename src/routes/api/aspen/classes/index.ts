@@ -3,7 +3,11 @@ import { adapter } from "$lib/auth";
 
 import type { Session } from "@auth/sveltekit";
 
-export const classes = async (session: Session, secret: string, options?: aspen.Types.ClassOptions) => {
+export const classes = async (
+  session: Session,
+  secret: string,
+  options?: aspen.Types.ClassOptions
+) => {
   if (!session.user?.email || !session.user.aspen) throw new Error("Not authenticated");
   try {
     if (!session?.user?.session?.cookie) throw new Error();

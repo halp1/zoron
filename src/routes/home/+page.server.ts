@@ -20,7 +20,7 @@ export const load: PageServerLoad = async ({ locals: { auth }, cookies, request:
     }
     return {};
   } catch (e) {
-		if (isRedirect(e)) throw e;
+    if (isRedirect(e)) throw e;
     return {};
   }
 };

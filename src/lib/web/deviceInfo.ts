@@ -68,9 +68,9 @@ export const getDeviceInfo = async (): Promise<Device> => {
 };
 
 export const isMobile = () =>
-	typeof navigator !== "undefined" &&
-	/Mobi/.test(navigator.userAgent) &&
-	/Android/.test(navigator.userAgent);
+  typeof navigator !== "undefined" &&
+  /Mobi/.test(navigator.userAgent) &&
+  /Android/.test(navigator.userAgent);
 
 export const isIOS = () =>
   typeof navigator !== "undefined" &&
