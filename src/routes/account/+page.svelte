@@ -150,7 +150,7 @@
             </a>
           {:else}
             <a
-              href="/account/p assword"
+              href="/account/password"
               class="btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-orange-400 text-base"
               in:fly|global={{
                 delay: 800,

@@ -155,7 +155,10 @@
       if (grade.posted[idx]) terms.push(grade.posted[idx].number);
       else if (grade.averages[idx]) terms.push(grade.averages[idx].number);
     });
-    return terms.reduce((a, b) => a + b, 0) / terms.length;
+    return (
+      terms.map((term) => (term <= 9 ? convertMathScore(term) : term)).reduce((a, b) => a + b, 0) /
+      terms.length
+    );
   };
 
   const useLinearGradient = false;
@@ -203,6 +206,19 @@
       }))
       .filter((g) => g.weight && g.gpa !== null)
       .reduce((a, b, _, arr) => a + (b.gpa * b.weight) / arr.reduce((a, b) => a + b.weight, 0), 0);
+
+  const convertMathScore = (score: number) =>
+    Math.min(
+      100,
+      Math.max(
+        0,
+        0.000892691 * Math.pow(score, 4) -
+          0.000714091 * Math.pow(score, 3) -
+          0.145062 * Math.pow(score, 2) +
+          5.71381 * score +
+          55
+      )
+    );
 
   const preloadLength =
     (page.data.session?.user?.schedule?.schedule?.reduce(
