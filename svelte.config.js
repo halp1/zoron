@@ -7,7 +7,7 @@ const config = {
   preprocess: vitePreprocess({ script: true }),
 
   kit: {
-    adapter: adapter({ precompress: true }),
+    adapter: adapter({ precompress: true, maxDuration: 60 }),
     csrf: { checkOrigin: false }
   }
 };
