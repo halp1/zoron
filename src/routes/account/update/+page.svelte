@@ -1,9 +1,17 @@
 <script lang="ts">
-  import { requests, toast } from "$lib/web";
-  import Fa from "svelte-fa";
-  import { faInfoCircle, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-  import type { AccountUpdateRes } from "../../api/account/update/+server";
   import { page } from "$app/state";
+
+  import { requests, toast } from "$lib/web";
+
+  import Fa from "svelte-fa";
+
+  import {
+    faEye,
+    faEyeSlash,
+    faInfoCircle
+  } from "@fortawesome/free-solid-svg-icons";
+
+  import type { AccountUpdateRes } from "../../api/account/update/+server";
 
   let username = $state("");
   let password = $state("");
@@ -17,12 +25,14 @@
     );
   };
   const validPassword = (password: string) =>
-    password.length === 4 + 3 + 4 && /^[a-zA-Z]{4}\d{3}[a-zA-Z]{4}$/.test(password);
+    password.length === 4 + 3 + 4 &&
+    /^[a-zA-Z]{4}\d{3}[a-zA-Z]{4}$/.test(password);
 
   let submitting = $state(false);
 
   const submit = async (e: { preventDefault: () => void }) => {
-    if (submitting) return toast.error("Please wait for the previous request to finish.");
+    if (submitting)
+      return toast.error("Please wait for the previous request to finish.");
     e.preventDefault();
 
     if (!validUsername(username) || !validPassword(password)) {
@@ -38,7 +48,8 @@
     });
     dismiss();
     submitting = false;
-    if (!res.success) return toast.error("An error occurred while logging in: " + res.error);
+    if (!res.success)
+      return toast.error("An error occurred while logging in: " + res.error);
     else {
       toast.success(`Hello, ${res.data.name.first} ${res.data.name.last}`);
       // requires a hard refresh to update the session
@@ -102,13 +113,15 @@
     </div>
     <div class="mb-3 text-sm text-slate-400">
       <Fa icon={faInfoCircle} class="float-left mr-2 mt-[3px]" />
-      Your information is encrypted and stored securely on the server. We will never send your credentials
-      to a 3rd party. You will always have the option to permanently delete your account and the data
-      associated with it.
+      Your information is encrypted and stored securely on the server. We will never
+      send your credentials to a 3rd party. You will always have the option to permanently
+      delete your account and the data associated with it.
     </div>
     <button
       class="btn-full btn-outlined"
-      disabled={!validUsername(username) || !validPassword(password) || submitting}
+      disabled={!validUsername(username) ||
+        !validPassword(password) ||
+        submitting}
       type="submit"
     >
       Update

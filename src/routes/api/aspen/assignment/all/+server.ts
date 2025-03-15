@@ -12,10 +12,15 @@ const processBatch = async (
   session: Session,
   secret: string,
   assignments: { assignment: Assignment; studentID: string }[],
-  stream: Awaited<ReturnType<typeof streamPromise<(aspen.Types.AssignmentScore | null)[]>>>
+  stream: Awaited<
+    ReturnType<typeof streamPromise<(aspen.Types.AssignmentScore | null)[]>>
+  >
 ) => {
   if (!session.user?.aspen)
-    return stream.error("No Aspen credentials, please update your account at /account/update", 401);
+    return stream.error(
+      "No Aspen credentials, please update your account at /account/update",
+      401
+    );
   const queue = [...assignments];
   const results: (aspen.Types.AssignmentScore | null)[] = [];
   const internalResults: {
@@ -26,7 +31,10 @@ const processBatch = async (
   const inProgress = new Set();
   const batchSize = 20;
 
-  async function processOne(item: { assignment: Assignment; studentID: string }) {
+  async function processOne(item: {
+    assignment: Assignment;
+    studentID: string;
+  }) {
     try {
       let t = 0;
       const result = await assignment(
@@ -64,7 +72,8 @@ const processBatch = async (
       } else if (inProgress.size === 0) {
         stream.end(results);
         // upload results to db
-        const current = (await adapter.getUser!(session.user?.id!))?.activity || [];
+        const current =
+          (await adapter.getUser!(session.user?.id!))?.activity || [];
         const merged = current
           .filter((a) => !internalResults.some((b) => a.id === b.id))
           .concat(internalResults);
@@ -85,12 +94,20 @@ const processBatch = async (
   return stream.response();
 };
 
-export const POST: RequestHandler = async ({ request, locals: { auth }, cookies }) => {
+export const POST: RequestHandler = async ({
+  request,
+  locals: { auth },
+  cookies
+}) => {
   const stream = await streamPromise<(aspen.Types.AssignmentScore | null)[]>();
   const session = await auth();
-  if (!session?.user?.email || !cookies.get("secret")) return stream.error("Unauthorized", 401);
+  if (!session?.user?.email || !cookies.get("secret"))
+    return stream.error("Unauthorized", 401);
   if (!session.user.aspen)
-    return stream.error("No Aspen credentials, please update your account at /account/update", 401);
+    return stream.error(
+      "No Aspen credentials, please update your account at /account/update",
+      401
+    );
 
   const body = await request.json();
   if (!(body instanceof Array)) return stream.error("Invalid body", 400);

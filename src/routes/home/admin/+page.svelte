@@ -1,10 +1,13 @@
 <script lang="ts">
+  import { fly } from "svelte/transition";
+
   import { page } from "$app/state";
+
   import Toggle from "$lib/components/Toggle.svelte";
   import { motion } from "$lib/motion";
   import { requests, toast } from "$lib/web";
+
   import { onMount } from "svelte";
-  import { fly } from "svelte/transition";
 
   let tick = $state(0);
   onMount(() => {
@@ -31,7 +34,9 @@
 >
   Admin Panel
 </div>
-<div class="mb-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+<div
+  class="mb-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+>
   <div
     class="rounded-3xl border-2 border-red-400 bg-slate-800 p-5"
     in:fly|global={{
@@ -51,7 +56,13 @@
         const hours = formData.get("hours");
         const minutes = formData.get("minutes");
         const period = formData.get("period");
-        if (hours && minutes && period && !isNaN(Number(hours)) && !isNaN(Number(minutes))) {
+        if (
+          hours &&
+          minutes &&
+          period &&
+          !isNaN(Number(hours)) &&
+          !isNaN(Number(minutes))
+        ) {
           const target = new Date();
           target.setHours(
             period === "PM" ? Number(hours) + 12 : Number(hours),
@@ -105,7 +116,10 @@
           <option value="PM" class="text-black">PM</option>
         </select>
       </div>
-      <button type="submit" class="btn-outlined btn-full mt-2 w-full border-red-400 text-base">
+      <button
+        type="submit"
+        class="btn-outlined btn-full mt-2 w-full border-red-400 text-base"
+      >
         Update
       </button>
     </form>
@@ -167,7 +181,10 @@
         class="w-full rounded-full border-2 border-dashed border-slate-600 bg-transparent px-2 text-center outline-none focus-within:border-solid"
         placeholder="Email"
       />
-      <button type="submit" class="btn-outlined btn-full mt-auto w-full border-red-400 text-base">
+      <button
+        type="submit"
+        class="btn-outlined btn-full mt-auto w-full border-red-400 text-base"
+      >
         Go
       </button>
     </form>
@@ -201,7 +218,10 @@
           return;
         }
 
-        const res = await requests.post("/api/admin/copy-user", { name, email });
+        const res = await requests.post("/api/admin/copy-user", {
+          name,
+          email
+        });
         if (res.success === true) {
           toast.success("User copied successfully");
           // @ts-expect-error you can't use as, etc in inline event handlers in svelte
@@ -223,7 +243,10 @@
         class="w-full rounded-full border-2 border-dashed border-slate-600 bg-transparent px-2 text-center outline-none focus-within:border-solid"
         placeholder="Email"
       />
-      <button type="submit" class="btn-outlined btn-full mt-2 w-full border-red-400 text-base">
+      <button
+        type="submit"
+        class="btn-outlined btn-full mt-2 w-full border-red-400 text-base"
+      >
         Copy to Dev DB
       </button>
     </form>

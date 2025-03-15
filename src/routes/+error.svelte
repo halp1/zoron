@@ -7,7 +7,9 @@
   const customErrorMessages: { [k: number]: string } = {};
 
   const message =
-    status in customErrorMessages ? customErrorMessages[status] : error.message || "Page not found";
+    status in customErrorMessages
+      ? customErrorMessages[status]
+      : error.message || "Page not found";
 </script>
 
 <svelte:head>
@@ -15,7 +17,9 @@
 </svelte:head>
 
 <main class="grid h-screen w-screen place-items-center">
-  <div class="flex w-96 items-center justify-center rounded-3xl bg-slate-800 p-10">
+  <div
+    class="flex w-96 items-center justify-center rounded-3xl bg-slate-800 p-10"
+  >
     <div class="text-center text-6xl">
       Error {status}
       <br />

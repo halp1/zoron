@@ -1,4 +1,8 @@
-import { type Renderable, type ToastOptions, toast as _toast } from "svelte-french-toast";
+import {
+  type Renderable,
+  type ToastOptions,
+  toast as _toast
+} from "svelte-french-toast";
 
 export namespace toast {
   export const success: typeof _toast.success = (message, options) =>
@@ -8,7 +12,10 @@ export namespace toast {
   export const loading: (
     message: Renderable,
     options?: Omit<ToastOptions, "className">
-  ) => { dismiss: () => void; update: (content: string) => void } = (message, options) => {
+  ) => { dismiss: () => void; update: (content: string) => void } = (
+    message,
+    options
+  ) => {
     const randomID = `toast-${Math.random().toString(36).substring(7)}`;
     const id = _toast.loading(message, {
       position: "bottom-right",

@@ -17,17 +17,33 @@ export interface AccountUpdateRes {
   session: Session;
 }
 
-export const POST: RequestHandler = async ({ locals: { auth }, request, cookies }) => {
+export const POST: RequestHandler = async ({
+  locals: { auth },
+  request,
+  cookies
+}) => {
   const session = await auth();
 
-  if (!session || !session.user || !session.user.id) api.error("Not authorized", 401);
+  if (!session || !session.user || !session.user.id)
+    api.error("Not authorized", 401);
   const data: { username: string; password: string } = await request.json();
-  if (!data.username || typeof data.username !== "string" || data.username.length === 0)
+  if (
+    !data.username ||
+    typeof data.username !== "string" ||
+    data.username.length === 0
+  )
     return api.error("Missing username", 400);
-  if (!data.password || typeof data.password !== "string" || data.password.length === 0)
+  if (
+    !data.password ||
+    typeof data.password !== "string" ||
+    data.password.length === 0
+  )
     return api.error("Missing password", 400);
   if (!cookies.get("secret") || cookies.get("secret")?.length === 0)
-    return api.error("Missing secret. Try logging out and logging back in again.", 400);
+    return api.error(
+      "Missing secret. Try logging out and logging back in again.",
+      400
+    );
 
   try {
     const account = await aspen.authenticate(data.username, data.password);
@@ -39,7 +55,10 @@ export const POST: RequestHandler = async ({ locals: { auth }, request, cookies 
       const form = new FormData();
       form.append("from", `${CONSTANTS.name} system <${from}>`);
       form.append("to", to);
-      form.append("subject", `Sign in to ${CONSTANTS.name} (https://${CONSTANTS.url})`);
+      form.append(
+        "subject",
+        `Sign in to ${CONSTANTS.name} (https://${CONSTANTS.url})`
+      );
       if (validEmail(to)) {
         form.append(
           "text",
@@ -49,25 +68,35 @@ export const POST: RequestHandler = async ({ locals: { auth }, request, cookies 
         throw new Error("An invalid email was found on the account.");
       }
 
-      const res = await fetch(`https://api.mailgun.net/v3/mail.haelp.dev/messages`, {
-        method: "POST",
-        headers: {
-          Authorization: `Basic ${btoa(`api:${MAILGUN_KEY}`)}`
-        },
-        body: form
-      });
+      const res = await fetch(
+        `https://api.mailgun.net/v3/mail.haelp.dev/messages`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Basic ${btoa(`api:${MAILGUN_KEY}`)}`
+          },
+          body: form
+        }
+      );
 
       if (!res.ok) throw new Error("Mailgun error: " + (await res.text()));
 
       throw new Error(msg);
     }
 
-    const encrypted = aspen.encrypt(cookies.get("secret")!, data.username, data.password);
+    const encrypted = aspen.encrypt(
+      cookies.get("secret")!,
+      data.username,
+      data.password
+    );
 
     const activity = await aspen.activity(account.cookie);
     const ids = activity.merged
       .map((item) =>
-        btoa(("id" in item ? item.id : item.oid) + ("sscid" in item ? item.sscid : item.date))
+        btoa(
+          ("id" in item ? item.id : item.oid) +
+            ("sscid" in item ? item.sscid : item.date)
+        )
       )
       .slice(1);
 

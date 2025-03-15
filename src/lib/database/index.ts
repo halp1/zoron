@@ -49,7 +49,9 @@ const logger = zoron.logger("MongoDB");
   connecting = client.connect();
   await connecting;
   connecting = false;
-  logger.log(`Connected in ${Math.round(performance.now() - connectionStart)}ms`);
+  logger.log(
+    `Connected in ${Math.round(performance.now() - connectionStart)}ms`
+  );
 })();
 
 export const createIndex = async (
@@ -58,7 +60,10 @@ export const createIndex = async (
   options: Document = {}
 ) => {
   if (connecting) await connecting;
-  return await client.db(database).collection(collection).createIndex(field, options);
+  return await client
+    .db(database)
+    .collection(collection)
+    .createIndex(field, options);
 };
 
 export const query = async <T = any>({
@@ -84,7 +89,10 @@ export const query = async <T = any>({
 
 export const update = async (collection: string, query: any, update: any) => {
   if (connecting) await connecting;
-  return await client.db(database).collection(collection).updateMany(query, update);
+  return await client
+    .db(database)
+    .collection(collection)
+    .updateMany(query, update);
 };
 
 export const insert = async (collection: string, doc: OptionalId<Document>) => {
@@ -92,7 +100,11 @@ export const insert = async (collection: string, doc: OptionalId<Document>) => {
   return await client.db(database).collection(collection).insertOne(doc);
 };
 
-export const updateOrInsert = async (collection: string, search: any, set: any) => {
+export const updateOrInsert = async (
+  collection: string,
+  search: any,
+  set: any
+) => {
   if (connecting) await connecting;
   const queryRes = await query({ collection, query: search });
   if (queryRes.length > 0) {
@@ -104,7 +116,10 @@ export const updateOrInsert = async (collection: string, search: any, set: any) 
 
 export const remove = async (collection: string, search: any) => {
   if (connecting) await connecting;
-  const res = await client.db(database).collection(collection).deleteOne(search);
+  const res = await client
+    .db(database)
+    .collection(collection)
+    .deleteOne(search);
   return !!res.deletedCount;
 };
 

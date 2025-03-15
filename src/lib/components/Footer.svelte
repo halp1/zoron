@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from "$app/state";
+
   import { requests, toast } from "$lib/web";
 
   interface Props {
@@ -18,7 +19,9 @@
       ? 'fixed bottom-0 left-0'
       : 'relative'} flex w-screen flex-wrap items-center gap-3 bg-slate-800 p-3 {className}"
   >
-    <div class="w-full sm:w-auto">Copyright &copy; Joshua Liu {new Date().getFullYear()}</div>
+    <div class="w-full sm:w-auto">
+      Copyright &copy; Joshua Liu {new Date().getFullYear()}
+    </div>
 
     <div class="-my-2 flex flex-col items-end text-sm sm:ml-auto">
       <a href="/privacy" class="underline">Privacy</a>

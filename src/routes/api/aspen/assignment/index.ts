@@ -12,10 +12,15 @@ export const assignment = async (
   onProgress?: aspen.Types.ProgressCallback,
   skipCache?: boolean
 ) => {
-  if (!session.user?.email || !session.user.aspen) throw new Error("Not authenticated");
+  if (!session.user?.email || !session.user.aspen)
+    throw new Error("Not authenticated");
   if (!assignment) throw new Error("No assignment provided");
   try {
-    if (!session?.user?.session?.cookie || !session.user.session.cookie || skipCache)
+    if (
+      !session?.user?.session?.cookie ||
+      !session.user.session.cookie ||
+      skipCache
+    )
       throw new Error();
     return await aspen.assignment({
       cookie: session.user.session.cookie,
@@ -25,7 +30,8 @@ export const assignment = async (
       onProgress
     });
   } catch {
-    const total = aspen.constants.steps.authenticate + aspen.constants.steps.assignment;
+    const total =
+      aspen.constants.steps.authenticate + aspen.constants.steps.assignment;
 
     const { username, password } = aspen.decrypt(secret, session.user.aspen);
     const aspenSession = await aspen.authenticate(
@@ -48,7 +54,8 @@ export const assignment = async (
       assignment,
       studentID,
       onProgress: (step) =>
-        onProgress && onProgress(step + aspen.constants.steps.authenticate, total)
+        onProgress &&
+        onProgress(step + aspen.constants.steps.authenticate, total)
     });
   }
 };

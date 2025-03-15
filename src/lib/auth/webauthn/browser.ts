@@ -1,6 +1,9 @@
 import { requests } from "$lib/web";
 
-import { startAuthentication, startRegistration } from "@simplewebauthn/browser";
+import {
+  startAuthentication,
+  startRegistration
+} from "@simplewebauthn/browser";
 import type { VerifiedRegistrationResponse } from "@simplewebauthn/server";
 import type {
   AuthenticationResponseJSON,
@@ -17,11 +20,14 @@ import type {
 export async function addPasskey(name: string): Promise<boolean> {
   try {
     // Get registration options from server
-    const optionsRes = await requests.get<PublicKeyCredentialCreationOptionsJSON>(
-      "/api/account/passkeys/options"
-    );
+    const optionsRes =
+      await requests.get<PublicKeyCredentialCreationOptionsJSON>(
+        "/api/account/passkeys/options"
+      );
     if (!optionsRes.success) {
-      throw new Error("Failed to get registration options: " + optionsRes.error);
+      throw new Error(
+        "Failed to get registration options: " + optionsRes.error
+      );
     }
 
     // Create credential using SimpleWebAuthn
@@ -58,7 +64,9 @@ export const usePasskey = async (): Promise<string> => {
       options: PublicKeyCredentialRequestOptionsJSON;
     }>("/api/account/passkeys/auth/options");
     if (!optionsRes.success) {
-      throw new Error("Failed to get authentication options: " + optionsRes.error);
+      throw new Error(
+        "Failed to get authentication options: " + optionsRes.error
+      );
     }
     const { sessionID, options } = optionsRes.data;
 

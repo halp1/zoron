@@ -7,7 +7,11 @@ import Mailgun from "@auth/sveltekit/providers/mailgun";
 import { AUTH_SECRET, DOMAIN, MAILGUN_KEY } from "$env/static/private";
 import { decode, encode } from "@auth/core/jwt";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import { SvelteKitAuth, type SvelteKitAuthConfig, type User } from "@auth/sveltekit";
+import {
+  SvelteKitAuth,
+  type SvelteKitAuthConfig,
+  type User
+} from "@auth/sveltekit";
 import type { Cookies } from "@sveltejs/kit";
 
 export const adapter = MongoDBAdapter(dbClient, {
@@ -52,7 +56,11 @@ export const auth = {
       apiKey: MAILGUN_KEY,
       from: "system@mail.haelp.dev",
 
-      async sendVerificationRequest({ identifier: to, provider, url: initialURL }) {
+      async sendVerificationRequest({
+        identifier: to,
+        provider,
+        url: initialURL
+      }) {
         const domain = provider.from!.split("@").at(1);
 
         if (!domain) throw new Error("malformed Mailgun domain");
@@ -61,7 +69,10 @@ export const auth = {
         const form = new FormData();
         form.append("from", `${CONSTANTS.name} system <${provider.from}>`);
         form.append("to", to);
-        form.append("subject", `Sign in to ${CONSTANTS.name} (https://${CONSTANTS.url})`);
+        form.append(
+          "subject",
+          `Sign in to ${CONSTANTS.name} (https://${CONSTANTS.url})`
+        );
         if (validEmail(to)) {
           form.append("html", html(url));
           form.append("text", text(url));
@@ -72,13 +83,16 @@ export const auth = {
           );
         }
 
-        const res = await fetch(`https://api.mailgun.net/v3/${domain}/messages`, {
-          method: "POST",
-          headers: {
-            Authorization: `Basic ${btoa(`api:${provider.apiKey}`)}`
-          },
-          body: form
-        });
+        const res = await fetch(
+          `https://api.mailgun.net/v3/${domain}/messages`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Basic ${btoa(`api:${provider.apiKey}`)}`
+            },
+            body: form
+          }
+        );
 
         if (!res.ok) throw new Error("Mailgun error: " + (await res.text()));
       }

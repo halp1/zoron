@@ -1,13 +1,17 @@
 <script lang="ts">
-  import { signIn } from "@auth/sveltekit/client";
-  import { toast } from "$lib/web";
-  import { validEmail } from "$lib/email";
-  import Footer from "$lib/components/Footer.svelte";
-  import { Collapsible, Toggle } from "$lib/components";
-  import { requests } from "$lib/web";
   import { page } from "$app/state";
-  import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+
+  import { Collapsible, Toggle } from "$lib/components";
+  import Footer from "$lib/components/Footer.svelte";
+  import { validEmail } from "$lib/email";
+  import { toast } from "$lib/web";
+  import { requests } from "$lib/web";
+
+  import { signIn } from "@auth/sveltekit/client";
+
   import Fa from "svelte-fa";
+
+  import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
   let email = $state("");
   let agreed = $state(false);
@@ -40,7 +44,9 @@
 
 <main class="flex h-screen w-screen flex-col items-center justify-center px-5">
   <img src="/favicon.png" alt="Site icon" class="mb-3 w-32" />
-  <h1 class="mb-10 text-center text-4xl">Recover your {page.data.env.name} account</h1>
+  <h1 class="mb-10 text-center text-4xl">
+    Recover your {page.data.env.name} account
+  </h1>
   <form onsubmit={handleSubmission} class="flex w-96 flex-col gap-2">
     <input
       class="w-full rounded-lg border-2 border-dashed border-blue-400 bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
@@ -58,18 +64,28 @@
 
     <div class="mb-1 text-sm text-slate-400">
       <Fa icon={faInfoCircle} class="float-left mr-2 mt-[3px]" />
-      You will recieve an email with a link to log in to your account. Once you are logged in to your
-      account, head to your account settings at /account and the click the "update password" buttton.
-      If you have not set a password, this button may say "add password".
+      You will recieve an email with a link to log in to your account. Once you are
+      logged in to your account, head to your account settings at /account and the
+      click the "update password" buttton. If you have not set a password, this button
+      may say "add password".
     </div>
     <div class="mb-1 text-sm text-slate-400">
       <Fa icon={faInfoCircle} class="float-left mr-2 mt-[3px]" />
-      You will need to re-add your Aspen credentials after you have updated your password.
+      You will need to re-add your Aspen credentials after you have updated your
+      password.
     </div>
     <div class="flex items-center gap-3">
-      <Toggle color={agreed ? "bg-green-400" : "bg-red-400"} bind:checked={agreed} className="transition-colors"/> I understand
+      <Toggle
+        color={agreed ? "bg-green-400" : "bg-red-400"}
+        bind:checked={agreed}
+        className="transition-colors"
+      /> I understand
     </div>
-    <button class="btn-full btn-outlined" disabled={!validEmail(email) || !agreed} type="submit">
+    <button
+      class="btn-full btn-outlined"
+      disabled={!validEmail(email) || !agreed}
+      type="submit"
+    >
       Send Recovery Email
     </button>
     <div class="flex items-center">

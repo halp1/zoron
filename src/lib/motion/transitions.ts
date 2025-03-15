@@ -10,7 +10,8 @@ export const spring = (stiffness = 300, damping = 30, mass = 1) => {
         1 -
         Math.exp(-dampingRatio * angularFreq * t) *
           (Math.cos(dampedFreq * t) +
-            (dampingRatio * angularFreq * Math.sin(dampedFreq * t)) / dampedFreq)
+            (dampingRatio * angularFreq * Math.sin(dampedFreq * t)) /
+              dampedFreq)
       );
     } else {
       // Critically damped or overdamped

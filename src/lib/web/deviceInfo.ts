@@ -19,7 +19,10 @@ const detectBrowser = (): string => {
     return "Safari";
   } else if (userAgent.indexOf("Opera") > -1) {
     return "Opera";
-  } else if (userAgent.indexOf("Trident") > -1 || userAgent.indexOf("MSIE") > -1) {
+  } else if (
+    userAgent.indexOf("Trident") > -1 ||
+    userAgent.indexOf("MSIE") > -1
+  ) {
     return "Internet Explorer";
   }
 
@@ -29,7 +32,8 @@ const detectBrowser = (): string => {
 const getOS = (): string => {
   const userAgent = window.navigator.userAgent;
   // @ts-expect-error - TS doesn't know about navigator's userAgentData
-  const platform = window.navigator?.userAgentData?.platform || window.navigator.platform;
+  const platform =
+    window.navigator?.userAgentData?.platform || window.navigator.platform;
   const macosPlatforms = ["macOS", "Macintosh", "MacIntel", "MacPPC", "Mac68K"];
   const windowsPlatforms = ["Win32", "Win64", "Windows", "WinCE"];
   const iosPlatforms = ["iPhone", "iPad", "iPod"];
@@ -64,7 +68,12 @@ export const getDeviceInfo = async (): Promise<Device> => {
     localStorage.setItem("visitorId", id);
   }
 
-  return { browser, os, fingerprint: (await (await Fingerprint.load()).get()).visitorId, id };
+  return {
+    browser,
+    os,
+    fingerprint: (await (await Fingerprint.load()).get()).visitorId,
+    id
+  };
 };
 
 export const isMobile = () =>
@@ -74,10 +83,16 @@ export const isMobile = () =>
 
 export const isIOS = () =>
   typeof navigator !== "undefined" &&
-  (["iPad Simulator", "iPhone Simulator", "iPod Simulator", "iPad", "iPhone", "iPod"].includes(
-    navigator.platform
-  ) ||
+  ([
+    "iPad Simulator",
+    "iPhone Simulator",
+    "iPod Simulator",
+    "iPad",
+    "iPhone",
+    "iPod"
+  ].includes(navigator.platform) ||
     // iPad on iOS 13 detection
     (navigator.userAgent.includes("Mac") && "ontouchend" in document));
 
-export const isIOSStandalone = () => isIOS() && (window as any).navigator.standalone;
+export const isIOSStandalone = () =>
+  isIOS() && (window as any).navigator.standalone;

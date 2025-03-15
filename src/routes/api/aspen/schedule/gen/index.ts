@@ -9,12 +9,19 @@ export const generateSchedule = async (
   semester: aspen.Types.Schedule.Semester,
   onProgress?: aspen.Types.ProgressCallback
 ) => {
-  if (!session.user?.email || !session.user.aspen) throw new Error("Not authenticated");
+  if (!session.user?.email || !session.user.aspen)
+    throw new Error("Not authenticated");
   try {
-    if (!session?.user?.session?.cookie || !session.user.session.cookie) throw new Error();
-    return await aspen.schedule.pdf(session.user.session.cookie, semester, onProgress);
+    if (!session?.user?.session?.cookie || !session.user.session.cookie)
+      throw new Error();
+    return await aspen.schedule.pdf(
+      session.user.session.cookie,
+      semester,
+      onProgress
+    );
   } catch {
-    const total = aspen.constants.steps.authenticate + aspen.constants.steps.schedule.pdf;
+    const total =
+      aspen.constants.steps.authenticate + aspen.constants.steps.schedule.pdf;
     const { username, password } = aspen.decrypt(secret, session.user.aspen);
     const aspenSession = await aspen.authenticate(
       username,
@@ -33,7 +40,9 @@ export const generateSchedule = async (
     return await aspen.schedule.pdf(
       aspenSession.cookie,
       semester,
-      (step) => onProgress && onProgress(step + aspen.constants.steps.authenticate, total)
+      (step) =>
+        onProgress &&
+        onProgress(step + aspen.constants.steps.authenticate, total)
     );
   }
 };

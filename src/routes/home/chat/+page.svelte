@@ -1,8 +1,11 @@
 <script lang="ts">
+  import { fly } from "svelte/transition";
+
   import { page } from "$app/state";
+
   import { motion } from "$lib/motion";
   import { supabase } from "$lib/supabase";
-  import { fly } from "svelte/transition";
+
   let connected = $state(false);
   $effect(() => {
     if ($supabase) {

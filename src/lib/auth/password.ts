@@ -11,7 +11,11 @@ export const hashPassword = async (password: string) => {
   });
 };
 
-export const verifyPassword = (password: string, salt: string, hash: string) => {
+export const verifyPassword = (
+  password: string,
+  salt: string,
+  hash: string
+) => {
   return new Promise<boolean>((resolve, reject) => {
     pbkdf2(password, salt, 1000, 64, "sha512", (err, derivedKey) => {
       if (err) reject(err);

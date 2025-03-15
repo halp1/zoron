@@ -14,7 +14,10 @@ export const GET: RequestHandler = async ({ locals: { auth }, cookies }) => {
   if (!session.user.aspen) return api.error("Missing credentials", 401);
   const user = await adapter.getUser!(session.user.id);
   const credentials = aspen.decrypt(cookies.get("secret")!, session.user.aspen);
-  const aspenSession = await aspen.authenticate(credentials.username, credentials.password);
+  const aspenSession = await aspen.authenticate(
+    credentials.username,
+    credentials.password
+  );
 
   const response = api.json<AppState>({
     schedule: user?.schedule,

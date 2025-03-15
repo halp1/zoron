@@ -2,7 +2,8 @@ import { type Writable, get, writable } from "svelte/store";
 
 import { createClient } from "@supabase/supabase-js";
 
-export let supabase: Writable<ReturnType<typeof createClient> | null> = writable(null);
+export let supabase: Writable<ReturnType<typeof createClient> | null> =
+  writable(null);
 export const supabaseConnect = (uri: string, key: string, store = true) => {
   const c = createClient(uri, key);
   c.realtime.connect();

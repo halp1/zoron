@@ -1,8 +1,15 @@
 <script lang="ts">
-  import { requests, toast } from "$lib/web";
-  import Fa from "svelte-fa";
-  import { faInfoCircle, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
   import { page } from "$app/state";
+
+  import { requests, toast } from "$lib/web";
+
+  import Fa from "svelte-fa";
+
+  import {
+    faEye,
+    faEyeSlash,
+    faInfoCircle
+  } from "@fortawesome/free-solid-svg-icons";
 
   let password = $state("");
   let confirm = $state("");
@@ -10,7 +17,8 @@
   let submitting = $state(false);
 
   const submit = async (e: { preventDefault: () => void }) => {
-    if (submitting) return toast.error("Please wait for the previous request to finish.");
+    if (submitting)
+      return toast.error("Please wait for the previous request to finish.");
     e.preventDefault();
 
     if (password !== confirm || password.length === 0 || confirm.length === 0)
@@ -24,7 +32,10 @@
     });
     dismiss();
     submitting = false;
-    if (!res.success) return toast.error("An error occurred while updating password: " + res.error);
+    if (!res.success)
+      return toast.error(
+        "An error occurred while updating password: " + res.error
+      );
     else {
       toast.success(`Your password has been updated.`);
       // requires a hard refresh to update the session
@@ -80,17 +91,23 @@
     </div>
     <div
       class="mb-2 overflow-hidden text-sm text-red-600 transition-all"
-      style="height: {confirm.length > 0 && confirm !== password ? '20px' : '0px'}"
+      style="height: {confirm.length > 0 && confirm !== password
+        ? '20px'
+        : '0px'}"
     >
       Passwords do not match
     </div>
     <div class="mb-3 text-sm text-slate-400">
       <Fa icon={faInfoCircle} class="float-left mr-2 mt-[3px]" />
-      If you ever lose your password, you will always be able to recover your account via your email.
+      If you ever lose your password, you will always be able to recover your account
+      via your email.
     </div>
     <button
       class="btn-full btn-outlined"
-      disabled={password.length === 0 || confirm.length === 0 || confirm !== password || submitting}
+      disabled={password.length === 0 ||
+        confirm.length === 0 ||
+        confirm !== password ||
+        submitting}
       type="submit"
     >
       Update

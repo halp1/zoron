@@ -8,7 +8,9 @@ import type { PageServerLoad } from "./$types";
 
 const BUCKET_NAME = "pfps";
 
-async function ensureStoragePolicy(supabase: ReturnType<typeof supabaseConnect>) {
+async function ensureStoragePolicy(
+  supabase: ReturnType<typeof supabaseConnect>
+) {
   try {
     // Check if the bucket exists, create if it doesn't
     const { data: buckets } = await supabase.storage.listBuckets();

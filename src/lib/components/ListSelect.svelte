@@ -15,7 +15,9 @@
 
   let { items, value = $bindable(), transition }: Props = $props();
 
-  let transitionFunction = $derived(transition?.in?.function || (() => () => {}));
+  let transitionFunction = $derived(
+    transition?.in?.function || (() => () => {})
+  );
 </script>
 
 <div

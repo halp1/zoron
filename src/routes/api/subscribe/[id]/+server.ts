@@ -6,9 +6,14 @@ import { ObjectId } from "mongodb";
 
 import type { RequestHandler } from "./$types";
 
-export const POST: RequestHandler = async ({ request, locals, params: { id } }) => {
+export const POST: RequestHandler = async ({
+  request,
+  locals,
+  params: { id }
+}) => {
   const session = await locals.auth();
-  if (!session || !session.user || !session.user.email) return error(403, "Unauthorized");
+  if (!session || !session.user || !session.user.email)
+    return error(403, "Unauthorized");
   const body = await request.json();
   if (!body.subscription) return error(400, "Missing subscription");
   if (
@@ -24,7 +29,10 @@ export const POST: RequestHandler = async ({ request, locals, params: { id } }) 
     query: {
       email: session.user.email,
       target: id,
-      $or: [{ "device.id": body.device.id }, { "device.fingerprint": body.device.fingerprint }]
+      $or: [
+        { "device.id": body.device.id },
+        { "device.fingerprint": body.device.fingerprint }
+      ]
     }
   });
   if (subscription.length > 0) return error(400, "You are already subscribed!");

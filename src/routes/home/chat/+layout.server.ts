@@ -9,7 +9,8 @@ import type { LayoutServerLoad } from "./$types";
 export const load: LayoutServerLoad = async ({ locals: { auth }, cookies }) => {
   const session = await auth();
 
-  if (!session?.user?.aspen || !cookies.get("secret")) return redirect(302, "/account");
+  if (!session?.user?.aspen || !cookies.get("secret"))
+    return redirect(302, "/account");
 
   const supabase = supabaseConnect(SUPABASE_URI, SUPABASE_SERVICE_KEY, false);
 
@@ -26,7 +27,8 @@ export const load: LayoutServerLoad = async ({ locals: { auth }, cookies }) => {
       );
     await supabase.auth.signUp({
       email: session.user.email!,
-      password: aspen.decrypt(cookies.get("secret")!, session.user.aspen).password
+      password: aspen.decrypt(cookies.get("secret")!, session.user.aspen)
+        .password
     });
   }
 
@@ -36,7 +38,8 @@ export const load: LayoutServerLoad = async ({ locals: { auth }, cookies }) => {
       (
         await supabase.auth.signInWithPassword({
           email: session.user.email!,
-          password: aspen.decrypt(cookies.get("secret")!, session.user.aspen).password
+          password: aspen.decrypt(cookies.get("secret")!, session.user.aspen)
+            .password
         })
       ).data
   };

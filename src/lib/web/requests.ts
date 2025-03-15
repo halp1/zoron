@@ -8,13 +8,19 @@ export namespace requests {
     uri: string,
     options: { headers?: {}; body?: string } = {}
   ) => {
-    return await fetch(uri, { method, headers: options.headers, body: options.body });
+    return await fetch(uri, {
+      method,
+      headers: options.headers,
+      body: options.body
+    });
   };
 
   export const get = async <T = {}>(
     uri: string,
     data: Record<string, any> = {}
-  ): Promise<{ success: true; data: T } | { success: false; error: string }> => {
+  ): Promise<
+    { success: true; data: T } | { success: false; error: string }
+  > => {
     try {
       const url = new URL(uri, location.origin);
       for (const key in data) {
@@ -33,7 +39,9 @@ export namespace requests {
 
   export const del = async <T = {}>(
     uri: string
-  ): Promise<{ success: true; data: T } | { success: false; error: string }> => {
+  ): Promise<
+    { success: true; data: T } | { success: false; error: string }
+  > => {
     try {
       const res = await request("DELETE", uri).then((r) => r.json());
       if ("message" in res) return JSON.parse(res.message);
@@ -46,7 +54,9 @@ export namespace requests {
   export const post = async <T = {}>(
     uri: string,
     data: Record<string, any> = {}
-  ): Promise<{ success: true; data: T } | { success: false; error: string }> => {
+  ): Promise<
+    { success: true; data: T } | { success: false; error: string }
+  > => {
     try {
       const res = await request("POST", uri, {
         headers: { "Content-Type": "application/json" },
@@ -92,10 +102,15 @@ export namespace requests {
               const data: StreamAPI.Message<T> = JSON.parse(message);
 
               if (data.type === "error")
-                return { success: false as const, error: data.error, code: data.code };
+                return {
+                  success: false as const,
+                  error: data.error,
+                  code: data.code
+                };
               if (data.type === "progress" && onProgress)
                 onProgress(data.step, data.total, data.id, data.data);
-              if (data.type === "response") return { success: true as const, data: data.data };
+              if (data.type === "response")
+                return { success: true as const, data: data.data };
             } catch (e) {
               console.error("Error parsing stream data: " + message);
               chunk = message;

@@ -53,6 +53,6 @@ declare module "@auth/sveltekit" {
       passkeys: Passkey[];
       options: PublicKeyCredentialCreationOptionsJSON;
     };
-		relationships: Relationship[]
+    relationships: Relationship[];
   }
 }

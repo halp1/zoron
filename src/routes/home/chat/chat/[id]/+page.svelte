@@ -1,10 +1,12 @@
 <script lang="ts">
   import { run } from "svelte/legacy";
 
-  import { supabase } from "$lib/supabase";
   import { page } from "$app/state";
+
+  import { supabase } from "$lib/supabase";
   import type { Chat } from "$lib/types";
   import { toast } from "$lib/web";
+
   import { RealtimeChannel } from "@supabase/supabase-js";
 
   const id = page.params.id;
@@ -83,7 +85,9 @@
       "bg-indigo-500",
       "bg-teal-500"
     ];
-    const index = name.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) % colors.length;
+    const index =
+      name.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) %
+      colors.length;
     return colors[index];
   };
 </script>
@@ -97,20 +101,28 @@
     {#each messages as message (message.id)}
       <div class="mb-4 flex items-start">
         {#if message.user.icon}
-          <img src={message.user.icon} alt={message.user.name} class="h-10 w-10 rounded-full" />
+          <img
+            src={message.user.icon}
+            alt={message.user.name}
+            class="h-10 w-10 rounded-full"
+          />
         {:else}
           <div
             class="flex h-10 w-10 items-center justify-center rounded-full {getAvatarColor(
               message.user.name
             )}"
           >
-            <span class="text-lg font-medium text-white">{getInitial(message.user.name)}</span>
+            <span class="text-lg font-medium text-white"
+              >{getInitial(message.user.name)}</span
+            >
           </div>
         {/if}
         <div class="ml-3">
           <div class="flex items-baseline">
             <span class="font-medium text-white">{message.user.name}</span>
-            <span class="ml-2 text-xs text-gray-400">{formatTimestamp(message.timestamp)}</span>
+            <span class="ml-2 text-xs text-gray-400"
+              >{formatTimestamp(message.timestamp)}</span
+            >
           </div>
           <p class="mt-1 text-gray-200">{message.message}</p>
         </div>

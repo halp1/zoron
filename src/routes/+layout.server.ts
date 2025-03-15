@@ -1,7 +1,11 @@
 import { aspen } from "$lib/aspen";
 import { CONSTANTS } from "$lib/constants";
 
-import { SUPABASE_PUBLIC_KEY, SUPABASE_URI, VAPID_PUBLIC } from "$env/static/private";
+import {
+  SUPABASE_PUBLIC_KEY,
+  SUPABASE_URI,
+  VAPID_PUBLIC
+} from "$env/static/private";
 
 import type { LayoutServerLoad } from "./$types";
 

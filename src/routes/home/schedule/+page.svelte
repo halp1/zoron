@@ -1,34 +1,40 @@
 <script lang="ts">
   import { run } from "svelte/legacy";
+  import { fly } from "svelte/transition";
 
   import { page } from "$app/state";
+
   import type { aspen } from "$lib/aspen";
+  import { Collapsible, ScheduleBlock, Swipeable } from "$lib/components";
+  import { motion } from "$lib/motion";
+  import type { Block, CalendarEvent } from "$lib/types";
   import { requests, toast, zoron } from "$lib/web";
+
+  import Fa from "svelte-fa";
+
   import {
     faCalendarDay,
     faCalendarDays,
+    faChevronLeft,
+    faChevronRight,
     faClose,
     faInfoCircle,
-    faRotateRight,
-    faChevronLeft,
-    faChevronRight
+    faRotateRight
   } from "@fortawesome/free-solid-svg-icons";
-  import Fa from "svelte-fa";
-  import choobs from "../../../assets/choobs.png";
-  import { Collapsible, Swipeable, ScheduleBlock } from "$lib/components";
-  import { updateChoobsSchedule } from "./choobs";
-  import type { CalendarEvent, Block } from "$lib/types";
-  import "./schedule.css";
-  import { onMount } from "svelte";
+
   import type { User } from "@auth/sveltekit";
   import _ from "lodash";
+  import { onMount } from "svelte";
+
+  import choobs from "../../../assets/choobs.png";
   import { randomPlaceholderImage } from "../../../assets/placeholders";
-  import { motion } from "$lib/motion";
-  import { fly } from "svelte/transition";
+  import { updateChoobsSchedule } from "./choobs";
+  import "./schedule.css";
 
   let schedule = $derived($zoron.schedule as User["schedule"]);
 
-  const getLoadingText = (percentage: number) => `Generating schedule (${percentage}%)...`;
+  const getLoadingText = (percentage: number) =>
+    `Generating schedule (${percentage}%)...`;
   const updateSchedule = async () => {
     if (updating) return toast.error("Schedule is already updating");
     updating = true;
@@ -37,8 +43,10 @@
     const semester = currentDate >= jan25_2024 ? 2 : 1;
 
     const { dismiss, update } = toast.loading(getLoadingText(0));
-    const res = await requests.stream("/api/aspen/schedule/gen", { semester }, (step, total) =>
-      update(getLoadingText(Math.round((step / total) * 100)))
+    const res = await requests.stream(
+      "/api/aspen/schedule/gen",
+      { semester },
+      (step, total) => update(getLoadingText(Math.round((step / total) * 100)))
     );
     if (res.success === true) {
       history.go(0);
@@ -84,7 +92,10 @@
       if (course === null) continue;
       if (course.course === null) continue;
       if (courseColorMap.has(course.course)) continue;
-      courseColorMap.set(course.course, colors[courseColorMap.size % colors.length]);
+      courseColorMap.set(
+        course.course,
+        colors[courseColorMap.size % colors.length]
+      );
     }
     const newSchedule: Block[] = schedule.schedule
       .slice()
@@ -98,7 +109,10 @@
     for (let i = 6 - 1; i >= 0; i--) {
       const lunch = schedule.lunches[i];
       const index = i * 6 + (lunch === 1 ? 2 : lunch === 2 ? 3 : 4);
-      newSchedule.splice(index, 0, { type: "lunch", color: courseColorMap.get("lunch")! });
+      newSchedule.splice(index, 0, {
+        type: "lunch",
+        color: courseColorMap.get("lunch")!
+      });
     }
 
     return newSchedule;
@@ -111,7 +125,9 @@
   let dayViewDay: Date = $state(now());
   let selectedDay: number = $state(0);
   let generated = $derived(
-    schedule ? transpose(insertLunches(schedule), 6, 7) : (null as any as Block[])
+    schedule
+      ? transpose(insertLunches(schedule), 6, 7)
+      : (null as any as Block[])
   );
 
   let exportModalOpen = $state(false);
@@ -122,7 +138,9 @@
   const generateBlocks = (date: Date, calendar: CalendarEvent) => {
     if (!schedule) return { day: "", blocks: [] };
     const currentDayEvents = calendar.items.filter((event) => {
-      const eventStartDate = new Date(event.start.dateTime || event.start.date!);
+      const eventStartDate = new Date(
+        event.start.dateTime || event.start.date!
+      );
       const isFullDayEvent = !event.start.dateTime && !event.end.dateTime;
 
       return (
@@ -132,7 +150,9 @@
         isFullDayEvent
       );
     });
-    const day = currentDayEvents.find((event) => event.summary.includes("Day"))?.summary!;
+    const day = currentDayEvents.find((event) =>
+      event.summary.includes("Day")
+    )?.summary!;
     if (!day) return { day: "", blocks: [] };
     const allEvents = currentDayEvents
       .filter((event) => !event.summary.includes("Day"))
@@ -164,12 +184,17 @@
                 ? 5
                 : 6) - 1;
 
-    const today = $zoron.schedule!.schedule!.slice(dayNumber * 6, (dayNumber + 1) * 6);
+    const today = $zoron.schedule!.schedule!.slice(
+      dayNumber * 6,
+      (dayNumber + 1) * 6
+    );
     const blocks = today
       .filter((block) => block?.block || block?.schedule)
       .map((block) => block!.block || block!.schedule)
       .map((item) => (item === "HR" ? "Advisory" : item))
-      .map((item, idx) => ((idx < 2 || idx > 3) && item ? item.replace("$", "") : item));
+      .map((item, idx) =>
+        (idx < 2 || idx > 3) && item ? item.replace("$", "") : item
+      );
 
     const filtered = allEvents.filter(
       (event) => blocks.includes(event.name) || event.name === "I-block"
@@ -179,7 +204,8 @@
       ...event,
       class: generated.find(
         (b) =>
-          ((b as any).block?.replace("$", "") || b.type).trim() === event.name ||
+          ((b as any).block?.replace("$", "") || b.type).trim() ===
+            event.name ||
           ((b as any).block || b.type).trim() === event.name ||
           ((b as any).schedule?.trim() === "HR" && event.name === "Advisory")
       ) || {
@@ -199,7 +225,8 @@
       ) {
         if (last) {
           last.end = new Date(last.end.getTime() - 1000 * 60 * 30);
-          last.duration = (last.end.getTime() - last.start.getTime()) / 1000 / 60;
+          last.duration =
+            (last.end.getTime() - last.start.getTime()) / 1000 / 60;
         }
         // second lunch
         return {
@@ -237,7 +264,9 @@
         blocks: [
           ...blockEvents,
           {
-            ...allEvents.find((event) => event.name.includes(`Lunch ${targetLunch}`))!,
+            ...allEvents.find((event) =>
+              event.name.includes(`Lunch ${targetLunch}`)
+            )!,
             class: {
               type: "lunch" as const,
               lunch: targetLunch
@@ -255,7 +284,8 @@
     const res = await requests.get<CalendarEvent>(
       "https://www.googleapis.com/calendar/v3/calendars/lexingtonma.org_qud45cvitftvgc317tsd2vqctg%40group.calendar.google.com/events",
       {
-        calendarId: "lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com",
+        calendarId:
+          "lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com",
         singleEvents: true,
         timeZone: "America/New_York",
         maxResults: 20,
@@ -275,7 +305,9 @@
       ? null
       : now().getTime() > end.getTime()
         ? null
-        : ((now().getTime() - start.getTime()) / (end.getTime() - start.getTime())) * 100;
+        : ((now().getTime() - start.getTime()) /
+            (end.getTime() - start.getTime())) *
+          100;
 
   let dayCache = new Map<string, Awaited<ReturnType<typeof loadDay>>>();
   let day: Awaited<ReturnType<typeof loadDay>> | null = $state(null);
@@ -325,7 +357,10 @@
       key++;
       if (mode === "day" && day) {
         for (let i = 0; i < day.blocks.length; i++) {
-          day.blocks[i].progression = calculateProgression(day.blocks[i].start, day.blocks[i].end);
+          day.blocks[i].progression = calculateProgression(
+            day.blocks[i].start,
+            day.blocks[i].end
+          );
         }
       }
       frame = requestAnimationFrame(tick);
@@ -338,7 +373,8 @@
         // @ts-expect-error
         document.querySelector("#day-transition").style.transform =
           // @ts-expect-error
-          "translateX(100vw)" + document.querySelector("#day-transition").style.transform;
+          "translateX(100vw)" +
+          document.querySelector("#day-transition").style.transform;
         await new Promise((r) => setTimeout(r, 200));
 
         dayViewDay = new Date(dayViewDay.getTime() - 1000 * 60 * 60 * 24);
@@ -347,7 +383,8 @@
         // @ts-expect-error
         document.querySelector("#day-transition").style.transform =
           // @ts-expect-error
-          "translateX(-100vw)" + document.querySelector("#day-transition").style.transform;
+          "translateX(-100vw)" +
+          document.querySelector("#day-transition").style.transform;
         await new Promise((r) => setTimeout(r, 200));
         dayViewDay = new Date(dayViewDay.getTime() + 1000 * 60 * 60 * 24);
         swipeDirection = "left";
@@ -379,7 +416,9 @@
       e.preventDefault();
       swipeStart = {
         x: e.touches[0].clientX,
-        y: e.touches[0].clientY - parseInt(e.currentTarget.getAttribute("data-swipe") || "0")
+        y:
+          e.touches[0].clientY -
+          parseInt(e.currentTarget.getAttribute("data-swipe") || "0")
       };
       e.currentTarget.style.transition = "none";
     };
@@ -437,9 +476,15 @@
       swipeStart = null;
     };
 
-    dayViewRef?.addEventListener("touchstart", touchStart as any, { passive: false });
-    dayViewRef?.addEventListener("touchmove", touchMove as any, { passive: false });
-    dayViewRef?.addEventListener("touchend", touchEnd as any, { passive: false });
+    dayViewRef?.addEventListener("touchstart", touchStart as any, {
+      passive: false
+    });
+    dayViewRef?.addEventListener("touchmove", touchMove as any, {
+      passive: false
+    });
+    dayViewRef?.addEventListener("touchend", touchEnd as any, {
+      passive: false
+    });
     return () => {
       dayViewRef?.removeEventListener("touchstart", touchStart as any);
       dayViewRef?.removeEventListener("touchmove", touchMove as any);
@@ -473,7 +518,9 @@
         easing: motion.transitions.spring(400, 20)
       }}>Load Schedule</button
     >
-    <div class="flex max-w-96 flex-wrap items-center justify-center gap-1 px-3 text-slate-600">
+    <div
+      class="flex max-w-96 flex-wrap items-center justify-center gap-1 px-3 text-slate-600"
+    >
       {#each "Once your schedule is loaded, it can updated once every 24 hours via the {icon} button".split(" ") as word, idx}
         {#if word === "{icon}"}
           <span
@@ -500,7 +547,9 @@
     </div>
   </div>
 {:else}
-  <div class="relative flex h-full flex-col-reverse items-center gap-3 md:flex-row md:pt-0">
+  <div
+    class="relative flex h-full flex-col-reverse items-center gap-3 md:flex-row md:pt-0"
+  >
     <div
       class="-mb-3 hidden items-center gap-3 rounded-full bg-slate-800 p-2 md:mb-0 md:flex md:flex-col"
     >
@@ -566,7 +615,9 @@
             <ScheduleBlock
               index={i}
               {block}
-              className="border-b-4 border-r-4 {i <= 5 ? 'border-t-4' : ''} {i % 6 === 0
+              className="border-b-4 border-r-4 {i <= 5 ? 'border-t-4' : ''} {i %
+                6 ===
+              0
                 ? 'border-l-4'
                 : ''}"
             />
@@ -607,7 +658,9 @@
         {/key}
       </Swipeable>
     {:else}
-      <div class="mx-auto flex h-full w-80 flex-col items-center gap-5 overflow-x-visible">
+      <div
+        class="mx-auto flex h-full w-80 flex-col items-center gap-5 overflow-x-visible"
+      >
         <div
           class="-mb-3 mt-3 text-xl text-slate-400"
           in:fly|global={{
@@ -657,7 +710,9 @@
           }}
         >
           {#key key}
-            School clocks are {Math.abs(($zoron.constants?.timeDelta || 0) / 1000).toFixed(0)} seconds
+            School clocks are {Math.abs(
+              ($zoron.constants?.timeDelta || 0) / 1000
+            ).toFixed(0)} seconds
             {($zoron.constants?.timeDelta || 0) < 0 ? "behind" : "ahead"}: {now().toLocaleTimeString()}
           {/key}
         </div>
@@ -689,10 +744,13 @@
                 // @ts-expect-error
                 document.querySelector("#day-transition").style.transform =
                   // @ts-expect-error
-                  "translateX(100vw)" + document.querySelector("#day-transition").style.transform;
+                  "translateX(100vw)" +
+                  document.querySelector("#day-transition").style.transform;
                 await new Promise((r) => setTimeout(r, 200));
 
-                dayViewDay = new Date(dayViewDay.getTime() - 1000 * 60 * 60 * 24);
+                dayViewDay = new Date(
+                  dayViewDay.getTime() - 1000 * 60 * 60 * 24
+                );
                 swipeDirection = "right";
               }}
             >
@@ -727,9 +785,12 @@
                 // @ts-expect-error
                 document.querySelector("#day-transition").style.transform =
                   // @ts-expect-error
-                  "translateX(-100vw)" + document.querySelector("#day-transition").style.transform;
+                  "translateX(-100vw)" +
+                  document.querySelector("#day-transition").style.transform;
                 await new Promise((r) => setTimeout(r, 200));
-                dayViewDay = new Date(dayViewDay.getTime() + 1000 * 60 * 60 * 24);
+                dayViewDay = new Date(
+                  dayViewDay.getTime() + 1000 * 60 * 60 * 24
+                );
                 swipeDirection = "left";
               }}
             >
@@ -789,15 +850,23 @@
                         </div>
                       </div>
 
-                      <div class="italic">{dateToTime(block.start)} - {dateToTime(block.end)}</div>
+                      <div class="italic">
+                        {dateToTime(block.start)} - {dateToTime(block.end)}
+                      </div>
                       <div class="italic">
                         {block.duration} minutes
                         {#if now().getTime() - block.start.getTime() < 0 && now().getTime() - block.start.getTime() >= -1000 * 60 * 5}
                           <span class="ml-1"></span>
                           Starts in {Math.floor(
-                            (block.start.getTime() - now().getTime()) / 1000 / 60
+                            (block.start.getTime() - now().getTime()) /
+                              1000 /
+                              60
                           )}:{Math.floor(
-                            (((block.start.getTime() - now().getTime()) / 1000 / 60) % 1) * 60
+                            (((block.start.getTime() - now().getTime()) /
+                              1000 /
+                              60) %
+                              1) *
+                              60
                           )
                             .toString()
                             .padStart(2, "0")}
@@ -805,9 +874,13 @@
                         {#if block.progression},
                           <span class="ml-1"></span>
                           {Math.floor(
-                            block.duration - (block.progression / 100) * block.duration
+                            block.duration -
+                              (block.progression / 100) * block.duration
                           )}:{Math.floor(
-                            ((block.duration - (block.progression / 100) * block.duration) % 1) * 60
+                            ((block.duration -
+                              (block.progression / 100) * block.duration) %
+                              1) *
+                              60
                           )
                             .toString()
                             .padStart(2, "0")} remaining
@@ -822,9 +895,12 @@
                               ? 'border-cyan-400'
                               : 'border-slate-600'}"
                         >
-                          <div class="z-10 pl-2">{block.progression.toFixed(0)}%</div>
+                          <div class="z-10 pl-2">
+                            {block.progression.toFixed(0)}%
+                          </div>
                           <div
-                            class="absolute left-0 top-0 h-full {block.class?.type === 'block'
+                            class="absolute left-0 top-0 h-full {block.class
+                              ?.type === 'block'
                               ? block.class.color
                               : 'bg-slate-600'}"
                             style="width: {block.progression}%"
@@ -835,7 +911,11 @@
                   {/each}
                 {:else}
                   <div class="rounded-3xl bg-slate-700 p-3 backdrop-blur-3xl">
-                    <img src={randomPlaceholderImage()} class="h-80 w-80" alt="placeholder" />
+                    <img
+                      src={randomPlaceholderImage()}
+                      class="h-80 w-80"
+                      alt="placeholder"
+                    />
                   </div>
                 {/if}
               </div>
@@ -859,7 +939,9 @@
       }
     }}
   >
-    <div class="relative flex flex-col items-center rounded-lg bg-slate-800 p-5">
+    <div
+      class="relative flex flex-col items-center rounded-lg bg-slate-800 p-5"
+    >
       <button
         class="btn-circle absolute right-2 top-2"
         onclick={() => {
@@ -891,9 +973,14 @@
             if (!schedule?.schedule) return toast.error("Schedule not loaded");
             // @ts-expect-error chooobs not a property of target
             const password = e.target?.choobs?.value;
-            if (!password || typeof password !== "string" || password.length <= 0)
+            if (
+              !password ||
+              typeof password !== "string" ||
+              password.length <= 0
+            )
               return toast.error("Password is required");
-            if (!page.data.session?.user?.email) return toast.error("User not logged in");
+            if (!page.data.session?.user?.email)
+              return toast.error("User not logged in");
             const { dismiss } = toast.loading("Exporting schedule...");
             try {
               await updateChoobsSchedule(
@@ -922,12 +1009,14 @@
             autocomplete="off"
             required
           />
-          <button class="btn-full btn-outlined border-blue-600 py-2 text-base">Export</button>
+          <button class="btn-full btn-outlined border-blue-600 py-2 text-base"
+            >Export</button
+          >
         </form>
         <div class="mx-auto w-96 py-2 text-sm text-slate-400">
           <Fa icon={faInfoCircle} class="float-left mr-2 mt-[3px]" />
-          Your password is used once to write your schedule to your account. It is never sent to an server
-          or stored.
+          Your password is used once to write your schedule to your account. It is
+          never sent to an server or stored.
         </div>
       </Collapsible>
     </div>

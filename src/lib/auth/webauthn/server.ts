@@ -45,7 +45,8 @@ export const getCurrentRegistrationOptions = async (
 };
 
 export const registrationOptions = async (session: Session | null) => {
-  if (!session?.user?.id || !session.user.email) throw new Error("User not found");
+  if (!session?.user?.id || !session.user.email)
+    throw new Error("User not found");
 
   const user: UserModel = {
     id: session.user.id,
@@ -81,7 +82,10 @@ export const registrationOptions = async (session: Session | null) => {
   return options;
 };
 
-export const register = async (session: Session | null, body: { name: string } & any) => {
+export const register = async (
+  session: Session | null,
+  body: { name: string } & any
+) => {
   if (!session?.user?.id) throw new Error("User not found");
 
   const currentOptions = await getCurrentRegistrationOptions(session.user.id);
@@ -104,7 +108,8 @@ export const register = async (session: Session | null, body: { name: string } &
     throw new Error("Missing registration info");
   }
 
-  const { credential, credentialDeviceType, credentialBackedUp } = registrationInfo;
+  const { credential, credentialDeviceType, credentialBackedUp } =
+    registrationInfo;
 
   const user: UserModel = {
     id: session.user.id,
@@ -169,7 +174,10 @@ export const authenticationOptions = async () => {
   return { sessionID, options };
 };
 
-export const authenticate = async (sessionID: string, body: AuthenticationResponseJSON) => {
+export const authenticate = async (
+  sessionID: string,
+  body: AuthenticationResponseJSON
+) => {
   // Get the challenge from the database
   const challengeDoc = (
     await query({ collection: "challenges", query: { session: sessionID } })
@@ -180,7 +188,10 @@ export const authenticate = async (sessionID: string, body: AuthenticationRespon
 
   // Get the authenticating passkey
   const passkey = (
-    await query({ collection: "users", query: { "webauthn.passkeys.id": body.id } })
+    await query({
+      collection: "users",
+      query: { "webauthn.passkeys.id": body.id }
+    })
   )[0];
   if (!passkey) {
     throw new Error("Passkey not found");

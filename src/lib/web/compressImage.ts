@@ -34,9 +34,11 @@ export const compressImage = async (image: File, size = 128) => {
         ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, size, size);
 
         // Then the scaling is handled automatically by the canvas size
-        canvas.convertToBlob({ type: "image/jpeg", quality: 0.8 }).then((blob) => {
-          resolve(blob);
-        });
+        canvas
+          .convertToBlob({ type: "image/jpeg", quality: 0.8 })
+          .then((blob) => {
+            resolve(blob);
+          });
       };
       img.src = event.target?.result as string;
     };

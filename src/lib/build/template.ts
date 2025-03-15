@@ -1,6 +1,9 @@
 import fs from "node:fs/promises";
 
-export const template = (content: string, data: Record<string, string | number>) => {
+export const template = (
+  content: string,
+  data: Record<string, string | number>
+) => {
   return content.replace(/\{\{(\w+)\}\}/g, (_, key) => data[key].toString());
 };
 export const templateFile = async (

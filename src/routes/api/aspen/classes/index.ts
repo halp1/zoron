@@ -8,7 +8,8 @@ export const classes = async (
   secret: string,
   options?: aspen.Types.ClassOptions
 ) => {
-  if (!session.user?.email || !session.user.aspen) throw new Error("Not authenticated");
+  if (!session.user?.email || !session.user.aspen)
+    throw new Error("Not authenticated");
   try {
     if (!session?.user?.session?.cookie) throw new Error();
     return await aspen.classes(session.user.session.cookie, options);

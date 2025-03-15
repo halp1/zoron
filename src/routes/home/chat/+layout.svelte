@@ -1,23 +1,33 @@
 <script lang="ts">
-  import { supabaseConnect } from "$lib/supabase";
-  import { onMount } from "svelte";
-  import { page } from "$app/state";
-  import { faGlobe } from "@fortawesome/free-solid-svg-icons/faGlobe";
-  import type { IconDefinition } from "@fortawesome/fontawesome-common-types";
-  import Fa from "svelte-fa";
-  import { motion } from "$lib/motion";
   import { fly } from "svelte/transition";
+
+  import { page } from "$app/state";
+
+  import { motion } from "$lib/motion";
+  import { supabaseConnect } from "$lib/supabase";
+
+  import Fa from "svelte-fa";
+
+  import type { IconDefinition } from "@fortawesome/fontawesome-common-types";
+  import { faGlobe } from "@fortawesome/free-solid-svg-icons/faGlobe";
+
+  import { onMount } from "svelte";
+
   interface Props {
     children?: import("svelte").Snippet;
   }
 
   let { children }: Props = $props();
 
-  let chats: (({ title: string } | { icon: IconDefinition }) & { id: string })[] | null =
-    $state(null);
+  let chats:
+    | (({ title: string } | { icon: IconDefinition }) & { id: string })[]
+    | null = $state(null);
 
   onMount(() => {
-    const client = supabaseConnect(page.data.env.supabase.uri, page.data.env.supabase.key);
+    const client = supabaseConnect(
+      page.data.env.supabase.uri,
+      page.data.env.supabase.key
+    );
     client.auth.setSession(page.data.supabase.session);
     chats = [{ id: "global", icon: faGlobe }];
     return () => {
@@ -29,7 +39,9 @@
   let currentChatId = $derived(page.params.id);
 </script>
 
-<div class="chat-container -mx-10 flex h-full flex-col-reverse items-stretch md:flex-row">
+<div
+  class="chat-container -mx-10 flex h-full flex-col-reverse items-stretch md:flex-row"
+>
   <div
     class="flex h-16 gap-3 rounded-r-md bg-slate-950 px-3 md:h-auto md:w-16 md:flex-col md:px-0 md:py-3"
     style="view-transition-name: none"

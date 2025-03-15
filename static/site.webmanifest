@@ -4,10 +4,7 @@
   "short_name": "Zoron",
   "start_url": "/launch",
   "orientation": "portrait",
-  "display_override": [
-    "window-controls-overlay",
-    "tabbed"
-  ],
+  "display_override": ["window-controls-overlay", "tabbed"],
   "icons": [
     {
       "src": "icons/icon-72x72.png",

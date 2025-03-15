@@ -1,19 +1,31 @@
 <script lang="ts">
+  import { writable } from "svelte/store";
+  import { fly } from "svelte/transition";
+
   import { page } from "$app/state";
+
   import { Toggle } from "$lib/components";
   import ImageEditor from "$lib/components/ImageEditor.svelte";
+  import { motion } from "$lib/motion";
   import { supabase, supabaseConnect } from "$lib/supabase";
   import type { Settings } from "$lib/types";
-  import { getDeviceInfo, requests, toast, type Device, compressImage } from "$lib/web";
-  import _ from "lodash";
-  import { onMount } from "svelte";
-  import { writable } from "svelte/store";
-  import { defaultSettings } from "../../api/account/settings/defaults";
+  import {
+    type Device,
+    compressImage,
+    getDeviceInfo,
+    requests,
+    toast
+  } from "$lib/web";
+
+  import Fa from "svelte-fa";
+
   import { faArrowLeft } from "@fortawesome/free-solid-svg-icons/faArrowLeft";
   import { faCamera } from "@fortawesome/free-solid-svg-icons/faCamera";
-  import Fa from "svelte-fa";
-  import { motion } from "$lib/motion";
-  import { fly } from "svelte/transition";
+
+  import _ from "lodash";
+  import { onMount } from "svelte";
+
+  import { defaultSettings } from "../../api/account/settings/defaults";
 
   let device: Device | null = null;
   onMount(() => {
@@ -23,10 +35,15 @@
   });
 
   let mounted = $state(false);
-  const settings = writable(_.merge(defaultSettings, page.data.session?.user?.settings));
+  const settings = writable(
+    _.merge(defaultSettings, page.data.session?.user?.settings)
+  );
 
   onMount(() => {
-    const client = supabaseConnect(page.data.env.supabase.uri, page.data.env.supabase.key);
+    const client = supabaseConnect(
+      page.data.env.supabase.uri,
+      page.data.env.supabase.key
+    );
     client.auth.setSession(page.data.supabase.session);
     mounted = true;
     return () => {
@@ -41,16 +58,19 @@
     const res = await requests.post<Settings>("/api/account/settings", {
       notifications: value.notifications,
       home: value.home,
-			social: value.social
+      social: value.social
     });
-    if (!res.success) toast.error("An error occurred while saving your settings: " + res.error);
+    if (!res.success)
+      toast.error("An error occurred while saving your settings: " + res.error);
     else toast.success("Updated settings");
     console.log(res);
   });
 
   const devices = page.data.session?.user?.devices || [];
   const matchingDevice = devices.find(
-    (d) => device && (device.fingerprint === d.device.fingerprint || device.id === d.device.id)
+    (d) =>
+      device &&
+      (device.fingerprint === d.device.fingerprint || device.id === d.device.id)
   );
 
   let uploading = $state(false);
@@ -95,7 +115,9 @@
       const filePath = `${userId}/profile-picture.jpg`; // Always use jpg since we convert in compressImage
 
       // First delete the existing profile picture if it exists
-      const { error: deleteError } = await supabaseClient.storage.from("pfps").remove([filePath]);
+      const { error: deleteError } = await supabaseClient.storage
+        .from("pfps")
+        .remove([filePath]);
 
       if (deleteError && deleteError.message !== "Object not found") {
         throw deleteError;
@@ -123,13 +145,16 @@
       } = supabaseClient.storage.from("pfps").getPublicUrl(filePath);
 
       // Update user's profile picture URL
-      const profileResponse = await fetch("/api/account/settings/profile-picture", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ imageUrl: publicUrl + "?t=" + Date.now() })
-      });
+      const profileResponse = await fetch(
+        "/api/account/settings/profile-picture",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ imageUrl: publicUrl + "?t=" + Date.now() })
+        }
+      );
 
       if (!profileResponse.ok) {
         const data = await profileResponse.json();
@@ -194,7 +219,9 @@
         </div>
 
         <!-- Profile Picture Section -->
-        <div class="flex flex-col items-center gap-3 border-b-2 border-slate-600 pb-4">
+        <div
+          class="flex flex-col items-center gap-3 border-b-2 border-slate-600 pb-4"
+        >
           <div class="relative">
             <img
               src={page.data.session?.user?.image || "/favicon.png"}
@@ -210,7 +237,9 @@
             />
 
             {#if showEditor && editingImage}
-              <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+              <div
+                class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+              >
                 <div class="w-auto rounded-lg bg-slate-800 p-6">
                   <h3 class="mb-4 text-lg font-bold">Edit Profile Picture</h3>
                   <ImageEditor
@@ -379,9 +408,15 @@
               class="rounded-md border-2 border-slate-600 bg-transparent outline-none focus-within:outline-none"
             >
               <option value="home" class="bg-slate-800 text-white">Home</option>
-              <option value="schedule" class="bg-slate-800 text-white">Schedule</option>
-              <option value="grades" class="bg-slate-800 text-white">Grades</option>
-              <option value="activity" class="bg-slate-800 text-white">Activity</option>
+              <option value="schedule" class="bg-slate-800 text-white"
+                >Schedule</option
+              >
+              <option value="grades" class="bg-slate-800 text-white"
+                >Grades</option
+              >
+              <option value="activity" class="bg-slate-800 text-white"
+                >Activity</option
+              >
             </select>
           </div>
           <div
@@ -425,9 +460,15 @@
               bind:value={$settings.social.schedule}
               class="rounded-md border-2 border-slate-600 bg-transparent outline-none focus-within:outline-none"
             >
-              <option value="all" class="bg-slate-800 text-white">Everyone</option>
-              <option value="friends" class="bg-slate-800 text-white">Friends</option>
-              <option value="none" class="bg-slate-800 text-white">Nobody</option>
+              <option value="all" class="bg-slate-800 text-white"
+                >Everyone</option
+              >
+              <option value="friends" class="bg-slate-800 text-white"
+                >Friends</option
+              >
+              <option value="none" class="bg-slate-800 text-white"
+                >Nobody</option
+              >
             </select>
           </div>
         </div>

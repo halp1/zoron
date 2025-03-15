@@ -6,7 +6,12 @@ import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ locals: { auth }, cookies }) => {
   const session = await auth();
-  if (!session?.user?.email || !session.user.id || !session.user.password || !session.user.aspen)
+  if (
+    !session?.user?.email ||
+    !session.user.id ||
+    !session.user.password ||
+    !session.user.aspen
+  )
     return redirect(302, "/login");
   if (!cookies.get("secret")) {
     const cookieOptions = authLib.cookies.sessionToken.options;

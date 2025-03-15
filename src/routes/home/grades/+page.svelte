@@ -1,14 +1,22 @@
 <script lang="ts">
-  import { page } from "$app/state";
-  import type { aspen } from "$lib/aspen";
-  import { Collapsible, Skeleton, ListSelect } from "$lib/components";
-  import { faChevronRight, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
-  import Fa from "svelte-fa";
-  import { requests, toast, zoron } from "$lib/web";
-  import { onMount } from "svelte";
   import { writable } from "svelte/store";
   import { fly } from "svelte/transition";
+
+  import { page } from "$app/state";
+
+  import type { aspen } from "$lib/aspen";
+  import { Collapsible, ListSelect, Skeleton } from "$lib/components";
   import { motion } from "$lib/motion";
+  import { requests, toast, zoron } from "$lib/web";
+
+  import Fa from "svelte-fa";
+
+  import {
+    faChevronRight,
+    faQuestionCircle
+  } from "@fortawesome/free-solid-svg-icons";
+
+  import { onMount } from "svelte";
 
   interface Class extends aspen.Types.Class {
     expanded: boolean;
@@ -24,20 +32,25 @@
           ...c,
           expanded: false,
           height: -1,
-          credit: $zoron.schedule?.schedule?.find((a) => a?.course === c.course)?.credit
+          credit: $zoron.schedule?.schedule?.find((a) => a?.course === c.course)
+            ?.credit
         }) satisfies Class
     ) as Class[] | null
   );
 
   const loadClassData = async (c: Class) => {
-    const res = await requests.post<aspen.Types.ClassDetail>("/api/aspen/class", {
-      classID: c.id,
-      assignments: {
-        term: 0
+    const res = await requests.post<aspen.Types.ClassDetail>(
+      "/api/aspen/class",
+      {
+        classID: c.id,
+        assignments: {
+          term: 0
+        }
       }
-    });
+    );
 
-    if (!res.success) toast.error("An error occurred while fetching class data: " + res.error);
+    if (!res.success)
+      toast.error("An error occurred while fetching class data: " + res.error);
     return "data" in res ? res.data : undefined;
   };
 
@@ -84,14 +97,17 @@
       options
     );
     if (!res.success)
-      return toast.error("An error occurred while fetching grade data: " + res.error);
+      return toast.error(
+        "An error occurred while fetching grade data: " + res.error
+      );
     classes = res.data.classes.map(
       (c) =>
         ({
           ...c,
           expanded: false,
           height: -1,
-          credit: $zoron.schedule?.schedule?.find((a) => a?.course === c.course)?.credit
+          credit: $zoron.schedule?.schedule?.find((a) => a?.course === c.course)
+            ?.credit
         }) satisfies Class
     );
   };
@@ -115,7 +131,9 @@
               ...c,
               expanded: false,
               height: -1,
-              credit: $zoron.schedule?.schedule?.find((a) => a?.course === c.course)?.credit
+              credit: $zoron.schedule?.schedule?.find(
+                (a) => a?.course === c.course
+              )?.credit
             }) satisfies Class
         );
         return;
@@ -156,8 +174,9 @@
       else if (grade.averages[idx]) terms.push(grade.averages[idx].number);
     });
     return (
-      terms.map((term) => (term <= 9 ? convertMathScore(term) : term)).reduce((a, b) => a + b, 0) /
-      terms.length
+      terms
+        .map((term) => (term <= 9 ? convertMathScore(term) : term))
+        .reduce((a, b) => a + b, 0) / terms.length
     );
   };
 
@@ -205,7 +224,11 @@
         weight: grade.credit!
       }))
       .filter((g) => g.weight && g.gpa !== null)
-      .reduce((a, b, _, arr) => a + (b.gpa * b.weight) / arr.reduce((a, b) => a + b.weight, 0), 0);
+      .reduce(
+        (a, b, _, arr) =>
+          a + (b.gpa * b.weight) / arr.reduce((a, b) => a + b.weight, 0),
+        0
+      );
 
   const convertMathScore = (score: number) =>
     Math.min(
@@ -223,7 +246,9 @@
   const preloadLength =
     (page.data.session?.user?.schedule?.schedule?.reduce(
       (prev, cur) =>
-        !prev.find((item) => cur === null || item?.course === cur?.course) ? [...prev, cur] : prev,
+        !prev.find((item) => cur === null || item?.course === cur?.course)
+          ? [...prev, cur]
+          : prev,
       [] as (aspen.Types.Schedule.Course | null)[]
     ).length || 8) + 1;
 
@@ -291,7 +316,11 @@
         $classQuery.year !== "previous" &&
         !page.data?.session?.user?.settings?.home?.hideGPA &&
         calculateGPA(
-          classes.map((c) => ({ grade: c.grade, courseID: c.course, credit: c.credit }))
+          classes.map((c) => ({
+            grade: c.grade,
+            courseID: c.course,
+            credit: c.credit
+          }))
         ) !== 0) ||
       typeof window === "undefined"
     )}
@@ -308,10 +337,17 @@
       }
     }}
   >
-    <div class="whitespace-nowrap text-center text-3xl" style="view-transition-name: gpa;">
+    <div
+      class="whitespace-nowrap text-center text-3xl"
+      style="view-transition-name: gpa;"
+    >
       Quarter GPA: {#if classes && $zoron.schedule && $classQuery.year !== "previous" && !page.data?.session?.user?.settings?.home?.hideGPA && calculateGPA(classes.map( (c) => ({ grade: c.grade, courseID: c.course, credit: c.credit }) )) !== 0}
         {calculateGPA(
-          classes.map((c) => ({ grade: c.grade, courseID: c.course, credit: c.credit }))
+          classes.map((c) => ({
+            grade: c.grade,
+            courseID: c.course,
+            credit: c.credit
+          }))
         ).toFixed(2)}
       {:else}
         0.00
@@ -321,7 +357,9 @@
 </div>
 
 {#if classes}
-  <div class="grid grid-cols-1 gap-5 pb-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+  <div
+    class="grid grid-cols-1 gap-5 pb-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+  >
     {#each classes as c, idx}
       <div
         id="c-{c.id}"
@@ -360,8 +398,11 @@
                               const interval = setInterval(() => {
                                 if (document.querySelector(`#grades-${c.id}`)) {
                                   c.height =
-                                    (document.querySelector(`#grades-${c.id}`) as HTMLDivElement)
-                                      ?.offsetHeight || 400;
+                                    (
+                                      document.querySelector(
+                                        `#grades-${c.id}`
+                                      ) as HTMLDivElement
+                                    )?.offsetHeight || 400;
                                   clearInterval(interval);
                                   r();
                                 }
@@ -387,10 +428,14 @@
                 >
                   <Fa
                     icon={faChevronRight}
-                    class="z-10 transition-all {c.expanded ? 'rotate-90' : 'rotate-0'}"
+                    class="z-10 transition-all {c.expanded
+                      ? 'rotate-90'
+                      : 'rotate-0'}"
                   />
                 </button>
-                <div class="overflow-hidden text-ellipsis whitespace-nowrap text-xl">
+                <div
+                  class="overflow-hidden text-ellipsis whitespace-nowrap text-xl"
+                >
                   {c.name}
                 </div>
                 {#if c.credit && c.expanded && c.data && window.matchMedia("(min-width: 640px)").matches}
@@ -421,13 +466,19 @@
               </div>
             </div>
             {#if c.credit && (!c.expanded || !c.data || !window.matchMedia("(min-width: 640px)").matches)}
-              <div class="ml-auto flex flex-col border-r-2 border-slate-600 pr-1 text-slate-400">
+              <div
+                class="ml-auto flex flex-col border-r-2 border-slate-600 pr-1 text-slate-400"
+              >
                 <div class="-mb-1 text-end">{c.credit.toFixed(2)}</div>
                 <div class="text-end">credits</div>
               </div>
             {/if}
           </div>
-          <div class="ml-auto flex gap-0 {c.expanded && c.data ? 'sm:items-center sm:gap-4' : ''}">
+          <div
+            class="ml-auto flex gap-0 {c.expanded && c.data
+              ? 'sm:items-center sm:gap-4'
+              : ''}"
+          >
             <div
               class="mt-auto flex flex-col justify-end border-l-2 border-slate-600 {c.expanded &&
               c.data
@@ -443,7 +494,9 @@
               {#if c.grade && !Number.isNaN(c.grade.number) && typeof c.grade.number === "number"}
                 <div class="relative mx-2 mr-auto flex items-center text-xl">
                   {c.grade.number.toFixed(2)}: {c.grade.letter}
-                  <div class="absolute bottom-0 h-[3px] w-full bg-slate-600"></div>
+                  <div
+                    class="absolute bottom-0 h-[3px] w-full bg-slate-600"
+                  ></div>
                 </div>
               {:else}
                 <div class="mx-2 text-slate-400">No grades available</div>
@@ -493,7 +546,9 @@
                     {#each c.data.assignments as assignment, idx}
                       <div
                         class="grid grid-cols-4 border-b-2 border-dashed border-slate-600 p-2 sm:grid-cols-7"
-                        style={idx === c.data.assignments.length - 1 ? "border: none" : ""}
+                        style={idx === c.data.assignments.length - 1
+                          ? "border: none"
+                          : ""}
                       >
                         <div
                           class="col-span-4 row-span-2 flex items-center justify-center border-dashed border-r-slate-600 text-center font-bold sm:col-span-3 sm:border-r-2 sm:pr-2"
@@ -509,16 +564,24 @@
                           <!-- {#if "weight" in assignment && assignment.weight !== undefined} -->
                           <div class="text-slate-400">
                             Weight: <span class="font-bold">
-                              {typeof assignment.weight === "undefined" ? 1 : assignment.weight}
+                              {typeof assignment.weight === "undefined"
+                                ? 1
+                                : assignment.weight}
                             </span>
                           </div>
                           <!-- {/if} -->
                         </div>
                         {#if assignment.score}
-                          <div class="col-span-2 flex items-center justify-end gap-1">
-                            <div class="font-bold">{assignment.score.scored}</div>
+                          <div
+                            class="col-span-2 flex items-center justify-end gap-1"
+                          >
+                            <div class="font-bold">
+                              {assignment.score.scored}
+                            </div>
                             <div>/</div>
-                            <div class="font-bold">{assignment.score.total}</div>
+                            <div class="font-bold">
+                              {assignment.score.total}
+                            </div>
                           </div>
                           <div
                             class="relative col-span-2 border-2 border-dashed border-slate-600 text-transparent"
@@ -526,7 +589,10 @@
                             .
                             <div
                               class="absolute left-0 top-0 h-full bg-green-400 bg-opacity-80"
-                              style="width: {Math.min(assignment.score.percentage, 100)}%"
+                              style="width: {Math.min(
+                                assignment.score.percentage,
+                                100
+                              )}%"
                             ></div>
                             <div
                               class="absolute right-0 top-1/2 z-10 -translate-y-1/2 font-bold text-white"
@@ -545,7 +611,9 @@
                     {/each}
                   </div>
                 {:else}
-                  <div class="flex flex-1 items-center justify-center py-5 text-slate-400">
+                  <div
+                    class="flex flex-1 items-center justify-center py-5 text-slate-400"
+                  >
                     You don't have any assignments in this class yet...
                   </div>
                 {/if}
@@ -553,8 +621,8 @@
               {#if c.data.grades}
                 <div
                   id="grades-{c.id}"
-                  class="relative mb-auto grid flex-1 border-2 border-slate-600 grid-cols-{c.data
-                    .grades.categories[0].terms.length *
+                  class="relative mb-auto grid flex-1 border-2 border-slate-600 grid-cols-{c
+                    .data.grades.categories[0].terms.length *
                     2 +
                     3}"
                 >
@@ -662,8 +730,9 @@
                   </div>
                   <div
                     class="relative flex justify-center border-b-2 border-l-2 border-dashed border-slate-600 bg-slate-800 px-2 py-1 text-center"
-                    style="grid-column: span {c.data.grades.categories[0].terms.length *
-                      2} / span {c.data.grades.categories[0].terms.length * 2};"
+                    style="grid-column: span {c.data.grades.categories[0].terms
+                      .length * 2} / span {c.data.grades.categories[0].terms
+                      .length * 2};"
                   >
                     {#if c.data.grades.final}
                       {c.data.grades.final.number.toFixed(2)}
@@ -679,7 +748,9 @@
                   </div>
                 </div>
               {:else}
-                <div class="flex flex-1 items-center justify-center py-5 text-slate-400">
+                <div
+                  class="flex flex-1 items-center justify-center py-5 text-slate-400"
+                >
                   This class doesn't appear to have any grades...
                 </div>{/if}
             </div>
@@ -689,16 +760,22 @@
     {/each}
   </div>
 {:else}
-  <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+  <div
+    class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+  >
     {#each Array.from({ length: preloadLength }) as _, idx}
-      <div class="mb-auto flex h-[143.2px] flex-col items-stretch border-2 border-slate-600 p-3">
+      <div
+        class="mb-auto flex h-[143.2px] flex-col items-stretch border-2 border-slate-600 p-3"
+      >
         <div class="flex items-center">
           <div class="overflow-auto">
             <div class="flex items-center">
               <button disabled class="btn-circle mr-1">
                 <Skeleton class="rounded-full p-3" />
               </button>
-              <div class="overflow-hidden text-ellipsis whitespace-nowrap text-xl">
+              <div
+                class="overflow-hidden text-ellipsis whitespace-nowrap text-xl"
+              >
                 <Skeleton class="h-4 w-36" />
               </div>
             </div>
@@ -706,7 +783,9 @@
               <Skeleton class="h-3 w-48" />
             </div>
           </div>
-          <div class="ml-auto mt-1 flex flex-col border-r-2 border-transparent pr-1 text-slate-400">
+          <div
+            class="ml-auto mt-1 flex flex-col border-r-2 border-transparent pr-1 text-slate-400"
+          >
             <div class="mb-2">
               <Skeleton class="h-3 w-10" />
             </div>

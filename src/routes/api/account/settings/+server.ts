@@ -15,7 +15,10 @@ export const POST: RequestHandler = async ({ request, locals: { auth } }) => {
   const session = await auth();
   if (!session?.user?.email) return api.error("Unauthorized", 401);
   const body: DeepPartial<Settings> = await request.json();
-  const settingsToUpdate: Settings = _.merge(defaultSettings, session.user.settings || {});
+  const settingsToUpdate: Settings = _.merge(
+    defaultSettings,
+    session.user.settings || {}
+  );
   if (typeof body?.notifications?.attendance === "boolean")
     settingsToUpdate.notifications.attendance = body.notifications.attendance;
   if (typeof body?.notifications?.grades === "boolean")
@@ -26,7 +29,8 @@ export const POST: RequestHandler = async ({ request, locals: { auth } }) => {
   ) {
     settingsToUpdate.home.default = body.home.default;
   }
-  if (typeof body?.home?.hideGPA === "boolean") settingsToUpdate.home.hideGPA = body.home.hideGPA;
+  if (typeof body?.home?.hideGPA === "boolean")
+    settingsToUpdate.home.hideGPA = body.home.hideGPA;
   if (
     typeof body?.social?.schedule === "string" &&
     ["all", "friends", "none"].includes(body.social.schedule)
@@ -34,7 +38,10 @@ export const POST: RequestHandler = async ({ request, locals: { auth } }) => {
     settingsToUpdate.social.schedule = body.social.schedule;
   }
 
-  await adapter.updateUser!({ id: session.user.id!, settings: settingsToUpdate });
+  await adapter.updateUser!({
+    id: session.user.id!,
+    settings: settingsToUpdate
+  });
 
   return api.json(settingsToUpdate);
 };

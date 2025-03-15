@@ -1,9 +1,12 @@
 <script lang="ts">
-  import { addPasskey } from "$lib/auth/webauthn/browser";
   import { page } from "$app/state";
+
+  import { addPasskey } from "$lib/auth/webauthn/browser";
   import { requests, toast } from "$lib/web";
-  import { faArrowLeft, faTrash } from "@fortawesome/free-solid-svg-icons";
+
   import Fa from "svelte-fa";
+
+  import { faArrowLeft, faTrash } from "@fortawesome/free-solid-svg-icons";
 
   let loading = $state(false);
   let showNameDialog = $state(false);
@@ -37,7 +40,9 @@
 
   const handleDeletePasskey = async (passkeyId: string) => {
     try {
-      const res = await requests.post("/api/account/passkeys/delete", { passkeyId });
+      const res = await requests.post("/api/account/passkeys/delete", {
+        passkeyId
+      });
       if (res.success) {
         toast.success("Passkey deleted successfully!");
         window.location.reload();
@@ -59,11 +64,15 @@
 
 <main>
   <div class="flex h-screen w-screen flex-col items-center justify-center">
-    <div class="relative flex w-96 flex-col gap-3 rounded-2xl bg-slate-800 p-10">
+    <div
+      class="relative flex w-96 flex-col gap-3 rounded-2xl bg-slate-800 p-10"
+    >
       <a class="btn-circle absolute left-5 top-5" href="/account">
         <Fa icon={faArrowLeft} />
       </a>
-      <div class="border-b-2 border-slate-600 pb-1 text-center text-4xl">Passkeys</div>
+      <div class="border-b-2 border-slate-600 pb-1 text-center text-4xl">
+        Passkeys
+      </div>
       <div class="flex flex-1 flex-col gap-3">
         <button
           onclick={() => (showNameDialog = true)}
@@ -73,7 +82,9 @@
           {loading ? "Adding..." : "Add Passkey"}
         </button>
 
-        <div class="flex flex-col items-stretch border-2 border-dashed border-slate-600 p-2">
+        <div
+          class="flex flex-col items-stretch border-2 border-dashed border-slate-600 p-2"
+        >
           {#if passkeys.length === 0}
             <div class="text-center">No passkeys registered</div>
           {:else}
@@ -88,7 +99,10 @@
                     Backed up: {passkey.backedUp ? "Yes" : "No"}
                   </p>
                 </div>
-                <button class="btn-circle ml-2" onclick={() => handleDeletePasskey(passkey.id)}>
+                <button
+                  class="btn-circle ml-2"
+                  onclick={() => handleDeletePasskey(passkey.id)}
+                >
                   <Fa icon={faTrash} />
                 </button>
               </div>
@@ -101,7 +115,9 @@
 </main>
 
 {#if showNameDialog}
-  <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+  <div
+    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+  >
     <div class="w-96 rounded-2xl bg-slate-800 p-10">
       <h2 class="mb-4 text-2xl">Name Your Passkey</h2>
       <input
