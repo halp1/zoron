@@ -18,7 +18,9 @@ export const POST: RequestHandler = async ({ request, locals: { auth } }) => {
 
   // Remove the passkey from the user's passkeys
   const updatedPasskeys =
-    userWithWebauthn.webauthn?.passkeys?.filter((passkey: any) => passkey.id !== passkeyId) || [];
+    userWithWebauthn.webauthn?.passkeys?.filter(
+      (passkey: any) => passkey.id !== passkeyId
+    ) || [];
 
   // Update the user with the new passkeys array
   await adapter.updateUser!({

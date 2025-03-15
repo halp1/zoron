@@ -1,9 +1,13 @@
 <script lang="ts">
+  import { page } from "$app/state";
+
+  import { PWA, isMobile } from "$lib/web";
+
   import { onMount } from "svelte";
   import { Toaster } from "svelte-french-toast";
-  import { isMobile, PWA } from "$lib/web";
+
   import "../app.css";
-  import { page } from "$app/state";
+
   interface Props {
     children?: import("svelte").Snippet;
   }

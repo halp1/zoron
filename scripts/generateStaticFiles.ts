@@ -24,7 +24,9 @@ const staticDir = join(__dirname, "../static");
 const serviceWorkerPath = join(__dirname, "../src/service-worker.js");
 
 const allFiles = await getAllFilePaths(staticDir);
-const relativePaths = allFiles.map((file) => "/" + relative(staticDir, file).replace(/\\/g, "/"));
+const relativePaths = allFiles.map(
+  (file) => "/" + relative(staticDir, file).replace(/\\/g, "/")
+);
 
 const serviceWorkerContent = await readFile(serviceWorkerPath, "utf-8");
 const lines = serviceWorkerContent.split("\n");

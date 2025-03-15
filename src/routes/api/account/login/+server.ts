@@ -9,7 +9,14 @@ import type { RequestHandler } from "./$types";
 export const POST: RequestHandler = async ({ request, cookies }) => {
   const { email, password, secret } = await request.json();
 
-  if (!email || !password || !secret || email === "" || password === "" || secret === "") {
+  if (
+    !email ||
+    !password ||
+    !secret ||
+    email === "" ||
+    password === "" ||
+    secret === ""
+  ) {
     return api.error("Missing email or password", 400);
   }
 
@@ -18,10 +25,17 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     return api.error("Invalid email.", 404);
   }
   if (!user.password) {
-    return api.error("No password set. You can set your password at /account/password", 404);
+    return api.error(
+      "No password set. You can set your password at /account/password",
+      404
+    );
   }
 
-  const valid = await verifyPassword(password, user.password.salt, user.password.hash);
+  const valid = await verifyPassword(
+    password,
+    user.password.salt,
+    user.password.hash
+  );
   if (!valid) {
     return api.error("Invalid password.", 401);
   }

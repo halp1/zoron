@@ -1,9 +1,11 @@
 <script lang="ts">
-  import { motion } from "$lib/motion";
-  import type { Block } from "$lib/types";
   import { fly } from "svelte/transition";
 
+  import { motion } from "$lib/motion";
+  import type { Block } from "$lib/types";
+
   import { twMerge } from "tailwind-merge";
+
   interface Props {
     block: Block;
     index: number;
@@ -11,7 +13,12 @@
     freeFontSize?: string;
   }
 
-  let { block, className = "", freeFontSize = "text-xl", index }: Props = $props();
+  let {
+    block,
+    className = "",
+    freeFontSize = "text-xl",
+    index
+  }: Props = $props();
 </script>
 
 <div
@@ -29,7 +36,10 @@
   }}
 >
   {#if block.type === "block"}
-    <div class="relative px-2 text-center font-bold" style="word-wrap: break-word;">
+    <div
+      class="relative px-2 text-center font-bold"
+      style="word-wrap: break-word;"
+    >
       {block.description}
     </div>
     <div class="mt-auto flex w-full items-center px-2">
@@ -42,7 +52,11 @@
     </div>
   {:else}
     <div class="my-auto {freeFontSize}">
-      {block.type === "lunch" ? "Lunch" : block.type === "I-block" ? "I Block" : "Free"}
+      {block.type === "lunch"
+        ? "Lunch"
+        : block.type === "I-block"
+          ? "I Block"
+          : "Free"}
     </div>
   {/if}
 </div>

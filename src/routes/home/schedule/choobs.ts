@@ -46,12 +46,17 @@ export const updateChoobsSchedule = async (
   schedule.forEach((block) => {
     if (block && block.schedule === "HR") block.block = "Adv";
     if (block && block.description in nameRemap) {
-      block.description = nameRemap[block.description as keyof typeof nameRemap];
+      block.description =
+        nameRemap[block.description as keyof typeof nameRemap];
     }
     if (block) {
       classes[block.block] = [block.description, block.room];
     }
   });
 
-  await setDoc(doc(db, "users", auth.currentUser!.uid), { classes }, { merge: true });
+  await setDoc(
+    doc(db, "users", auth.currentUser!.uid),
+    { classes },
+    { merge: true }
+  );
 };

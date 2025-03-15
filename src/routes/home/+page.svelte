@@ -1,13 +1,18 @@
 <script lang="ts">
-  import { page } from "$app/state";
-  import { PWA } from "$lib/web";
   import { fly } from "svelte/transition";
-  import { changelog } from "../changelog/changelog";
+
+  import { page } from "$app/state";
+
   import { motion } from "$lib/motion";
+  import { PWA } from "$lib/web";
+
+  import { onMount } from "svelte";
+
   import iosInstructions1 from "../../assets/instructions/pwa/ios/1.png";
   import iosInstructions2 from "../../assets/instructions/pwa/ios/2.png";
   import iosInstructions3 from "../../assets/instructions/pwa/ios/3.png";
-  import { onMount } from "svelte";
+  import { changelog } from "../changelog/changelog";
+
   const name = page.data?.session?.user?.name;
   const prompt = PWA.overridePrompt;
   const showIOSPopup = PWA.showIOSPopup;
@@ -83,7 +88,9 @@
             class="relative flex items-center gap-3 rounded-full px-2 hover:bg-slate-50 hover:bg-opacity-5"
             href="/changelog#{update.version}"
           >
-            <div class="flex h-full items-center border-r-2 border-slate-600 pr-2">
+            <div
+              class="flex h-full items-center border-r-2 border-slate-600 pr-2"
+            >
               <div>
                 {update.version}
               </div>
@@ -150,7 +157,9 @@
       }
     }}
   >
-    <div class="custom-scroll max-h-[80vh] w-96 overflow-y-auto rounded-lg bg-slate-800 p-5">
+    <div
+      class="custom-scroll max-h-[80vh] w-96 overflow-y-auto rounded-lg bg-slate-800 p-5"
+    >
       <div class="text-2xl">Instructions</div>
       <div class="mt-5 flex flex-col gap-5">
         <div>

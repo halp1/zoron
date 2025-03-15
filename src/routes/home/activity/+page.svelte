@@ -1,19 +1,31 @@
 <script lang="ts">
-  import { page } from "$app/state";
-  import type { Assignment, Attendance, PeriodAttendance, PostedGrade } from "$lib/aspen/types";
-  import type { aspen } from "$lib/aspen";
-  import Skeleton from "$lib/components/Skeleton.svelte";
-  import { requests, toast, zoron } from "$lib/web";
-  import {
-    faGraduationCap,
-    faCalendarCheck,
-    faInfoCircle,
-    faCheckCircle
-  } from "@fortawesome/free-solid-svg-icons";
-  import { onMount } from "svelte";
-  import Fa from "svelte-fa";
-  import { motion } from "$lib/motion";
+  import { writable } from "svelte/store";
   import { fly } from "svelte/transition";
+
+  import { onMount } from "svelte";
+
+  import { page } from "$app/state";
+
+  import type {
+    Assignment,
+    Attendance,
+    PeriodAttendance,
+    PostedGrade
+  } from "$lib/aspen/types";
+  import { ListSelect } from "$lib/components";
+  import Skeleton from "$lib/components/Skeleton.svelte";
+  import { motion } from "$lib/motion";
+  import { requests, toast, useStorage, zoron } from "$lib/web";
+
+  import Fa from "svelte-fa";
+
+  import {
+    faCalendarCheck,
+    faCheckCircle,
+    faGraduationCap,
+    faInfoCircle
+  } from "@fortawesome/free-solid-svg-icons";
+
   interface GradeWithData extends Assignment {
     scoring?:
       | {
@@ -26,27 +38,40 @@
   }
 
   const existingData = $zoron.preloadedActivity || [];
-  let merged: (Attendance | PeriodAttendance | GradeWithData | PostedGrade)[] = $state(
-    $zoron.activity.merged.map((item) => {
-      if (item.type !== "grade") return item;
-      const existing = existingData.find((existing) => existing.id === item.id);
-      if (!existing || !existing.lastLoaded || existing.lastLoaded !== item.grade.trim())
-        return { ...item, scoring: 0 };
-      else return { ...item, scoring: existing.data };
-    })
-  );
+  let merged: (Attendance | PeriodAttendance | GradeWithData | PostedGrade)[] =
+    $state(
+      $zoron.activity.merged.map((item) => {
+        if (item.type !== "grade") return item;
+        const existing = existingData.find(
+          (existing) => existing.id === item.id
+        );
+        if (
+          !existing ||
+          !existing.lastLoaded ||
+          existing.lastLoaded !== item.grade.trim()
+        )
+          return { ...item, scoring: 0 };
+        else return { ...item, scoring: existing.data };
+      })
+    );
 
   let activity = $derived($zoron.activity);
+
+  let filter = writable<"all" | "grades" | "attendance">("all");
 
   onMount(() => {
     (async () => {
       const res = await requests.stream(
         "/api/aspen/assignment/all",
         merged
-          .filter((item) => item.type === "grade" && typeof item.scoring === "number")
+          .filter(
+            (item) => item.type === "grade" && typeof item.scoring === "number"
+          )
           .map((item) => ({
             assignment: item,
-            studentID: activity.raw["recent-activity-list"]["recent-activity"][0].$.studentoid
+            studentID:
+              activity.raw["recent-activity-list"]["recent-activity"][0].$
+                .studentoid
           })),
         (steps, total, id, data) => {
           try {
@@ -55,9 +80,14 @@
             if (data || data === null) {
               merged![merged!.indexOf(item)] = { ...item, scoring: data };
             } else {
-              merged![merged!.indexOf(item)] = { ...item, scoring: steps / total };
+              merged![merged!.indexOf(item)] = {
+                ...item,
+                scoring: steps / total
+              };
             }
-            const itemIdx = $zoron.preloadedActivity?.findIndex((item) => item.id === id) ?? -1;
+            const itemIdx =
+              $zoron.preloadedActivity?.findIndex((item) => item.id === id) ??
+              -1;
             if (itemIdx !== -1) {
               const copy = $zoron.preloadedActivity;
               copy![itemIdx].data = data;
@@ -72,16 +102,44 @@
         return toast.error(`Error loading assignment data: ${res.error}`);
       }
     })();
+
+    const u1 = useStorage("activity.filter", filter);
+    return () => {
+      u1();
+    };
   });
 </script>
 
 <svelte:head>
   <title>Activity | {page.data.env.name}</title>
 </svelte:head>
+<div class="mt-5 flex items-center justify-center">
+  <ListSelect
+    items={[
+      {
+        value: "all",
+        label: "All"
+      },
+      {
+        value: "grades",
+        label: "Grades"
+      },
+      {
+        value: "attendance",
+        label: "Attendance"
+      }
+    ]}
+    bind:value={$filter}
+  />
+</div>
 <div
-  class="mx-auto my-10 flex w-full flex-1 flex-col gap-2 border-l-4 border-slate-600 lg:max-w-[1024px]"
+  class="mx-auto mb-10 mt-5 flex w-full flex-1 flex-col gap-2 border-l-4 border-slate-600 lg:max-w-[1024px]"
 >
-  {#each merged as item, idx}
+  {#each merged.filter((item) => {
+    if ($filter === "grades") return item.type === "grade" || item.type === "posted-grade";
+    if ($filter === "attendance") return item.type === "attendance" || item.type === "period-attendance";
+    return true;
+  }) as item, idx}
     <div
       class="flex min-h-8 items-center gap-3"
       in:fly|global={{

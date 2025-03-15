@@ -1,8 +1,11 @@
 <script>
-  import { motion } from "$lib/motion";
   import { fly } from "svelte/transition";
-  import { changelog } from "./changelog";
+
   import { page } from "$app/state";
+
+  import { motion } from "$lib/motion";
+
+  import { changelog } from "./changelog";
 </script>
 
 <svelte:head>
@@ -44,7 +47,9 @@
             <div class="ml-4">
               <ul class="list-inside list-disc">
                 {#each entry.changes as change}
-                  <li class="pl-[1.5em]" style="text-indent: -1.5em;">{change}</li>
+                  <li class="pl-[1.5em]" style="text-indent: -1.5em;">
+                    {change}
+                  </li>
                 {/each}
               </ul>
             </div>

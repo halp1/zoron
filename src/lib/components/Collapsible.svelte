@@ -14,8 +14,16 @@
     };
   }
 
-  let { open = false, key = 0, direction = "vertical", children, transition }: Props = $props();
-  let transitionFunction = $derived(transition?.in?.function || (() => () => {}));
+  let {
+    open = false,
+    key = 0,
+    direction = "vertical",
+    children,
+    transition
+  }: Props = $props();
+  let transitionFunction = $derived(
+    transition?.in?.function || (() => () => {})
+  );
 
   let content: HTMLDivElement = $state()!;
   let resizeKey = $state(0);

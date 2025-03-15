@@ -1,15 +1,22 @@
 <script lang="ts">
-  import { toast } from "$lib/web";
-  import { validEmail } from "$lib/email";
-  import Footer from "$lib/components/Footer.svelte";
-  import { requests } from "$lib/web";
   import { page } from "$app/state";
+
   import { usePasskey } from "$lib/auth/webauthn/browser";
+  import Footer from "$lib/components/Footer.svelte";
+  import { validEmail } from "$lib/email";
+  import { toast } from "$lib/web";
+  import { requests } from "$lib/web";
+
   import { onMount } from "svelte";
 
   const encryptPassword = async (password: string) =>
     Array.from(
-      new Uint8Array(await crypto.subtle.digest("SHA-512", new TextEncoder().encode(password)))
+      new Uint8Array(
+        await crypto.subtle.digest(
+          "SHA-512",
+          new TextEncoder().encode(password)
+        )
+      )
     )
       .map((b) => b.toString(16).padStart(2, "0"))
       .join("");
@@ -37,7 +44,11 @@
     const secret = await encryptPassword(password);
 
     const { dismiss } = toast.loading("Logging in...");
-    const res = await requests.post("/api/account/login", { email, password, secret });
+    const res = await requests.post("/api/account/login", {
+      email,
+      password,
+      secret
+    });
     dismiss();
     if (res.success) {
       localStorage.setItem("secret", secret);
@@ -67,7 +78,8 @@
       };
 
       toast.error(
-        errorMap[error as keyof typeof errorMap] || "An error occurred while logging in: " + error,
+        errorMap[error as keyof typeof errorMap] ||
+          "An error occurred while logging in: " + error,
         {
           duration: 10000
         }

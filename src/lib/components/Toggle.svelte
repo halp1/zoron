@@ -7,7 +7,11 @@
     className?: string;
   }
 
-  let { checked = $bindable(false), color = "bg-orange-400", className = "" }: Props = $props();
+  let {
+    checked = $bindable(false),
+    color = "bg-orange-400",
+    className = ""
+  }: Props = $props();
 </script>
 
 <label class={twMerge("flex cursor-pointer items-center", className)}>

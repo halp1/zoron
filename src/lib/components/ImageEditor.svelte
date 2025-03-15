@@ -60,10 +60,22 @@
   });
 
   let handles: { [key in Point]: { x: number; y: number } } = $derived({
-    tl: { x: frame.center.x - frame.size / 2, y: frame.center.y - frame.size / 2 },
-    tr: { x: frame.center.x + frame.size / 2, y: frame.center.y - frame.size / 2 },
-    bl: { x: frame.center.x - frame.size / 2, y: frame.center.y + frame.size / 2 },
-    br: { x: frame.center.x + frame.size / 2, y: frame.center.y + frame.size / 2 },
+    tl: {
+      x: frame.center.x - frame.size / 2,
+      y: frame.center.y - frame.size / 2
+    },
+    tr: {
+      x: frame.center.x + frame.size / 2,
+      y: frame.center.y - frame.size / 2
+    },
+    bl: {
+      x: frame.center.x - frame.size / 2,
+      y: frame.center.y + frame.size / 2
+    },
+    br: {
+      x: frame.center.x + frame.size / 2,
+      y: frame.center.y + frame.size / 2
+    },
     mr: { x: frame.center.x + frame.size / 2, y: frame.center.y },
     ml: { x: frame.center.x - frame.size / 2, y: frame.center.y },
     mt: { x: frame.center.x, y: frame.center.y - frame.size / 2 },
@@ -119,8 +131,10 @@
           y: canvasMouseY
         };
         frame.size =
-          Math.max(Math.abs(frame.center.x - newCorner.x), Math.abs(frame.center.y - newCorner.y)) *
-          2;
+          Math.max(
+            Math.abs(frame.center.x - newCorner.x),
+            Math.abs(frame.center.y - newCorner.y)
+          ) * 2;
         break;
       }
       case "mr":

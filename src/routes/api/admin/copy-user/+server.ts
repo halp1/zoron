@@ -11,7 +11,10 @@ export async function POST({ request }) {
     }
 
     if (name && email) {
-      return json({ success: false, error: "Please provide only one of name or email" });
+      return json({
+        success: false,
+        error: "Please provide only one of name or email"
+      });
     }
 
     const client = await dbClient;

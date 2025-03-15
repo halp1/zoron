@@ -1,11 +1,14 @@
 <script lang="ts">
-  import { type AppState, zoron } from "$lib/web";
-  import { motion } from "$lib/motion";
-  import { requests, toast } from "$lib/web";
-  import { onMount } from "svelte";
   import { scale } from "svelte/transition";
+
   import { goto } from "$app/navigation";
-    import { page } from "$app/state";
+  import { page } from "$app/state";
+
+  import { motion } from "$lib/motion";
+  import { type AppState, zoron } from "$lib/web";
+  import { requests, toast } from "$lib/web";
+
+  import { onMount } from "svelte";
 
   let loaded = false;
 
@@ -30,7 +33,7 @@
 </script>
 
 <svelte:head>
-	<title>{page.data.env.name}</title>
+  <title>{page.data.env.name}</title>
 </svelte:head>
 
 <main class="flex h-screen w-full items-center justify-center">
@@ -44,9 +47,17 @@
         easing: motion.transitions.spring(400, 20)
       }}
     >
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" class=" animate-spin">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 200 200"
+        class=" animate-spin"
+      >
         <g fill="none" stroke="white" stroke-width="10" stroke-linecap="round">
-          <path d="M 100,30 A 70,70 0 1,1 30,100" stroke-dasharray="0,330" stroke-dashoffset="0">
+          <path
+            d="M 100,30 A 70,70 0 1,1 30,100"
+            stroke-dasharray="0,330"
+            stroke-dashoffset="0"
+          >
             <animate
               attributeName="stroke-dasharray"
               from="0,330"

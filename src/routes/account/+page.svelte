@@ -1,21 +1,26 @@
 <script lang="ts">
+  import { quadIn } from "svelte/easing";
+  import { fade, fly, scale } from "svelte/transition";
+
   import { page } from "$app/state";
-  import { signIn, signOut } from "@auth/sveltekit/client";
+
+  import { motion } from "$lib/motion";
   import { requests, toast } from "$lib/web";
+
+  import { signIn, signOut } from "@auth/sveltekit/client";
+
+  import Fa from "svelte-fa";
+
   import {
-    faHome,
     faClose,
+    faGear,
+    faHome,
     faKey,
     faRightFromBracket,
-    faUserSlash,
     faUserEdit,
-    faGear,
-    faUserFriends
+    faUserFriends,
+    faUserSlash
   } from "@fortawesome/free-solid-svg-icons";
-  import Fa from "svelte-fa";
-  import { motion } from "$lib/motion";
-  import { fade, fly, scale } from "svelte/transition";
-  import { quadIn } from "svelte/easing";
 
   if (!page.data?.session || !page.data.session?.user) {
     signIn();
@@ -245,7 +250,9 @@
         if (currentTarget === target) deleting = -1;
       }}
     >
-      <div class="relative flex flex-col items-center rounded-lg bg-slate-800 p-5">
+      <div
+        class="relative flex flex-col items-center rounded-lg bg-slate-800 p-5"
+      >
         <button
           class="btn-circle absolute right-2 top-2"
           on:click={() => {
@@ -317,7 +324,10 @@
                     toast.success("Account deleted.");
                     await signOut({ redirect: true, callbackUrl: "/" });
                   } else {
-                    toast.error("An error occurred while deleting your account: " + res.error);
+                    toast.error(
+                      "An error occurred while deleting your account: " +
+                        res.error
+                    );
                   }
                   dismiss();
                 }

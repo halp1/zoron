@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from "$app/state";
+
   import BubbleButton from "$lib/components/BubbleButton.svelte";
 </script>
 
@@ -15,7 +16,9 @@
     <img src="/favicon.png" alt="icon" class="w-28" />
     <div>{page.data.env.name}</div>
   </div>
-  <div class="mt-10 text-center text-3xl">The better Aspen experience you've always wanted.</div>
+  <div class="mt-10 text-center text-3xl">
+    The better Aspen experience you've always wanted.
+  </div>
   <div class="mt-10 flex items-center gap-10">
     <BubbleButton type="a" href="/register">Get Started</BubbleButton>
     <span class="-mx-3">or</span>

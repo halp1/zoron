@@ -1,27 +1,31 @@
 <script lang="ts">
-  import { page } from "$app/state";
+  import { fade, fly, scale } from "svelte/transition";
+
   import { goto, onNavigate } from "$app/navigation";
+  import { page } from "$app/state";
+
+  import { motion } from "$lib/motion";
+  import { PWA, isIOS, zoron } from "$lib/web";
+
   import Fa from "svelte-fa";
+
   import {
-    faSignOut,
-    faUser,
     type IconDefinition,
-    faHome,
     faCalendar,
     faChartLine,
+    faComments,
+    faHome,
     faList,
     faShieldAlt,
-    faComments
+    faSignOut,
+    faUser
   } from "@fortawesome/free-solid-svg-icons";
 
-  import "./home.css";
   import { onMount } from "svelte";
-  import { isIOS, PWA, zoron } from "$lib/web";
 
   import bgSrc from "../../assets/bg.png";
   import { changelog } from "../changelog/changelog";
-  import { fade, fly, scale } from "svelte/transition";
-  import { motion } from "$lib/motion";
+  import "./home.css";
 
   interface Props {
     children?: import("svelte").Snippet;
@@ -71,7 +75,9 @@
               page.url.pathname.includes(
                 tab.path.slice(
                   0,
-                  tab.path.indexOf("?") === -1 ? tab.path.length : tab.path.indexOf("?")
+                  tab.path.indexOf("?") === -1
+                    ? tab.path.length
+                    : tab.path.indexOf("?")
                 )
               )
             )!
@@ -82,17 +88,24 @@
   let tabContainer: HTMLDivElement | null = $state(null);
   let tabRefs: HTMLAnchorElement[] = $state([]);
 
-  let tabBarWidth = $derived(activeTabIndex === -1 ? 0 : tabRefs[activeTabIndex]?.offsetWidth || 0);
+  let tabBarWidth = $derived(
+    activeTabIndex === -1 ? 0 : tabRefs[activeTabIndex]?.offsetWidth || 0
+  );
 
   let animationDirection: "left" | "right" | "none" = $state("none");
 
   onNavigate((navigation) => {
-    if (!navigation.to?.url.pathname.includes("activity")) (window as any).loadingActivity = false;
+    if (!navigation.to?.url.pathname.includes("activity"))
+      (window as any).loadingActivity = false;
     const from = tabs.indexOf(
-      [...tabs].reverse().find((tab) => navigation.from?.url.pathname.includes(tab.path))!
+      [...tabs]
+        .reverse()
+        .find((tab) => navigation.from?.url.pathname.includes(tab.path))!
     );
     const to = tabs.indexOf(
-      [...tabs].reverse().find((tab) => navigation.to?.url.pathname.includes(tab.path))!
+      [...tabs]
+        .reverse()
+        .find((tab) => navigation.to?.url.pathname.includes(tab.path))!
     );
 
     if (from !== -1 && to !== -1) {
@@ -118,7 +131,9 @@
   <title>Schedule | {page.data.env.name}</title>
 </svelte:head>
 
-<main class="activity-container flex h-screen w-full flex-col items-center justify-center">
+<main
+  class="activity-container flex h-screen w-full flex-col items-center justify-center"
+>
   {#if typeof window === "undefined" || windowWidth >= 768}
     <div class="hidden md:block">
       <div class="h-12"></div>
@@ -212,7 +227,11 @@
             }}
           >
             {#if typeof page.data.session?.user?.image === "string"}
-              <img src={page.data.session?.user?.image} alt="Profile" class="h-6 rounded-full" />
+              <img
+                src={page.data.session?.user?.image}
+                alt="Profile"
+                class="h-6 rounded-full"
+              />
             {:else}
               <Fa icon={faUser} />
             {/if}
@@ -235,8 +254,9 @@
         </div>
         <div
           class="absolute bottom-1 h-[2px] rounded-full bg-white transition-all"
-          style="width: {tabBarWidth}px; left: {(tabRefs[activeTabIndex]?.getBoundingClientRect()
-            .left || 0) -
+          style="width: {tabBarWidth}px; left: {(tabRefs[
+            activeTabIndex
+          ]?.getBoundingClientRect().left || 0) -
             (tabContainer?.getBoundingClientRect().left || 0) -
             windowWidth +
             windowWidth}px"
@@ -269,7 +289,8 @@
           href={tab.path}
           data-sveltekit-preload-code
           data-sveltekit-preload-data
-          class="btn-circle relative h-10 w-10 border-2 border-slate-600 {idx === activeTabIndex
+          class="btn-circle relative h-10 w-10 border-2 border-slate-600 {idx ===
+          activeTabIndex
             ? 'bg-blue-600 hover:bg-blue-600'
             : ''}"
         >
@@ -297,7 +318,9 @@
       ? 'flex'
       : 'hidden'} items-center justify-center backdrop-blur-md"
   >
-    <div class="flex flex-col items-center justify-center rounded-md bg-slate-800 p-10">
+    <div
+      class="flex flex-col items-center justify-center rounded-md bg-slate-800 p-10"
+    >
       <div class="mb-5 text-xl">Install {page.data.env.name}?</div>
       <div class="text-center">
         You appear to be on a mobile device.

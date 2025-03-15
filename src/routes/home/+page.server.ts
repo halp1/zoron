@@ -4,7 +4,11 @@ import { isRedirect, redirect } from "@sveltejs/kit";
 
 import type { PageServerLoad } from "./$types";
 
-export const load: PageServerLoad = async ({ locals: { auth }, cookies, request: { url } }) => {
+export const load: PageServerLoad = async ({
+  locals: { auth },
+  cookies,
+  request: { url }
+}) => {
   try {
     // const session = await fromCookies(cookies);
     const session = await auth();

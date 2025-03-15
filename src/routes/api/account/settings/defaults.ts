@@ -9,7 +9,7 @@ export const defaultSettings: Settings = {
     default: "schedule",
     hideGPA: false
   },
-	social: {
-		schedule: 'all'
-	}
+  social: {
+    schedule: "all"
+  }
 };

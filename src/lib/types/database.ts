@@ -16,13 +16,12 @@ export interface Settings {
     hideGPA: boolean;
   };
   social: {
-    schedule: 'all' | 'friends' | 'none';
+    schedule: "all" | "friends" | "none";
   };
 }
 
-
 export interface Relationship {
-	user: string;
-	type: "request" | "friend" | "block"
-	since: Date;
+  user: string;
+  type: "request" | "friend" | "block";
+  since: Date;
 }

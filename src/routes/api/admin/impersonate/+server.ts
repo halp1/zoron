@@ -15,12 +15,14 @@ export const POST: RequestHandler = async ({ request }) => {
   if (!match.length) return api.error("Invalid token", 400);
   remove("impersonate", { token: t });
 
-  if ((!email || email === "") && (!name || name === "")) return api.error("Missing target", 400);
+  if ((!email || email === "") && (!name || name === ""))
+    return api.error("Missing target", 400);
 
   const user = await (email?.length
     ? adapter.getUserByEmail!(email)
     : adapter.getUser!(
-        transformID((await query({ collection: "users", query: { name } }))[0])._id
+        transformID((await query({ collection: "users", query: { name } }))[0])
+          ._id
       ));
   if (!user) {
     return api.error("Invalid target", 404);

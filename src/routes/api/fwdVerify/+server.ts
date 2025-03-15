@@ -9,7 +9,13 @@ import type { RequestHandler } from "./$types";
 export const GET: RequestHandler = async ({ request }) => {
   const uri = new URLSearchParams(request.url);
   try {
-    console.log(await update("users", { email: uri.get("user") }, { $unset: { password: "" } }));
+    console.log(
+      await update(
+        "users",
+        { email: uri.get("user") },
+        { $unset: { password: "" } }
+      )
+    );
   } catch {
     return api.error("User not found", 404);
   }

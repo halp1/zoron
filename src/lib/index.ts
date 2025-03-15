@@ -1,11 +1,13 @@
 import chalk from "chalk";
 
 export namespace key {
-  export const characters = "1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM-";
+  export const characters =
+    "1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM-";
   export const generate = (length: number) =>
-    Array.from({ length }, () => characters[Math.floor(Math.random() * characters.length)]).join(
-      ""
-    );
+    Array.from(
+      { length },
+      () => characters[Math.floor(Math.random() * characters.length)]
+    ).join("");
 }
 
 export const autoCatch = <T>(fn: () => T): T | undefined => {
@@ -16,7 +18,9 @@ export const autoCatch = <T>(fn: () => T): T | undefined => {
   }
 };
 
-export const autoCatchAsync = async <T>(fn: () => Promise<T>): Promise<T | undefined> => {
+export const autoCatchAsync = async <T>(
+  fn: () => Promise<T>
+): Promise<T | undefined> => {
   try {
     return await fn();
   } catch {
@@ -43,7 +47,10 @@ const _logger = (name: string) => {
               ? chalk.magenta
               : chalk.red;
     if (newline) {
-      console.log(`${lastProgress ? "\n" : ""}${func(`[${name}]`)}`, ...messages);
+      console.log(
+        `${lastProgress ? "\n" : ""}${func(`[${name}]`)}`,
+        ...messages
+      );
       lastProgress = false;
     } else {
       process.stdout.write(
@@ -60,7 +67,8 @@ const _logger = (name: string) => {
     success: (...messages: any[]) => log("success", name, true, ...messages),
     info: (...messages: any[]) => log("info", name, true, ...messages),
     progress: (message: string, progress: number) => {
-      const fullLength = process.stdout.columns - 2 - name.length - 3 - message.length - 1;
+      const fullLength =
+        process.stdout.columns - 2 - name.length - 3 - message.length - 1;
 
       log(
         "progress",
