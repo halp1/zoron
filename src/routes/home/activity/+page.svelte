@@ -15,7 +15,7 @@
   import { ListSelect } from "$lib/components";
   import Skeleton from "$lib/components/Skeleton.svelte";
   import { motion } from "$lib/motion";
-  import { requests, toast, useStorage, zoron } from "$lib/web";
+  import { requests, storage, toast, zoron } from "$lib/web";
 
   import Fa from "svelte-fa";
 
@@ -103,7 +103,7 @@
       }
     })();
 
-    const u1 = useStorage("activity.filter", filter);
+    const u1 = storage.use("activity.filter", filter);
     return () => {
       u1();
     };

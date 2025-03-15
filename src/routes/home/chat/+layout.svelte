@@ -1,6 +1,8 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
 
+  import { onMount } from "svelte";
+
   import { page } from "$app/state";
 
   import { motion } from "$lib/motion";
@@ -10,8 +12,6 @@
 
   import type { IconDefinition } from "@fortawesome/fontawesome-common-types";
   import { faGlobe } from "@fortawesome/free-solid-svg-icons/faGlobe";
-
-  import { onMount } from "svelte";
 
   interface Props {
     children?: import("svelte").Snippet;

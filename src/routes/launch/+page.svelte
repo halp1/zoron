@@ -1,14 +1,14 @@
 <script lang="ts">
   import { scale } from "svelte/transition";
 
+  import { onMount } from "svelte";
+
   import { goto } from "$app/navigation";
   import { page } from "$app/state";
 
   import { motion } from "$lib/motion";
   import { type AppState, zoron } from "$lib/web";
   import { requests, toast } from "$lib/web";
-
-  import { onMount } from "svelte";
 
   let loaded = false;
 

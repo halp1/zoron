@@ -1,6 +1,8 @@
 <script lang="ts">
   import { fade, fly, scale } from "svelte/transition";
 
+  import { onMount } from "svelte";
+
   import { goto, onNavigate } from "$app/navigation";
   import { page } from "$app/state";
 
@@ -20,8 +22,6 @@
     faSignOut,
     faUser
   } from "@fortawesome/free-solid-svg-icons";
-
-  import { onMount } from "svelte";
 
   import bgSrc from "../../assets/bg.png";
   import { changelog } from "../changelog/changelog";

@@ -1,13 +1,13 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+
   import { page } from "$app/state";
 
   import { usePasskey } from "$lib/auth/webauthn/browser";
   import Footer from "$lib/components/Footer.svelte";
   import { validEmail } from "$lib/email";
-  import { toast } from "$lib/web";
+  import { storage, toast } from "$lib/web";
   import { requests } from "$lib/web";
-
-  import { onMount } from "svelte";
 
   const encryptPassword = async (password: string) =>
     Array.from(
@@ -51,7 +51,7 @@
     });
     dismiss();
     if (res.success) {
-      localStorage.setItem("secret", secret);
+      localStorage.setItem(storage.key("auth.secret"), secret);
       location.href = "/launch";
     } else {
       toast.error(res.error);

@@ -1,9 +1,10 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+
   import { page } from "$app/state";
 
   import { PWA, isMobile } from "$lib/web";
 
-  import { onMount } from "svelte";
   import { Toaster } from "svelte-french-toast";
 
   import "../app.css";

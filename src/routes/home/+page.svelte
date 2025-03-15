@@ -1,12 +1,12 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
 
+  import { onMount } from "svelte";
+
   import { page } from "$app/state";
 
   import { motion } from "$lib/motion";
   import { PWA } from "$lib/web";
-
-  import { onMount } from "svelte";
 
   import iosInstructions1 from "../../assets/instructions/pwa/ios/1.png";
   import iosInstructions2 from "../../assets/instructions/pwa/ios/2.png";
