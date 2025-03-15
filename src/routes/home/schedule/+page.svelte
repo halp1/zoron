@@ -2,6 +2,8 @@
   import { run } from "svelte/legacy";
   import { fly } from "svelte/transition";
 
+  import { onMount } from "svelte";
+
   import { page } from "$app/state";
 
   import type { aspen } from "$lib/aspen";
@@ -24,7 +26,6 @@
 
   import type { User } from "@auth/sveltekit";
   import _ from "lodash";
-  import { onMount } from "svelte";
 
   import choobs from "../../../assets/choobs.png";
   import { randomPlaceholderImage } from "../../../assets/placeholders";

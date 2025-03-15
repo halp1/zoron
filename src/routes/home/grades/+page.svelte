@@ -2,6 +2,8 @@
   import { writable } from "svelte/store";
   import { fly } from "svelte/transition";
 
+  import { onMount } from "svelte";
+
   import { page } from "$app/state";
 
   import type { aspen } from "$lib/aspen";
@@ -15,8 +17,6 @@
     faChevronRight,
     faQuestionCircle
   } from "@fortawesome/free-solid-svg-icons";
-
-  import { onMount } from "svelte";
 
   interface Class extends aspen.Types.Class {
     expanded: boolean;

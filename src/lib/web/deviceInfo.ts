@@ -1,5 +1,7 @@
 import Fingerprint from "@fingerprintjs/fingerprintjs";
 
+import { storage } from ".";
+
 export interface Device {
   fingerprint: string;
   browser: string;
@@ -31,8 +33,8 @@ const detectBrowser = (): string => {
 
 const getOS = (): string => {
   const userAgent = window.navigator.userAgent;
-  // @ts-expect-error - TS doesn't know about navigator's userAgentData
   const platform =
+    // @ts-expect-error - TS doesn't know about navigator's userAgentData
     window.navigator?.userAgentData?.platform || window.navigator.platform;
   const macosPlatforms = ["macOS", "Macintosh", "MacIntel", "MacPPC", "Mac68K"];
   const windowsPlatforms = ["Win32", "Win64", "Windows", "WinCE"];
@@ -62,10 +64,11 @@ export const getDeviceInfo = async (): Promise<Device> => {
   const browser = detectBrowser();
   const os = getOS();
 
-  let id = localStorage.getItem("visitorId");
+  const key = storage.key("tracking.visitorID");
+  let id = localStorage.getItem(key);
   if (!id) {
     id = generateRandomID();
-    localStorage.setItem("visitorId", id);
+    localStorage.setItem(key, id);
   }
 
   return {

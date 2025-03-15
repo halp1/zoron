@@ -2,6 +2,8 @@
   import { writable } from "svelte/store";
   import { fly } from "svelte/transition";
 
+  import { onMount } from "svelte";
+
   import { page } from "$app/state";
 
   import { Toggle } from "$lib/components";
@@ -23,7 +25,6 @@
   import { faCamera } from "@fortawesome/free-solid-svg-icons/faCamera";
 
   import _ from "lodash";
-  import { onMount } from "svelte";
 
   import { defaultSettings } from "../../api/account/settings/defaults";
 

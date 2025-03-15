@@ -15,7 +15,7 @@
   "importOrder": [
     "^@sveltekit/(.*)$",
     "^svelte/(.*)$",
-		"^svelte$",
+    "^svelte$",
     "^\\$app/(.*)$",
     "^\\$lib(.*)$",
     "^@auth/sveltekit/(.*)$",

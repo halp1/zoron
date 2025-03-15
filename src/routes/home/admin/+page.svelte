@@ -1,13 +1,13 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
 
+  import { onMount } from "svelte";
+
   import { page } from "$app/state";
 
   import Toggle from "$lib/components/Toggle.svelte";
   import { motion } from "$lib/motion";
   import { requests, toast } from "$lib/web";
-
-  import { onMount } from "svelte";
 
   let tick = $state(0);
   onMount(() => {
