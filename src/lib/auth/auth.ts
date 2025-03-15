@@ -44,6 +44,7 @@ export const auth = {
     signOut: "/logout",
     verifyRequest: "/verify"
   },
+  secret: AUTH_SECRET,
 
   providers: [
     Mailgun({
