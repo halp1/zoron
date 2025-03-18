@@ -15,12 +15,12 @@
   import Fa from "svelte-fa";
 
   import {
-    faCalendarDay,
-    faCalendarDays,
+    faCalendar,
     faChevronLeft,
     faChevronRight,
     faClose,
     faInfoCircle,
+    faListUl,
     faRotateRight
   } from "@fortawesome/free-solid-svg-icons";
 
@@ -371,21 +371,23 @@
     // keybinds
     const keydown = async (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") {
-        // @ts-expect-error
-        document.querySelector("#day-transition").style.transform =
-          // @ts-expect-error
+        (
+          document.querySelector("#day-transition") as HTMLDivElement
+        ).style.transform =
           "translateX(100vw)" +
-          document.querySelector("#day-transition").style.transform;
+          (document.querySelector("#day-transition") as HTMLDivElement).style
+            .transform;
         await new Promise((r) => setTimeout(r, 200));
 
         dayViewDay = new Date(dayViewDay.getTime() - 1000 * 60 * 60 * 24);
         swipeDirection = "right";
       } else if (e.key === "ArrowRight") {
-        // @ts-expect-error
-        document.querySelector("#day-transition").style.transform =
-          // @ts-expect-error
+        (
+          document.querySelector("#day-transition") as HTMLDivElement
+        ).style.transform =
           "translateX(-100vw)" +
-          document.querySelector("#day-transition").style.transform;
+          (document.querySelector("#day-transition") as HTMLDivElement).style
+            .transform;
         await new Promise((r) => setTimeout(r, 200));
         dayViewDay = new Date(dayViewDay.getTime() + 1000 * 60 * 60 * 24);
         swipeDirection = "left";
@@ -564,7 +566,7 @@
         title="Single day view"
       >
         <Fa
-          icon={faCalendarDay}
+          icon={faListUl}
           class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
         />
       </button>
@@ -579,7 +581,7 @@
         title="Full schedule view"
       >
         <Fa
-          icon={faCalendarDays}
+          icon={faCalendar}
           class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
         />
       </button>
@@ -731,7 +733,7 @@
             loading...
           </div>
         {:else}
-          <div class="flex w-full justify-center">
+          <div class="flex w-full justify-center gap-2">
             <button
               in:fly|global={{
                 delay: 450,
@@ -742,11 +744,12 @@
               }}
               class="btn-circle border-2 border-slate-600"
               onclick={async () => {
-                // @ts-expect-error
-                document.querySelector("#day-transition").style.transform =
-                  // @ts-expect-error
+                (
+                  document.querySelector("#day-transition") as HTMLDivElement
+                ).style.transform =
                   "translateX(100vw)" +
-                  document.querySelector("#day-transition").style.transform;
+                  (document.querySelector("#day-transition") as HTMLDivElement)
+                    .style.transform;
                 await new Promise((r) => setTimeout(r, 200));
 
                 dayViewDay = new Date(
@@ -757,10 +760,37 @@
             >
               <Fa icon={faChevronLeft} />
             </button>
+            <button
+              in:fly|global={{
+                delay: 520,
+                duration: 1000,
+                opacity: 0,
+                y: -20,
+                easing: motion.transitions.spring(400, 20)
+              }}
+              class="btn-circle border-2 border-slate-600"
+              onclick={async () => {
+                const target = now();
+
+                const direction = target < dayViewDay ? "left" : "right";
+                (
+                  document.querySelector("#day-transition") as HTMLDivElement
+                ).style.transform =
+                  `translateX(${direction === "left" ? "" : "-"}100vw)` +
+                  (document.querySelector("#day-transition") as HTMLDivElement)
+                    .style.transform;
+                await new Promise((r) => setTimeout(r, 200));
+
+                dayViewDay = target;
+                swipeDirection = direction === "left" ? "right" : "left";
+              }}
+            >
+              <Fa icon={faRotateRight} />
+            </button>
             <div
               class="mx-auto text-center text-2xl"
               in:fly|global={{
-                delay: 500,
+                delay: 600,
                 duration: 1000,
                 opacity: 0,
                 y: -20,
@@ -775,7 +805,24 @@
             </div>
             <button
               in:fly|global={{
-                delay: 550,
+                delay: 675,
+                duration: 500,
+                opacity: 0,
+                y: -20,
+                easing: motion.transitions.spring(400, 20)
+              }}
+              class="btn-circle border-2 border-slate-600"
+              onclick={async () => {
+                toast.error(
+                  "This feature is not available yet, but will be soon!"
+                );
+              }}
+            >
+              <Fa icon={faCalendar} />
+            </button>
+            <button
+              in:fly|global={{
+                delay: 750,
                 duration: 1000,
                 opacity: 0,
                 y: -20,
@@ -783,11 +830,12 @@
               }}
               class="btn-circle border-2 border-slate-600"
               onclick={async () => {
-                // @ts-expect-error
-                document.querySelector("#day-transition").style.transform =
-                  // @ts-expect-error
+                (
+                  document.querySelector("#day-transition") as HTMLDivElement
+                ).style.transform =
                   "translateX(-100vw)" +
-                  document.querySelector("#day-transition").style.transform;
+                  (document.querySelector("#day-transition") as HTMLDivElement)
+                    .style.transform;
                 await new Promise((r) => setTimeout(r, 200));
                 dayViewDay = new Date(
                   dayViewDay.getTime() + 1000 * 60 * 60 * 24
