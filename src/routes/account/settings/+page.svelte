@@ -64,7 +64,6 @@
     if (!res.success)
       toast.error("An error occurred while saving your settings: " + res.error);
     else toast.success("Updated settings");
-    console.log(res);
   });
 
   const devices = page.data.session?.user?.devices || [];

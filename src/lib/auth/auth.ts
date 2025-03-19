@@ -14,9 +14,10 @@ import {
 } from "@auth/sveltekit";
 import type { Cookies } from "@sveltejs/kit";
 
-export const adapter = MongoDBAdapter(dbClient, {
-  databaseName
-});
+export const adapter: NonNullable<SvelteKitAuthConfig["adapter"]> =
+  MongoDBAdapter(dbClient, {
+    databaseName
+  }) as any;
 
 export const trimUser = (user: User) => ({
   id: user.id,
@@ -64,8 +65,7 @@ export const auth = {
         const domain = provider.from!.split("@").at(1);
 
         if (!domain) throw new Error("malformed Mailgun domain");
-        const url = `${initialURL.slice(0, initialURL.replace(`http${initialURL.includes("https://") ? "s" : ""}://`, "").indexOf("/") + `http${initialURL.includes("https://") ? "s" : ""}://`.length)}/api/fwdVerify?user=${encodeURIComponent(to)}&target=${encodeURIComponent(btoa(encodeURIComponent(initialURL)))}`;
-        console.log("sending target:", url);
+        const url = `${initialURL.slice(0, initialURL.replace(`http${initialURL.includes("https://") ? "s" : ""}://`, "").indexOf("/") + `http${initialURL.includes("https://") ? "s" : ""}://`.length)}/api/verify/fwd?user=${encodeURIComponent(to)}&target=${encodeURIComponent(btoa(encodeURIComponent(initialURL)))}`;
         const form = new FormData();
         form.append("from", `${CONSTANTS.name} system <${provider.from}>`);
         form.append("to", to);
