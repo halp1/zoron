@@ -23,10 +23,11 @@
           const target = (
             new URLSearchParams(window.location.search).get("path") || "/home"
           ).replaceAll("/__data.json", "");
-          goto(target);
+          await goto(target);
         }
       } catch (e) {
-        toast.error(`Error loading launch data: ${e}`);
+        toast.error(`Error loading launch data: ${e}\nTrying again...`);
+				history.go(0);
       }
     })();
   });

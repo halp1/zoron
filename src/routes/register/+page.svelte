@@ -25,6 +25,8 @@
       return;
     }
 
+    await requests.post("/api/verify/init");
+
     await signIn("mailgun", {
       email,
       redirect: true,

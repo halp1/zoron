@@ -385,10 +385,8 @@
                       if (!c.data) {
                         c.expanded = true;
                         classes;
-                        console.log("expanded");
 
                         const data = await loadClassData(c);
-                        console.log(data);
                         const transition = document.startViewTransition(
                           () =>
                             new Promise<void>((r) => {
@@ -410,7 +408,7 @@
                             })
                         );
 
-                        console.log(await transition.finished);
+                        await transition.finished;
                       } else {
                         document.startViewTransition(() => {
                           c.expanded = true;

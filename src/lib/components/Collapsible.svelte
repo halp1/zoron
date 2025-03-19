@@ -44,12 +44,23 @@
   );
 
   function resize() {
-    resizeKey++;
+    if (typeof window === "undefined") resizeKey++;
+    else if (content) {
+      resizeKey++;
+    }
   }
 
   onMount(() => {
-    window.addEventListener("resize", resize);
-    return () => window.removeEventListener("resize", resize);
+    let frame: number;
+    const internalResize = () => {
+      resize();
+      frame = requestAnimationFrame(internalResize);
+    };
+    frame = requestAnimationFrame(internalResize);
+
+    return () => {
+      cancelAnimationFrame(frame);
+    };
   });
 </script>
 
@@ -68,7 +79,7 @@
 {:else}
   <div
     class="no-scroll"
-    style="overflow-x: hidden; position: relative; 
+    style="overflow: hidden; position: relative; 
 		transition: height 0.3s ease-in-out, width 0.3s ease-in-out; height: {height};"
     in:transitionFunction|global={transition?.in?.properties}
   >

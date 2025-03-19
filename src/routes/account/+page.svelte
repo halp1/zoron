@@ -184,7 +184,7 @@
             Update Aspen credentials
           </a>
           <button
-            on:click={async (e) => {
+            onclick={async (e) => {
               e.preventDefault();
               await signOut({ redirect: true, callbackUrl: "/" });
               toast.success("You have been signed out.");
@@ -202,7 +202,7 @@
             Sign out
           </button>
           <button
-            on:click={() => {
+            onclick={() => {
               deleting = 0;
             }}
             class="btn-full btn-outlined col-span-1 flex flex-1 items-center justify-center gap-3 border-red-500 text-base"
@@ -229,7 +229,7 @@
           y: -20,
           easing: motion.transitions.spring(400, 20)
         }}
-        on:click={async () => {
+        onclick={async () => {
           signIn();
         }}
       >
@@ -246,7 +246,7 @@
       transition:fade={{
         duration: 200
       }}
-      on:click={({ currentTarget, target }) => {
+      onclick={({ currentTarget, target }) => {
         if (currentTarget === target) deleting = -1;
       }}
     >
@@ -255,7 +255,7 @@
       >
         <button
           class="btn-circle absolute right-2 top-2"
-          on:click={() => {
+          onclick={() => {
             deleting = -1;
           }}
           in:fly|global={{
@@ -311,7 +311,7 @@
             style="width: {deleting}%;"
           ></div>
           <button
-            on:mousedown={async () => {
+            onmousedown={async () => {
               deleteInterval = setInterval(async () => {
                 deleting += 0.5;
                 if (deleting >= 100) {
@@ -333,8 +333,32 @@
                 }
               }, 1000 / 120);
             }}
-            on:mouseup={unclickDeleteAccountButton}
-            on:mouseleave={unclickDeleteAccountButton}
+            onmouseup={unclickDeleteAccountButton}
+            onmouseleave={unclickDeleteAccountButton}
+            ontouchstart={async () => {
+              deleteInterval = setInterval(async () => {
+                deleting += 0.5;
+                if (deleting >= 100) {
+                  deleting = -1;
+                  // @ts-expect-error
+                  clearInterval(deleteInterval);
+                  const { dismiss } = toast.loading("Deleting account...");
+                  const res = await requests.del("/api/account/delete");
+                  if (res.success) {
+                    toast.success("Account deleted.");
+                    await signOut({ redirect: true, callbackUrl: "/" });
+                  } else {
+                    toast.error(
+                      "An error occurred while deleting your account: " +
+                        res.error
+                    );
+                  }
+                  dismiss();
+                }
+              }, 1000 / 120);
+            }}
+            ontouchend={unclickDeleteAccountButton}
+            ontouchcancel={unclickDeleteAccountButton}
             class="absolute bottom-0 left-0 right-0 top-0 z-10 flex items-center justify-center text-white"
           >
             Delete account

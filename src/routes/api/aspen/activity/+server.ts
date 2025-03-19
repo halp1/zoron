@@ -13,7 +13,6 @@ export const POST: RequestHandler = async ({ locals: { auth }, cookies }) => {
       401
     );
   try {
-    console.log(cookies.get("secret"));
     return api.json(await activity(session, cookies.get("secret")!));
   } catch {
     return api.error("Failed to get activity", 500);
