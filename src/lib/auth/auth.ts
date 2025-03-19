@@ -1,5 +1,5 @@
 import { CONSTANTS } from "$lib/constants";
-import { database as databaseName, dbClient } from "$lib/database";
+import { database as databaseName, dbClient, update } from "$lib/database";
 import { html, text, validEmail } from "$lib/email";
 
 import Mailgun from "@auth/sveltekit/providers/mailgun";
@@ -62,6 +62,9 @@ export const auth = {
         provider,
         url: initialURL
       }) {
+        try {
+          await update("users", { email: to }, { $unset: { password: "" } });
+        } catch {}
         const domain = provider.from!.split("@").at(1);
 
         if (!domain) throw new Error("malformed Mailgun domain");

@@ -115,6 +115,17 @@
 </svelte:head>
 <div class="mt-5 flex items-center justify-center">
   <ListSelect
+    transition={{
+      in: {
+        function: fly,
+        properties: {
+          duration: 1000,
+          opacity: 0,
+          y: -20,
+          easing: motion.transitions.spring(400, 20, 0.2)
+        }
+      }
+    }}
     items={[
       {
         value: "all",

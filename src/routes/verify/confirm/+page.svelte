@@ -3,7 +3,7 @@
   import { page } from "$app/state";
 
   import { Footer } from "$lib/components";
-  import { toast } from "$lib/web";
+  import { requests, toast } from "$lib/web";
 </script>
 
 <div class="flex h-screen flex-col">
@@ -29,7 +29,8 @@
               const target = decodeURIComponent(q);
 
               try {
-                await fetch("/api/verify/init").then((r) => r.text());
+                await requests.post("/api/verify/init");
+
                 window.location.href = target;
               } catch {
                 toast.error("Error redirecting to target URL");
