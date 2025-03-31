@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { writable } from "svelte/store";
   import { fade, fly, scale } from "svelte/transition";
 
   import { onMount } from "svelte";
@@ -7,7 +8,7 @@
   import { page } from "$app/state";
 
   import { motion } from "$lib/motion";
-  import { PWA, isIOS, zoron } from "$lib/web";
+  import { PWA, isIOS, storage, zoron } from "$lib/web";
 
   import Fa from "svelte-fa";
 
@@ -15,6 +16,7 @@
     type IconDefinition,
     faCalendar,
     faChartLine,
+    faClose,
     faComments,
     faHome,
     faList,
@@ -124,6 +126,14 @@
     //     .finished.then(() => (animationDirection = "none"));
     // });
   });
+
+  const titleBarState = writable(false);
+
+  onMount(() => {
+    $titleBarState = true;
+    return storage.use("banner.show", titleBarState);
+  });
+
   const prompt = PWA.prompt;
 </script>
 
@@ -132,13 +142,35 @@
 </svelte:head>
 
 <main
-  class="activity-container flex h-screen w-full flex-col items-center justify-center"
+  class="activity-container relative flex h-screen w-full flex-col items-center justify-center"
 >
+  <div
+    class="{$titleBarState
+      ? 'h-12'
+      : 'h-0'} w-screen overflow-hidden transition-all"
+  >
+    <div class="flex h-12 items-center bg-emerald-600 px-4 text-xl text-white">
+      <div class="md:mr-auto md:w-10"></div>
+      <div>
+        Zoron now has notifications! Go <a
+          href="/account/settings"
+          class="underline">here to set them up.</a
+        >
+      </div>
+      <div class="ml-auto md:w-10">
+        <button class="btn-circle" onclick={() => ($titleBarState = false)}>
+          <Fa icon={faClose} />
+        </button>
+      </div>
+    </div>
+  </div>
   {#if typeof window === "undefined" || windowWidth >= 768}
     <div class="hidden md:block">
       <div class="h-12"></div>
       <div
-        class="fixed left-0 top-0 z-10 flex h-12 w-full items-center gap-4 bg-slate-800 px-3 shadow-2xl"
+        class="fixed left-0 {$titleBarState
+          ? 'top-12'
+          : 'top-0'} z-10 flex h-12 w-full items-center gap-4 bg-slate-800 px-3 shadow-2xl transition-all"
         style="view-transition-name: header;"
         bind:this={tabContainer}
       >
@@ -166,7 +198,7 @@
           >
             {page.data.env.name}
           </div>
-          {#if changelog[0].version[0] === "0"}
+          {#if changelog[0].version[0] === "0" || import.meta.env.DEV}
             <div
               class="ml-2 mt-[2px] font-mono text-slate-600"
               in:fly|global={{
@@ -177,7 +209,11 @@
                 easing: motion.transitions.spring(500, 15, 0.2)
               }}
             >
-              BETA
+              {#if import.meta.env.DEV}
+                DEV
+              {:else}
+                BETA
+              {/if}
             </div>
           {/if}
           <div

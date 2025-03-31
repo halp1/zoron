@@ -44,13 +44,13 @@ export const load: PageServerLoad = async ({ locals: { auth } }) => {
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email: session.user.email!,
-    password: session.user.aspen
+    password: session.user.aspen.slice(0, 72)
   });
 
   if (error) {
     await supabase.auth.signUp({
       email: session.user.email!,
-      password: session.user.aspen
+      password: session.user.aspen.slice(0, 72)
     });
   }
 
@@ -59,11 +59,11 @@ export const load: PageServerLoad = async ({ locals: { auth } }) => {
 
   return {
     supabase:
-      data ||
+      (!error && data) ||
       (
         await supabase.auth.signInWithPassword({
           email: session.user.email!,
-          password: session.user.aspen
+          password: session.user.aspen.slice(0, 72)
         })
       ).data
   };

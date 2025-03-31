@@ -1,9 +1,11 @@
 import type { Device } from "$lib/web";
 
+import type { PushSubscription } from "web-push";
+
 export interface Subscription {
   created: Date;
   device: Device;
-  subscription: PushSubscriptionJSON;
+  subscription: PushSubscription;
 }
 
 export interface Settings {

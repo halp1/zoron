@@ -18,5 +18,3 @@ export namespace jobs {
     jobs.splice(0, jobs.length);
   };
 }
-
-(globalThis as any).jobs = jobs;

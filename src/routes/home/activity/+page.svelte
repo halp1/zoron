@@ -37,7 +37,7 @@
       | null;
   }
 
-  const existingData = $zoron.preloadedActivity || [];
+  const existingData = $zoron?.preloadedActivity || [];
   let merged: (Attendance | PeriodAttendance | GradeWithData | PostedGrade)[] =
     $state(
       $zoron.activity.merged.map((item) => {
@@ -97,6 +97,13 @@
             console.error(e);
           }
         }
+      );
+
+      await requests.post(
+        "/api/account/markAsRead",
+        merged.map((item) =>
+          item.type === "posted-grade" ? item.oid : item.id
+        )
       );
       if (!res.success) {
         return toast.error(`Error loading assignment data: ${res.error}`);

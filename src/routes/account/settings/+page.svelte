@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { writable } from "svelte/store";
+  import { get, writable } from "svelte/store";
   import { fly } from "svelte/transition";
 
   import { onMount } from "svelte";
@@ -13,14 +13,17 @@
   import type { Settings } from "$lib/types";
   import {
     type Device,
+    PWA,
     compressImage,
     getDeviceInfo,
+    getSubscription,
     requests,
     toast
   } from "$lib/web";
 
   import Fa from "svelte-fa";
 
+  import { faTrash } from "@fortawesome/free-solid-svg-icons";
   import { faArrowLeft } from "@fortawesome/free-solid-svg-icons/faArrowLeft";
   import { faCamera } from "@fortawesome/free-solid-svg-icons/faCamera";
 
@@ -28,7 +31,7 @@
 
   import { defaultSettings } from "../../api/account/settings/defaults";
 
-  let device: Device | null = null;
+  let device = $state<Device | null>(null);
   onMount(() => {
     (async () => {
       device = await getDeviceInfo();
@@ -67,10 +70,13 @@
   });
 
   const devices = page.data.session?.user?.devices || [];
-  const matchingDevice = devices.find(
-    (d) =>
-      device &&
-      (device.fingerprint === d.device.fingerprint || device.id === d.device.id)
+  let matchingDevice = $derived(
+    devices.find(
+      (d) =>
+        device &&
+        (device.fingerprint === d.device.fingerprint ||
+          device.id === d.device.id)
+    )
   );
 
   let uploading = $state(false);
@@ -297,7 +303,7 @@
           {/if}
         </div>
 
-        <!-- <div class="flex flex-1 flex-col gap-1">
+        <div class="flex flex-1 flex-col gap-1">
           <div
             class="text-2xl"
             in:fly|global={{
@@ -361,12 +367,42 @@
             {:else}
               {#each devices as subscription}
                 <div class="flex items-center">
-                  <div class="flex-1">{subscription.device}</div>
+                  <div class="mx-3 h-2 w-2 rounded-full bg-white"></div>
+                  <div class="flex-1">
+                    {subscription.device.browser} on {subscription.device.os}
+                  </div>
+                  <button
+                    class="btn-circle transition-colors hover:bg-white/5"
+                    onclick={async () => {
+                      // Remove device subscription
+                      if (!subscription.device.id) {
+                        toast.error("Could not identify device to remove");
+                        return;
+                      }
+                      const res = await requests.post(
+                        "/api/account/unsubscribe",
+                        {
+                          id: subscription.device.id
+                        }
+                      );
+
+                      if (!res.success) {
+                        toast.error(
+                          "Failed to unregister device: " + res.error
+                        );
+                      } else {
+                        toast.success("Device unregistered successfully");
+                        history.go(0); // Reload the page to reflect changes
+                      }
+                    }}
+                  >
+                    <Fa icon={faTrash} />
+                  </button>
                 </div>
               {/each}
             {/if}
           </div>
-          {#if !matchingDevice}
+          {#if !matchingDevice && device}
             <button
               class="btn-full btn-outlined mt-2 text-base"
               in:fly|global={{
@@ -375,15 +411,91 @@
                 opacity: 0,
                 y: -20,
                 easing: motion.transitions.spring(400, 20)
-              }}>Add this device</button
+              }}
+              onclick={async () => {
+                if (!device) {
+                  toast.error("Could not detect device information");
+                  return;
+                }
+
+                // Request notification permission
+                if (Notification.permission !== "granted") {
+                  const permission = await Notification.requestPermission();
+                  if (permission !== "granted") {
+                    toast.error("Notification permission denied");
+                    return;
+                  }
+                }
+
+                // let failedSync = false;
+                // if (device.backgroundSync) {
+                //   await navigator.serviceWorker.ready.then(
+                //     async (registration) => {
+                //       const tags = await registration.periodicSync.getTags();
+                //       if (tags.includes("sync-notifications")) {
+                //         await registration.periodicSync.unregister(
+                //           "sync-notifications"
+                //         );
+                //       }
+                //       try {
+                //         await registration.periodicSync.register(
+                //           "sync-notifications",
+                //           {
+                //             minInterval: 5 * 1000 // 5 seconds
+                //           }
+                //         );
+                //       } catch (error) {
+                //         console.error(
+                //           "Periodic sync registration failed:",
+                //           error
+                //         );
+                //         toast.error(
+                //           "You must install this app as a PWA to enable notifications."
+                //         );
+                //         get(PWA.overridePrompt)?.prompt();
+                //         if (!get(PWA.overridePrompt))
+                //           toast.error(
+                //             "Go to the home page to install the app as a PWA."
+                //           );
+                //         failedSync = true; // Set flag to indicate sync failure
+                //       }
+                //     }
+                //   );
+                // }
+
+                // if (failedSync) return;
+
+                const subscription = await getSubscription(page.data.env.vapid);
+
+                try {
+                  const res = await requests.post("/api/account/subscribe", {
+                    device,
+                    subscription
+                  });
+
+                  if (!res.success)
+                    toast.error("Failed to register device: " + res.error);
+                  else {
+                    toast.success(
+                      "Device registered for notifications successfully"
+                    );
+                    history.go(0);
+                  }
+                } catch {
+                  // Handle any errors that may occur during the request
+                  toast.error("An error occurred while registering the device");
+                }
+              }}
             >
+              Add this device
+            </button>
           {/if}
-        </div> -->
+        </div>
         <div class="flex flex-1 flex-col gap-1">
           <div
             class="mt-2 text-2xl"
             in:fly|global={{
-              delay: 500,
+              delay: 1050,
               duration: 1000,
               opacity: 0,
               y: -20,
@@ -395,7 +507,7 @@
           <div
             class="flex items-center gap-3"
             in:fly|global={{
-              delay: 600,
+              delay: 1150,
               duration: 1000,
               opacity: 0,
               y: -20,
@@ -422,7 +534,7 @@
           <div
             class="flex items-center gap-3"
             in:fly|global={{
-              delay: 700,
+              delay: 1250,
               duration: 1000,
               opacity: 0,
               y: -20,
@@ -436,7 +548,7 @@
           <div
             class="mt-2 text-2xl"
             in:fly|global={{
-              delay: 500,
+              delay: 1350,
               duration: 1000,
               opacity: 0,
               y: -20,
@@ -448,7 +560,7 @@
           <div
             class="flex items-center gap-3"
             in:fly|global={{
-              delay: 600,
+              delay: 1450,
               duration: 1000,
               opacity: 0,
               y: -20,

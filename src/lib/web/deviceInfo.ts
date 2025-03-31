@@ -7,6 +7,7 @@ export interface Device {
   browser: string;
   os: string;
   id: string;
+  backgroundSync: boolean;
 }
 
 const detectBrowser = (): string => {
@@ -71,11 +72,16 @@ export const getDeviceInfo = async (): Promise<Device> => {
     localStorage.setItem(key, id);
   }
 
+  const backgroundSync = await navigator.serviceWorker.ready.then(
+    (registration) => "periodicSync" in registration
+  );
+
   return {
     browser,
     os,
     fingerprint: (await (await Fingerprint.load()).get()).visitorId,
-    id
+    id,
+    backgroundSync
   };
 };
 

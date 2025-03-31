@@ -44,15 +44,40 @@ declare module "@auth/sveltekit" {
     session?: { cookie: string; token: string };
     settings?: Settings;
     schedule?: aspen.Types.Schedule.Schedule & { updated: number };
-    notified?: {
-      activity: string[];
-    };
     activity?: ActivityRecord[];
+    seenActivity?: string[];
     password?: { hash: string; salt: string };
     webauthn?: {
       passkeys: Passkey[];
       options: PublicKeyCredentialCreationOptionsJSON;
     };
     relationships: Relationship[];
+  }
+}
+
+interface PeriodicSyncManager {
+  register(tag: string, options?: PeriodicSyncOptions): Promise<void>;
+  unregister(tag: string): Promise<void>;
+  getTags(): Promise<string[]>;
+}
+
+interface PeriodicSyncOptions {
+  minInterval: number;
+  powerState?: boolean;
+  networkState?: boolean;
+}
+
+interface PeriodicSyncEvent extends ExtendableEvent {
+  readonly tag: string;
+}
+
+declare var PeriodicSyncManager: {
+  prototype: PeriodicSyncManager;
+  new (): PeriodicSyncManager;
+};
+
+declare global {
+  interface ServiceWorkerRegistration {
+    readonly periodicSync: PeriodicSyncManager;
   }
 }

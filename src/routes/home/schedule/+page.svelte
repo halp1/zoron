@@ -310,7 +310,7 @@
             (end.getTime() - start.getTime())) *
           100;
 
-  let dayCache = new Map<string, Awaited<ReturnType<typeof loadDay>>>();
+  let dayCache = $state(new Map<string, Awaited<ReturnType<typeof loadDay>>>());
   let day: Awaited<ReturnType<typeof loadDay>> | null = $state(null);
   let dayKey = $state(0);
   run(() => {
