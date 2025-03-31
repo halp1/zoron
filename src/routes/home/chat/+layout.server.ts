@@ -16,7 +16,7 @@ export const load: LayoutServerLoad = async ({ locals: { auth }, cookies }) => {
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email: session.user.email!,
-    password: aspen.decrypt(cookies.get("secret")!, session.user.aspen).password
+    password: session.user.aspen.slice(0, 72)
   });
 
   if (error) {
@@ -27,8 +27,7 @@ export const load: LayoutServerLoad = async ({ locals: { auth }, cookies }) => {
       );
     await supabase.auth.signUp({
       email: session.user.email!,
-      password: aspen.decrypt(cookies.get("secret")!, session.user.aspen)
-        .password
+      password: session.user.aspen.slice(0, 72)
     });
   }
 
@@ -38,8 +37,7 @@ export const load: LayoutServerLoad = async ({ locals: { auth }, cookies }) => {
       (
         await supabase.auth.signInWithPassword({
           email: session.user.email!,
-          password: aspen.decrypt(cookies.get("secret")!, session.user.aspen)
-            .password
+          password: session.user.aspen.slice(0, 72)
         })
       ).data
   };

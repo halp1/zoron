@@ -1,5 +1,6 @@
 import { aspen } from "$lib/aspen";
 import { adapter } from "$lib/auth";
+import { cache } from "$lib/cache";
 import { query, transformID } from "$lib/database";
 import { api } from "$lib/server";
 import type { AppState } from "$lib/web";
@@ -18,6 +19,7 @@ export const GET: RequestHandler = async ({ locals: { auth }, cookies }) => {
     credentials.username,
     credentials.password
   );
+  cache.setUser(session.user.id, cookies.get("secret")!);
 
   const response = api.json<AppState>({
     schedule: user?.schedule,

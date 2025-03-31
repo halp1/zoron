@@ -37,9 +37,7 @@
   <title>{page.data.env.name}</title>
 </svelte:head>
 
-<main
-  class="flex h-screen w-full items-center justify-center"
->
+<main class="flex h-screen w-full items-center justify-center">
   {#if loaded}
     <div
       class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"

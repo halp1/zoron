@@ -5,13 +5,21 @@
 
   import { motion } from "$lib/motion";
 
+  import Fa from "svelte-fa";
+
+  import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+
   import { changelog } from "./changelog";
 </script>
 
 <svelte:head>
   <title>Changelog | {page.data.env.name}</title>
 </svelte:head>
-
+<button
+  onclick={() => window.history.back()}
+  class="btn-circle fixed left-4 top-4"
+  ><Fa icon={faArrowLeft} size="lg" /></button
+>
 <div class="mx-auto my-10 max-w-[800px]">
   <h1
     class="mb-4 text-center text-4xl"

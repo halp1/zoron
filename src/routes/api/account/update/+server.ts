@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({
     return api.error("Missing password", 400);
   if (!cookies.get("secret") || cookies.get("secret")?.length === 0) {
     return api.error("Missing secret", 418);
-	}
+  }
 
   try {
     const account = await aspen.authenticate(data.username, data.password);
@@ -105,7 +105,6 @@ export const POST: RequestHandler = async ({
       session: { cookie: account.cookie, token: account.token },
       settings: _.merge(defaultSettings, session.user.settings || {}),
       devices: [],
-      notified: { activity: ids },
       activity: undefined,
       schedule: undefined
     });

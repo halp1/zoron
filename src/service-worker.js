@@ -3,7 +3,7 @@ import { version } from "$service-worker";
 /// <reference types="@sveltejs/kit" />
 /// <reference no-default-lib="true"/>
 /// <reference lib="esnext" />
-/// <reference lib="webworker" />
+/// <reference path="../node_modules/typescript/lib/lib.webworker.d.ts" />
 
 // prettier-ignore
 const assets = ["/web-app-manifest-192x192.png","/apple-touch-icon.png","/web-app-manifest-512x512.png","/favicon-48x48.png","/fonts/suse/regular.ttf","/fonts/suse/bold.ttf","/favicon.png","/apple-touch-icon-precomposed.png","/favicon.ico","/site.webmanifest","/icons/icon-152x152.png","/icons/icon-384x384.png","/icons/icon-192x192.png","/icons/icon-96x96.png","/icons/icon-144x144.png","/icons/icon-72x72.png","/icons/icon-512x512.png","/icons/icon-128x128.png"];
@@ -14,7 +14,7 @@ const sw = /** @type {ServiceWorkerGlobalScope} */ (
 
 const CACHE_NAME = `app-cache-${version}`;
 
-if (!import.meta.env.DEV) {
+if (!import.meta.env.DEV || true) {
   sw.addEventListener("install", (event) => {
     console.log(`[SW] Installed (${version})`);
     event.waitUntil(
@@ -53,49 +53,60 @@ if (!import.meta.env.DEV) {
     );
   });
 
-  const generateRandomID = () =>
-    Math.floor(Math.random() * 10 ** 9).toString(16);
-
   sw.addEventListener("push", (event) => {
-    /** @type {{title: string, options: Parameters<typeof sw.registration.showNotification>[1], url?:string}} */
-    const data = event.data ? event.data.json() : {};
-    const actions = {};
-    const notifActions = [];
-    if (data.options.actions) {
-      data.options.actions.forEach((action) => {
-        let id;
-        while (!id || id in actions) id = generateRandomID();
-        actions[id] = action.action;
-        notifActions.push({
-          title: action.title,
-          icon: action.icon,
-          action: id
-        });
-      });
-    }
-    const options = {
-      ...data.options,
-      actions: notifActions,
-      data: { url: data.url, actions }
-    };
+    event.waitUntil(
+      new Promise(async (resolve, reject) => {
+        try {
+          /** @type {import('./lib/types/sw').PushEvent} */
+          const data = event.data ? event.data.json() : {};
 
-    console.log(options);
+          if (data.type === "auth-request") {
+            await Promise.all(
+              data.data.map(async (item) => {
+                let title = "";
+                let body = "";
 
-    event.waitUntil(sw.registration.showNotification(data.title, options));
+                switch (item.type) {
+                  case "grade":
+                    title = `Grade posted: ${item.class}`;
+                    body = `Assignment: ${item.assignment}\nGrade: ${item.scoring ? (item.grade === item.scoring.scored.toString() ? `${item.scoring.scored} / ${item.scoring.total}` : `${item.grade} (${item.scoring.scored} / ${item.scoring.total})`) : `${item.grade}`}`;
+                    break;
+                  case "posted-grade":
+                    title = `Term grade posted for ${item.classname}`;
+                    break;
+                  case "period-attendance":
+                    title = `Attendance for ${item.class} period ${item.period}`;
+                    body = `Code: ${item.code}\nDate: ${item.date}`;
+                    break;
+                  case "attendance":
+                    title = `Attendance for ${item.date}`;
+                    body = `Code: ${item.code}`;
+                    break;
+                }
+
+                await sw.registration.showNotification(title, {
+                  body,
+                  icon: "/favicon.png"
+                });
+              })
+            );
+          }
+          resolve();
+        } catch (e) {
+          console.error("[SW] Error handling push event", e);
+          reject(e);
+        }
+      })
+    );
   });
 
   sw.addEventListener("notificationclick", (e) => {
     // Close the notification popout
     e.notification.close();
-    console.log("action", e.action, e.notification.data.actions);
-    let url = e.notification?.data?.url;
-    if (e.action) url = e.notification.data.actions[e.action];
-    if (!url) return false;
-    // Get all the Window clients
     e.waitUntil(
       clients.matchAll({ type: "window" }).then(() => {
         clients
-          .openWindow(url)
+          .openWindow("/home/activity")
           .then((windowClient) => (windowClient ? windowClient.focus() : null));
       })
     );

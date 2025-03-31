@@ -10,6 +10,10 @@ export const handle: Handle = async (params) => {
   return await authHandle(params);
 };
 
-if ("jobs" in globalThis) ((globalThis as any).jobs as typeof jobs).stop();
+if ("stopAllJobs" in global) (global as any).stopAllJobs();
 
 jobs.init();
+(global as any).stopAllJobs = (() => () => {
+  const j = jobs.jobs;
+  return () => j.forEach((j) => j.stop());
+})();

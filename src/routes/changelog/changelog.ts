@@ -2,9 +2,20 @@ import type { ChangelogEntry } from "./types";
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "1.1.0",
+    date: "03/31/2025",
+    overview: "Notifications",
+    changes: [
+      "Added notifications to the app. You can now receive notifications when new grades / attendance updates come in."
+    ],
+    bugfixes: [
+      "Fixed several bugs that occurred when switching from Vercel to self hosting."
+    ]
+  },
+  {
     version: "1.0.1",
     date: "01/01/2025",
-    overview: "IOS App instruction and minor bugfixes",
+    overview: "Minor bugfixes",
     changes: [
       "Added instructions on how to install the IOS app on the home page (because the install button doesn't show up on IOS :( )"
     ],
