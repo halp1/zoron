@@ -32,7 +32,7 @@ interface GradeWithData extends Assignment {
 
 export class Notifier extends Job {
   constructor() {
-    super({ id: "notifier", time: 5 * 60 * 1000 });
+    super({ id: "notifier", time: 1.5 * 60 * 1000 });
   }
 
   async #processBatch(
