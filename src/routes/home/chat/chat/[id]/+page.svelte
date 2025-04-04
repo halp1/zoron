@@ -62,7 +62,7 @@
     });
   };
 
-  let input: HTMLTextAreaElement = $state();
+  let input: HTMLTextAreaElement = $state(null as any);
 
   const formatTimestamp = (timestamp: number) => {
     const date = new Date(timestamp);

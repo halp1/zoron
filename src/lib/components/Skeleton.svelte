@@ -6,11 +6,11 @@
   type $Props = HTMLAttributes<HTMLDivElement>;
 
   interface Props {
-    class?: $Props["class"];
+    class?: string;
     [key: string]: any;
   }
 
-  let { class: className = undefined, ...rest }: Props = $props();
+  let { class: className = '', ...rest }: Props = $props();
 </script>
 
 <div

@@ -4,11 +4,15 @@ import { streamPromise } from "$lib/server";
 import { assignment } from ".";
 import type { RequestHandler } from "./$types";
 
-export const POST: RequestHandler = async ({ request, locals: { auth } }) => {
+export const POST: RequestHandler = async ({
+  request,
+  locals: { auth },
+  cookies
+}) => {
   const stream = await streamPromise<aspen.Types.AssignmentScore>();
   const session = await auth();
   if (!session?.user?.email) return stream.error("Unauthorized", 401);
-  if (!session.user.aspen)
+  if (!session.user.aspen || !cookies.get("secret"))
     return stream.error(
       "No Aspen credentials, please update your account at /account/update",
       401
@@ -18,8 +22,12 @@ export const POST: RequestHandler = async ({ request, locals: { auth } }) => {
   if (!body.assignment) return stream.error("No assignment provided", 400);
   if (!body.studentID) return stream.error("No student ID provided", 400);
 
-  assignment(session, body.assignment, body.studentID, (step, total) =>
-    stream.tick({ step, total })
+  assignment(
+    session,
+    cookies.get("secret")!,
+    body.assignment,
+    body.studentID,
+    (step, total) => stream.tick({ step, total })
   )
     .then((res) => stream.end(res))
     .catch((error) =>
