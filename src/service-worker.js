@@ -14,7 +14,7 @@ const sw = /** @type {ServiceWorkerGlobalScope} */ (
 
 const CACHE_NAME = `app-cache-${version}`;
 
-if (!import.meta.env.DEV || true) {
+if (!import.meta.env.DEV) {
   sw.addEventListener("install", (event) => {
     console.log(`[SW] Installed (${version})`);
     event.waitUntil(

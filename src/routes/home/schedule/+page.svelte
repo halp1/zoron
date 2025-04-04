@@ -1,8 +1,9 @@
 <script lang="ts">
   import { run } from "svelte/legacy";
+  import { writable } from "svelte/store";
   import { fly } from "svelte/transition";
 
-  import { onMount } from "svelte";
+  import { onMount, untrack } from "svelte";
 
   import { page } from "$app/state";
 
@@ -25,6 +26,7 @@
   } from "@fortawesome/free-solid-svg-icons";
 
   import type { User } from "@auth/sveltekit";
+  import { DatePicker } from "date-picker-svelte";
   import _ from "lodash";
 
   import choobs from "../../../assets/choobs.png";
@@ -130,6 +132,8 @@
       ? transpose(insertLunches(schedule), 6, 7)
       : (null as any as Block[])
   );
+
+  let datePickerOpen = $state(false);
 
   let exportModalOpen = $state(false);
   let exportChoice: null | "choobs" = $state(null);
@@ -577,6 +581,7 @@
           : ''}"
         onclick={() => {
           mode = "full";
+          datePickerOpen = false;
         }}
         title="Full schedule view"
       >
@@ -733,7 +738,7 @@
             loading...
           </div>
         {:else}
-          <div class="flex w-full justify-center gap-2">
+          <div class="relative flex w-full justify-center gap-2">
             <button
               in:fly|global={{
                 delay: 450,
@@ -813,13 +818,47 @@
               }}
               class="btn-circle border-2 border-slate-600"
               onclick={async () => {
-                toast.error(
-                  "This feature is not available yet, but will be soon!"
-                );
+                datePickerOpen = !datePickerOpen;
               }}
             >
               <Fa icon={faCalendar} />
-            </button>
+            </button>{#if datePickerOpen}
+              <div
+                class="absolute right-0 top-10 z-10"
+                transition:fly|global={{
+                  delay: 0,
+                  duration: 1000,
+                  opacity: 0,
+                  y: -30,
+                  easing: motion.transitions.spring(300, 20)
+                }}
+              >
+                <DatePicker
+                  on:select={async (event) => {
+                    datePickerOpen = false;
+
+                    const target = event.detail;
+
+                    const direction = target < dayViewDay ? "left" : "right";
+                    (
+                      document.querySelector(
+                        "#day-transition"
+                      ) as HTMLDivElement
+                    ).style.transform =
+                      `translateX(${direction === "left" ? "" : "-"}100vw)` +
+                      (
+                        document.querySelector(
+                          "#day-transition"
+                        ) as HTMLDivElement
+                      ).style.transform;
+                    await new Promise((r) => setTimeout(r, 200));
+
+                    dayViewDay = target;
+                    swipeDirection = direction === "left" ? "right" : "left";
+                  }}
+                />
+              </div>
+            {/if}
             <button
               in:fly|global={{
                 delay: 750,

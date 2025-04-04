@@ -553,7 +553,7 @@
             <div class="grid grid-cols-1 gap-10 p-5 lg:grid-cols-2">
               <div class="flex-1">
                 {#if c.data.assignments.length > 0}
-                  {@html `<style>div { --height: ${c.height === -1 ? 400 : c.height}px; }</style`}
+                  {@html `<style>div { --height: ${c.height === -1 ? 400 : Math.max(400, c.height)}px; }</style`}
                   <div
                     class="custom-scroll custom-scroll-right flex max-h-96 flex-1 flex-col items-stretch overflow-auto border-2 border-slate-600 lg:max-h-[var(--height)]"
                   >

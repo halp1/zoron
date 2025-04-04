@@ -3,6 +3,15 @@ import type { ChangelogEntry } from "./types";
 export const changelog: ChangelogEntry[] = [
   {
     version: "1.1.0",
+    date: "04/<FILL OUT>/2025",
+    overview: "Friends",
+    changes: [
+			"Added a date picker on the schedule page to easily select a date and view the schedule for that day.",
+    ],
+    bugfixes: []
+  },
+  {
+    version: "1.1.0",
     date: "03/31/2025",
     overview: "Notifications",
     changes: [
