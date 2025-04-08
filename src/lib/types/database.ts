@@ -24,6 +24,6 @@ export interface Settings {
 
 export interface Relationship {
   user: string;
-  type: "request" | "friend" | "block";
+  type: "request-outgoing" | "request-incoming" | "friend" | "block";
   since: Date;
 }

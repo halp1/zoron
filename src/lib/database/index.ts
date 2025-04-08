@@ -7,6 +7,7 @@ import type { Document, Filter, OptionalId, WithId } from "mongodb";
 const uri = MONGODB_URI;
 
 export const database = import.meta.env.DEV ? "dev" : "prod";
+// export const database = import.meta.env.DEV ? "prod" : "prod";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 // @ts-ignore

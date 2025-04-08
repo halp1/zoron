@@ -1,7 +1,6 @@
-import { adapter, auth, trimUser, verifyPassword } from "$lib/auth";
+import { adapter, auth, verifyPassword } from "$lib/auth";
 import { api } from "$lib/server";
 
-import { AUTH_SECRET } from "$env/static/private";
 import "@auth/sveltekit";
 
 import type { RequestHandler } from "./$types";
@@ -40,20 +39,18 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     return api.error("Invalid password.", 401);
   }
 
-  const token = {
-    sub: user.id.toString(),
-    user: trimUser(user)
-  };
-
-  const jwt = await auth.jwt.encode({
-    salt: auth.cookies.sessionToken.name,
-    secret: AUTH_SECRET,
-    token
+  const session = await adapter.createSession!({
+    sessionToken:
+      Math.random().toString(36).substring(2) +
+      "-" +
+      Math.random().toString(36).substring(2),
+    userId: user.id,
+    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365)
   });
 
   const response = api.json({ user });
   const cookieOptions = auth.cookies.sessionToken.options;
-  cookies.set(auth.cookies.sessionToken.name, jwt, {
+  cookies.set(auth.cookies.sessionToken.name, session.sessionToken, {
     domain: cookieOptions.domain,
     path: cookieOptions.path,
     httpOnly: cookieOptions.httpOnly,

@@ -1,0 +1,22 @@
+import { adapter } from "$lib/auth";
+import { query, transformID } from "$lib/database";
+
+import { redirect } from "@sveltejs/kit";
+
+import type { PageServerLoad } from "./$types";
+
+export const load: PageServerLoad = async ({ locals: { auth } }) => {
+  const session = await auth();
+  if (!session?.user?.id) return redirect(302, "/login");
+  return {
+    users: (await query({ collection: "users", query: {} }))
+      .map((user) => transformID(user))
+      .map((user) => ({
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        image: user.image
+      }))
+      .filter((user) => user.name && user.email)
+  };
+};

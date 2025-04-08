@@ -1,4 +1,5 @@
 import { aspen } from "$lib/aspen";
+import { adapter } from "$lib/auth";
 import { supabaseConnect } from "$lib/supabase";
 
 import { SUPABASE_SERVICE_KEY, SUPABASE_URI } from "$env/static/private";
@@ -65,6 +66,7 @@ export const load: PageServerLoad = async ({ locals: { auth } }) => {
           email: session.user.email!,
           password: session.user.aspen.slice(0, 72)
         })
-      ).data
+      ).data,
+    devices: (await adapter.getUser!(session.user.id!))?.devices || []
   };
 };

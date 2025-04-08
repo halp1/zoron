@@ -397,11 +397,20 @@
         swipeDirection = "left";
       }
     };
+
+    const touch = () => {
+      datePickerOpen = false;
+    };
+
     window.addEventListener("keydown", keydown);
+    window.addEventListener("touchstart", touch);
+    window.addEventListener("mousedown", touch);
 
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("keydown", keydown);
+      window.removeEventListener("touchstart", touch);
+      window.removeEventListener("mousedown", touch);
     };
   });
 
@@ -499,6 +508,10 @@
     };
   });
 </script>
+
+<svelte:head>
+  <title>Schedule | {page.data.env.name}</title>
+</svelte:head>
 
 {#if !schedule}
   <div class="flex h-full flex-col items-center justify-center gap-3">
@@ -823,6 +836,8 @@
             >
               <Fa icon={faCalendar} />
             </button>{#if datePickerOpen}
+              <!-- svelte-ignore a11y_no_static_element_interactions -->
+              <!-- svelte-ignore a11y_click_events_have_key_events -->
               <div
                 class="absolute right-0 top-10 z-10"
                 transition:fly|global={{
@@ -831,6 +846,12 @@
                   opacity: 0,
                   y: -30,
                   easing: motion.transitions.spring(300, 20)
+                }}
+                onmousedown={(e) => {
+                  e.stopPropagation();
+                }}
+                ontouchstart={(e) => {
+                  e.stopPropagation();
                 }}
               >
                 <DatePicker

@@ -1,5 +1,3 @@
-import { fromCookie, fromCookies } from "$lib/auth";
-
 import { isRedirect, redirect } from "@sveltejs/kit";
 
 import type { PageServerLoad } from "./$types";
@@ -10,7 +8,6 @@ export const load: PageServerLoad = async ({
   request: { url }
 }) => {
   try {
-    // const session = await fromCookies(cookies);
     const session = await auth();
     const uri = new URL(url);
     const page = uri.searchParams.get("page");

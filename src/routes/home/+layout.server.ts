@@ -1,5 +1,3 @@
-import { fromCookies } from "$lib/auth";
-
 import { isRedirect, redirect } from "@sveltejs/kit";
 
 import type { LayoutServerLoad } from "./$types";

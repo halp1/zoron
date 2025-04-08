@@ -115,6 +115,7 @@
       bind:value={password}
       placeholder="Password"
       type="password"
+      autocomplete="current-password"
       required
     />
     <button

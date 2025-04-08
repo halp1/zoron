@@ -1,4 +1,4 @@
-import { get, type Writable } from "svelte/store";
+import { type Writable, get } from "svelte/store";
 
 export namespace storage {
   export const GLOBAL_KEY = `zoron.${import.meta.env.DEV ? "dev" : "prod"}`;
@@ -14,8 +14,8 @@ export namespace storage {
     if (currentValue) {
       value.set(JSON.parse(currentValue));
     } else {
-			localStorage.setItem(k, JSON.stringify(get(value)));
-		}
+      localStorage.setItem(k, JSON.stringify(get(value)));
+    }
     return value.subscribe((val) => {
       localStorage.setItem(k, JSON.stringify(val));
     });

@@ -5,10 +5,9 @@ import type {
   PeriodAttendance,
   PostedGrade
 } from "$lib/aspen/types";
-import { adapter, trimUser } from "$lib/auth";
+import { adapter } from "$lib/auth";
 import { cache } from "$lib/cache";
 import { query, transformID } from "$lib/database";
-import { api } from "$lib/server";
 
 import { VAPID_PRIVATE, VAPID_PUBLIC } from "$env/static/private";
 import type { Session, User } from "@auth/sveltekit";
@@ -120,9 +119,10 @@ export class Notifier extends Job {
 
     if (!existingData) return [];
 
-    const session = {
-      user: trimUser(user)
-    } as any as Session;
+    const session: Session = {
+      user,
+      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toString()
+    };
 
     const { merged, raw } = await activity(session, secret);
 

@@ -6,7 +6,7 @@ export const changelog: ChangelogEntry[] = [
     date: "04/<FILL OUT>/2025",
     overview: "Friends",
     changes: [
-			"Added a date picker on the schedule page to easily select a date and view the schedule for that day.",
+      "Added a date picker on the schedule page to easily select a date and view the schedule for that day."
     ],
     bugfixes: []
   },
