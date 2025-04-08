@@ -27,7 +27,12 @@ declare global {
         };
       };
       hideFooter: boolean;
-      passkeys?: Passkey[];
+      users?: {
+        id: string;
+        name: string;
+        email: string;
+        image: string;
+      }[];
     }
     // interface PageState {}
     // interface Platform {}
@@ -51,7 +56,7 @@ declare module "@auth/sveltekit" {
       passkeys: Passkey[];
       options: PublicKeyCredentialCreationOptionsJSON;
     };
-    relationships: Relationship[];
+    relationships?: Relationship[];
   }
 }
 

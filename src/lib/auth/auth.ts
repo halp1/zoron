@@ -5,43 +5,24 @@ import { html, text, validEmail } from "$lib/email";
 import Mailgun from "@auth/sveltekit/providers/mailgun";
 
 import { AUTH_SECRET, DOMAIN, MAILGUN_KEY } from "$env/static/private";
-import { decode, encode } from "@auth/core/jwt";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import {
   SvelteKitAuth,
   type SvelteKitAuthConfig,
   type User
 } from "@auth/sveltekit";
-import type { Cookies } from "@sveltejs/kit";
 
 export const adapter: NonNullable<SvelteKitAuthConfig["adapter"]> =
   MongoDBAdapter(dbClient, {
     databaseName
   }) as any;
 
-export const trimUser = (user: User) => ({
-  id: user.id,
-  name: user.name,
-  password: !!user.password,
-  email: user.email,
-  image: user.image,
-  aspen: user.aspen,
-  session: user.session,
-  settings: user.settings,
-  devices: user.devices,
-  role: user.role
-});
-
 export const auth = {
   trustHost: true,
   session: {
     maxAge: 30 * 24 * 60 * 60, // 30 days
     generateSessionToken: () => crypto.randomUUID(),
-    strategy: "jwt"
-  },
-  jwt: {
-    encode,
-    decode
+    strategy: "database"
   },
   adapter,
   pages: {
@@ -102,12 +83,8 @@ export const auth = {
     })
   ],
   callbacks: {
-    jwt: async ({ token, user }) => {
-      if (!user) token.user = trimUser((await adapter.getUser!(token.sub!))!);
-      return token;
-    },
     session({ session, token }) {
-      session.user = token.user as any;
+      session.user ??= token?.user as any;
 
       if (session.user.password) session.user.password = true as any;
 
@@ -116,7 +93,7 @@ export const auth = {
   },
   cookies: {
     sessionToken: {
-      name: "next-auth.session-token",
+      name: "zoron.session",
       options: {
         domain: DOMAIN,
         path: "/",
@@ -128,17 +105,3 @@ export const auth = {
   }
 } satisfies SvelteKitAuthConfig;
 export const { handle, signIn, signOut } = SvelteKitAuth(auth);
-
-export const fromCookie = async (cookie: string) => {
-  const decoded = await decode({
-    token: cookie,
-    secret: AUTH_SECRET,
-    salt: "next-auth.session-token"
-  });
-  return { user: decoded?.user as User, expires: decoded?.exp };
-};
-
-export const fromCookies = async (cookies: Cookies) => {
-  const cookie = cookies.get("next-auth.session-token");
-  return cookie ? fromCookie(cookie) : null;
-};

@@ -69,7 +69,7 @@
     else toast.success("Updated settings");
   });
 
-  const devices = page.data.session?.user?.devices || [];
+  const devices = page.data.session?.user?.devices ?? [];
   let matchingDevice = $derived(
     devices.find(
       (d) =>

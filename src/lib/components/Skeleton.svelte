@@ -10,7 +10,7 @@
     [key: string]: any;
   }
 
-  let { class: className = '', ...rest }: Props = $props();
+  let { class: className = "", ...rest }: Props = $props();
 </script>
 
 <div
