@@ -6,8 +6,11 @@ import {
   SUPABASE_URI,
   VAPID_PUBLIC
 } from "$env/static/private";
+import { execSync } from "child_process";
 
 import type { LayoutServerLoad } from "./$types";
+
+const commit = execSync("git rev-parse --short HEAD").toString().trim();
 
 export const load: LayoutServerLoad = async (event) => {
   const auth = await event.locals.auth();
@@ -26,7 +29,7 @@ export const load: LayoutServerLoad = async (event) => {
         uri: SUPABASE_URI,
         key: SUPABASE_PUBLIC_KEY
       },
-			commit: CONSTANTS.commit
+      commit: commit
     },
     hideFooter: event.cookies.get("hide-footer") === "1"
   };

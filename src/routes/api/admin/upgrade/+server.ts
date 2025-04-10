@@ -1,8 +1,10 @@
 import { api } from "$lib/server";
 
-import { spawn } from "child_process";
+import { execSync, spawn } from "child_process";
 import path from "path";
 import process from "process";
+
+const commit = execSync("git rev-parse --short HEAD").toString().trim();
 
 export const POST = async ({ locals: { auth } }) => {
   const session = await auth();
