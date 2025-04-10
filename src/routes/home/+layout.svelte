@@ -224,7 +224,7 @@
             </div>
           {/if}
           <div
-            class="mb-[3px] ml-2 mt-auto font-mono text-sm text-slate-600"
+            class="group mb-[3px] ml-2 mt-auto flex items-center font-mono text-sm text-slate-600"
             in:fly|global={{
               delay: 0.35,
               duration: 1000,
@@ -234,6 +234,11 @@
             }}
           >
             v{changelog[0].version}
+            <span
+              class="suse ml-1 w-0 overflow-hidden transition-all group-hover:w-32"
+            >
+              @{page.data.env.commit}
+            </span>
           </div>
         </div>
         <div class="ml-auto"></div>

@@ -282,4 +282,28 @@
       </button>
     </form>
   </div>
+  <button
+    class="rounded-3xl border-2 text-7xl {$theme === 'amoled'
+      ? 'border-white'
+      : 'border-red-400'} {$theme === 'amoled'
+      ? 'bg-black'
+      : 'bg-slate-800'} p-5"
+    in:fly|global={{
+      delay: 550,
+      duration: 1000,
+      opacity: 0,
+      y: -20,
+      easing: motion.transitions.spring(400, 20)
+    }}
+    onclick={async () => {
+      const res = await requests.post<string>("/api/admin/upgrade");
+      if (res.success === true) {
+        toast.success(res.data);
+      } else {
+        toast.error("Failed to restart Zoron: " + res.error);
+      }
+    }}
+  >
+    Restart Zoron
+  </button>
 </div>

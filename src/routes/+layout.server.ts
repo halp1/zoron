@@ -25,7 +25,8 @@ export const load: LayoutServerLoad = async (event) => {
       supabase: {
         uri: SUPABASE_URI,
         key: SUPABASE_PUBLIC_KEY
-      }
+      },
+			commit: CONSTANTS.commit
     },
     hideFooter: event.cookies.get("hide-footer") === "1"
   };

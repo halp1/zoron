@@ -25,6 +25,7 @@ declare global {
           uri: string;
           key: string;
         };
+				commit: string;
       };
       hideFooter: boolean;
       users?: {
