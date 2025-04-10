@@ -6,6 +6,7 @@
 
   import { motion } from "$lib/motion";
   import { requests, toast } from "$lib/web";
+  import { theme } from "$lib/web/theme";
 
   import { signIn, signOut } from "@auth/sveltekit/client";
 
@@ -21,7 +22,6 @@
     faUserFriends,
     faUserSlash
   } from "@fortawesome/free-solid-svg-icons";
-  import { theme } from "$lib/web/theme";
 
   if (!page.data?.session || !page.data.session?.user) {
     signIn();

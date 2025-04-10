@@ -7,8 +7,8 @@ export const changelog: ChangelogEntry[] = [
     overview: "Friends",
     changes: [
       "Added a date picker on the schedule page to easily select a date and view the schedule for that day.",
-			"Add friends to Zoron! You can send and receive friend requests, and view your friends' schedules.",
-			"Added a new theme called \"Ultra Dark\""
+      "Add friends to Zoron! You can send and receive friend requests, and view your friends' schedules.",
+      'Added a new theme called "Ultra Dark"'
     ],
     bugfixes: []
   },

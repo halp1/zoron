@@ -1,15 +1,19 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-
   interface Props {
     className?: string;
     style?: string;
     children?: import("svelte").Snippet;
-		onswipe?: (direction: "left" | "right") => void;
+    onswipe?: (direction: "left" | "right") => void;
   }
 
-  let { className = "", style = "", children, onswipe = () => {} }: Props = $props();
+  let {
+    className = "",
+    style = "",
+    children,
+    onswipe = () => {}
+  }: Props = $props();
 
   const DEADZONE = 50;
   let startX: number | null = null;

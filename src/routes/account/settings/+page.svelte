@@ -185,7 +185,7 @@
     let animIdx = 0;
     return () => {
       // return ++animIdx * 100 + 50;
-			return animIdx * 100 + 50
+      return animIdx * 100 + 50;
     };
   })();
 </script>
@@ -279,7 +279,10 @@
               </div>
             {/if}
             <label
-              class="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full {$theme === "amoled" ? "bg-black border-white border-2" : "bg-blue-600 hover:bg-blue-700"}"
+              class="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full {$theme ===
+              'amoled'
+                ? 'border-2 border-white bg-black'
+                : 'bg-blue-600 hover:bg-blue-700'}"
               in:fly|global={{
                 delay: autoAnim(),
                 duration: 1000,
