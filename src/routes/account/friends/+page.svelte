@@ -29,8 +29,8 @@
     return 0;
   });
   let relationships = $state(
-    (page.data
-      .session!.user!.relationships ?? []).map((rel) => ({
+    (page.data.session!.user!.relationships ?? [])
+      .map((rel) => ({
         ...rel,
         userData: users.find((user) => user.id === rel.user)
       }))

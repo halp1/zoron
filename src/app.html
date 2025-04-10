@@ -36,7 +36,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     %sveltekit.head%
   </head>
-  <body data-sveltekit-preload-data="hover" class="bg-gradient" style="transition: none;">
+  <body
+    data-sveltekit-preload-data="hover"
+    class="bg-gradient"
+    style="transition: none"
+  >
     <script>
       try {
         const userTheme =
@@ -47,7 +51,7 @@
           document.body.classList.add("bg-black");
           document.body.classList.remove("bg-gradient");
         }
-				document.body.style.transition = "";
+        document.body.style.transition = "";
       } catch {}
     </script>
     <div style="display: contents">%sveltekit.body%</div>

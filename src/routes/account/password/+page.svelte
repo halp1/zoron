@@ -2,6 +2,7 @@
   import { page } from "$app/state";
 
   import { requests, toast } from "$lib/web";
+  import { theme } from "$lib/web/theme";
 
   import Fa from "svelte-fa";
 
@@ -10,7 +11,6 @@
     faEyeSlash,
     faInfoCircle
   } from "@fortawesome/free-solid-svg-icons";
-  import { theme } from "$lib/web/theme";
 
   let password = $state("");
   let confirm = $state("");
@@ -61,7 +61,9 @@
           submit(e);
         }
       }}
-      class="w-full rounded-lg border-2 border-dashed {$theme === "amoled" ? "border-white" : "border-blue-400"} bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
+      class="w-full rounded-lg border-2 border-dashed {$theme === 'amoled'
+        ? 'border-white'
+        : 'border-blue-400'} bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
       bind:value={password}
       placeholder="Enter your new password"
       {...{ type: showPassword ? "text" : "password" }}
@@ -75,7 +77,9 @@
             submit(e);
           }
         }}
-        class="w-full rounded-lg border-2 border-dashed {$theme === "amoled" ? "border-white" : "border-blue-400"} bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
+        class="w-full rounded-lg border-2 border-dashed {$theme === 'amoled'
+          ? 'border-white'
+          : 'border-blue-400'} bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
         bind:value={confirm}
         placeholder="Confirm your new password"
         {...{ type: showPassword ? "text" : "password" }}
