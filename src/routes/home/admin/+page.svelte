@@ -8,6 +8,7 @@
   import Toggle from "$lib/components/Toggle.svelte";
   import { motion } from "$lib/motion";
   import { requests, toast } from "$lib/web";
+  import { theme } from "$lib/web/theme";
 
   let tick = $state(0);
   onMount(() => {
@@ -38,7 +39,11 @@
   class="mb-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
 >
   <div
-    class="rounded-3xl border-2 border-red-400 bg-slate-800 p-5"
+    class="rounded-3xl border-2 {$theme === 'amoled'
+      ? 'border-white'
+      : 'border-red-400'} {$theme === 'amoled'
+      ? 'bg-black'
+      : 'bg-slate-800'} p-5"
     in:fly|global={{
       delay: 350,
       duration: 1000,
@@ -102,13 +107,17 @@
         <input
           name="hours"
           type="number"
-          class="w-10 rounded-full border-2 border-slate-600 bg-transparent px-2 text-center outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+          class="w-10 rounded-full border-2 {$theme === 'amoled'
+            ? 'border-white'
+            : 'border-slate-600'} bg-transparent px-2 text-center outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           placeholder="HH"
         />:
         <input
           name="minutes"
           type="number"
-          class="w-10 rounded-full border-2 border-slate-600 bg-transparent px-2 text-center outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+          class="w-10 rounded-full border-2 {$theme === 'amoled'
+            ? 'border-white'
+            : 'border-slate-600'} bg-transparent px-2 text-center outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           placeholder="MM"
         />
         <select name="period" class="bg-transparent outline-none">
@@ -118,7 +127,9 @@
       </div>
       <button
         type="submit"
-        class="btn-outlined btn-full mt-2 w-full border-red-400 text-base"
+        class="btn-outlined btn-full mt-2 w-full {$theme === 'amoled'
+          ? 'border-white'
+          : 'border-red-400'} text-base"
       >
         Update
       </button>
@@ -126,7 +137,11 @@
   </div>
 
   <div
-    class="rounded-3xl border-2 border-red-400 bg-slate-800 p-5"
+    class="rounded-3xl border-2 {$theme === 'amoled'
+      ? 'border-white'
+      : 'border-red-400'} {$theme === 'amoled'
+      ? 'bg-black'
+      : 'bg-slate-800'} p-5"
     in:fly|global={{
       delay: 450,
       duration: 1000,
@@ -172,18 +187,24 @@
       <input
         type="text"
         name="name"
-        class="w-full rounded-full border-2 border-dashed border-slate-600 bg-transparent px-2 text-center outline-none focus-within:border-solid"
+        class="w-full rounded-full border-2 border-dashed {$theme === 'amoled'
+          ? 'border-white'
+          : 'border-slate-600'} bg-transparent px-2 text-center outline-none focus-within:border-solid"
         placeholder="Name"
       />
       <input
         type="text"
         name="email"
-        class="w-full rounded-full border-2 border-dashed border-slate-600 bg-transparent px-2 text-center outline-none focus-within:border-solid"
+        class="w-full rounded-full border-2 border-dashed {$theme === 'amoled'
+          ? 'border-white'
+          : 'border-slate-600'} bg-transparent px-2 text-center outline-none focus-within:border-solid"
         placeholder="Email"
       />
       <button
         type="submit"
-        class="btn-outlined btn-full mt-auto w-full border-red-400 text-base"
+        class="btn-outlined btn-full mt-auto w-full {$theme === 'amoled'
+          ? 'border-white'
+          : 'border-red-400'} text-base"
       >
         Go
       </button>
@@ -191,7 +212,11 @@
   </div>
 
   <div
-    class="rounded-3xl border-2 border-red-400 bg-slate-800 p-5"
+    class="rounded-3xl border-2 {$theme === 'amoled'
+      ? 'border-white'
+      : 'border-red-400'} {$theme === 'amoled'
+      ? 'bg-black'
+      : 'bg-slate-800'} p-5"
     in:fly|global={{
       delay: 550,
       duration: 1000,
@@ -234,18 +259,24 @@
       <input
         type="text"
         name="copy-name"
-        class="w-full rounded-full border-2 border-dashed border-slate-600 bg-transparent px-2 text-center outline-none focus-within:border-solid"
+        class="w-full rounded-full border-2 border-dashed {$theme === 'amoled'
+          ? 'border-white'
+          : 'border-slate-600'} bg-transparent px-2 text-center outline-none focus-within:border-solid"
         placeholder="Name"
       />
       <input
         type="text"
         name="copy-email"
-        class="w-full rounded-full border-2 border-dashed border-slate-600 bg-transparent px-2 text-center outline-none focus-within:border-solid"
+        class="w-full rounded-full border-2 border-dashed {$theme === 'amoled'
+          ? 'border-white'
+          : 'border-slate-600'} bg-transparent px-2 text-center outline-none focus-within:border-solid"
         placeholder="Email"
       />
       <button
         type="submit"
-        class="btn-outlined btn-full mt-2 w-full border-red-400 text-base"
+        class="btn-outlined btn-full mt-2 w-full {$theme === 'amoled'
+          ? 'border-white'
+          : 'border-red-400'} text-base"
       >
         Copy to Dev DB
       </button>

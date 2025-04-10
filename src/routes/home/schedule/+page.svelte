@@ -12,6 +12,7 @@
   import { motion } from "$lib/motion";
   import type { Block, CalendarEvent } from "$lib/types";
   import { requests, toast, zoron } from "$lib/web";
+  import { theme } from "$lib/web/theme";
 
   import Fa from "svelte-fa";
 
@@ -571,11 +572,17 @@
     class="relative flex h-full flex-col-reverse items-center gap-3 md:flex-row md:pt-0"
   >
     <div
-      class="-mb-3 hidden items-center gap-3 rounded-full bg-slate-800 p-2 md:mb-0 md:flex md:flex-col"
+      class="-mb-3 hidden items-center gap-3 rounded-full {$theme === 'amoled'
+        ? 'border-2 border-white bg-black'
+        : 'bg-slate-800'} p-2 md:mb-0 md:flex md:flex-col"
     >
       <button
-        class="btn-circle relative border-2 border-slate-600 {mode === 'day'
-          ? 'bg-blue-600 hover:bg-blue-400'
+        class="btn-circle relative border-2 bg-black {$theme === 'amoled'
+          ? 'border-white'
+          : 'border-slate-600'} {mode === 'day'
+          ? $theme === 'amoled'
+            ? 'invert'
+            : 'bg-blue-600 hover:bg-blue-400'
           : ''}"
         onclick={() => {
           mode = "day";
@@ -589,8 +596,12 @@
       </button>
       <button
         ontouchstart={(e) => e}
-        class="btn-circle relative border-2 border-slate-600 {mode === 'full'
-          ? 'bg-blue-600 hover:bg-blue-400'
+        class="btn-circle relative border-2 bg-black {$theme === 'amoled'
+          ? 'border-white'
+          : 'border-slate-600'} {mode === 'full'
+          ? $theme === 'amoled'
+            ? 'invert'
+            : 'bg-blue-600 hover:bg-blue-400'
           : ''}"
         onclick={() => {
           mode = "full";
@@ -604,7 +615,7 @@
         />
       </button>
       <!-- <button
-        class="btn-circle relative border-2 border-slate-600"
+        class="btn-circle relative border-2 {$theme === "amoled" ? "border-white" : "border-slate-600"}"
         on:click={() => {
           exportModalOpen = true;
         }}
@@ -616,7 +627,9 @@
         />
       </button> -->
       <button
-        class="btn-circle relative border-2 border-slate-600"
+        class="btn-circle relative border-2 {$theme === 'amoled'
+          ? 'border-white'
+          : 'border-slate-600'}"
         onclick={updateSchedule}
         disabled={updating}
         title="Refresh schedule"
@@ -647,15 +660,15 @@
       </div>
       <Swipeable
         className="md:hidden flex-1 relative w-full"
-        on:swipe={(e) => {
+        onswipe={(e) => {
           const applyChange = () => {
-            if (e.detail === "left") selectedDay = (selectedDay + 1) % 6;
+            if (e === "left") selectedDay = (selectedDay + 1) % 6;
             else selectedDay = (selectedDay + 5) % 6;
           };
 
           if (!document.startViewTransition) return applyChange();
           document.startViewTransition(() => {
-            swipeDirection = e.detail;
+            swipeDirection = e;
             applyChange();
             return new Promise((r) => setTimeout(r, 150));
           });
@@ -760,7 +773,9 @@
                 y: -20,
                 easing: motion.transitions.spring(400, 20)
               }}
-              class="btn-circle border-2 border-slate-600"
+              class="btn-circle border-2 {$theme === 'amoled'
+                ? 'border-white'
+                : 'border-slate-600'}"
               onclick={async () => {
                 (
                   document.querySelector("#day-transition") as HTMLDivElement
@@ -786,7 +801,9 @@
                 y: -20,
                 easing: motion.transitions.spring(400, 20)
               }}
-              class="btn-circle border-2 border-slate-600"
+              class="btn-circle border-2 {$theme === 'amoled'
+                ? 'border-white'
+                : 'border-slate-600'}"
               onclick={async () => {
                 const target = now();
 
@@ -829,7 +846,9 @@
                 y: -20,
                 easing: motion.transitions.spring(400, 20)
               }}
-              class="btn-circle border-2 border-slate-600"
+              class="btn-circle border-2 {$theme === 'amoled'
+                ? 'border-white'
+                : 'border-slate-600'}"
               onclick={async () => {
                 datePickerOpen = !datePickerOpen;
               }}
@@ -888,7 +907,9 @@
                 y: -20,
                 easing: motion.transitions.spring(400, 20)
               }}
-              class="btn-circle border-2 border-slate-600"
+              class="btn-circle border-2 {$theme === 'amoled'
+                ? 'border-white'
+                : 'border-slate-600'}"
               onclick={async () => {
                 (
                   document.querySelector("#day-transition") as HTMLDivElement
@@ -924,7 +945,9 @@
                       style={block.class?.type === "lunch"
                         ? "border: double 3px transparent; background-clip: padding-box, border-box; background-image: linear-gradient(#263048E5, #263048E5), linear-gradient(45deg, #fc4778e5, #3952f5e5); background-origin: border-box;"
                         : ""}
-                      class="w-80 rounded-xl border-2 bg-[#263048] bg-opacity-90 p-5 shadow-xl backdrop-blur-xl {block
+                      class="w-80 rounded-xl border-2 {$theme === 'amoled'
+                        ? 'bg-black'
+                        : 'bg-[#263048]'} bg-opacity-90 p-5 shadow-xl backdrop-blur-xl {block
                         .class?.type === 'block'
                         ? block.class.color.replace('bg', 'border')
                         : block.class?.type === 'I-block'
@@ -997,8 +1020,11 @@
                       </div>
                       {#if block.progression}
                         <div
-                          class="relative mt-2 flex h-6 items-center border-2 bg-slate-800 text-sm {block
-                            .class?.type === 'block'
+                          class="relative mt-2 flex h-6 items-center border-2 {$theme ===
+                          'amoled'
+                            ? 'bg-black'
+                            : 'bg-slate-800'} text-sm {block.class?.type ===
+                          'block'
                             ? block.class.color.replace('bg', 'border')
                             : block.class?.type === 'I-block'
                               ? 'border-cyan-400'

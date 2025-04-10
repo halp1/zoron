@@ -20,6 +20,7 @@
     requests,
     toast
   } from "$lib/web";
+  import { theme } from "$lib/web/theme";
 
   import Fa from "svelte-fa";
 
@@ -179,6 +180,14 @@
       if (fileInput) fileInput.value = "";
     }
   };
+
+  let autoAnim = (() => {
+    let animIdx = 0;
+    return () => {
+      // return ++animIdx * 100 + 50;
+			return animIdx * 100 + 50
+    };
+  })();
 </script>
 
 <svelte:head>
@@ -189,9 +198,12 @@
   <div class="flex h-screen w-screen flex-col items-center justify-center">
     {#if mounted}
       <div
-        class="relative flex w-96 flex-col gap-3 rounded-2xl bg-slate-800 p-10"
+        class="relative flex w-96 flex-col gap-3 rounded-2xl {$theme ===
+        'amoled'
+          ? 'border-4 border-white bg-black'
+          : 'bg-slate-800'} p-10"
         in:fly|global={{
-          delay: 150,
+          delay: autoAnim(),
           duration: 1000,
           opacity: 0,
           y: -20,
@@ -202,7 +214,7 @@
           class="btn-circle absolute left-5 top-5"
           href="/account"
           in:fly|global={{
-            delay: 200,
+            delay: autoAnim(),
             duration: 1000,
             opacity: 0,
             y: -20,
@@ -214,7 +226,7 @@
         <div
           class="border-b-2 border-slate-600 pb-1 text-center text-4xl"
           in:fly|global={{
-            delay: 250,
+            delay: autoAnim(),
             duration: 1000,
             opacity: 0,
             y: -20,
@@ -234,7 +246,7 @@
               alt="Profile"
               class="h-24 w-24 rounded-full object-cover"
               in:fly|global={{
-                delay: 350,
+                delay: autoAnim(),
                 duration: 1000,
                 opacity: 0,
                 y: -20,
@@ -267,9 +279,9 @@
               </div>
             {/if}
             <label
-              class="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700"
+              class="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full {$theme === "amoled" ? "bg-black border-white border-2" : "bg-blue-600 hover:bg-blue-700"}"
               in:fly|global={{
-                delay: 400,
+                delay: autoAnim(),
                 duration: 1000,
                 opacity: 0,
                 y: 20,
@@ -307,7 +319,7 @@
           <div
             class="text-2xl"
             in:fly|global={{
-              delay: 450,
+              delay: autoAnim(),
               duration: 1000,
               opacity: 0,
               y: -20,
@@ -319,7 +331,7 @@
           <div
             class="flex items-center gap-3"
             in:fly|global={{
-              delay: 550,
+              delay: autoAnim(),
               duration: 1000,
               opacity: 0,
               y: -20,
@@ -331,7 +343,7 @@
           <div
             class="flex items-center gap-3"
             in:fly|global={{
-              delay: 650,
+              delay: autoAnim(),
               duration: 1000,
               opacity: 0,
               y: -20,
@@ -343,7 +355,7 @@
           <div
             class="text-xl"
             in:fly|global={{
-              delay: 750,
+              delay: autoAnim(),
               duration: 1000,
               opacity: 0,
               y: -20,
@@ -355,7 +367,7 @@
           <div
             class="flex flex-col items-stretch border-2 border-dashed border-slate-600 p-2"
             in:fly|global={{
-              delay: 850,
+              delay: autoAnim(),
               duration: 1000,
               opacity: 0,
               y: -20,
@@ -406,7 +418,7 @@
             <button
               class="btn-full btn-outlined mt-2 text-base"
               in:fly|global={{
-                delay: 950,
+                delay: autoAnim(),
                 duration: 1000,
                 opacity: 0,
                 y: -20,
@@ -495,19 +507,42 @@
           <div
             class="mt-2 text-2xl"
             in:fly|global={{
-              delay: 1050,
+              delay: autoAnim(),
               duration: 1000,
               opacity: 0,
               y: -20,
               easing: motion.transitions.spring(400, 20)
             }}
           >
-            Home page
+            App
           </div>
           <div
             class="flex items-center gap-3"
             in:fly|global={{
-              delay: 1150,
+              delay: autoAnim(),
+              duration: 1000,
+              opacity: 0,
+              y: -20,
+              easing: motion.transitions.spring(400, 20)
+            }}
+          >
+            Theme:
+            <select
+              bind:value={$theme}
+              class="rounded-md border-2 border-slate-600 bg-transparent outline-none focus-within:outline-none"
+            >
+              <option value="zoron" class="bg-slate-800 text-white"
+                >Zoron Classic</option
+              >
+              <option value="amoled" class="bg-slate-800 text-white"
+                >Ultra Dark</option
+              >
+            </select>
+          </div>
+          <div
+            class="flex items-center gap-3"
+            in:fly|global={{
+              delay: autoAnim(),
               duration: 1000,
               opacity: 0,
               y: -20,
@@ -534,7 +569,7 @@
           <div
             class="flex items-center gap-3"
             in:fly|global={{
-              delay: 1250,
+              delay: autoAnim(),
               duration: 1000,
               opacity: 0,
               y: -20,
@@ -548,7 +583,7 @@
           <div
             class="mt-2 text-2xl"
             in:fly|global={{
-              delay: 1350,
+              delay: autoAnim(),
               duration: 1000,
               opacity: 0,
               y: -20,
@@ -560,7 +595,7 @@
           <div
             class="flex items-center gap-3"
             in:fly|global={{
-              delay: 1450,
+              delay: autoAnim(),
               duration: 1000,
               opacity: 0,
               y: -20,

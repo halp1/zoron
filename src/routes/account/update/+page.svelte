@@ -12,6 +12,7 @@
   } from "@fortawesome/free-solid-svg-icons";
 
   import type { AccountUpdateRes } from "../../api/account/update/+server";
+  import { theme } from "$lib/web/theme";
 
   let username = $state("");
   let password = $state("");
@@ -74,7 +75,7 @@
           submit(e);
         }
       }}
-      class="w-full rounded-lg border-2 border-dashed border-blue-400 bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
+      class="w-full rounded-lg border-2 border-dashed {$theme === "amoled" ? "border-white" : "border-blue-400"} bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
       bind:value={username}
       placeholder="Enter your Aspen username"
       autocomplete="off"
@@ -87,7 +88,7 @@
             submit(e);
           }
         }}
-        class="w-full rounded-lg border-2 border-dashed border-blue-400 bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
+        class="w-full rounded-lg border-2 border-dashed {$theme === "amoled" ? "border-white" : "border-blue-400"} bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
         bind:value={password}
         placeholder="Enter your Aspen password"
         {...{ type: showPassword ? "text" : "password" }}

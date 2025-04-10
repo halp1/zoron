@@ -21,6 +21,7 @@
     faUserFriends,
     faUserSlash
   } from "@fortawesome/free-solid-svg-icons";
+  import { theme } from "$lib/web/theme";
 
   if (!page.data?.session || !page.data.session?.user) {
     signIn();
@@ -251,7 +252,10 @@
       }}
     >
       <div
-        class="relative flex flex-col items-center rounded-lg bg-slate-800 p-5"
+        class="relative flex flex-col items-center rounded-lg {$theme ===
+        'amoled'
+          ? 'border-2 border-white bg-black'
+          : 'bg-slate-800'} p-5"
       >
         <button
           class="btn-circle absolute right-2 top-2"

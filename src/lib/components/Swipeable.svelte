@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount } from "svelte";
+  import { onMount } from "svelte";
 
-  const dispatch = createEventDispatcher<{ swipe: "left" | "right" }>();
 
   interface Props {
     className?: string;
     style?: string;
     children?: import("svelte").Snippet;
+		onswipe?: (direction: "left" | "right") => void;
   }
 
-  let { className = "", style = "", children }: Props = $props();
+  let { className = "", style = "", children, onswipe = () => {} }: Props = $props();
 
   const DEADZONE = 50;
   let startX: number | null = null;
@@ -59,7 +59,7 @@
     const dy = endY - startY;
 
     if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > DEADZONE) {
-      dispatch("swipe", dx > 0 ? "right" : "left");
+      onswipe(dx > 0 ? "right" : "left");
     }
 
     startX = startY = endX = endY = touch = null;
