@@ -3,10 +3,12 @@ import type { ChangelogEntry } from "./types";
 export const changelog: ChangelogEntry[] = [
   {
     version: "1.1.0",
-    date: "04/<FILL OUT>/2025",
+    date: "04/09/2025",
     overview: "Friends",
     changes: [
-      "Added a date picker on the schedule page to easily select a date and view the schedule for that day."
+      "Added a date picker on the schedule page to easily select a date and view the schedule for that day.",
+			"Add friends to Zoron! You can send and receive friend requests, and view your friends' schedules.",
+			"Added a new theme called \"Ultra Dark\""
     ],
     bugfixes: []
   },

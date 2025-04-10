@@ -9,6 +9,7 @@
 
   import { motion } from "$lib/motion";
   import { PWA, isIOS, storage, zoron } from "$lib/web";
+  import { theme } from "$lib/web/theme";
 
   import Fa from "svelte-fa";
 
@@ -142,7 +143,10 @@
 </svelte:head>
 
 <main
-  class="activity-container relative flex h-screen w-full flex-col items-center justify-center"
+  class="activity-container relative flex h-screen w-full flex-col items-center justify-center {$theme ===
+  'amoled'
+    ? 'bg-black'
+    : ''}"
 >
   <div
     class="{$titleBarState
@@ -166,11 +170,14 @@
   </div>
   {#if typeof window === "undefined" || windowWidth >= 768}
     <div class="hidden md:block">
-      <div class="h-12"></div>
+      <div class="h-12 {$theme === 'amoled' ? 'border-b-2' : ''}"></div>
       <div
         class="fixed left-0 {$titleBarState
           ? 'top-12'
-          : 'top-0'} z-10 flex h-12 w-full items-center gap-4 bg-slate-800 px-3 shadow-2xl transition-all"
+          : 'top-0'} z-10 flex h-12 w-full items-center gap-4 {$theme ===
+        'amoled'
+          ? 'border-b-2 border-white bg-black'
+          : 'bg-slate-800'} px-3 shadow-2xl transition-all"
         style="view-transition-name: header;"
         bind:this={tabContainer}
       >
@@ -252,7 +259,10 @@
         <div class="mr-auto"></div>
         <div class="flex w-60 items-center justify-end gap-2">
           <a
-            class="flex h-8 w-32 items-center justify-center gap-2 rounded-full border-2 border-blue-400 bg-white bg-opacity-0 transition-all hover:bg-opacity-10"
+            class="flex h-8 w-32 items-center justify-center gap-2 rounded-full border-2 {$theme ===
+            'amoled'
+              ? 'border-white'
+              : 'border-blue-400'} bg-white bg-opacity-0 transition-all hover:bg-opacity-10"
             href="/account"
             in:fly|global={{
               delay: 500,
@@ -274,7 +284,10 @@
             My Account
           </a>
           <a
-            class="flex h-8 w-[100px] items-center justify-center gap-2 rounded-full border-2 border-blue-400 bg-white bg-opacity-0 transition-all hover:bg-opacity-10"
+            class="flex h-8 w-[100px] items-center justify-center gap-2 rounded-full border-2 {$theme ===
+            'amoled'
+              ? 'border-white'
+              : 'border-blue-400'} bg-white bg-opacity-0 transition-all hover:bg-opacity-10"
             href="/logout"
             in:fly|global={{
               delay: 300,
@@ -374,7 +387,9 @@
           Install
         </button>
         <button
-          class="btn-full btn-outlined border-blue-400 text-base"
+          class="btn-full btn-outlined {$theme === 'amoled'
+            ? 'border-white'
+            : 'border-blue-400'} text-base"
           onclick={() => PWA.hidePrompt()}
         >
           No thanks
@@ -383,11 +398,13 @@
     </div>
   </div>
 </main>
-<img
-  src={bgSrc}
-  alt=""
-  class="fixed left-1/2 top-1/2 -z-10 mb-12 h-[70vh] -translate-x-1/2 -translate-y-1/2 opacity-10 blur-xl md:mt-12"
-/>
+{#if $theme === "zoron"}
+  <img
+    src={bgSrc}
+    alt=""
+    class="fixed left-1/2 top-1/2 -z-10 mb-12 h-[70vh] -translate-x-1/2 -translate-y-1/2 opacity-10 blur-xl md:mt-12"
+  />
+{/if}
 
 <style>
   .view-anim-left {

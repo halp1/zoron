@@ -36,27 +36,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     %sveltekit.head%
   </head>
-  <body data-sveltekit-preload-data="hover" class="bg-gradient">
-    <!-- <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+  <body data-sveltekit-preload-data="hover" class="bg-gradient" style="transition: none;">
     <script>
       try {
-        eruda.init();
-        if (localStorage.getItem("eruda-auto-show") === "1") eruda.show();
-        window.addEventListener("keydown", (e) => {
-          const { key, ctrlKey } = e;
-          if (key === "e" && ctrlKey) {
-            e.preventDefault();
-            if (localStorage.getItem("eruda-auto-show") === "1") {
-              localStorage.setItem("eruda-auto-show", "0");
-              eruda.hide();
-            } else {
-              localStorage.setItem("eruda-auto-show", "1");
-              eruda.show();
-            }
-          }
-        });
+        const userTheme =
+          localStorage.getItem("zoron.dev.theme") ||
+          localStorage.getItem("zoron.prod.theme") ||
+          "zoron";
+        if (JSON.parse(userTheme) === "amoled") {
+          document.body.classList.add("bg-black");
+          document.body.classList.remove("bg-gradient");
+        }
+				document.body.style.transition = "";
       } catch {}
-    </script> -->
+    </script>
     <div style="display: contents">%sveltekit.body%</div>
   </body>
 </html>
