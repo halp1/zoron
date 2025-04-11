@@ -26,8 +26,7 @@
     );
   };
   const validPassword = (password: string) =>
-    password.length === 4 + 3 + 4 &&
-		/^[a-zA-Z]+\d+[a-zA-Z]+$/.test(password);
+    /^[a-zA-Z]+\d+[a-zA-Z]+$/.test(password);
 
   let submitting = $state(false);
 
