@@ -17,7 +17,7 @@
 		"format": "prettier --write .",
 		"start": "node build/index.js"
 	},
-	"devDependencies": {
+	"dependencies": {
 		"@auth/mongodb-adapter": "^3.8.0",
 		"@auth/sveltekit": "1.7.4",
 		"@fingerprintjs/fingerprintjs": "^4.6.1",
