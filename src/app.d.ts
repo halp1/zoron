@@ -25,6 +25,9 @@ declare global {
           uri: string;
           key: string;
         };
+				posthog: {
+					key: string;
+				}
         commit: string;
       };
       hideFooter: boolean;

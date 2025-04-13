@@ -376,10 +376,7 @@
           <!-- svelte-ignore a11y_click_events_have_key_events -->
           <!-- svelte-ignore a11y_no_static_element_interactions -->
           <div
-            class="flex cursor-pointer items-center rounded-full border-slate-600 p-2 hover:bg-white/5 {idx !==
-            0
-              ? 'border-t-2'
-              : ''}"
+            class="flex cursor-pointer items-center rounded-full border-slate-600 p-2 hover:bg-white/5"
             onclick={async () => {
               showFriend = true;
 
