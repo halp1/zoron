@@ -3,6 +3,7 @@
 
   import { untrack } from "svelte";
 
+  import { goto } from "$app/navigation";
   import { page } from "$app/state";
 
   import type { aspen } from "$lib/aspen";
@@ -219,6 +220,14 @@
 </svelte:head>
 
 <main class="relative h-screen overflow-hidden">
+  <button
+    class="btn-circle absolute left-4 top-4 z-50 border-2 border-slate-600"
+    onclick={async () => {
+      await goto("/account");
+    }}
+  >
+    <Fa icon={faArrowLeft} />
+  </button>
   <div
     class="relative flex h-full w-[200vw] md:w-auto md:!transform-none"
     style="transform: translateX(-{!showFriend ? 0 : 100}vw);"
