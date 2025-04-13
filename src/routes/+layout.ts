@@ -1,5 +1,3 @@
-import { get } from "svelte/store";
-
 import { storage } from "$lib/web";
 import { theme } from "$lib/web/theme";
 
