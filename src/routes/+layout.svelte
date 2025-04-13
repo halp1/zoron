@@ -24,7 +24,7 @@
     PWA.initialize();
 
     onMount(() => {
-      if (browser) {
+      if (browser && !import.meta.env.DEV) {
         posthog.init(page.data.env.posthog.key, {
           api_host: "/posthog-proxy",
           person_profiles: "identified_only"
