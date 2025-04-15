@@ -191,6 +191,7 @@ export class Notifier extends Job {
   }
 
   async run() {
+    return;
     webpush.setVapidDetails(
       "https://push.haelp.dev",
       VAPID_PUBLIC,
