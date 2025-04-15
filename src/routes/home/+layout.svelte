@@ -132,7 +132,7 @@
 
   onMount(() => {
     $titleBarState = true;
-    return storage.use("banner.show", titleBarState);
+    return storage.use("banner.notifs-down", titleBarState);
   });
 
   const prompt = PWA.prompt;
@@ -153,13 +153,10 @@
       ? 'h-12'
       : 'h-0'} w-screen overflow-hidden transition-all"
   >
-    <div class="flex h-12 items-center bg-emerald-600 px-4 text-xl text-white">
+    <div class="flex h-12 items-center bg-red-500 px-4 text-xl text-white">
       <div class="md:mr-auto md:w-10"></div>
       <div>
-        Zoron now has notifications! Go <a
-          href="/account/settings"
-          class="underline">here to set them up.</a
-        >
+        Notifications have been temporarily disabled.
       </div>
       <div class="ml-auto md:w-10">
         <button class="btn-circle" onclick={() => ($titleBarState = false)}>
