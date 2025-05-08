@@ -430,6 +430,7 @@
         currentTarget: EventTarget & HTMLDivElement;
       }
     ) => {
+      e.currentTarget.parentElement!.scrollTop = 0;
       e.preventDefault();
       swipeStart = {
         x: e.touches[0].clientX,
@@ -444,6 +445,7 @@
         currentTarget: EventTarget & HTMLDivElement;
       }
     ) => {
+      e.currentTarget.parentElement!.scrollTop = 0;
       if (!swipeStart) return;
       const x = e.touches[0].clientX;
       const y = e.touches[0].clientY;
@@ -461,6 +463,7 @@
         currentTarget: EventTarget & HTMLDivElement;
       }
     ) => {
+      e.currentTarget.parentElement!.scrollTop = 0;
       e.preventDefault();
       e.currentTarget.style.transition = "inherit";
       if (!swipeStart) return;
@@ -493,6 +496,13 @@
       swipeStart = null;
     };
 
+    const scrollHandler = (
+      e: WheelEvent & { currentTarget: HTMLDivElement }
+    ) => {
+      // reset transform
+      (e.currentTarget.children[0] as HTMLDivElement).style.transform = "translateY(0px) scale(1)";
+    };
+
     dayViewRef?.addEventListener("touchstart", touchStart as any, {
       passive: false
     });
@@ -502,10 +512,14 @@
     dayViewRef?.addEventListener("touchend", touchEnd as any, {
       passive: false
     });
+		dayViewRef?.parentElement?.addEventListener("wheel", scrollHandler as any, {
+			passive: false
+		});
     return () => {
       dayViewRef?.removeEventListener("touchstart", touchStart as any);
       dayViewRef?.removeEventListener("touchmove", touchMove as any);
       dayViewRef?.removeEventListener("touchend", touchEnd as any);
+			dayViewRef?.parentElement?.removeEventListener("wheel", scrollHandler as any);
     };
   });
 </script>
