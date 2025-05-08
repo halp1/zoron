@@ -940,7 +940,7 @@ export namespace aspen {
             )
           ];
 
-          if (rows[0].textContent?.trim() === "No matching records") return [];
+          if (rows.length === 0 || rows[0].textContent?.trim() === "No matching records") return [];
 
           return rows.map(
             (row) =>
