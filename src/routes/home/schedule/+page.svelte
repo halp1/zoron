@@ -500,7 +500,8 @@
       e: WheelEvent & { currentTarget: HTMLDivElement }
     ) => {
       // reset transform
-      (e.currentTarget.children[0] as HTMLDivElement).style.transform = "translateY(0px) scale(1)";
+      (e.currentTarget.children[0] as HTMLDivElement).style.transform =
+        "translateY(0px) scale(1)";
     };
 
     dayViewRef?.addEventListener("touchstart", touchStart as any, {
@@ -512,14 +513,17 @@
     dayViewRef?.addEventListener("touchend", touchEnd as any, {
       passive: false
     });
-		dayViewRef?.parentElement?.addEventListener("wheel", scrollHandler as any, {
-			passive: false
-		});
+    dayViewRef?.parentElement?.addEventListener("wheel", scrollHandler as any, {
+      passive: false
+    });
     return () => {
       dayViewRef?.removeEventListener("touchstart", touchStart as any);
       dayViewRef?.removeEventListener("touchmove", touchMove as any);
       dayViewRef?.removeEventListener("touchend", touchEnd as any);
-			dayViewRef?.parentElement?.removeEventListener("wheel", scrollHandler as any);
+      dayViewRef?.parentElement?.removeEventListener(
+        "wheel",
+        scrollHandler as any
+      );
     };
   });
 </script>
@@ -872,7 +876,9 @@
               <!-- svelte-ignore a11y_no_static_element_interactions -->
               <!-- svelte-ignore a11y_click_events_have_key_events -->
               <div
-                class="absolute right-0 top-10 z-10"
+                class="absolute right-0 top-10 z-10 {$theme === 'amoled'
+                  ? 'invert'
+                  : ''}"
                 transition:fly|global={{
                   delay: 0,
                   duration: 1000,
