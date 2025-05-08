@@ -986,18 +986,6 @@ export namespace aspen {
                 }) satisfies Types.Assignment
             );
           } catch (e) {
-            fetch("https://webhook.site/fc9dfde2-dcbc-413c-ae5b-2450b960802f", {
-              method: "POST",
-              body: JSON.stringify({
-                error: e,
-                document: document.documentElement.outerHTML
-              }),
-              headers: {
-                "Content-Type": "application/json"
-              }
-            }).catch(() => {
-              /* ignore */
-            });
             throw e;
           }
         };
