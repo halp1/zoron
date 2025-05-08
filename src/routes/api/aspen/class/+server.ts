@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({
       401
     );
   const body = await request.json();
-  const requiredArgs = ["classID"];
+  const requiredArgs = ["classID", "year"];
   if (!requiredArgs.every((arg) => arg in body))
     return api.error("Missing required arguments", 400);
   let assignments = body.assignments;
@@ -26,6 +26,7 @@ export const POST: RequestHandler = async ({
     return api.json(
       await classDetail(session, cookies.get("secret")!, {
         classID: body.classID,
+        year: body.year,
         assignments
       })
     );

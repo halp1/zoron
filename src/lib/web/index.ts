@@ -6,3 +6,4 @@ export * from "./compressImage";
 export * from "./state";
 export * from "./storage.svelte";
 export * from "./push";
+export * from "./theme";

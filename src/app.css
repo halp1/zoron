@@ -13,6 +13,10 @@
     @apply flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-opacity-10 p-2 hover:bg-slate-800;
   }
 
+  .theme-amoled .btn-circle {
+    @apply hover:bg-gray-800;
+  }
+
   .btn-full {
     @apply flex cursor-pointer items-center justify-center gap-4 rounded-xl px-5 py-3 text-2xl;
   }
@@ -37,6 +41,15 @@
   .custom-scroll::-webkit-scrollbar-thumb {
     @apply rounded-full bg-slate-400 hover:bg-slate-500;
   }
+
+  body.theme-amoled .custom_scroll::-webkit-scrollbar-track {
+    @apply bg-gray-900;
+  }
+
+  body.theme-amoled .custom-scroll::-webkit-scrollbar-thumb {
+    @apply bg-white hover:bg-gray-100;
+  }
+
   .custom-scroll-right::-webkit-scrollbar-thumb {
     @apply rounded-l-full;
   }

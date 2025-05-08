@@ -74,7 +74,7 @@ export namespace aspen {
         categories: ClassDetailCategory[];
         averages: (Grade | undefined)[];
         posted: (Grade | undefined)[];
-        final?: Grade;
+        final?: Omit<Grade, "number"> & { number?: number };
       };
       assignments: Assignment[];
     }
@@ -131,7 +131,7 @@ export namespace aspen {
   export namespace constants {
     export namespace steps {
       export const authenticate = 5;
-      export const classDetail = 4;
+      export const classDetail = 5;
       export const assignment = 6;
       export namespace schedule {
         export const pdf = 5;
@@ -689,6 +689,7 @@ export namespace aspen {
 
   export const classDetail = async ({
     cookie,
+    year,
     classID,
     onProgress,
     assignments = {
@@ -698,6 +699,7 @@ export namespace aspen {
   }: {
     cookie: string;
     classID: string;
+    year: "current" | "previous";
     onProgress?: Types.ProgressCallback;
     assignments?: {
       category?: string;
@@ -740,7 +742,56 @@ export namespace aspen {
 
     tick();
 
-    const prefetchDom = new JSDOM(await prefetch.text());
+    let prefetchDom = new JSDOM(await prefetch.text());
+		await (async () => {
+      const formData = new prefetchDom.window.FormData(
+        prefetchDom.window.document.forms["classListForm" as any]
+      );
+      formData.set("userEvent", "950");
+      formData.set("yearFilter", year);
+
+      const body = new prefetchDom.window.URLSearchParams(
+        formData as any
+      ).toString();
+
+      const res = await fetch(
+        "https://ma-lexington.myfollett.com/aspen/portalClassList.do",
+        {
+          headers: {
+            accept:
+              "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+            "cache-control": "no-cache",
+            "content-type": "application/x-www-form-urlencoded",
+            pragma: "no-cache",
+            "sec-ch-ua":
+              '"Not A(Brand";v="8", "Chromium";v="132", "Google Chrome";v="132"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"Windows"',
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "same-origin",
+            "sec-fetch-user": "?1",
+            "upgrade-insecure-requests": "1",
+            cookie,
+            Referer:
+              "https://ma-lexington.myfollett.com/aspen/portalClassList.do?navkey=academics.classes.list&maximized=false",
+            "Referrer-Policy": "strict-origin-when-cross-origin"
+          },
+          body,
+          method: "POST"
+        }
+      );
+
+      if (res.status !== 200) {
+        throw new Error(`Failed to load previous year: ${res.status}`);
+      }
+
+      prefetchDom = new JSDOM(await res.text());
+    })();
+
+    tick();
+
     const prefetchForm =
       prefetchDom.window.document.forms["classListForm" as any];
     const formData = new prefetchDom.window.FormData(prefetchForm);
@@ -888,11 +939,17 @@ export namespace aspen {
           ].at(-1)!.textContent;
           if (!finalText) throw new Error("Failed to find final grade");
           if (finalText.trim().length > 1) {
-            result!.final = {
-              number:
-                Math.round(parseFloat(finalText.split(" ")[0]) * 100) / 100,
-              letter: finalText.split(" ")[1].trim()
-            };
+            try {
+              result!.final = {
+                number:
+                  Math.round(parseFloat(finalText.split(" ")[0]) * 100) / 100,
+                letter: finalText.split(" ")[1].trim()
+              };
+            } catch {
+              result!.final = {
+                letter: finalText.trim()
+              };
+            }
           }
         }
 
