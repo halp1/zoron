@@ -38,7 +38,7 @@ export abstract class Job {
         this.run();
       this.#timeout = setTimeout(
         runner,
-        (this.time + Math.random() * 2 - 1) * this.randomness
+        this.time + (Math.random() * 2 - 1) * this.randomness
       );
     };
 
