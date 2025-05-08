@@ -132,7 +132,7 @@
 
   onMount(() => {
     $titleBarState = true;
-    return storage.use("banner.notifs-down", titleBarState);
+    return storage.use("banner.notifs-up-again", titleBarState);
   });
 
   const prompt = PWA.prompt;
