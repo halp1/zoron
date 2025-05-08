@@ -44,6 +44,7 @@
       "/api/aspen/class",
       {
         classID: c.id,
+        year: $classQuery.year,
         assignments: {
           term: 0
         }
@@ -737,8 +738,8 @@
                       <div
                         class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed {$theme ===
                         'amoled'
-                          ? 'border-white'
-                          : 'border-slate-600'} bg-slate-800 px-2 py-1 text-center"
+                          ? 'border-white bg-gray-900'
+                          : 'border-slate-600 bg-slate-800'} px-2 py-1 text-center"
                       >
                         {#if term.weight}
                           {term.weight}%
@@ -780,8 +781,8 @@
                     <div
                       class="col-span-2 flex flex-wrap justify-center border-b-2 border-l-2 border-dashed {$theme ===
                       'amoled'
-                        ? 'border-white'
-                        : 'border-slate-600'} bg-slate-800 px-2 py-1 text-center text-sm xl:text-base"
+                        ? 'border-white bg-gray-900'
+                        : 'border-slate-600 bg-slate-800'} px-2 py-1 text-center text-sm xl:text-base"
                       style={(useLinearGradient &&
                         !avg &&
                         "background: repeating-linear-gradient(45deg, rgb(100 116 139 / .5), rgb(100 116 139 / .5) 2px, #1e293b 2px, #1e293b 10px); background-position: 0 0; background-size: 100% 100%;") ||
@@ -812,8 +813,8 @@
                     <div
                       class="col-span-2 flex flex-wrap justify-center border-b-2 border-l-2 border-dashed {$theme ===
                       'amoled'
-                        ? 'border-white'
-                        : 'border-slate-600'} bg-slate-800 px-2 py-1 text-center text-sm xl:text-base {!grade &&
+                        ? 'border-white bg-gray-900'
+                        : 'border-slate-600 bg-slate-800'} px-2 py-1 text-center text-sm xl:text-base {!grade &&
                         'bg-opacity-50'}"
                       style={(useLinearGradient &&
                         !grade &&
@@ -840,15 +841,24 @@
                   <div
                     class="relative flex justify-center border-b-2 border-l-2 border-dashed {$theme ===
                     'amoled'
-                      ? 'border-white'
-                      : 'border-slate-600'} bg-slate-800 px-2 py-1 text-center"
+                      ? 'border-white bg-gray-900'
+                      : 'border-slate-600 bg-slate-800'} px-2 py-1 text-center"
                     style="grid-column: span {c.data.grades.categories[0].terms
                       .length * 2} / span {c.data.grades.categories[0].terms
                       .length * 2};"
                   >
                     {#if c.data.grades.final}
-                      {c.data.grades.final.number.toFixed(2)}
-                      <div class="ml-1">({c.data.grades.final.letter})</div>
+                      {#if c.data.grades.final.number}
+                        {c.data.grades.final.number.toFixed(2)}
+                        <div class="ml-1">({c.data.grades.final.letter})</div>
+                      {:else}
+                        {c.data.grades.final.letter}
+												<Fa
+                        icon={faQuestionCircle}
+                        class="absolute right-2 top-1/2 -translate-y-1/2 cursor-help"
+                        title="No exact final grade is available."
+                      />
+                      {/if}
                     {:else}
                       {calculateFinalGrade(c.data.grades).toFixed(2)}
                       <Fa
