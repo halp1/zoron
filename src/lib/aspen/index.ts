@@ -967,7 +967,7 @@ export namespace aspen {
                           const items = row.children[
                             row.children.length === 7 ? 5 : 4
                           ].querySelectorAll("table > tbody > tr > td");
-                          if (items.length === 1) return;
+                          if (items.length <= 1) return;
 
                           const str = items[items.length - 2]
                             .textContent!.trim()
