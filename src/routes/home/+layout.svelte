@@ -153,10 +153,10 @@
       ? 'h-12'
       : 'h-0'} w-screen overflow-hidden transition-all"
   >
-    <div class="flex h-12 items-center bg-red-500 px-4 text-xl text-white">
+    <div class="flex h-12 items-center bg-green-500 px-4 text-xl text-white">
       <div class="md:mr-auto md:w-10"></div>
       <div>
-        Notifications have been temporarily disabled.
+        Notifications are back, now checked about every hour between 7am and 10pm.
       </div>
       <div class="ml-auto md:w-10">
         <button class="btn-circle" onclick={() => ($titleBarState = false)}>
