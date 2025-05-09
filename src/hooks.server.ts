@@ -33,7 +33,7 @@ export const handle: Handle = async (params) => {
     });
 
     const res = await fetch(request);
-		
+
     const headers = new Headers();
     for (const [key, value] of res.headers.entries()) {
       if (key.toLowerCase() === "set-cookie") {
@@ -49,6 +49,12 @@ export const handle: Handle = async (params) => {
   }
 
   return await authHandle(params);
+};
+
+export const handleError = (params) => {
+  console.log("IP for below error:", params.event.getClientAddress());
+	console.error(params.error)
+  return params;
 };
 
 if ("stopAllJobs" in global) (global as any).stopAllJobs();
