@@ -52,9 +52,22 @@ export const handle: Handle = async (params) => {
 };
 
 export const handleError = (params) => {
-  console.log("IP for below error:", params.event.getClientAddress());
-	console.error(params.error)
-  return params;
+  console.error(
+    "IP for below error:",
+    params.event.request.headers.get("x-forwarded-for") ||
+      params.event.getClientAddress()
+  );
+  if (params.error instanceof Error) {
+    const e = params.error as Error & { status: number };
+    if (e.status === 404) {
+      console.error("404 at:", params.event.url.pathname);
+    } else {
+      console.error(params.error);
+    }
+  } else {
+    console.error(params.error);
+  }
+  return { message: params.message };
 };
 
 if ("stopAllJobs" in global) (global as any).stopAllJobs();
