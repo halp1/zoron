@@ -743,7 +743,7 @@ export namespace aspen {
     tick();
 
     let prefetchDom = new JSDOM(await prefetch.text());
-		await (async () => {
+    await (async () => {
       const formData = new prefetchDom.window.FormData(
         prefetchDom.window.document.forms["classListForm" as any]
       );

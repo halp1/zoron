@@ -46,18 +46,24 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <meta name="apple-mobile-web-app-title" content={page.data.env.name} />
   <link rel="manifest" href="/site.webmanifest" />
-	
-	<!-- OpenGraph/Twitter tags -->
-	<meta property="og:title" content={page.data.env.name} />
-	<meta property="og:description" content="The new way to see your schedule and grades at LHS." />
-	<meta property="og:image" content="/screenshots/desktop.png" />
-	<meta property="og:url" content="https://zoron.app" />
-	<meta property="og:type" content="website" />
 
-	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content={page.data.env.name} />
-	<meta name="twitter:description" content="The new way to see your schedule and grades at LHS." />
-	<meta name="twitter:image" content="/screenshots/desktop.png" />
+  <!-- OpenGraph/Twitter tags -->
+  <meta property="og:title" content={page.data.env.name} />
+  <meta
+    property="og:description"
+    content="The new way to see your schedule and grades at LHS."
+  />
+  <meta property="og:image" content="/screenshots/desktop.png" />
+  <meta property="og:url" content="https://zoron.app" />
+  <meta property="og:type" content="website" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={page.data.env.name} />
+  <meta
+    name="twitter:description"
+    content="The new way to see your schedule and grades at LHS."
+  />
+  <meta name="twitter:image" content="/screenshots/desktop.png" />
 </svelte:head>
 
 <Toaster />
