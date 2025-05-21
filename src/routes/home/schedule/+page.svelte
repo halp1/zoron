@@ -92,6 +92,7 @@
     courseColorMap.set("lunch", "bg-gray-400");
     courseColorMap.set("free", "bg-gray-400");
     courseColorMap.set("I-block", "bg-cyan-400");
+    courseColorMap.set("custom", "bg-gray-400");
     for (const course of schedule.schedule) {
       if (course === null) continue;
       if (course.course === null) continue;
@@ -156,12 +157,18 @@
         isFullDayEvent
       );
     });
-    const day = currentDayEvents.find((event) =>
-      event.summary.includes("Day")
+    const day = currentDayEvents.find(
+      (event) =>
+        event.summary.toLowerCase().includes("day") ||
+        event.summary.toLowerCase().includes("all")
     )?.summary!;
     if (!day) return { day: "", blocks: [] };
     const allEvents = currentDayEvents
-      .filter((event) => !event.summary.includes("Day"))
+      .filter(
+        (event) =>
+          !event.summary.toLowerCase().includes("day") &&
+          !event.summary.toLowerCase().includes("all blocks")
+      )
       .map((event) => ({
         name: event.summary.trim(),
         start: new Date(event.start.dateTime || event.start.date!),
@@ -188,12 +195,14 @@
               ? 4
               : day.includes("Day 5")
                 ? 5
-                : 6) - 1;
+                : day.includes("Day 6")
+                  ? 6
+                  : 0) - 1;
 
-    const today = $zoron.schedule!.schedule!.slice(
-      dayNumber * 6,
-      (dayNumber + 1) * 6
-    );
+    const today =
+      dayNumber === -1
+        ? $zoron.schedule!.schedule!
+        : $zoron.schedule!.schedule!.slice(dayNumber * 6, (dayNumber + 1) * 6);
     const blocks = today
       .filter((block) => block?.block || block?.schedule)
       .map((block) => block!.block || block!.schedule)
@@ -202,25 +211,68 @@
         (idx < 2 || idx > 3) && item ? item.replace("$", "") : item
       );
 
+    const blockNames = [
+      "Lunch 1",
+      "Lunch 2",
+      "Lunch 3",
+      ..."ABCDEFGH"
+        .split("")
+        .map((c) =>
+          new Array(6)
+            .fill(null)
+            // prettier seems to be removing the $
+            .map((_, i) => [`${c}${i + 1}`, `${c}\u0024${i + 1}`])
+        )
+        .flat()
+        .flat(),
+      "I-block",
+      "Advisory"
+    ];
+
     const filtered = allEvents.filter(
-      (event) => blocks.includes(event.name) || event.name === "I-block"
+      (event) =>
+        !blockNames.includes(event.name) ||
+        blocks.includes(event.name) ||
+        event.name === "I-block"
     );
 
-    const blockEvents = filtered.map((event) => ({
-      ...event,
-      class: generated.find(
-        (b) =>
-          ((b as any).block?.replace("$", "") || b.type).trim() ===
-            event.name ||
-          ((b as any).block || b.type).trim() === event.name ||
-          ((b as any).schedule?.trim() === "HR" && event.name === "Advisory")
-      ) || {
-        type: "other" as const,
-        color: "bg-gray-400" as const,
-        block: event.name
+    const unmerged = filtered
+      .map((event) => ({
+        ...event,
+        class: generated.find(
+          (b) =>
+            ((b as any).block?.replace("$", "") || b.type).trim() ===
+              event.name ||
+            ((b as any).block || b.type).trim() === event.name ||
+            ((b as any).schedule?.trim() === "HR" && event.name === "Advisory")
+        ) || {
+          type: "other" as const,
+          color: "bg-gray-600" as const,
+          block: event.name
+        }
+      }))
+      .sort((a, b) => a.start.getTime() - b.start.getTime());
+
+    const blockEvents: typeof unmerged = [];
+    for (let i = 0; i < unmerged.length; i++) {
+      const event = unmerged[i];
+      const last = blockEvents.at(-1);
+      if (
+        !last ||
+        event.class.type !== "block" ||
+        last.class.type !== "block" ||
+        event.class.course !== last.class.course
+      ) {
+        blockEvents.push(event);
+      } else {
+        last.end = event.end;
       }
-    }));
-    if (day.includes("Half Day")) {
+    }
+
+    if (
+      day.toLowerCase().includes("half day") ||
+      day.toLowerCase().includes("half-day")
+    ) {
       const last = blockEvents.at(-1);
       if (
         !last ||
@@ -265,17 +317,23 @@
       };
     } else {
       const targetLunch = schedule?.lunches[dayNumber];
+      const lunchData =
+        allEvents.find((event) =>
+          event.name.includes(`Lunch ${targetLunch}`)
+        ) || allEvents.find((event) => event.name.includes("Lunch"))!;
       return {
         day,
         blocks: [
-          ...blockEvents,
+          ...blockEvents.filter(
+            (b) => b.class.type !== "other" || b.class.block !== "Lunch"
+          ),
           {
-            ...allEvents.find((event) =>
-              event.name.includes(`Lunch ${targetLunch}`)
-            )!,
+            ...lunchData,
             class: {
               type: "lunch" as const,
-              lunch: targetLunch
+              lunch: lunchData.name.includes((targetLunch || -1).toString())
+                ? targetLunch
+                : 0
             }
           }
         ].sort((a, b) => a.start.getTime() - b.start.getTime())
@@ -988,7 +1046,9 @@
                                 ? "First"
                                 : block.class.lunch === 2
                                   ? "Second"
-                                  : "Third"}
+                                  : block.class.lunch === 3
+                                    ? "Third"
+                                    : ""}
                             {/if}
                             Lunch
                           {:else}

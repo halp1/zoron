@@ -853,11 +853,11 @@
                         <div class="ml-1">({c.data.grades.final.letter})</div>
                       {:else}
                         {c.data.grades.final.letter}
-												<Fa
-                        icon={faQuestionCircle}
-                        class="absolute right-2 top-1/2 -translate-y-1/2 cursor-help"
-                        title="No exact final grade is available."
-                      />
+                        <Fa
+                          icon={faQuestionCircle}
+                          class="absolute right-2 top-1/2 -translate-y-1/2 cursor-help"
+                          title="No exact final grade is available."
+                        />
                       {/if}
                     {:else}
                       {calculateFinalGrade(c.data.grades).toFixed(2)}

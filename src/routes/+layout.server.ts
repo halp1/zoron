@@ -2,7 +2,7 @@ import { aspen } from "$lib/aspen";
 import { CONSTANTS } from "$lib/constants";
 
 import {
-	POSTHOG,
+  POSTHOG,
   SUPABASE_PUBLIC_KEY,
   SUPABASE_URI,
   VAPID_PUBLIC
@@ -30,9 +30,9 @@ export const load: LayoutServerLoad = async (event) => {
         uri: SUPABASE_URI,
         key: SUPABASE_PUBLIC_KEY
       },
-			posthog: {
-				key: POSTHOG
-			},
+      posthog: {
+        key: POSTHOG
+      },
       commit: commit
     },
     hideFooter: event.cookies.get("hide-footer") === "1"

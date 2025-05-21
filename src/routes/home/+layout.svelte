@@ -156,7 +156,8 @@
     <div class="flex h-12 items-center bg-green-500 px-4 text-xl text-white">
       <div class="md:mr-auto md:w-10"></div>
       <div>
-        Notifications are back, now checked about every hour between 7am and 10pm.
+        Notifications are back, now checked about every hour between 7am and
+        10pm.
       </div>
       <div class="ml-auto md:w-10">
         <button class="btn-circle" onclick={() => ($titleBarState = false)}>
