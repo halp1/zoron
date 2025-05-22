@@ -196,8 +196,10 @@ export class Notifier extends Job {
   }
 
   async run() {
-		console.log("Running notifier job at", new Date().toString());
 		if (import.meta.env.DEV) return;
+		
+    console.log("Running notifier job at", new Date().toString());
+		
     webpush.setVapidDetails(
       "https://push.haelp.dev",
       VAPID_PUBLIC,
