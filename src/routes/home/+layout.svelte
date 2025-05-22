@@ -327,7 +327,10 @@
   {#if typeof window === "undefined" || windowWidth < 768}
     <div class="h-14 md:hidden {isIOS() ? 'pb-5' : ''}"></div>
     <div
-      class="fixed bottom-0 left-0 right-0 flex w-full items-center justify-evenly rounded-t-2xl bg-slate-800 pb-2 pt-2 shadow-xl md:hidden"
+      class="fixed bottom-0 left-0 right-0 flex w-full items-center justify-evenly rounded-t-2xl pb-2 pt-2 shadow-xl md:hidden {$theme ===
+  'amoled'
+    ? 'bg-black border-2 border-b-0 border-white'
+    : 'bg-slate-800'}"
     >
       {#each tabs as tab, idx}
         <a
