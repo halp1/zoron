@@ -6,7 +6,7 @@ import { version } from "$service-worker";
 /// <reference path="../node_modules/typescript/lib/lib.webworker.d.ts" />
 
 // prettier-ignore
-const assets = ["/favicon.png","/apple-touch-icon-precomposed.png","/web-app-manifest-192x192.png","/favicon-48x48.png","/apple-touch-icon.png","/web-app-manifest-512x512.png","/site.webmanifest","/robots.txt","/fonts/suse/regular.ttf","/fonts/suse/bold.ttf","/icons/icon-512x512.png","/icons/icon-192x192.png","/icons/icon-96x96.png","/icons/icon-128x128.png","/icons/icon-152x152.png","/icons/icon-144x144.png","/icons/icon-72x72.png","/icons/icon-384x384.png","/favicon.ico","/screenshots/desktop.png","/screenshots/mobile.png"];
+const assets = ["/web-app-manifest-192x192.png","/screenshots/desktop.png","/screenshots/mobile.png","/apple-touch-icon.png","/web-app-manifest-512x512.png","/favicon-48x48.png","/fonts/suse/regular.ttf","/fonts/suse/bold.ttf","/favicon.png","/apple-touch-icon-precomposed.png","/robots.txt","/favicon.ico","/site.webmanifest","/icons/icon-152x152.png","/icons/icon-384x384.png","/icons/icon-192x192.png","/icons/icon-96x96.png","/icons/icon-144x144.png","/icons/icon-72x72.png","/icons/icon-512x512.png","/icons/icon-128x128.png"];
 
 const sw = /** @type {ServiceWorkerGlobalScope} */ (
   /** @type {unknown} */ (self)

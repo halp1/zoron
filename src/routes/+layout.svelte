@@ -5,7 +5,6 @@
   import { page } from "$app/state";
 
   import { PWA, isMobile } from "$lib/web";
-
   import posthog from "posthog-js";
   import { Toaster } from "svelte-french-toast";
 
@@ -22,21 +21,19 @@
     document.body.classList.add("suse");
 
     PWA.initialize();
-
-    onMount(() => {
-      if (browser && !import.meta.env.DEV) {
-        posthog.init(page.data.env.posthog.key, {
-          api_host: "/posthog-proxy",
-          person_profiles: "identified_only"
+		
+    if (browser && !import.meta.env.DEV) {
+      posthog.init(page.data.env.posthog.key, {
+        api_host: "/posthog-proxy",
+        person_profiles: "identified_only"
+      });
+      if (page.data.session?.user?.email) {
+        posthog.identify(page.data.session.user.email, {
+          email: page.data.session.user.email,
+          name: page.data.session.user.name
         });
-        if (page.data.session?.user?.email) {
-          posthog.identify(page.data.session.user.email, {
-            email: page.data.session.user.email,
-            name: page.data.session.user.name
-          });
-        }
       }
-    });
+    }
   });
 </script>
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { writable } from "svelte/store";
+  import { get, writable } from "svelte/store";
   import { fade, fly, scale } from "svelte/transition";
 
   import { onMount } from "svelte";
@@ -131,8 +131,15 @@
   const titleBarState = writable(false);
 
   onMount(() => {
-    $titleBarState = true;
+    $titleBarState = false;
     return storage.use("banner.notifs-up-again", titleBarState);
+  });
+
+  const themePopup = writable(get(theme) === "zoron");
+
+  onMount(() => {
+    $themePopup = get(theme) === "zoron";
+    return storage.use("popups.theme", themePopup);
   });
 
   const prompt = PWA.prompt;
@@ -328,9 +335,9 @@
     <div class="h-14 md:hidden {isIOS() ? 'pb-5' : ''}"></div>
     <div
       class="fixed bottom-0 left-0 right-0 flex w-full items-center justify-evenly rounded-t-2xl pb-2 pt-2 shadow-xl md:hidden {$theme ===
-  'amoled'
-    ? 'bg-black border-2 border-b-0 border-white'
-    : 'bg-slate-800'}"
+      'amoled'
+        ? 'border-2 border-b-0 border-white bg-black'
+        : 'bg-slate-800'}"
     >
       {#each tabs as tab, idx}
         <a
@@ -403,6 +410,55 @@
       </div>
     </div>
   </div>
+  {#if $themePopup}
+    <div
+      class="fixed bottom-10 right-0 mx-5 rounded-3xl border-4 p-8 md:right-10 md:mx-0 md:ml-0 md:w-96 {$theme ===
+      'amoled'
+        ? 'border-white bg-black'
+        : 'border-slate-600 bg-slate-900'}"
+    >
+      <h1 class="text-3xl">Zoron has a new theme!</h1>
+      <div class={$theme === "amoled" ? "text-white" : "text-slate-400"}>
+        You can always change this in the app settings.
+      </div>
+      <div class="mt-3 flex gap-2">
+        {#if $theme === "zoron"}
+          <button
+            class="btn-full btn-outlined flex-1 border-green-400 p-2 text-base"
+            onclick={() => {
+              theme.set("amoled");
+            }}
+          >
+            Try it out
+          </button>
+          <button
+            class="btn-full btn-outlined flex-1 border-red-500 p-2 text-base"
+            onclick={() => ($themePopup = false)}
+          >
+            Close
+          </button>
+        {:else}
+          <button
+            class="btn-full btn-outlined flex-1 border-green-400 p-2 text-base"
+            onclick={() => {
+              $themePopup = false;
+            }}
+          >
+            Keep it
+          </button>
+          <button
+            class="btn-full btn-outlined flex-1 border-red-500 p-2 text-base"
+            onclick={() => {
+              theme.set("zoron");
+              $themePopup = false;
+            }}
+          >
+            Revert
+          </button>
+        {/if}
+      </div>
+    </div>
+  {/if}
 </main>
 {#if $theme === "zoron"}
   <img
