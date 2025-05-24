@@ -266,6 +266,13 @@
         blockEvents.push(event);
       } else {
         last.end = event.end;
+        Object.assign(last, {
+          get duration() {
+            // @ts-expect-error ts is buggin
+            return (this.end.getTime() - this.start.getTime()) / 1000 / 60;
+          },
+          progression: calculateProgression(event.start, event.end)
+        });
       }
     }
 

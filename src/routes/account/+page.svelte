@@ -123,7 +123,7 @@
             }}
           >
             <Fa icon={faGear} />
-            Account settings
+            Settings
           </a>
           <a
             href="/account/friends"
