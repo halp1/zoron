@@ -10,6 +10,9 @@
   import { requests, toast } from "$lib/web";
   import { theme } from "$lib/web/theme";
 
+  import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+  import Fa from "svelte-fa";
+
   let tick = $state(0);
   onMount(() => {
     let frame;
@@ -306,4 +309,26 @@
   >
     Restart Zoron
   </button>
+  <div
+    class="flex flex-col gap-2 rounded-3xl border-2 {$theme === 'amoled'
+      ? 'border-white'
+      : 'border-red-400'} {$theme === 'amoled'
+      ? 'bg-black'
+      : 'bg-slate-800'} p-5"
+    in:fly|global={{
+      delay: 550,
+      duration: 1000,
+      opacity: 0,
+      y: -20,
+      easing: motion.transitions.spring(400, 20)
+    }}
+  >
+		<div class="text-3xl">Tools</div>
+    <a
+      href="/home/admin/logs"
+      class="flex items-center gap-2 text-xl underline"
+    >
+      View Logs <Fa icon={faArrowRight} />
+    </a>
+  </div>
 </div>
