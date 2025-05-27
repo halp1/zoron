@@ -1,15 +1,10 @@
 import { query, transformID } from "$lib/database";
 
-import { error } from "@sveltejs/kit";
 import { ObjectId } from "mongodb";
 
 import type { PageServerLoad } from "./$types";
 
-export const load: PageServerLoad = async ({ locals: { auth } }) => {
-  const session = await auth();
-
-  if (session?.user?.role !== "admin") return error(403, "Forbidden");
-
+export const load: PageServerLoad = async () => {
   return {
     timeDelta: transformID(
       (

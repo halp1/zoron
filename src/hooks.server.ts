@@ -1,10 +1,19 @@
+import { zoron } from "$lib";
 import { handle as authHandle } from "$lib/auth";
+import { logger } from "$lib/logs";
 
 import type { Handle } from "@sveltejs/kit";
 
 import { jobs } from "./jobs";
 
 export const handle: Handle = async (params) => {
+  if (
+    params.event.url.pathname.startsWith(
+      "/.well-known/appspecific/com.chrome.devtools"
+    )
+  ) {
+    return new Response(null, { status: 204 }); // Return empty response with 204 No Content
+  }
   if (params.event.url.pathname === "/api/admin/impersonate")
     return await params.resolve(params.event);
   if (
@@ -63,9 +72,11 @@ export const handleError = (params) => {
       console.error("404 at:", params.event.url.pathname);
     } else {
       console.error(params.error);
+      logger.pumpLog((params.error as any).stack ?? params.error);
     }
   } else {
     console.error(params.error);
+    logger.pumpLog((params.error as any).stack ?? params.error);
   }
   return { message: params.message };
 };
