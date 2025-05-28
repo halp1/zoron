@@ -56,19 +56,24 @@
   onMount(() => {
 		fetchLogs();
 
-		const eventSource = new EventSource('/api/admin/logs/stream');
-		eventSource.onmessage = (event) => {
-			const newLog = JSON.parse(event.data);
-			if (newLog) {
-				logs = [newLog, ...logs];
-				next += 1; // Increment next for each new log
-			}
-		};
-		eventSource.onerror = (error) => {
-			console.error("EventSource error:", error);
-			eventSource.close(); // Close the connection on error
-			history.go(0);
-		};
+		// idk causes crash
+		// const eventSource = new EventSource('/api/admin/logs/stream');
+		// eventSource.onmessage = (event) => {
+		// 	const newLog = JSON.parse(event.data);
+		// 	if (newLog) {
+		// 		logs = [newLog, ...logs];
+		// 		next += 1; // Increment next for each new log
+		// 	}
+		// };
+		// eventSource.onerror = (error) => {
+		// 	console.error("EventSource error:", error);
+		// 	eventSource.close(); // Close the connection on error
+		// 	history.go(0);
+		// };
+
+		// return () => {
+		// 	eventSource.close(); // Clean up on component unmount
+		// };
   });
 
   let sentinelElement = $state<HTMLDivElement | undefined>(undefined);
