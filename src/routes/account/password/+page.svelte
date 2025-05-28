@@ -28,7 +28,7 @@
     const { dismiss } = toast.loading("Verifying credentials...");
     submitting = true;
 
-    const res = await requests.post<any>("/api/account/password", {
+    const res = await requests.post<any>("/api/acco unt/password", {
       password
     });
     dismiss();
