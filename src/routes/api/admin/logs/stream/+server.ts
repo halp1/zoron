@@ -31,5 +31,5 @@ export const GET: RequestHandler = async ({ setHeaders, locals: { auth } }) => {
     }
   });
 
-  return new Response(stream);
+  return new Response(stream, { headers: { "X-Accel-Buffering": "no" } });
 };
