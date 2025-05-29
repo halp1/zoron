@@ -155,7 +155,7 @@
     ? 'bg-black'
     : ''}"
 >
-  <div
+  <!-- <div
     class="{$titleBarState
       ? 'h-12'
       : 'h-0'} w-screen overflow-hidden transition-all"
@@ -172,7 +172,7 @@
         </button>
       </div>
     </div>
-  </div>
+  </div> -->
   {#if typeof window === "undefined" || windowWidth >= 768}
     <div class="hidden md:block">
       <div class="h-12 {$theme === 'amoled' ? 'border-b-2' : ''}"></div>
