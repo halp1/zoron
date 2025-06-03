@@ -212,68 +212,72 @@ export class Notifier extends Job {
 
     await Promise.all(
       users.map(async (user) => {
-        if (
-          !user.devices ||
-          !user.aspen ||
-          !user.password ||
-          !user.activity ||
-          (!user.settings?.notifications?.attendance &&
-            !user.settings?.notifications?.grades)
-        )
-          return;
+        try {
+          if (
+            !user.devices ||
+            !user.aspen ||
+            !user.password ||
+            !user.activity ||
+            (!user.settings?.notifications?.attendance &&
+              !user.settings?.notifications?.grades)
+          )
+            return;
 
-        const key = cache.getUser(user._id);
+          const key = cache.getUser(user._id);
 
-        if (!key) return;
+          if (!key) return;
 
-        const notifications = await this.#fetchUserNotifications(
-          { ...user, id: user._id },
-          key
-        ).then((notifications) =>
-          notifications
-            .filter(
-              (notification) =>
-                !(
-                  notification.type === "grade" ||
-                  notification.type === "posted-grade"
-                ) || user.settings?.notifications?.grades
-            )
-            .filter(
-              (notification) =>
-                !(
-                  notification.type === "attendance" ||
-                  notification.type === "period-attendance"
-                ) || user.settings?.notifications?.attendance
-            )
-        );
-
-        if (notifications.length > 0) {
-          const successful = (
-            await Promise.all(
-              user.devices.map((device) =>
-                // device.device.backgroundSync
-                //   ? Promise.resolve(device) // If background sync is available, skip sending a notification
-                //   :
-                webpush
-                  .sendNotification(
-                    device.subscription,
-                    JSON.stringify({
-                      type: "auth-request",
-                      data: notifications
-                    } satisfies PushEvent)
-                  )
-                  .then(() => device)
-                  .catch(() => null)
+          const notifications = await this.#fetchUserNotifications(
+            { ...user, id: user._id },
+            key
+          ).then((notifications) =>
+            notifications
+              .filter(
+                (notification) =>
+                  !(
+                    notification.type === "grade" ||
+                    notification.type === "posted-grade"
+                  ) || user.settings?.notifications?.grades
               )
-            )
-          ).filter((device) => device !== null);
+              .filter(
+                (notification) =>
+                  !(
+                    notification.type === "attendance" ||
+                    notification.type === "period-attendance"
+                  ) || user.settings?.notifications?.attendance
+              )
+          );
 
-          if (successful.length !== user.devices.length) {
-            await adapter.updateUser!({
-              id: user.id!,
-              devices: successful
-            });
+          if (notifications.length > 0) {
+            const successful = (
+              await Promise.all(
+                user.devices.map((device) =>
+                  // device.device.backgroundSync
+                  //   ? Promise.resolve(device) // If background sync is available, skip sending a notification
+                  //   :
+                  webpush
+                    .sendNotification(
+                      device.subscription,
+                      JSON.stringify({
+                        type: "auth-request",
+                        data: notifications
+                      } satisfies PushEvent)
+                    )
+                    .then(() => device)
+                    .catch(() => null)
+                )
+              )
+            ).filter((device) => device !== null);
+
+            if (successful.length !== user.devices.length) {
+              await adapter.updateUser!({
+                id: user.id!,
+                devices: successful
+              });
+            }
           }
+        } catch (e) {
+          console.error("Error processing user notifications:", user.name ?? user.email, e);
         }
       })
     );
