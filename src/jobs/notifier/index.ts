@@ -148,20 +148,22 @@ export class Notifier extends Job {
       else return { ...item, scoring: existing.data };
     });
 
-    const res = await this.#processBatch(
-      session,
-      secret,
-      preprocessed
-        .filter(
-          (item): item is Assignment =>
-            item.type === "grade" && typeof item.scoring === "number"
-        )
-        .map((item) => ({
-          assignment: item,
-          studentID:
-            raw["recent-activity-list"]["recent-activity"][0].$.studentoid
-        }))
-    );
+    const res = (
+      await this.#processBatch(
+        session,
+        secret,
+        preprocessed
+          .filter(
+            (item): item is Assignment =>
+              item.type === "grade" && typeof item.scoring === "number"
+          )
+          .map((item) => ({
+            assignment: item,
+            studentID:
+              raw["recent-activity-list"]["recent-activity"][0].$.studentoid
+          }))
+      )
+    ).filter((item) => item.data !== null);
 
     const newGrades = preprocessed
       .filter(
@@ -277,7 +279,11 @@ export class Notifier extends Job {
             }
           }
         } catch (e) {
-          console.error("Error processing user notifications:", user.name ?? user.email, e);
+          console.error(
+            "Error processing user notifications:",
+            user.name ?? user.email,
+            e
+          );
         }
       })
     );

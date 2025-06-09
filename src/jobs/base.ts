@@ -28,14 +28,17 @@ export abstract class Job {
     }
 
     const runner = () => {
+      const msSinceMidnight = Date.now() % (24 * 60 * 60 * 1_000);
+
       if (
         this.timeRanges.length === 0 ||
-        this.timeRanges.some(([start, end]) => {
-          const time = Date.now() - new Date().setHours(0, 0, 0, 0);
-          return time >= start && time <= end;
-        })
-      )
+        this.timeRanges.some(
+          ([start, end]) => msSinceMidnight >= start && msSinceMidnight < end
+        )
+      ) {
         this.run();
+      }
+
       this.#timeout = setTimeout(
         runner,
         this.time + (Math.random() * 2 - 1) * this.randomness
