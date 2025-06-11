@@ -197,7 +197,7 @@ export class Notifier extends Job {
     return [...newGrades, ...otherNewActivity];
   }
 
-  async run() {
+  async run() {	
     if (import.meta.env.DEV) return;
 
     console.log("Running notifier job at", new Date().toString());

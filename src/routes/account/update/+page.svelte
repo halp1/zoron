@@ -16,6 +16,10 @@
 
   let username = $state("");
   let password = $state("");
+
+  let attempts = $state(0);
+  const maxAttempts = 3;
+
   const validUsername = (username: string) => {
     const usernameWithoutNumbers = username.replace(/\d+$/, "");
     const numbersAtEnd = username.slice(usernameWithoutNumbers.length);
@@ -25,8 +29,8 @@
       /^\d{0,3}$/.test(numbersAtEnd)
     );
   };
-  const validPassword = (password: string) =>
-    /^[a-zA-Z]+\d+[a-zA-Z]+$/.test(password);
+  const validPassword = (password: string) => !!password;
+  // /^[a-zA-Z]+\d+[a-zA-Z]+$/.test(password);
 
   let submitting = $state(false);
 
@@ -34,6 +38,12 @@
     if (submitting)
       return toast.error("Please wait for the previous request to finish.");
     e.preventDefault();
+
+    if (attempts++ >= maxAttempts) {
+      return toast.error(
+        "You have reached the maximum number of attempts. Please try again later. This is to prevent you from being locked out of your Aspen account."
+      );
+    }
 
     if (!validUsername(username) || !validPassword(password)) {
       return toast.error("Your username or password is invalid.");
