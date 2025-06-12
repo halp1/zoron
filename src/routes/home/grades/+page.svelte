@@ -226,6 +226,8 @@
         return 1.0;
       case "D-":
         return 0.67;
+			case "F+":
+				return 0.33;
       case "F":
         return 0.0;
       default:
