@@ -79,6 +79,25 @@ export namespace aspen {
       assignments: Assignment[];
     }
 
+    export interface TranscriptItem {
+      course: string;
+      level: string;
+      breakdown: [
+        number | null,
+        number | null,
+        number | null,
+        number | null,
+        number | null
+      ];
+      final?: string;
+      credit: number;
+    }
+    export interface Transcript {
+      year: number;
+      grade: number;
+      classes: TranscriptItem[];
+    }
+
     export namespace Schedule {
       export type Semester = 1 | 2;
       export type Lunch = 3 | 2 | 1;
@@ -133,6 +152,7 @@ export namespace aspen {
       export const authenticate = 5;
       export const classDetail = 5;
       export const assignment = 6;
+      export const transcript = 2;
       export namespace schedule {
         export const pdf = 5;
       }
@@ -1343,6 +1363,90 @@ export namespace aspen {
       percentage,
       scored: Math.round(points * 100) / 100,
       total: maxPoints
+    };
+  };
+
+  export const transcript = async ({
+    cookie,
+    onProgress
+  }: {
+    cookie: string;
+    onProgress?: Types.ProgressCallback;
+  }): Promise<Types.Transcript> => {
+    const tick = progressTicker(constants.steps.transcript, onProgress);
+
+    const res = await fetch(
+      "https://ma-lexington.myfollett.com/aspen/transcriptList.do?navkey=myInfo.trn.list",
+      {
+        headers: {
+          accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+          "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+          "cache-control": "no-cache",
+          pragma: "no-cache",
+          "sec-ch-ua":
+            '"Google Chrome";v="137", "Chromium";v="137", "Not/A)Brand";v="24"',
+          "sec-ch-ua-mobile": "?0",
+          "sec-ch-ua-platform": '"Windows"',
+          "sec-fetch-dest": "document",
+          "sec-fetch-mode": "navigate",
+          "sec-fetch-site": "none",
+          "sec-fetch-user": "?1",
+          "upgrade-insecure-requests": "1",
+          cookie
+        },
+        referrerPolicy: "strict-origin-when-cross-origin",
+        body: null,
+        method: "GET"
+      }
+    );
+
+    if (res.status !== 200) {
+      throw new Error(
+        `Failed to get transcript page: ${res.status} (${res.statusText})`
+      );
+    }
+
+    tick();
+
+    const {
+      window: { document }
+    } = new JSDOM(await res.text());
+
+    const body = document.querySelector("#dataGrid table tbody");
+
+    if (!body) throw new Error("Failed to find data");
+
+    const nanNull = (v: number) => (Number.isNaN(v) ? null : v);
+    const strnn = (v: string) => nanNull(parseFloat(v));
+
+    return {
+      year: parseInt(
+        body.querySelector("a")?.textContent?.trim() ??
+          new Date().getFullYear().toString()
+      ),
+      grade: parseInt(
+        body.querySelectorAll("td")[3]?.textContent?.trim() || "0"
+      ),
+      classes: [...body.querySelectorAll("tr.listCell")].map((row) => {
+        const cells = [...row.querySelectorAll("td")].map(
+          (cell) => cell.textContent?.trim() || ""
+        );
+
+        return {
+          course: cells[3],
+          level: cells[4] === "Hon" ? "Honors" : cells[4],
+          final: cells[10],
+          credit: parseFloat(cells[11]),
+          breakdown: [
+            strnn(cells[5]),
+            strnn(cells[6]),
+            strnn(cells[7]),
+            strnn(cells[8]),
+            strnn(cells[9])
+          ]
+        };
+      })
     };
   };
 

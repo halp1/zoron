@@ -226,8 +226,8 @@
         return 1.0;
       case "D-":
         return 0.67;
-			case "F+":
-				return 0.33;
+      case "F+":
+        return 0.33;
       case "F":
         return 0.0;
       default:
@@ -271,6 +271,8 @@
           : prev,
       [] as (aspen.Types.Schedule.Course | null)[]
     ).length || 8) + 1;
+
+  console.log($zoron.transcript);
 
   // pre-load classes for tailwind
   ("grid-cols-1 grid-cols-2 grid-cols-3 grid-cols-4 grid-cols-5 grid-cols-6 grid-cols-7 grid-cols-8 grid-cols-9 grid-cols-10 grid-cols-11 grid-cols-12 border-b-0");

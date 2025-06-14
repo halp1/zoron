@@ -16,6 +16,7 @@ export interface AppState {
   };
   classes: aspen.Types.Class[];
   activity: Awaited<ReturnType<typeof aspen.activity>>;
+	transcript: aspen.Types.Transcript;
 }
 
 export const zoron = writable<AppState>(null as any);
