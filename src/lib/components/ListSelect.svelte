@@ -1,12 +1,12 @@
-<script lang="ts">
+<script lang="ts" generics="T extends string | number">
   import { theme } from "$lib/web/theme";
 
   interface Props {
     items: {
-      value: any;
+      value: T;
       label: string;
     }[];
-    value: any;
+    value: T;
     transition?: {
       in?: {
         function: Function;
