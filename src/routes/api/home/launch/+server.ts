@@ -39,7 +39,8 @@ export const GET: RequestHandler = async ({ locals: { auth }, cookies }) => {
       token: aspenSession.token
     },
     classes: (await aspen.classes(aspenSession.cookie)).classes,
-    activity: await aspen.activity(aspenSession.cookie)
+    activity: await aspen.activity(aspenSession.cookie),
+		transcript: await aspen.transcript({ cookie: aspenSession.cookie })
   });
 
   cookies.set("active-session", session.user.aspen, {
