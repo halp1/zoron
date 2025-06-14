@@ -19,6 +19,9 @@
     faQuestionCircle
   } from "@fortawesome/free-solid-svg-icons";
 
+  // Display mode state: 'grades' or 'transcript'
+  let displayMode = $state<"grades" | "transcript">("grades");
+
   interface Class extends aspen.Types.Class {
     expanded: boolean;
     data?: aspen.Types.ClassDetail;
@@ -254,7 +257,6 @@
     Math.min(
       100,
       Math.max(
-        0,
         0.000892691 * Math.pow(score, 4) -
           0.000714091 * Math.pow(score, 3) -
           0.145062 * Math.pow(score, 2) +
@@ -272,27 +274,65 @@
       [] as (aspen.Types.Schedule.Course | null)[]
     ).length || 8) + 1;
 
-  console.log($zoron.transcript);
+  let transcriptTime: "current" | "g9" | "g10" | "g11" | "g12" | "all" =
+    $state("current");
+
+  let transcript = $derived(
+    $zoron.transcript.classes.filter((c) => {
+      if (transcriptTime === "all") return true;
+      if (transcriptTime === "current")
+        return (
+          c.grade === Math.max(...$zoron.transcript.classes.map((c) => c.grade))
+        );
+      return c.grade === parseInt(transcriptTime.replace("g", ""));
+    })
+  );
+
+  let transcriptCreditsEarned = $derived(
+    transcript
+      .map((c) => c.credit)
+      .filter((c) => c !== undefined && !Number.isNaN(c))
+      .reduce((a, b) => a + (b || 0), 0)
+  );
+
+  let transcriptGPA = $derived(
+    transcript
+      .map((c) => ({
+        final: c.final,
+        credit: c.credit
+      }))
+      .filter(
+        (c) =>
+          (c.final?.length || 0) > 0 && c.credit !== undefined && c.credit > 0
+      )
+      .map((c) => (individualGPA(c.final!) ?? 0) * c.credit)
+      .reduce((a, b) => a + b, 0) / transcriptCreditsEarned
+  );
+
+  // Transition delay for transcript cells (diagonal fly-in effect)
+  const TRANSCRIPT_CELL_DELAY = 40; // milliseconds per cell
+  const TRANSCRIPT_BASE_DELAY = 400; // base delay for transcript items
 
   // pre-load classes for tailwind
-  ("grid-cols-1 grid-cols-2 grid-cols-3 grid-cols-4 grid-cols-5 grid-cols-6 grid-cols-7 grid-cols-8 grid-cols-9 grid-cols-10 grid-cols-11 grid-cols-12 border-b-0");
+  ("grid-cols-1 grid-cols-2 grid-cols-3 grid-cols-4 grid-cols-5 grid-cols-6 grid-cols-7 grid-cols-8 grid-cols-9 grid-cols-10 grid-cols-11 grid-cols-12 grid-cols-13 grid-cols-14 border-b-0");
 </script>
 
 <svelte:head>
   <title>Grades | {page.data.env.name}</title>
 </svelte:head>
+
 <div class="mb-2 flex flex-wrap items-center justify-center gap-5 pt-10">
   <ListSelect
     items={[
-      { value: "current", label: "This Year" },
-      { value: "previous", label: "Last Year" }
+      { value: "grades", label: "Quarter Grades" },
+      { value: "transcript", label: "Transcript" }
     ]}
-    bind:value={$classQuery.year}
+    bind:value={displayMode}
     transition={{
       in: {
         function: fly,
         properties: {
-          delay: 250,
+          delay: 200,
           duration: 1000,
           opacity: 0,
           y: -20,
@@ -301,392 +341,616 @@
       }
     }}
   />
-  <ListSelect
-    items={$classQuery.year === "current"
-      ? [
-          { value: 0, label: "Current Term" },
-          { value: 1, label: "Q1" },
-          { value: 2, label: "Q2" },
-          { value: 3, label: "Q3" },
-          { value: 4, label: "Q4" }
-        ]
-      : [
-          { value: 1, label: "Q1" },
-          { value: 2, label: "Q2" },
-          { value: 3, label: "Q3" },
-          { value: 4, label: "Q4" }
-        ]}
-    bind:value={$classQuery.term}
-    transition={{
-      in: {
-        function: fly,
-        properties: {
-          delay: 300,
-          duration: 1000,
-          opacity: 0,
-          y: -20,
-          easing: motion.transitions.spring(400, 20)
+
+  {#if displayMode === "grades"}
+    <ListSelect
+      items={[
+        { value: "current", label: "This Year" },
+        { value: "previous", label: "Last Year" }
+      ]}
+      bind:value={$classQuery.year}
+      transition={{
+        in: {
+          function: fly,
+          properties: {
+            delay: 250,
+            duration: 1000,
+            opacity: 0,
+            y: -20,
+            easing: motion.transitions.spring(400, 20)
+          }
         }
-      }
-    }}
-  />
-  <Collapsible
-    direction="horizontal"
-    open={!!(
-      (classes &&
-        $zoron.schedule &&
-        $classQuery.year !== "previous" &&
-        !page.data?.session?.user?.settings?.home?.hideGPA &&
-        calculateGPA(
-          classes.map((c) => ({
-            grade: c.grade,
-            courseID: c.course,
-            credit: c.credit
-          }))
-        ) !== 0) ||
-      typeof window === "undefined"
-    )}
-    transition={{
-      in: {
-        function: fly,
-        properties: {
-          delay: 350,
-          duration: 1000,
-          opacity: 0,
-          y: -20,
-          easing: motion.transitions.spring(400, 20)
+      }}
+    />
+    <ListSelect
+      items={$classQuery.year === "current"
+        ? [
+            { value: 0, label: "Current Term" },
+            { value: 1, label: "Q1" },
+            { value: 2, label: "Q2" },
+            { value: 3, label: "Q3" },
+            { value: 4, label: "Q4" }
+          ]
+        : [
+            { value: 1, label: "Q1" },
+            { value: 2, label: "Q2" },
+            { value: 3, label: "Q3" },
+            { value: 4, label: "Q4" }
+          ]}
+      bind:value={$classQuery.term}
+      transition={{
+        in: {
+          function: fly,
+          properties: {
+            delay: 300,
+            duration: 1000,
+            opacity: 0,
+            y: -20,
+            easing: motion.transitions.spring(400, 20)
+          }
         }
-      }
-    }}
-  >
-    <div
-      class="whitespace-nowrap text-center text-3xl"
-      style="view-transition-name: gpa;"
+      }}
+    />
+    <Collapsible
+      direction="horizontal"
+      open={!!(
+        (classes &&
+          $zoron.schedule &&
+          $classQuery.year !== "previous" &&
+          !page.data?.session?.user?.settings?.home?.hideGPA &&
+          calculateGPA(
+            classes.map((c) => ({
+              grade: c.grade,
+              courseID: c.course,
+              credit: c.credit
+            }))
+          ) !== 0) ||
+        typeof window === "undefined"
+      )}
+      transition={{
+        in: {
+          function: fly,
+          properties: {
+            delay: 350,
+            duration: 1000,
+            opacity: 0,
+            y: -20,
+            easing: motion.transitions.spring(400, 20)
+          }
+        }
+      }}
     >
-      Quarter GPA: {#if classes && $zoron.schedule && $classQuery.year !== "previous" && !page.data?.session?.user?.settings?.home?.hideGPA && calculateGPA(classes.map( (c) => ({ grade: c.grade, courseID: c.course, credit: c.credit }) )) !== 0}
-        {calculateGPA(
-          classes.map((c) => ({
-            grade: c.grade,
-            courseID: c.course,
-            credit: c.credit
-          }))
-        ).toFixed(2)}
-      {:else}
-        0.00
-      {/if}
-    </div>
-  </Collapsible>
+      <div
+        class="whitespace-nowrap text-center text-3xl"
+        style="view-transition-name: gpa;"
+      >
+        Quarter GPA: {#if classes && $zoron.schedule && $classQuery.year !== "previous" && !page.data?.session?.user?.settings?.home?.hideGPA && calculateGPA(classes.map( (c) => ({ grade: c.grade, courseID: c.course, credit: c.credit }) )) !== 0}
+          {calculateGPA(
+            classes.map((c) => ({
+              grade: c.grade,
+              courseID: c.course,
+              credit: c.credit
+            }))
+          ).toFixed(2)}
+        {:else}
+          0.00
+        {/if}
+      </div>
+    </Collapsible>
+  {:else}
+    <ListSelect
+      items={[
+        { value: "current", label: "This Year" },
+        { value: "g9", label: "9th" },
+        { value: "g10", label: "10th" },
+        { value: "g11", label: "11th" },
+        { value: "g12", label: "12th" },
+        { value: "all", label: "All Time" }
+      ]}
+      bind:value={transcriptTime}
+    />
+  {/if}
 </div>
 
-{#if classes}
-  <div
-    class="grid grid-cols-1 gap-5 pb-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-  >
-    {#each classes as c, idx}
-      <div
-        id="c-{c.id}"
-        class="{c.expanded && c.data
-          ? 'col-span-1 sm:pt-1 md:col-span-2 lg:col-span-3 xl:col-span-4'
-          : ''} mb-auto border-2 {$theme === 'amoled'
-          ? 'border-white'
-          : 'border-slate-600'} p-3"
-        style={loaded ? `view-transition-name: class-${c.id}` : ""}
-        in:fly|global={{
-          delay: 400 + 50 * (idx + 1),
-          duration: 1000,
-          opacity: 0,
-          y: -20,
-          easing: motion.transitions.spring(400, 20, 0.2)
-        }}
-      >
-        <div class={(c.expanded && c.data && "sm:flex sm:items-end") || ""}>
-          <div class="flex items-center">
-            <div class="overflow-auto">
-              <div class="flex items-center">
-                <button
-                  onclick={async () => {
-                    if (!c.expanded) {
-                      if (!c.data) {
-                        c.expanded = true;
-                        classes;
+{#if displayMode === "grades"}
+  {#if classes}
+    <div
+      class="grid grid-cols-1 gap-5 pb-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+    >
+      {#each classes as c, idx}
+        <div
+          id="c-{c.id}"
+          class="{c.expanded && c.data
+            ? 'col-span-1 sm:pt-1 md:col-span-2 lg:col-span-3 xl:col-span-4'
+            : ''} mb-auto border-2 {$theme === 'amoled'
+            ? 'border-white'
+            : 'border-slate-600'} p-3"
+          style={loaded ? `view-transition-name: class-${c.id}` : ""}
+          in:fly|global={{
+            delay: 400 + 50 * (idx + 1),
+            duration: 1000,
+            opacity: 0,
+            y: -20,
+            easing: motion.transitions.spring(400, 20, 0.2)
+          }}
+        >
+          <div class={(c.expanded && c.data && "sm:flex sm:items-end") || ""}>
+            <div class="flex items-center">
+              <div class="overflow-auto">
+                <div class="flex items-center">
+                  <button
+                    onclick={async () => {
+                      if (!c.expanded) {
+                        if (!c.data) {
+                          c.expanded = true;
+                          classes;
 
-                        const data = await loadClassData(c);
-                        const transition = document.startViewTransition(
-                          () =>
-                            new Promise<void>((r) => {
-                              c.data = data;
-                              c.height = -1;
-                              if (!c.data) c.expanded = false;
-                              const interval = setInterval(() => {
-                                if (document.querySelector(`#grades-${c.id}`)) {
-                                  c.height =
-                                    (
-                                      document.querySelector(
-                                        `#grades-${c.id}`
-                                      ) as HTMLDivElement
-                                    )?.offsetHeight || 400;
-                                  clearInterval(interval);
-                                  r();
-                                }
-                              }, 10);
-                            })
-                        );
+                          const data = await loadClassData(c);
+                          const transition = document.startViewTransition(
+                            () =>
+                              new Promise<void>((r) => {
+                                c.data = data;
+                                c.height = -1;
+                                if (!c.data) c.expanded = false;
+                                const interval = setInterval(() => {
+                                  if (
+                                    document.querySelector(`#grades-${c.id}`)
+                                  ) {
+                                    c.height =
+                                      (
+                                        document.querySelector(
+                                          `#grades-${c.id}`
+                                        ) as HTMLDivElement
+                                      )?.offsetHeight || 400;
+                                    clearInterval(interval);
+                                    r();
+                                  }
+                                }, 10);
+                              })
+                          );
 
-                        await transition.finished;
+                          await transition.finished;
+                        } else {
+                          document.startViewTransition(() => {
+                            c.expanded = true;
+                            return new Promise((r) => setTimeout(r, 130));
+                          });
+                        }
                       } else {
                         document.startViewTransition(() => {
-                          c.expanded = true;
+                          c.expanded = false;
                           return new Promise((r) => setTimeout(r, 130));
                         });
                       }
-                    } else {
-                      document.startViewTransition(() => {
-                        c.expanded = false;
-                        return new Promise((r) => setTimeout(r, 130));
-                      });
-                    }
-                  }}
-                  class="btn-circle z-10 -ml-2 mr-1"
-                >
-                  <Fa
-                    icon={faChevronRight}
-                    class="z-10 transition-all {c.expanded
-                      ? 'rotate-90'
-                      : 'rotate-0'}"
-                  />
-                </button>
-                <div
-                  class="overflow-hidden text-ellipsis whitespace-nowrap text-xl"
-                >
-                  {c.name}
-                </div>
-                {#if c.credit && c.expanded && c.data && window.matchMedia("(min-width: 640px)").matches}
+                    }}
+                    class="btn-circle z-10 -ml-2 mr-1"
+                  >
+                    <Fa
+                      icon={faChevronRight}
+                      class="z-10 transition-all {c.expanded
+                        ? 'rotate-90'
+                        : 'rotate-0'}"
+                    />
+                  </button>
                   <div
-                    class="ml-3 {$theme === 'amoled'
+                    class="overflow-hidden text-ellipsis whitespace-nowrap text-xl"
+                  >
+                    {c.name}
+                  </div>
+                  {#if c.credit && c.expanded && c.data && window.matchMedia("(min-width: 640px)").matches}
+                    <div
+                      class="ml-3 {$theme === 'amoled'
+                        ? 'text-white'
+                        : 'text-slate-400'}"
+                    >
+                      {c.credit.toFixed(2)} credits
+                    </div>
+                  {/if}
+                </div>
+                <div class="flex items-center">
+                  <div
+                    class="mr-2 whitespace-nowrap border-r-2 {$theme ===
+                    'amoled'
+                      ? 'border-white'
+                      : 'border-slate-600'} pr-2 text-sm {$theme === 'amoled'
                       ? 'text-white'
                       : 'text-slate-400'}"
                   >
-                    {c.credit.toFixed(2)} credits
+                    {c.course}
                   </div>
-                {/if}
+                  <div class="overflow-hidden text-ellipsis whitespace-nowrap">
+                    {#if c.teachers.length === 1}
+                      {c.teachers[0].first} {c.teachers[0].last}
+                    {:else}
+                      {#each c.teachers.slice(0, c.teachers.length - 1) as teacher}
+                        {teacher.first}
+                        {teacher.last}{#if c.teachers.length > 2},{/if}
+                      {/each}
+                      and
+                      {c.teachers.at(-1)?.first}
+                      {c.teachers.at(-1)?.last}
+                    {/if}
+                  </div>
+                </div>
               </div>
-              <div class="flex items-center">
+              {#if c.credit && (!c.expanded || !c.data || !window.matchMedia("(min-width: 640px)").matches)}
                 <div
-                  class="mr-2 whitespace-nowrap border-r-2 {$theme === 'amoled'
+                  class="ml-auto flex flex-col border-r-2 {$theme === 'amoled'
                     ? 'border-white'
-                    : 'border-slate-600'} pr-2 text-sm {$theme === 'amoled'
+                    : 'border-slate-600'} pr-1 {$theme === 'amoled'
                     ? 'text-white'
                     : 'text-slate-400'}"
                 >
-                  {c.course}
-                </div>
-                <div class="overflow-hidden text-ellipsis whitespace-nowrap">
-                  {#if c.teachers.length === 1}
-                    {c.teachers[0].first} {c.teachers[0].last}
-                  {:else}
-                    {#each c.teachers.slice(0, c.teachers.length - 1) as teacher}
-                      {teacher.first}
-                      {teacher.last}{#if c.teachers.length > 2},{/if}
-                    {/each}
-                    and
-                    {c.teachers.at(-1)?.first}
-                    {c.teachers.at(-1)?.last}
-                  {/if}
-                </div>
-              </div>
-            </div>
-            {#if c.credit && (!c.expanded || !c.data || !window.matchMedia("(min-width: 640px)").matches)}
-              <div
-                class="ml-auto flex flex-col border-r-2 {$theme === 'amoled'
-                  ? 'border-white'
-                  : 'border-slate-600'} pr-1 {$theme === 'amoled'
-                  ? 'text-white'
-                  : 'text-slate-400'}"
-              >
-                <div class="-mb-1 text-end">{c.credit.toFixed(2)}</div>
-                <div class="text-end">credits</div>
-              </div>
-            {/if}
-          </div>
-          <div
-            class="ml-auto flex gap-0 {c.expanded && c.data
-              ? 'sm:items-center sm:gap-4'
-              : ''}"
-          >
-            <div
-              class="mt-auto flex flex-col justify-end border-l-2 {$theme ===
-              'amoled'
-                ? 'border-white'
-                : 'border-slate-600'} {c.expanded && c.data
-                ? 'sm:flex-row sm:gap-5 sm:border-l-0'
-                : ''}"
-            >
-              <div class="flex items-center gap-2 pl-2">
-                Room: {#if c.room}
-                  <div class="font-bold">{c.room}</div>
-                {:else}
-                  <div
-                    class={$theme === "amoled"
-                      ? "text-white"
-                      : "text-slate-400"}
-                  >
-                    (no room)
-                  </div>{/if}
-              </div>
-              {#if c.grade && !Number.isNaN(c.grade.number) && typeof c.grade.number === "number"}
-                <div class="relative mx-2 mr-auto flex items-center text-xl">
-                  {c.grade.number.toFixed(2)}: {c.grade.letter}
-                  <div
-                    class="absolute bottom-0 h-[3px] w-full {$theme === 'amoled'
-                      ? 'bg-white'
-                      : 'bg-slate-600'}"
-                  ></div>
-                </div>
-              {:else}
-                <div
-                  class="mx-2 {$theme === 'amoled'
-                    ? 'text-white'
-                    : 'text-slate-400'}"
-                >
-                  No grades available
+                  <div class="-mb-1 text-end">{c.credit.toFixed(2)}</div>
+                  <div class="text-end">credits</div>
                 </div>
               {/if}
             </div>
             <div
-              class="-mb-1 ml-auto flex flex-col items-end justify-center border-l-0 border-dashed {$theme ===
-              'amoled'
-                ? 'border-white'
-                : 'border-slate-600'} pl-0 {$theme === 'amoled'
-                ? 'text-white'
-                : 'text-slate-400'} {c.expanded && c.data
-                ? 'sm:border-l-2 sm:pl-2'
+              class="ml-auto flex gap-0 {c.expanded && c.data
+                ? 'sm:items-center sm:gap-4'
                 : ''}"
             >
-              <div class="flex gap-2">
-                <div class="font-bold">Absent:</div>
-                {c.attendance.absent}
+              <div
+                class="mt-auto flex flex-col justify-end border-l-2 {$theme ===
+                'amoled'
+                  ? 'border-white'
+                  : 'border-slate-600'} {c.expanded && c.data
+                  ? 'sm:flex-row sm:gap-5 sm:border-l-0'
+                  : ''}"
+              >
+                <div class="flex items-center gap-2 pl-2">
+                  Room: {#if c.room}
+                    <div class="font-bold">{c.room}</div>
+                  {:else}
+                    <div
+                      class={$theme === "amoled"
+                        ? "text-white"
+                        : "text-slate-400"}
+                    >
+                      (no room)
+                    </div>{/if}
+                </div>
+                {#if c.grade && !Number.isNaN(c.grade.number) && typeof c.grade.number === "number"}
+                  <div class="relative mx-2 mr-auto flex items-center text-xl">
+                    {c.grade.number.toFixed(2)}: {c.grade.letter}
+                    <div
+                      class="absolute bottom-0 h-[3px] w-full {$theme ===
+                      'amoled'
+                        ? 'bg-white'
+                        : 'bg-slate-600'}"
+                    ></div>
+                  </div>
+                {:else}
+                  <div
+                    class="mx-2 {$theme === 'amoled'
+                      ? 'text-white'
+                      : 'text-slate-400'}"
+                  >
+                    No grades available
+                  </div>
+                {/if}
               </div>
-              <div class="-mt-1 flex gap-2">
-                <div class="font-bold">Tardy:</div>
-                {c.attendance.tardy}
-              </div>
-              <div class="-mt-1 flex gap-2">
-                <div class="font-bold">Dismissed:</div>
-                {c.attendance.dismissed}
+              <div
+                class="-mb-1 ml-auto flex flex-col items-end justify-center border-l-0 border-dashed {$theme ===
+                'amoled'
+                  ? 'border-white'
+                  : 'border-slate-600'} pl-0 {$theme === 'amoled'
+                  ? 'text-white'
+                  : 'text-slate-400'} {c.expanded && c.data
+                  ? 'sm:border-l-2 sm:pl-2'
+                  : ''}"
+              >
+                <div class="flex gap-2">
+                  <div class="font-bold">Absent:</div>
+                  {c.attendance.absent}
+                </div>
+                <div class="-mt-1 flex gap-2">
+                  <div class="font-bold">Tardy:</div>
+                  {c.attendance.tardy}
+                </div>
+                <div class="-mt-1 flex gap-2">
+                  <div class="font-bold">Dismissed:</div>
+                  {c.attendance.dismissed}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <Collapsible open={c.expanded} key={c.data}>
-          <div class="pt-2"></div>
-          <div
-            class="border-t-2 border-dashed {$theme === 'amoled'
-              ? 'border-white'
-              : 'border-slate-600'}"
-          ></div>
-          <div class="pt-2"></div>
+          <Collapsible open={c.expanded} key={c.data}>
+            <div class="pt-2"></div>
+            <div
+              class="border-t-2 border-dashed {$theme === 'amoled'
+                ? 'border-white'
+                : 'border-slate-600'}"
+            ></div>
+            <div class="pt-2"></div>
 
-          {#if !c.data}
-            <div class="mt-3 space-y-3">
-              <Skeleton class="h-4 sm:w-80" />
-              <Skeleton class="h-4 sm:w-60" />
-              <Skeleton class="h-4 sm:w-72" />
-              <Skeleton class="h-4 sm:w-80" />
-            </div>
-          {:else}
-            <div class="grid grid-cols-1 gap-10 p-5 lg:grid-cols-2">
-              <div class="flex-1">
-                {#if c.data.assignments.length > 0}
-                  {@html `<style>div { --height: ${c.height === -1 ? 400 : Math.max(400, c.height)}px; }</style`}
+            {#if !c.data}
+              <div class="mt-3 space-y-3">
+                <Skeleton class="h-4 sm:w-80" />
+                <Skeleton class="h-4 sm:w-60" />
+                <Skeleton class="h-4 sm:w-72" />
+                <Skeleton class="h-4 sm:w-80" />
+              </div>
+            {:else}
+              <div class="grid grid-cols-1 gap-10 p-5 lg:grid-cols-2">
+                <div class="flex-1">
+                  {#if c.data.assignments.length > 0}
+                    {@html `<style>div { --height: ${c.height === -1 ? 400 : Math.max(400, c.height)}px; }</style>`}
+                    <div
+                      class="custom-scroll custom-scroll-right flex max-h-96 flex-1 flex-col items-stretch overflow-auto border-2 {$theme ===
+                      'amoled'
+                        ? 'border-white'
+                        : 'border-slate-600'} lg:max-h-[var(--height)]"
+                    >
+                      {#each c.data.assignments as assignment, idx}
+                        <div
+                          class="grid grid-cols-4 border-b-2 border-dashed {$theme ===
+                          'amoled'
+                            ? 'border-white'
+                            : 'border-slate-600'} p-2 sm:grid-cols-7"
+                          style={idx === c.data.assignments.length - 1
+                            ? `border: none`
+                            : ""}
+                        >
+                          <div
+                            class="col-span-4 row-span-2 flex items-center justify-center border-dashed border-r-slate-600 text-center font-bold sm:col-span-3 sm:border-r-2 sm:pr-2"
+                          >
+                            <div
+                              class="border-b-2 {$theme === 'amoled'
+                                ? 'border-white'
+                                : 'border-slate-600'}"
+                            >
+                              {assignment.name}
+                            </div>
+                          </div>
+                          <div
+                            class="col-span-2 row-span-2 flex flex-col items-center justify-center text-right"
+                          >
+                            <div>{assignment.due}</div>
+                            <!-- {#if "weight" in assignment && assignment.weight !== undefined} -->
+                            <div
+                              class={$theme === "amoled"
+                                ? "text-white"
+                                : "text-slate-400"}
+                            >
+                              Weight: <span class="font-bold">
+                                {typeof assignment.weight === "undefined"
+                                  ? 1
+                                  : assignment.weight}
+                              </span>
+                            </div>
+                            <!-- {/if} -->
+                          </div>
+                          {#if assignment.score}
+                            <div
+                              class="col-span-2 flex items-center justify-end gap-1"
+                            >
+                              <div class="font-bold">
+                                {assignment.score.scored}
+                              </div>
+                              <div>/</div>
+                              <div class="font-bold">
+                                {assignment.score.total}
+                              </div>
+                            </div>
+                            <div
+                              class="relative col-span-2 border-2 border-dashed {$theme ===
+                              'amoled'
+                                ? 'border-white'
+                                : 'border-slate-600'} text-transparent"
+                            >
+                              .
+                              <div
+                                class="absolute left-0 top-0 h-full bg-green-400 bg-opacity-80"
+                                style="width: {Math.min(
+                                  assignment.score.percentage,
+                                  100
+                                )}%"
+                              ></div>
+                              <div
+                                class="absolute right-0 top-1/2 z-10 -translate-y-1/2 font-bold text-white"
+                              >
+                                {assignment.score.percentage}%
+                              </div>
+                            </div>
+                          {:else}
+                            <div
+                              class="col-span-2 row-span-2 flex items-center justify-center {$theme ===
+                              'amoled'
+                                ? 'text-white'
+                                : 'text-slate-400'}"
+                            >
+                              No score available
+                            </div>
+                          {/if}
+                        </div>
+                      {/each}
+                    </div>
+                  {:else}
+                    <div
+                      class="flex flex-1 items-center justify-center py-5 {$theme ===
+                      'amoled'
+                        ? 'text-white'
+                        : 'text-slate-400'}"
+                    >
+                      You don't have any assignments in this class yet...
+                    </div>
+                  {/if}
+                </div>
+                {#if c.data.grades}
                   <div
-                    class="custom-scroll custom-scroll-right flex max-h-96 flex-1 flex-col items-stretch overflow-auto border-2 {$theme ===
+                    id="grades-{c.id}"
+                    class="relative mb-auto grid flex-1 border-2 {$theme ===
                     'amoled'
                       ? 'border-white'
-                      : 'border-slate-600'} lg:max-h-[var(--height)]"
+                      : 'border-slate-600'} grid-cols-{c.data.grades
+                      .categories[0].terms.length *
+                      2 +
+                      3}"
                   >
-                    {#each c.data.assignments as assignment, idx}
+                    <div
+                      class="col-span-3 flex items-center justify-center border-b-2 border-dashed {$theme ===
+                      'amoled'
+                        ? 'border-white'
+                        : 'border-slate-600'} px-2 py-1 text-center"
+                    >
+                      Category
+                    </div>
+                    {#each c.data.grades.categories[0].terms as _, idx}
                       <div
-                        class="grid grid-cols-4 border-b-2 border-dashed {$theme ===
+                        class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed {$theme ===
                         'amoled'
                           ? 'border-white'
-                          : 'border-slate-600'} p-2 sm:grid-cols-7"
-                        style={idx === c.data.assignments.length - 1
-                          ? "border: none"
-                          : ""}
+                          : 'border-slate-600'} px-2 py-1 text-center"
                       >
+                        Term {idx + 1}
+                      </div>
+                    {/each}
+                    {#each c.data.grades.categories as grade}
+                      <div
+                        class="col-span-3 row-span-2 flex items-center justify-center overflow-hidden border-b-2 border-dashed {$theme ===
+                        'amoled'
+                          ? 'border-white'
+                          : 'border-slate-600'} px-2 py-1 text-center capitalize"
+                        style="overflow-wrap: break-word; word-break: break-word"
+                      >
+                        {grade.name}
+                      </div>
+                      {#each grade.terms as term}
                         <div
-                          class="col-span-4 row-span-2 flex items-center justify-center border-dashed border-r-slate-600 text-center font-bold sm:col-span-3 sm:border-r-2 sm:pr-2"
+                          class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed {$theme ===
+                          'amoled'
+                            ? 'border-white bg-gray-900'
+                            : 'border-slate-600 bg-slate-800'} px-2 py-1 text-center"
                         >
-                          <div
-                            class="border-b-2 {$theme === 'amoled'
-                              ? 'border-white'
-                              : 'border-slate-600'}"
-                          >
-                            {assignment.name}
-                          </div>
+                          {#if term.weight}
+                            {term.weight}%
+                          {:else}
+                            N/A
+                          {/if}
                         </div>
+                      {/each}
+                      {#each grade.terms as term}
                         <div
-                          class="col-span-2 row-span-2 flex flex-col items-center justify-center text-right"
+                          class="col-span-2 flex flex-wrap justify-center border-b-2 border-l-2 border-dashed {$theme ===
+                          'amoled'
+                            ? 'border-white'
+                            : 'border-slate-600'} bg-opacity-50 px-2 py-1 text-center text-sm xl:text-base"
+                          style={(useLinearGradient &&
+                            !term.grade &&
+                            `background: repeating-linear-gradient(45deg, rgb(71 85 105 / var(--tw-bg-opacity)), rgb(71 85 105 / var(--tw-bg-opacity)) 2px, transparent 2px, transparent 10px); background-position: 0 0; background-size: 100% 100%;`) ||
+                            ""}
                         >
-                          <div>{assignment.due}</div>
-                          <!-- {#if "weight" in assignment && assignment.weight !== undefined} -->
-                          <div
-                            class={$theme === "amoled"
-                              ? "text-white"
-                              : "text-slate-400"}
-                          >
-                            Weight: <span class="font-bold">
-                              {typeof assignment.weight === "undefined"
-                                ? 1
-                                : assignment.weight}
-                            </span>
-                          </div>
-                          <!-- {/if} -->
+                          {#if term.grade}
+                            {term.grade.number.toFixed(2)}
+                            <div class="ml-1">({term.grade.letter})</div>
+                          {:else}
+                            <div class="select-none text-transparent">.</div>
+                          {/if}
                         </div>
-                        {#if assignment.score}
-                          <div
-                            class="col-span-2 flex items-center justify-end gap-1"
-                          >
-                            <div class="font-bold">
-                              {assignment.score.scored}
-                            </div>
-                            <div>/</div>
-                            <div class="font-bold">
-                              {assignment.score.total}
-                            </div>
-                          </div>
-                          <div
-                            class="relative col-span-2 border-2 border-dashed {$theme ===
-                            'amoled'
-                              ? 'border-white'
-                              : 'border-slate-600'} text-transparent"
-                          >
-                            .
-                            <div
-                              class="absolute left-0 top-0 h-full bg-green-400 bg-opacity-80"
-                              style="width: {Math.min(
-                                assignment.score.percentage,
-                                100
-                              )}%"
-                            ></div>
-                            <div
-                              class="absolute right-0 top-1/2 z-10 -translate-y-1/2 font-bold text-white"
-                            >
-                              {assignment.score.percentage}%
-                            </div>
-                          </div>
+                      {/each}
+                    {/each}
+                    <div
+                      class="col-span-3 flex items-center justify-center overflow-hidden border-b-2 border-dashed {$theme ===
+                      'amoled'
+                        ? 'border-white'
+                        : 'border-slate-600'} px-2 py-1 text-center"
+                      style="overflow-wrap: break-word; word-break: break-word"
+                    >
+                      Quarterly average
+                    </div>
+                    {#each c.data.grades.averages as avg}
+                      <div
+                        class="col-span-2 flex flex-wrap justify-center border-b-2 border-l-2 border-dashed {$theme ===
+                        'amoled'
+                          ? 'border-white bg-gray-900'
+                          : 'border-slate-600 bg-slate-800'} px-2 py-1 text-center text-sm xl:text-base"
+                        style={(useLinearGradient &&
+                          !avg &&
+                          `background: repeating-linear-gradient(45deg, rgb(100 116 139 / .5), rgb(100 116 139 / .5) 2px, #1e293b 2px, #1e293b 10px); background-position: 0 0; background-size: 100% 100%;`) ||
+                          ""}
+                      >
+                        {#if avg}
+                          {#if avg.number}
+                            {avg.number.toFixed(2)}
+                            <div class="ml-1">({avg.letter})</div>
+                          {:else}
+                            {avg.letter}
+                          {/if}
                         {:else}
-                          <div
-                            class="col-span-2 row-span-2 flex items-center justify-center {$theme ===
-                            'amoled'
-                              ? 'text-white'
-                              : 'text-slate-400'}"
-                          >
-                            No score available
-                          </div>
+                          <div class="select-none text-transparent">.</div>
                         {/if}
                       </div>
                     {/each}
+                    <div
+                      class="col-span-3 flex items-center justify-center overflow-hidden border-b-2 border-dashed {$theme ===
+                      'amoled'
+                        ? 'border-white'
+                        : 'border-slate-600'} px-2 py-1 text-center"
+                      style="overflow-wrap: break-word; word-break: break-word"
+                    >
+                      Posted grade
+                    </div>
+                    {#each c.data.grades.posted as grade}
+                      <div
+                        class="col-span-2 flex flex-wrap justify-center border-b-2 border-l-2 border-dashed {$theme ===
+                        'amoled'
+                          ? 'border-white bg-gray-900'
+                          : 'border-slate-600 bg-slate-800'} px-2 py-1 text-center text-sm xl:text-base {!grade &&
+                          'bg-opacity-50'}"
+                        style={(useLinearGradient &&
+                          !grade &&
+                          `background: repeating-linear-gradient(45deg, rgb(71 85 105 / var(--tw-bg-opacity)), rgb(71 85 105 / var(--tw-bg-opacity)) 2px, transparent 2px, transparent 10px); background-position: 0 0; background-size: 100% 100%;`) ||
+                          ""}
+                      >
+                        {#if grade}
+                          {grade.number.toFixed(2)}
+                          <div class="ml-1">({grade.letter})</div>
+                        {:else}
+                          <div class="select-none text-transparent">.</div>
+                        {/if}
+                      </div>
+                    {/each}
+                    <div
+                      class="col-span-3 flex items-center justify-center overflow-hidden border-b-2 border-dashed {$theme ===
+                      'amoled'
+                        ? 'border-white'
+                        : 'border-slate-600'} px-2 py-1 text-center"
+                      style="overflow-wrap: break-word; word-break: break-word"
+                    >
+                      Final grade
+                    </div>
+                    <div
+                      class="relative flex justify-center border-b-2 border-l-2 border-dashed {$theme ===
+                      'amoled'
+                        ? 'border-white bg-gray-900'
+                        : 'border-slate-600 bg-slate-800'} px-2 py-1 text-center"
+                      style="grid-column: span {c.data.grades.categories[0]
+                        .terms.length * 2} / span {c.data.grades.categories[0]
+                        .terms.length * 2};"
+                    >
+                      {#if c.data.grades.final}
+                        {#if c.data.grades.final.number}
+                          {c.data.grades.final.number.toFixed(2)}
+                          <div class="ml-1">({c.data.grades.final.letter})</div>
+                        {:else}
+                          {c.data.grades.final.letter}
+                          <Fa
+                            icon={faQuestionCircle}
+                            class="absolute right-2 top-1/2 -translate-y-1/2 cursor-help"
+                            title="No exact final grade is available."
+                          />
+                        {/if}
+                      {:else}
+                        {calculateFinalGrade(c.data.grades).toFixed(2)}
+                        <Fa
+                          icon={faQuestionCircle}
+                          class="absolute right-2 top-1/2 -translate-y-1/2 cursor-help"
+                          title="This grade is calculated as an average of all terms. It may not accurately represent your final grade."
+                        />
+                      {/if}
+                    </div>
                   </div>
                 {:else}
                   <div
@@ -695,265 +959,644 @@
                       ? 'text-white'
                       : 'text-slate-400'}"
                   >
-                    You don't have any assignments in this class yet...
-                  </div>
-                {/if}
+                    This class doesn't appear to have any grades...
+                  </div>{/if}
               </div>
-              {#if c.data.grades}
+            {/if}
+          </Collapsible>
+        </div>
+      {/each}
+    </div>
+  {:else}
+    <div
+      class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+    >
+      {#each Array.from({ length: preloadLength }) as _, idx}
+        <div
+          class="mb-auto flex h-[143.2px] flex-col items-stretch border-2 {$theme ===
+          'amoled'
+            ? 'border-white'
+            : 'border-slate-600'} p-3"
+        >
+          <div class="flex items-center">
+            <div class="overflow-auto">
+              <div class="flex items-center">
+                <button disabled class="btn-circle mr-1">
+                  <Skeleton class="rounded-full p-3" />
+                </button>
                 <div
-                  id="grades-{c.id}"
-                  class="relative mb-auto grid flex-1 border-2 {$theme ===
-                  'amoled'
-                    ? 'border-white'
-                    : 'border-slate-600'} grid-cols-{c.data.grades.categories[0]
-                    .terms.length *
-                    2 +
-                    3}"
+                  class="overflow-hidden text-ellipsis whitespace-nowrap text-xl"
                 >
-                  <div
-                    class="col-span-3 flex items-center justify-center border-b-2 border-dashed {$theme ===
-                    'amoled'
-                      ? 'border-white'
-                      : 'border-slate-600'} px-2 py-1 text-center"
-                  >
-                    Category
-                  </div>
-                  {#each c.data.grades.categories[0].terms as _, idx}
-                    <div
-                      class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed {$theme ===
-                      'amoled'
-                        ? 'border-white'
-                        : 'border-slate-600'} px-2 py-1 text-center"
-                    >
-                      Term {idx + 1}
-                    </div>
-                  {/each}
-                  {#each c.data.grades.categories as grade}
-                    <div
-                      class="col-span-3 row-span-2 flex items-center justify-center overflow-hidden border-b-2 border-dashed {$theme ===
-                      'amoled'
-                        ? 'border-white'
-                        : 'border-slate-600'} px-2 py-1 text-center capitalize"
-                      style="overflow-wrap: break-word; word-break: break-word"
-                    >
-                      {grade.name}
-                    </div>
-                    {#each grade.terms as term}
-                      <div
-                        class="col-span-2 flex justify-center border-b-2 border-l-2 border-dashed {$theme ===
-                        'amoled'
-                          ? 'border-white bg-gray-900'
-                          : 'border-slate-600 bg-slate-800'} px-2 py-1 text-center"
-                      >
-                        {#if term.weight}
-                          {term.weight}%
-                        {:else}
-                          N/A
-                        {/if}
-                      </div>
-                    {/each}
-                    {#each grade.terms as term}
-                      <div
-                        class="col-span-2 flex flex-wrap justify-center border-b-2 border-l-2 border-dashed {$theme ===
-                        'amoled'
-                          ? 'border-white'
-                          : 'border-slate-600'} bg-opacity-50 px-2 py-1 text-center text-sm xl:text-base"
-                        style={(useLinearGradient &&
-                          !term.grade &&
-                          "background: repeating-linear-gradient(45deg, rgb(71 85 105 / var(--tw-bg-opacity)), rgb(71 85 105 / var(--tw-bg-opacity)) 2px, transparent 2px, transparent 10px); background-position: 0 0; background-size: 100% 100%;") ||
-                          ""}
-                      >
-                        {#if term.grade}
-                          {term.grade.number.toFixed(2)}
-                          <div class="ml-1">({term.grade.letter})</div>
-                        {:else}
-                          <div class="select-none text-transparent">.</div>
-                        {/if}
-                      </div>
-                    {/each}
-                  {/each}
-                  <div
-                    class="col-span-3 flex items-center justify-center overflow-hidden border-b-2 border-dashed {$theme ===
-                    'amoled'
-                      ? 'border-white'
-                      : 'border-slate-600'} px-2 py-1 text-center"
-                    style="overflow-wrap: break-word; word-break: break-word"
-                  >
-                    Quarterly average
-                  </div>
-                  {#each c.data.grades.averages as avg}
-                    <div
-                      class="col-span-2 flex flex-wrap justify-center border-b-2 border-l-2 border-dashed {$theme ===
-                      'amoled'
-                        ? 'border-white bg-gray-900'
-                        : 'border-slate-600 bg-slate-800'} px-2 py-1 text-center text-sm xl:text-base"
-                      style={(useLinearGradient &&
-                        !avg &&
-                        "background: repeating-linear-gradient(45deg, rgb(100 116 139 / .5), rgb(100 116 139 / .5) 2px, #1e293b 2px, #1e293b 10px); background-position: 0 0; background-size: 100% 100%;") ||
-                        ""}
-                    >
-                      {#if avg}
-                        {#if avg.number}
-                          {avg.number.toFixed(2)}
-                          <div class="ml-1">({avg.letter})</div>
-                        {:else}
-                          {avg.letter}
-                        {/if}
-                      {:else}
-                        <div class="select-none text-transparent">.</div>
-                      {/if}
-                    </div>
-                  {/each}
-                  <div
-                    class="col-span-3 flex items-center justify-center overflow-hidden border-b-2 border-dashed {$theme ===
-                    'amoled'
-                      ? 'border-white'
-                      : 'border-slate-600'} px-2 py-1 text-center"
-                    style="overflow-wrap: break-word; word-break: break-word"
-                  >
-                    Posted grade
-                  </div>
-                  {#each c.data.grades.posted as grade}
-                    <div
-                      class="col-span-2 flex flex-wrap justify-center border-b-2 border-l-2 border-dashed {$theme ===
-                      'amoled'
-                        ? 'border-white bg-gray-900'
-                        : 'border-slate-600 bg-slate-800'} px-2 py-1 text-center text-sm xl:text-base {!grade &&
-                        'bg-opacity-50'}"
-                      style={(useLinearGradient &&
-                        !grade &&
-                        "background: repeating-linear-gradient(45deg, rgb(71 85 105 / var(--tw-bg-opacity)), rgb(71 85 105 / var(--tw-bg-opacity)) 2px, transparent 2px, transparent 10px); background-position: 0 0; background-size: 100% 100%;") ||
-                        ""}
-                    >
-                      {#if grade}
-                        {grade.number.toFixed(2)}
-                        <div class="ml-1">({grade.letter})</div>
-                      {:else}
-                        <div class="select-none text-transparent">.</div>
-                      {/if}
-                    </div>
-                  {/each}
-                  <div
-                    class="col-span-3 flex items-center justify-center overflow-hidden border-b-2 border-dashed {$theme ===
-                    'amoled'
-                      ? 'border-white'
-                      : 'border-slate-600'} px-2 py-1 text-center"
-                    style="overflow-wrap: break-word; word-break: break-word"
-                  >
-                    Final grade
-                  </div>
-                  <div
-                    class="relative flex justify-center border-b-2 border-l-2 border-dashed {$theme ===
-                    'amoled'
-                      ? 'border-white bg-gray-900'
-                      : 'border-slate-600 bg-slate-800'} px-2 py-1 text-center"
-                    style="grid-column: span {c.data.grades.categories[0].terms
-                      .length * 2} / span {c.data.grades.categories[0].terms
-                      .length * 2};"
-                  >
-                    {#if c.data.grades.final}
-                      {#if c.data.grades.final.number}
-                        {c.data.grades.final.number.toFixed(2)}
-                        <div class="ml-1">({c.data.grades.final.letter})</div>
-                      {:else}
-                        {c.data.grades.final.letter}
-                        <Fa
-                          icon={faQuestionCircle}
-                          class="absolute right-2 top-1/2 -translate-y-1/2 cursor-help"
-                          title="No exact final grade is available."
-                        />
-                      {/if}
-                    {:else}
-                      {calculateFinalGrade(c.data.grades).toFixed(2)}
-                      <Fa
-                        icon={faQuestionCircle}
-                        class="absolute right-2 top-1/2 -translate-y-1/2 cursor-help"
-                        title="This grade is calculated as an average of all terms. It may not accurately represent your final grade."
-                      />
-                    {/if}
-                  </div>
+                  <Skeleton class="h-4 w-36" />
                 </div>
-              {:else}
-                <div
-                  class="flex flex-1 items-center justify-center py-5 {$theme ===
-                  'amoled'
-                    ? 'text-white'
-                    : 'text-slate-400'}"
-                >
-                  This class doesn't appear to have any grades...
-                </div>{/if}
-            </div>
-          {/if}
-        </Collapsible>
-      </div>
-    {/each}
-  </div>
-{:else}
-  <div
-    class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-  >
-    {#each Array.from({ length: preloadLength }) as _, idx}
-      <div
-        class="mb-auto flex h-[143.2px] flex-col items-stretch border-2 {$theme ===
-        'amoled'
-          ? 'border-white'
-          : 'border-slate-600'} p-3"
-      >
-        <div class="flex items-center">
-          <div class="overflow-auto">
-            <div class="flex items-center">
-              <button disabled class="btn-circle mr-1">
-                <Skeleton class="rounded-full p-3" />
-              </button>
-              <div
-                class="overflow-hidden text-ellipsis whitespace-nowrap text-xl"
-              >
-                <Skeleton class="h-4 w-36" />
+              </div>
+              <div class="mt-2 flex items-center">
+                <Skeleton class="h-3 w-48" />
               </div>
             </div>
-            <div class="mt-2 flex items-center">
-              <Skeleton class="h-3 w-48" />
-            </div>
-          </div>
-          <div
-            class="ml-auto mt-1 flex flex-col border-r-2 border-transparent pr-1 {$theme ===
-            'amoled'
-              ? 'text-white'
-              : 'text-slate-400'}"
-          >
-            <div class="mb-2">
+            <div
+              class="ml-auto mt-1 flex flex-col border-r-2 border-transparent pr-1 {$theme ===
+              'amoled'
+                ? 'text-white'
+                : 'text-slate-400'}"
+            >
+              <div class="mb-2">
+                <Skeleton class="h-3 w-10" />
+              </div>
               <Skeleton class="h-3 w-10" />
             </div>
-            <Skeleton class="h-3 w-10" />
+          </div>
+          <div class="mt-auto flex gap-0">
+            <div class="-ml-2 mt-auto flex flex-col justify-end">
+              <div class="flex items-center gap-2 pl-2">
+                <Skeleton class="h-4 w-24" />
+              </div>
+              <div
+                class="relative mx-2 -mb-3 mr-auto flex items-center text-xl"
+              >
+                <Skeleton class="my-2 h-5 w-24" />
+              </div>
+            </div>
+            <div
+              class="-mb-1 ml-auto flex flex-col items-end justify-center gap-2 border-l-0 border-dashed border-transparent pl-0 {$theme ===
+              'amoled'
+                ? 'text-white'
+                : 'text-slate-400'}"
+            >
+              <div class="flex gap-2">
+                <Skeleton class="h-3 w-16" />
+              </div>
+              <div class="flex gap-2">
+                <Skeleton class="h-3 w-12" />
+              </div>
+              <div class="flex gap-2">
+                <Skeleton class="h-3 w-20" />
+              </div>
+            </div>
           </div>
         </div>
-        <div class="mt-auto flex gap-0">
-          <div class="-ml-2 mt-auto flex flex-col justify-end">
-            <div class="flex items-center gap-2 pl-2">
-              <Skeleton class="h-4 w-24" />
-            </div>
-            <div class="relative mx-2 -mb-3 mr-auto flex items-center text-xl">
-              <Skeleton class="my-2 h-5 w-24" />
+      {/each}
+    </div>
+  {/if}
+{:else}
+  <!-- Transcript View -->
+  <div class="pb-10">
+    {#if transcript.length > 0}
+      <div
+        class="mb-5 grid gap-5 pb-5"
+        in:fly={{
+          delay: 200,
+          duration: 800,
+          opacity: 0,
+          y: -20,
+          easing: motion.transitions.spring(400, 20)
+        }}
+      >
+        <div class="mx-auto mb-5 flex items-center justify-center gap-8">
+          <div class="text-center">
+            <div
+              class="text-2xl font-bold"
+              in:fly|global={{
+                delay: 200,
+                duration: 600,
+                opacity: 0,
+                y: -10,
+                easing: motion.transitions.spring(400, 15)
+              }}
+            >
+              Cumulative GPA: {transcriptGPA?.toFixed(2)}
             </div>
           </div>
+          <div class="text-center">
+            <div
+              class="text-2xl font-bold"
+              in:fly|global={{
+                delay: 300,
+                duration: 600,
+                opacity: 0,
+                y: -10,
+                easing: motion.transitions.spring(400, 15)
+              }}
+            >
+              Credits Earned: {transcriptCreditsEarned.toFixed(2)}
+            </div>
+          </div>
+        </div>
+
+        <div class="mx-auto overflow-visible lg:w-[960px]">
+          <!-- Desktop Grid Layout -->
           <div
-            class="-mb-1 ml-auto flex flex-col items-end justify-center gap-2 border-l-0 border-dashed border-transparent pl-0 {$theme ===
+            class="hidden grid-cols-[repeat(13,minmax(0,1fr))] md:grid {$theme ===
             'amoled'
-              ? 'text-white'
-              : 'text-slate-400'}"
+              ? 'border-white'
+              : 'border-slate-600'}"
           >
-            <div class="flex gap-2">
-              <Skeleton class="h-3 w-16" />
+            <!-- Header Row -->
+            <div
+              class="col-span-1 border-2 {$theme === 'amoled'
+                ? 'border-white text-white'
+                : 'border-slate-600 bg-slate-800 text-white'} p-2 text-center font-bold"
+              in:fly|global={{
+                delay: TRANSCRIPT_BASE_DELAY + (0 + 0) * TRANSCRIPT_CELL_DELAY,
+                duration: 600,
+                opacity: 0,
+                y: -10,
+                easing: motion.transitions.spring(400, 15)
+              }}
+            >
+              Grade
             </div>
-            <div class="flex gap-2">
-              <Skeleton class="h-3 w-12" />
+            <div
+              class="col-span-4 border-2 {$theme === 'amoled'
+                ? 'border-white text-white'
+                : 'border-slate-600 bg-slate-800 text-white'} p-2 text-left font-bold"
+              in:fly|global={{
+                delay: TRANSCRIPT_BASE_DELAY + (1 + 0) * TRANSCRIPT_CELL_DELAY,
+                duration: 600,
+                opacity: 0,
+                y: -10,
+                easing: motion.transitions.spring(400, 15)
+              }}
+            >
+              Course
             </div>
-            <div class="flex gap-2">
-              <Skeleton class="h-3 w-20" />
+            <div
+              class="col-span-1 border-2 {$theme === 'amoled'
+                ? 'border-white text-white'
+                : 'border-slate-600 bg-slate-800 text-white'} p-2 text-left font-bold"
+              in:fly|global={{
+                delay: TRANSCRIPT_BASE_DELAY + (2 + 0) * TRANSCRIPT_CELL_DELAY,
+                duration: 600,
+                opacity: 0,
+                y: -10,
+                easing: motion.transitions.spring(400, 15)
+              }}
+            >
+              Level
             </div>
+            <div
+              class="col-span-1 border-2 {$theme === 'amoled'
+                ? 'border-white text-white'
+                : 'border-slate-600 bg-slate-800 text-white'} p-2 text-center font-bold"
+              in:fly|global={{
+                delay: TRANSCRIPT_BASE_DELAY + (3 + 0) * TRANSCRIPT_CELL_DELAY,
+                duration: 600,
+                opacity: 0,
+                y: -10,
+                easing: motion.transitions.spring(400, 15)
+              }}
+            >
+              Q1
+            </div>
+            <div
+              class="col-span-1 border-2 {$theme === 'amoled'
+                ? 'border-white text-white'
+                : 'border-slate-600 bg-slate-800 text-white'} p-2 text-center font-bold"
+              in:fly|global={{
+                delay: TRANSCRIPT_BASE_DELAY + (4 + 0) * TRANSCRIPT_CELL_DELAY,
+                duration: 600,
+                opacity: 0,
+                y: -10,
+                easing: motion.transitions.spring(400, 15)
+              }}
+            >
+              Q2
+            </div>
+            <div
+              class="col-span-1 border-2 {$theme === 'amoled'
+                ? 'border-white text-white'
+                : 'border-slate-600 bg-slate-800 text-white'} p-2 text-center font-bold"
+              in:fly|global={{
+                delay: TRANSCRIPT_BASE_DELAY + (5 + 0) * TRANSCRIPT_CELL_DELAY,
+                duration: 600,
+                opacity: 0,
+                y: -10,
+                easing: motion.transitions.spring(400, 15)
+              }}
+            >
+              Q3
+            </div>
+            <div
+              class="col-span-1 border-2 {$theme === 'amoled'
+                ? 'border-white text-white'
+                : 'border-slate-600 bg-slate-800 text-white'} p-2 text-center font-bold"
+              in:fly|global={{
+                delay: TRANSCRIPT_BASE_DELAY + (6 + 0) * TRANSCRIPT_CELL_DELAY,
+                duration: 600,
+                opacity: 0,
+                y: -10,
+                easing: motion.transitions.spring(400, 15)
+              }}
+            >
+              Q4
+            </div>
+            <div
+              class="col-span-1 border-2 {$theme === 'amoled'
+                ? 'border-white text-white'
+                : 'border-slate-600 bg-slate-800 text-white'} p-2 text-center font-bold"
+              in:fly|global={{
+                delay: TRANSCRIPT_BASE_DELAY + (7 + 0) * TRANSCRIPT_CELL_DELAY,
+                duration: 600,
+                opacity: 0,
+                y: -10,
+                easing: motion.transitions.spring(400, 15)
+              }}
+            >
+              Exam
+            </div>
+            <div
+              class="col-span-1 border-2 {$theme === 'amoled'
+                ? 'border-white text-white'
+                : 'border-slate-600 bg-slate-800 text-white'} p-2 text-center font-bold"
+              in:fly|global={{
+                delay: TRANSCRIPT_BASE_DELAY + (8 + 0) * TRANSCRIPT_CELL_DELAY,
+                duration: 600,
+                opacity: 0,
+                y: -10,
+                easing: motion.transitions.spring(400, 15)
+              }}
+            >
+              Final
+            </div>
+            <div
+              class="col-span-1 border-2 {$theme === 'amoled'
+                ? 'border-white text-white'
+                : 'border-slate-600 bg-slate-800 text-white'} p-2 text-center font-bold"
+              in:fly|global={{
+                delay: TRANSCRIPT_BASE_DELAY + (9 + 0) * TRANSCRIPT_CELL_DELAY,
+                duration: 600,
+                opacity: 0,
+                y: -10,
+                easing: motion.transitions.spring(400, 15)
+              }}
+            >
+              Credits
+            </div>
+
+            <!-- Data Rows -->
+            {#each transcript as course, rowIndex}
+              <div
+                class="col-span-1 border-2 {$theme === 'amoled'
+                  ? 'border-white'
+                  : 'border-slate-600'} p-2 text-center {$theme === 'amoled'
+                  ? 'bg-black'
+                  : 'bg-slate-800'}"
+                in:fly|global={{
+                  delay:
+                    TRANSCRIPT_BASE_DELAY +
+                    (0 + rowIndex + 1) * TRANSCRIPT_CELL_DELAY,
+                  duration: 600,
+                  opacity: 0,
+                  y: -10,
+                  easing: motion.transitions.spring(400, 15)
+                }}
+              >
+                {course.grade}
+              </div>
+              <div
+                class="col-span-4 overflow-hidden overflow-ellipsis whitespace-nowrap border-2 p-2 {$theme ===
+                'amoled'
+                  ? 'border-white'
+                  : 'border-slate-600'}"
+                in:fly|global={{
+                  delay:
+                    TRANSCRIPT_BASE_DELAY +
+                    (1 + rowIndex + 1) * TRANSCRIPT_CELL_DELAY,
+                  duration: 600,
+                  opacity: 0,
+                  y: -10,
+                  easing: motion.transitions.spring(400, 15)
+                }}
+                title={course.course}
+              >
+                {course.course}
+              </div>
+              <div
+                class="col-span-1 border-2 {$theme === 'amoled'
+                  ? 'border-white'
+                  : 'border-slate-600'} p-2"
+                in:fly|global={{
+                  delay:
+                    TRANSCRIPT_BASE_DELAY +
+                    (2 + rowIndex + 1) * TRANSCRIPT_CELL_DELAY,
+                  duration: 600,
+                  opacity: 0,
+                  y: -10,
+                  easing: motion.transitions.spring(400, 15)
+                }}
+              >
+                {course.level}
+              </div>
+              <div
+                class="col-span-1 border-2 {$theme === 'amoled'
+                  ? 'border-white'
+                  : 'border-slate-600'} p-2 text-center {course.breakdown[0]
+                  ? $theme === 'amoled'
+                    ? 'bg-black'
+                    : 'bg-slate-800'
+                  : ''}"
+                in:fly|global={{
+                  delay:
+                    TRANSCRIPT_BASE_DELAY +
+                    (3 + rowIndex + 1) * TRANSCRIPT_CELL_DELAY,
+                  duration: 600,
+                  opacity: 0,
+                  y: -10,
+                  easing: motion.transitions.spring(400, 15)
+                }}
+              >
+                {course.breakdown[0] || "-"}
+              </div>
+              <div
+                class="col-span-1 border-2 {$theme === 'amoled'
+                  ? 'border-white'
+                  : 'border-slate-600'} p-2 text-center {course.breakdown[1]
+                  ? $theme === 'amoled'
+                    ? 'bg-black'
+                    : 'bg-slate-800'
+                  : ''}"
+                in:fly|global={{
+                  delay:
+                    TRANSCRIPT_BASE_DELAY +
+                    (4 + rowIndex + 1) * TRANSCRIPT_CELL_DELAY,
+                  duration: 600,
+                  opacity: 0,
+                  y: -10,
+                  easing: motion.transitions.spring(400, 15)
+                }}
+              >
+                {course.breakdown[1] || "-"}
+              </div>
+              <div
+                class="col-span-1 border-2 {$theme === 'amoled'
+                  ? 'border-white'
+                  : 'border-slate-600'} p-2 text-center {course.breakdown[2]
+                  ? $theme === 'amoled'
+                    ? 'bg-black'
+                    : 'bg-slate-800'
+                  : ''}"
+                in:fly|global={{
+                  delay:
+                    TRANSCRIPT_BASE_DELAY +
+                    (5 + rowIndex + 1) * TRANSCRIPT_CELL_DELAY,
+                  duration: 600,
+                  opacity: 0,
+                  y: -10,
+                  easing: motion.transitions.spring(400, 15)
+                }}
+              >
+                {course.breakdown[2] || "-"}
+              </div>
+              <div
+                class="col-span-1 border-2 {$theme === 'amoled'
+                  ? 'border-white'
+                  : 'border-slate-600'} p-2 text-center {course.breakdown[3]
+                  ? $theme === 'amoled'
+                    ? 'bg-black'
+                    : 'bg-slate-800'
+                  : ''}"
+                in:fly|global={{
+                  delay:
+                    TRANSCRIPT_BASE_DELAY +
+                    (6 + rowIndex + 1) * TRANSCRIPT_CELL_DELAY,
+                  duration: 600,
+                  opacity: 0,
+                  y: -10,
+                  easing: motion.transitions.spring(400, 15)
+                }}
+              >
+                {course.breakdown[3] || "-"}
+              </div>
+              <div
+                class="col-span-1 border-2 {$theme === 'amoled'
+                  ? 'border-white'
+                  : 'border-slate-600'} p-2 text-center {course.breakdown[4]
+                  ? $theme === 'amoled'
+                    ? 'bg-black'
+                    : 'bg-slate-800'
+                  : ''}"
+                in:fly|global={{
+                  delay:
+                    TRANSCRIPT_BASE_DELAY +
+                    (7 + rowIndex + 1) * TRANSCRIPT_CELL_DELAY,
+                  duration: 600,
+                  opacity: 0,
+                  y: -10,
+                  easing: motion.transitions.spring(400, 15)
+                }}
+              >
+                {course.breakdown[4] || "-"}
+              </div>
+              <div
+                class="col-span-1 border-2 {$theme === 'amoled'
+                  ? 'border-white'
+                  : 'border-slate-600'} p-2 text-center font-bold"
+                in:fly|global={{
+                  delay:
+                    TRANSCRIPT_BASE_DELAY +
+                    (8 + rowIndex + 1) * TRANSCRIPT_CELL_DELAY,
+                  duration: 600,
+                  opacity: 0,
+                  y: -10,
+                  easing: motion.transitions.spring(400, 15)
+                }}
+              >
+                {course.final || "-"}
+              </div>
+              <div
+                class="col-span-1 border-2 {$theme === 'amoled'
+                  ? 'border-white'
+                  : 'border-slate-600'} p-2 text-center"
+                in:fly|global={{
+                  delay:
+                    TRANSCRIPT_BASE_DELAY +
+                    (9 + rowIndex + 1) * TRANSCRIPT_CELL_DELAY,
+                  duration: 600,
+                  opacity: 0,
+                  y: -10,
+                  easing: motion.transitions.spring(400, 15)
+                }}
+              >
+                {course.credit.toFixed(2)}
+              </div>
+            {/each}
+          </div>
+
+          <!-- Mobile Grid Layout -->
+          <div class="space-y-4 md:hidden">
+            {#each transcript || [] as course, rowIndex}
+              <div class="grid grid-cols-1">
+                <!-- Course Info Row -->
+                <div
+                  class="border-2 {$theme === 'amoled'
+                    ? 'border-white'
+                    : 'border-slate-600'} p-2"
+                  in:fly|global={{
+                    delay:
+                      TRANSCRIPT_BASE_DELAY +
+                      rowIndex * 2 * TRANSCRIPT_CELL_DELAY,
+                    duration: 600,
+                    opacity: 0,
+                    y: -10,
+                    easing: motion.transitions.spring(400, 15)
+                  }}
+                >
+                  <div class="font-bold">
+                    <span
+                      class="mr-2 inline-block rounded bg-slate-800 px-2 py-1"
+                      >{course.grade}th</span
+                    >{course.course}
+                  </div>
+                  <div class="mt-1 flex justify-between">
+                    <span
+                      class="text-sm {$theme === 'amoled'
+                        ? 'text-white'
+                        : 'text-slate-400'}">{course.level}</span
+                    >
+                    <span class="text-sm font-semibold"
+                      >{course.credit.toFixed(2)} credits</span
+                    >
+                  </div>
+                </div>
+
+                <!-- Grades Row -->
+                <div
+                  class="mb-4 border-2 border-t-0 p-2 {$theme === 'amoled'
+                    ? 'border-white'
+                    : 'border-slate-600'}"
+                  in:fly|global={{
+                    delay:
+                      TRANSCRIPT_BASE_DELAY +
+                      (rowIndex * 2 + 1) * TRANSCRIPT_CELL_DELAY,
+                    duration: 600,
+                    opacity: 0,
+                    y: -10,
+                    easing: motion.transitions.spring(400, 15)
+                  }}
+                >
+                  <div class="grid grid-cols-7 gap-1 text-center">
+                    <div
+                      class="text-xs {$theme === 'amoled'
+                        ? 'text-white'
+                        : 'text-slate-400'}"
+                    >
+                      Grade
+                    </div>
+                    <div
+                      class="text-xs {$theme === 'amoled'
+                        ? 'text-white'
+                        : 'text-slate-400'}"
+                    >
+                      Q1
+                    </div>
+                    <div
+                      class="text-xs {$theme === 'amoled'
+                        ? 'text-white'
+                        : 'text-slate-400'}"
+                    >
+                      Q2
+                    </div>
+                    <div
+                      class="text-xs {$theme === 'amoled'
+                        ? 'text-white'
+                        : 'text-slate-400'}"
+                    >
+                      Q3
+                    </div>
+                    <div
+                      class="text-xs {$theme === 'amoled'
+                        ? 'text-white'
+                        : 'text-slate-400'}"
+                    >
+                      Q4
+                    </div>
+                    <div
+                      class="text-xs {$theme === 'amoled'
+                        ? 'text-white'
+                        : 'text-slate-400'}"
+                    >
+                      Exam
+                    </div>
+                    <div
+                      class="text-xs {$theme === 'amoled'
+                        ? 'text-white'
+                        : 'text-slate-400'}"
+                    >
+                      Final
+                    </div>
+
+                    <div
+                      class="rounded p-1 text-sm {$theme === 'amoled'
+                        ? 'bg-gray-900'
+                        : 'bg-slate-800'}"
+                    >
+                      {course.grade}
+                    </div>
+
+                    <div
+                      class="rounded p-1 text-sm {course.breakdown[0]
+                        ? $theme === 'amoled'
+                          ? 'bg-gray-900'
+                          : 'bg-slate-800'
+                        : ''}"
+                    >
+                      {course.breakdown[0] || "-"}
+                    </div>
+                    <div
+                      class="rounded p-1 text-sm {course.breakdown[1]
+                        ? $theme === 'amoled'
+                          ? 'bg-gray-900'
+                          : 'bg-slate-800'
+                        : ''}"
+                    >
+                      {course.breakdown[1] || "-"}
+                    </div>
+                    <div
+                      class="rounded p-1 text-sm {course.breakdown[2]
+                        ? $theme === 'amoled'
+                          ? 'bg-gray-900'
+                          : 'bg-slate-800'
+                        : ''}"
+                    >
+                      {course.breakdown[2] || "-"}
+                    </div>
+                    <div
+                      class="rounded p-1 text-sm {course.breakdown[3]
+                        ? $theme === 'amoled'
+                          ? 'bg-gray-900'
+                          : 'bg-slate-800'
+                        : ''}"
+                    >
+                      {course.breakdown[3] || "-"}
+                    </div>
+                    <div
+                      class="rounded p-1 text-sm {course.breakdown[4]
+                        ? $theme === 'amoled'
+                          ? 'bg-gray-900'
+                          : 'bg-slate-800'
+                        : ''}"
+                    >
+                      {course.breakdown[4] || "-"}
+                    </div>
+                    <div class="rounded p-1 text-sm font-bold">
+                      {course.final || "-"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {/each}
           </div>
         </div>
       </div>
-    {/each}
+    {:else}
+      <div
+        class="flex h-64 items-center justify-center text-xl {$theme ===
+        'amoled'
+          ? 'text-white'
+          : 'text-slate-400'}"
+      >
+        No transcript data available
+      </div>
+    {/if}
   </div>
 {/if}

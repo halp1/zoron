@@ -80,6 +80,7 @@ export namespace aspen {
     }
 
     export interface TranscriptItem {
+      grade: 9 | 10 | 11 | 12;
       course: string;
       level: string;
       breakdown: [
@@ -93,8 +94,6 @@ export namespace aspen {
       credit: number;
     }
     export interface Transcript {
-      year: number;
-      grade: number;
       classes: TranscriptItem[];
     }
 
@@ -152,7 +151,8 @@ export namespace aspen {
       export const authenticate = 5;
       export const classDetail = 5;
       export const assignment = 6;
-      export const transcript = 2;
+      export const transcriptShort = 2;
+      export const transcriptFull = 4;
       export namespace schedule {
         export const pdf = 5;
       }
@@ -1368,12 +1368,17 @@ export namespace aspen {
 
   export const transcript = async ({
     cookie,
-    onProgress
+    onProgress,
+    all
   }: {
     cookie: string;
     onProgress?: Types.ProgressCallback;
+    all?: boolean;
   }): Promise<Types.Transcript> => {
-    const tick = progressTicker(constants.steps.transcript, onProgress);
+    const tick = progressTicker(
+      constants.steps[all ? "transcriptShort" : "transcriptFull"],
+      onProgress
+    );
 
     const res = await fetch(
       "https://ma-lexington.myfollett.com/aspen/transcriptList.do?navkey=myInfo.trn.list",
@@ -1409,31 +1414,21 @@ export namespace aspen {
 
     tick();
 
-    const {
-      window: { document }
-    } = new JSDOM(await res.text());
-
-    const body = document.querySelector("#dataGrid table tbody");
-
-    if (!body) throw new Error("Failed to find data");
+    const { window } = new JSDOM(await res.text());
 
     const nanNull = (v: number) => (Number.isNaN(v) ? null : v);
     const strnn = (v: string) => nanNull(parseFloat(v));
 
-    return {
-      year: parseInt(
-        body.querySelector("a")?.textContent?.trim() ??
-          new Date().getFullYear().toString()
-      ),
-      grade: parseInt(
-        body.querySelectorAll("td")[3]?.textContent?.trim() || "0"
-      ),
-      classes: [...body.querySelectorAll("tr.listCell")].map((row) => {
+    const parseClasses = (
+      body: HTMLTableSectionElement
+    ): Types.TranscriptItem[] =>
+      [...body.querySelectorAll("tr.listCell")].map((row) => {
         const cells = [...row.querySelectorAll("td")].map(
           (cell) => cell.textContent?.trim() || ""
         );
 
         return {
+          grade: parseInt(cells[2]) as any,
           course: cells[3],
           level: cells[4] === "Hon" ? "Honors" : cells[4],
           final: cells[10],
@@ -1446,7 +1441,123 @@ export namespace aspen {
             strnn(cells[9])
           ]
         };
-      })
+      });
+
+    if (!all) {
+      const body = window.document.querySelector(
+        "#dataGrid table tbody"
+      ) as HTMLTableSectionElement | null;
+
+      if (!body) throw new Error("Failed to find data");
+
+      return {
+        classes: parseClasses(body)
+      };
+    }
+
+    const form = new window.FormData(
+      window.document.forms["dictionaryExtendableListForm" as any]
+    );
+
+    form.set("userEvent", "2060");
+    form.set("filterDefinitionId", "###all");
+
+    const formBody = new window.URLSearchParams(form as any).toString();
+
+    const page1Res = await fetch(
+      "https://ma-lexington.myfollett.com/aspen/transcriptList.do",
+      {
+        headers: {
+          accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+          "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+          "cache-control": "no-cache",
+          "content-type": "application/x-www-form-urlencoded",
+          pragma: "no-cache",
+          "sec-ch-ua":
+            '"Google Chrome";v="137", "Chromium";v="137", "Not/A)Brand";v="24"',
+          "sec-ch-ua-mobile": "?0",
+          "sec-ch-ua-platform": '"Windows"',
+          "sec-fetch-dest": "document",
+          "sec-fetch-mode": "navigate",
+          "sec-fetch-site": "same-origin",
+          "sec-fetch-user": "?1",
+          "upgrade-insecure-requests": "1",
+          cookie,
+          Referer:
+            "https://ma-lexington.myfollett.com/aspen/transcriptList.do?navkey=myInfo.trn.list",
+          "Referrer-Policy": "strict-origin-when-cross-origin"
+        },
+        body: formBody,
+        method: "POST"
+      }
+    );
+
+    const { window: page1Window } = new JSDOM(await page1Res.text());
+
+    const documents: (typeof page1Window.document)[] = [page1Window.document];
+
+    for (
+      let i = 1;
+      i <
+      (page1Window.document.querySelector("#listHeaderDropdown")?.children
+        .length ?? 1);
+      i++
+    ) {
+      const form = new page1Window.FormData(
+        page1Window.document.forms["dictionaryExtendableListForm" as any]
+      );
+      form.set("userEvent", "30");
+      form.set("formFocusField", "listHeaderDropdown");
+      form.set("filterDefinitionId", "###all");
+      form.set("topPageSelected", i.toString());
+      const formBody = new page1Window.URLSearchParams(form as any).toString();
+
+      const res = await fetch(
+        "https://ma-lexington.myfollett.com/aspen/transcriptList.do",
+        {
+          headers: {
+            accept:
+              "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+            "cache-control": "no-cache",
+            "content-type": "application/x-www-form-urlencoded",
+            pragma: "no-cache",
+            "sec-ch-ua":
+              '"Google Chrome";v="137", "Chromium";v="137", "Not/A)Brand";v="24"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"Windows"',
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "same-origin",
+            "sec-fetch-user": "?1",
+            "upgrade-insecure-requests": "1",
+            cookie,
+            Referer:
+              "https://ma-lexington.myfollett.com/aspen/transcriptList.do",
+            "Referrer-Policy": "strict-origin-when-cross-origin"
+          },
+          body: formBody,
+          method: "POST"
+        }
+      );
+
+      if (res.status !== 200) {
+        throw new Error(`Failed to get transcript page ${i + 1}: ${res}`);
+      }
+
+      const { window } = new JSDOM(await res.text());
+      documents.push(window.document);
+
+      tick();
+    }
+
+    return {
+      classes: documents.flatMap((doc) =>
+        parseClasses(
+          doc.querySelector("#dataGrid table tbody") as HTMLTableSectionElement
+        )
+      )
     };
   };
 
