@@ -233,6 +233,8 @@
         return 0.33;
       case "F":
         return 0.0;
+      case "P":
+        return 4.0;
       default:
         return null;
     }
