@@ -180,7 +180,7 @@
     });
     return (
       terms
-        .map((term) => (term <= 9 ? convertMathScore(term) : term))
+        .map((term) => (term <= 10 ? convertMathScore(term) : term))
         .reduce((a, b) => a + b, 0) / terms.length
     );
   };
