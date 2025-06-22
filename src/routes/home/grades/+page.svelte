@@ -9,7 +9,7 @@
   import type { aspen } from "$lib/aspen";
   import { Collapsible, ListSelect, Skeleton } from "$lib/components";
   import { motion } from "$lib/motion";
-  import { requests, toast, zoron } from "$lib/web";
+  import { requests, storage, toast, zoron } from "$lib/web";
   import { theme } from "$lib/web/theme";
 
   import Fa from "svelte-fa";
@@ -305,7 +305,10 @@
       }))
       .filter(
         (c) =>
-          (c.final?.length || 0) > 0 && c.credit !== undefined && c.credit > 0
+          (c.final?.length || 0) > 0 &&
+          c.credit !== undefined &&
+          c.credit > 0 &&
+          c.final !== "P"
       )
       .map((c) => (individualGPA(c.final!) ?? 0) * c.credit)
       .reduce((a, b) => a + b, 0) / transcriptCreditsEarned
@@ -314,6 +317,15 @@
   // Transition delay for transcript cells (diagonal fly-in effect)
   const TRANSCRIPT_CELL_DELAY = 40; // milliseconds per cell
   const TRANSCRIPT_BASE_DELAY = 400; // base delay for transcript items
+
+  let showTranscriptHighlight = writable(true);
+  onMount(() => {
+    return storage.use("grades.transcript-highlight", showTranscriptHighlight);
+  });
+
+  $effect(() => {
+    if (displayMode === "transcript") showTranscriptHighlight.set(false);
+  });
 
   // pre-load classes for tailwind
   ("grid-cols-1 grid-cols-2 grid-cols-3 grid-cols-4 grid-cols-5 grid-cols-6 grid-cols-7 grid-cols-8 grid-cols-9 grid-cols-10 grid-cols-11 grid-cols-12 grid-cols-13 grid-cols-14 border-b-0");
@@ -342,6 +354,7 @@
         }
       }
     }}
+    glow={$showTranscriptHighlight}
   />
 
   {#if displayMode === "grades"}

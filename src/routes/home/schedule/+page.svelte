@@ -180,7 +180,8 @@
           // @ts-expect-error ts is buggin
           return (this.end.getTime() - this.start.getTime()) / 1000 / 60;
         },
-        progression: calculateProgression(event.start, event.end)
+        progression: calculateProgression(event.start, event.end),
+        timeToStart: calculateTimeToStart(event.start)
       }));
     if (allEvents.length === 0) return { day, blocks: [] };
 
@@ -268,7 +269,8 @@
         last.end = event.end;
 
         Object.assign(last, {
-          progression: calculateProgression(event.start, event.end)
+          progression: calculateProgression(event.start, event.end),
+          timeToStart: calculateTimeToStart(event.start)
         });
 
         // now *define* a true getter for .duration on `last`
@@ -386,6 +388,13 @@
             (end.getTime() - start.getTime())) *
           100;
 
+  const calculateTimeToStart = (start: Date): number | null =>
+    // @ts-ignore
+    now().getTime() < start.getTime() &&
+    now().getTime() >= start.getTime() - 60 * 5 * 1000
+      ? Math.round((start.getTime() - now().getTime()) / 1000 / 60)
+      : null;
+
   let dayCache = $state(new Map<string, Awaited<ReturnType<typeof loadDay>>>());
   let day: Awaited<ReturnType<typeof loadDay>> | null = $state(null);
   let dayKey = $state(0);
@@ -438,6 +447,7 @@
             day.blocks[i].start,
             day.blocks[i].end
           );
+          day.blocks[i].timeToStart = calculateTimeToStart(day.blocks[i].start);
         }
       }
       frame = requestAnimationFrame(tick);
@@ -1080,18 +1090,12 @@
                       </div>
                       <div class="italic">
                         {block.duration} minutes
-                        {#if now().getTime() - block.start.getTime() < 0 && now().getTime() - block.start.getTime() >= -1000 * 60 * 5}
+                        {#if block.timeToStart}
                           <span class="ml-1"></span>
                           Starts in {Math.floor(
-                            (block.start.getTime() - now().getTime()) /
-                              1000 /
-                              60
+                            block.timeToStart / 1000 / 60
                           )}:{Math.floor(
-                            (((block.start.getTime() - now().getTime()) /
-                              1000 /
-                              60) %
-                              1) *
-                              60
+                            ((block.timeToStart / 1000 / 60) % 1) * 60
                           )
                             .toString()
                             .padStart(2, "0")}
