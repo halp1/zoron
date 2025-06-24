@@ -1,4 +1,4 @@
-<script lang="ts" generics="T extends string | number">
+<script lang="ts" generics="T extends string | number | boolean">
   import { theme } from "$lib/web/theme";
 
   interface Props {

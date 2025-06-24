@@ -203,41 +203,50 @@
 
   const useLinearGradient = false;
 
-  const individualGPA = (letter?: string) => {
-    switch (letter) {
-      case "A+":
-        return 4.33;
-      case "A":
-        return 4.0;
-      case "A-":
-        return 3.67;
-      case "B+":
-        return 3.33;
-      case "B":
-        return 3.0;
-      case "B-":
-        return 2.67;
-      case "C+":
-        return 2.33;
-      case "C":
-        return 2.0;
-      case "C-":
-        return 1.67;
-      case "D+":
-        return 1.33;
-      case "D":
-        return 1.0;
-      case "D-":
-        return 0.67;
-      case "F+":
-        return 0.33;
-      case "F":
-        return 0.0;
-      case "P":
-        return 4.0;
-      default:
-        return null;
-    }
+  type LetterGrade =
+    | "A+"
+    | "A"
+    | "A-"
+    | "B+"
+    | "B"
+    | "B-"
+    | "C+"
+    | "C"
+    | "C-"
+    | "D+"
+    | "D"
+    | "D-"
+    | "F+"
+    | "F";
+  type GPAData = {
+    [grade in LetterGrade]: number;
+  };
+
+  const gpaData: GPAData = {
+    "A+": 4.33,
+    A: 4.0,
+    "A-": 3.67,
+    "B+": 3.33,
+    B: 3.0,
+    "B-": 2.67,
+    "C+": 2.33,
+    C: 2.0,
+    "C-": 1.67,
+    "D+": 1.33,
+    D: 1.0,
+    "D-": 0.67,
+    "F+": 0.33,
+    F: 0.0
+  };
+
+  const individualGPA = (
+    letter?: string,
+    level: "honors" | "ap" | "cp" = "cp",
+		aPlus: boolean = true
+  ) => {
+    if (!letter) return null;
+    const bonus = level === "honors" ? 0.5 : level === "ap" ? 1.0 : 0.0;
+    return Math.min((gpaData[letter as LetterGrade] ?? 0), aPlus ? 4.33 : 4) + bonus;
   };
 
   const calculateGPA = (
@@ -279,6 +288,8 @@
   let transcriptTime: "current" | "g9" | "g10" | "g11" | "g12" | "all" =
     $state("current");
 
+  let weightedGPA = $state(false);
+
   let transcript = $derived(
     $zoron.transcript.classes.filter((c) => {
       if (transcriptTime === "all") return true;
@@ -301,7 +312,8 @@
     transcript
       .map((c) => ({
         final: c.final,
-        credit: c.credit
+        credit: c.credit,
+        level: c.level
       }))
       .filter(
         (c) =>
@@ -310,8 +322,24 @@
           c.credit > 0 &&
           c.final !== "P"
       )
-      .map((c) => (individualGPA(c.final!) ?? 0) * c.credit)
-      .reduce((a, b) => a + b, 0) / transcriptCreditsEarned
+      .map(
+        (c) =>
+          (individualGPA(
+            c.final!,
+            !weightedGPA
+              ? "cp"
+              : c.level === "Honors"
+                ? "honors"
+                : c.level === "AP"
+                  ? "ap"
+                  : "cp", !weightedGPA
+          ) ?? 0) * c.credit
+      )
+      .reduce((a, b) => a + b, 0) /
+      (transcriptCreditsEarned -
+        transcript
+          .filter((c) => c.final === "P")
+          .reduce((a, b) => a + (b.credit || 0), 0) || 1)
   );
 
   // Transition delay for transcript cells (diagonal fly-in effect)
@@ -463,6 +491,13 @@
         { value: "all", label: "All Time" }
       ]}
       bind:value={transcriptTime}
+    />
+    <ListSelect
+      items={[
+        { value: false, label: "Unweighted" },
+        { value: true, label: "Weighted" }
+      ]}
+      bind:value={weightedGPA}
     />
   {/if}
 </div>
