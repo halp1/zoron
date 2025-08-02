@@ -1,0 +1,30 @@
+import { adapter } from "$lib/auth";
+import { api } from "$lib/server";
+
+import { SUPABASE_URI } from "$env/static/private";
+
+import type { RequestHandler } from "./$types";
+
+export const POST: RequestHandler = async ({ request, locals: { auth } }) => {
+  const session = await auth();
+  if (!session?.user?.id) return api.error("Unauthorized", 401);
+
+  const { imageUrl } = await request.json();
+
+  // Validate that the URL is from Supabase storage
+  if (!imageUrl.startsWith(`${SUPABASE_URI}/storage/v1/object/public/`)) {
+    return api.error("Invalid image URL: " + imageUrl, 400);
+  }
+
+  try {
+    await adapter.updateUser!({
+      id: session.user.id,
+      image: imageUrl
+    } as any);
+
+    return api.json({ success: true });
+  } catch (error) {
+    console.error("Error updating profile picture:", error);
+    return api.error("Failed to update profile picture", 500);
+  }
+};
