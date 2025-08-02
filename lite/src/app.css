@@ -1,0 +1,77 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer components {
+  body {
+    @apply text-white;
+  }
+  .bg-gradient {
+    @apply bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-900 via-[#0c1c3d] to-[#0a0f24];
+  }
+  .btn-circle {
+    @apply flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-opacity-10 p-2 hover:bg-slate-800;
+  }
+
+  .theme-amoled .btn-circle {
+    @apply hover:bg-gray-800;
+  }
+
+  .btn-full {
+    @apply flex cursor-pointer items-center justify-center gap-4 rounded-xl px-5 py-3 text-2xl;
+  }
+
+  .btn-filled {
+    @apply bg-blue-400 disabled:bg-slate-400;
+  }
+
+  .btn-outlined {
+    @apply border-2 border-blue-400 bg-white bg-opacity-0 transition-all hover:bg-opacity-5 disabled:cursor-not-allowed disabled:border-slate-400;
+  }
+
+  .custom-scroll::-webkit-scrollbar {
+    @apply w-2;
+  }
+  /* Style the track */
+  .custom-scroll::-webkit-scrollbar-track {
+    @apply bg-slate-800;
+  }
+
+  /* Style the scrollbar thumb */
+  .custom-scroll::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-slate-400 hover:bg-slate-500;
+  }
+
+  body.theme-amoled .custom_scroll::-webkit-scrollbar-track {
+    @apply bg-gray-900;
+  }
+
+  body.theme-amoled .custom-scroll::-webkit-scrollbar-thumb {
+    @apply bg-white hover:bg-gray-100;
+  }
+
+  .custom-scroll-right::-webkit-scrollbar-thumb {
+    @apply rounded-l-full;
+  }
+}
+
+.suse {
+  font-family: "SUSE", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.no-scroll::-webkit-scrollbar {
+  display: none;
+}
+.no-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*,
+::before,
+::after {
+  transition: all 0.2s ease-in-out;
+}
