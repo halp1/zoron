@@ -174,14 +174,16 @@
     const day = currentDayEvents.find(
       (event) =>
         event.summary.toLowerCase().includes("day") ||
-        event.summary.toLowerCase().includes("all")
+        event.summary.toLowerCase().includes("all") ||
+        event.summary.toLowerCase().includes("grade 9 only")
     )?.summary!;
     if (!day) return { day: "", blocks: [] };
     const allEvents = currentDayEvents
       .filter(
         (event) =>
           !event.summary.toLowerCase().includes("day") &&
-          !event.summary.toLowerCase().includes("all blocks")
+          !event.summary.toLowerCase().includes("all blocks") &&
+          !event.summary.toLowerCase().includes("grade 9 only")
       )
       .map((event) => ({
         name: event.summary.trim(),
