@@ -5,13 +5,16 @@
   import { onMount } from "svelte";
   import Fa from "svelte-fa";
   import { faUser } from "@fortawesome/free-solid-svg-icons";
+  import type { aspen } from "../aspen";
 
   interface Props {
     block: Block;
+    lunch?: aspen.Types.Schedule.Lunch;
+    day: number;
     onClose: () => void;
   }
 
-  let { block, onClose }: Props = $props();
+  let { block, onClose, lunch, day }: Props = $props();
 
   let sharedUsers = $state<null | { name: string; image: string; id: string }[]>(null);
 
@@ -26,7 +29,18 @@
           schedule: block.schedule,
         });
         if (res.success === false) toast.error("Failed to fetch shared users");
-        else sharedUsers = res.data.users.toSorted((a, b) => a.name.localeCompare(b.name));
+        else
+          sharedUsers = res.data.users.toSorted((a, b) => a.name.localeCompare(b.name));
+      } else if (block.type === "lunch") {
+        const res = await requests.post<{
+          users: { name: string; image: string; id: string }[];
+        }>(`/api/social/shared/lunch`, {
+          lunch,
+          day,
+        });
+        if (res.success === false) toast.error("Failed to fetch shared users");
+        else
+          sharedUsers = res.data.users.toSorted((a, b) => a.name.localeCompare(b.name));
       }
     })();
   });
@@ -50,14 +64,14 @@
       ? 'bg-black border-4 border-white'
       : 'bg-slate-800'}  w-full md:w-96 rounded-xl m-4 p-5 flex flex-col"
   >
-    <h1 class="text-2xl text-center">
+    <h1 class="text-2xl text-center mb-1">
       {block.type === "block"
         ? block.description
         : block.type === "I-block"
           ? "I Block"
           : block.type === "free"
             ? "Free"
-            : "Lunch"}
+            : `Lunch ${lunch}`}
     </h1>
     {#if block.type === "free" || block.type === "I-block"}
       <div class="text-center">
@@ -65,6 +79,32 @@
       </div>
     {:else if block.type === "lunch"}
       You share this lunch with:
+
+      <div class="mt-1">
+        {#if sharedUsers}
+          {#if sharedUsers.length > 0}
+            <div class="flex flex-wrap gap-2 mt-2">
+              {#each sharedUsers as user}
+                <div
+                  class="flex items-center gap-2 bg-gray-700/20 text-gray-300 px-3 py-1 rounded-full text-sm"
+                >
+                  {#if user.image}
+                    <!-- svelte-ignore a11y_missing_attribute -->
+                    <img src={user.image} class="w-6 h-6 rounded-full" />
+                  {:else}
+                    <Fa icon={faUser} />
+                  {/if}
+                  <span>{user.name}</span>
+                </div>
+              {/each}
+            </div>
+          {:else}
+            <p class="text-center text-gray-400">No friends found for this block.</p>
+          {/if}
+        {:else}
+          <p class="text-center text-gray-400">Loading your friends...</p>
+        {/if}
+      </div>
     {:else}
       <div class="mt-5 flex flex-wrap gap-2 justify-center">
         <div

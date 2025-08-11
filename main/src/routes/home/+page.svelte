@@ -743,7 +743,9 @@
     </div>
     {#if mode === "full"}
       <div class="flex min-h-full flex-1 flex-col">
-				<div class="text-slate-600 text-center py-2">Click a class to see who you share it with.</div>
+        <div class="py-2 text-center text-slate-600">
+          Click a class to see who you share it with.
+        </div>
         <div
           class="custom-scroll hidden flex-1 justify-center overflow-auto pb-10 md:flex"
         >
@@ -755,6 +757,8 @@
                 className="border-b-4 border-r-4 {i <= 5
                   ? 'border-t-4'
                   : ''} {i % 6 === 0 ? 'border-l-4' : ''}"
+                lunch={schedule.lunches[i % 6]}
+                day={i % 6}
               />
             {/each}
           </div>
@@ -787,6 +791,8 @@
                   {block}
                   className="border-2 border-slate-800 row-span-2"
                   freeFontSize="text-2xl"
+                  day={selectedDay}
+                  lunch={schedule.lunches[selectedDay]}
                 />
               {/each}
             </div>

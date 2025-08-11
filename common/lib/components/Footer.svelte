@@ -17,7 +17,7 @@
   <div
     class="{fixed
       ? 'fixed bottom-0 left-0'
-      : 'relative'} flex w-screen flex-wrap items-center gap-3 {$theme === 'amoled'
+      : 'relative'} flex w-screen items-center gap-3 {$theme === 'amoled'
       ? 'bg-black border-t-2 border-white'
       : 'bg-slate-800'} p-3 {className}"
   >

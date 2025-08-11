@@ -2,27 +2,8 @@
   "$schema": "https://json.schemastore.org/web-manifest-combined.json",
   "name": "Zoron",
   "short_name": "Zoron",
-  "start_url": "/launch",
-  "screenshots": [
-    {
-      "src": "/screenshots/desktop.png",
-      "type": "image/png",
-      "sizes": "2202x1504",
-      "form_factor": "wide"
-    },
-    {
-      "src": "/screenshots/mobile.png",
-      "sizes": "619x1351",
-      "type": "image/png"
-    },
-    {
-      "src": "/screenshots/mobile.png",
-      "sizes": "619x1351",
-      "type": "image/png",
-      "form_factor": "wide"
-    }
-  ],
-  "description": "The modern Aspen client.",
+  "start_url": "/home",
+  "description": "LHS Scheduling, done right.",
   "orientation": "portrait",
   "display_override": [
     "window-controls-overlay",
