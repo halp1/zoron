@@ -1,0 +1,662 @@
+[2025-08-10T17:23:54.156Z] Error: Failed to get transcript page: 500 (Internal Server Error)
+    at aspen2.transcript (/home/halp/zoron/common/lib/aspen/index.ts:1410:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Promise.all (index 4)
+    at async GET (/home/halp/zoron/main/src/routes/api/home/launch/+server.ts:23:16)
+    at async Module.render_endpoint (/home/halp/zoron/main/node_modules/@sveltejs/kit/src/runtime/server/endpoint.js:44:20)
+    at async resolve (/home/halp/zoron/main/node_modules/@sveltejs/kit/src/runtime/server/respond.js:517:17)
+    at async Object.handle (/home/halp/zoron/main/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/main/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/main/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T17:29:50.791Z] Error: Failed to get transcript page: 500 (Internal Server Error)
+    at aspen2.transcript (/home/halp/zoron/common/lib/aspen/index.ts:1410:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Promise.all (index 4)
+    at async GET (/home/halp/zoron/lite/src/routes/api/home/launch/+server.ts:23:16)
+    at async Module.render_endpoint (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/endpoint.js:44:20)
+    at async resolve (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:517:17)
+    at async Object.handle (/home/halp/zoron/lite/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/lite/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T17:32:51.645Z] Error: Failed to get classes: 500
+    at /home/halp/zoron/common/lib/aspen/index.ts:572:21
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async aspen2.classes (/home/halp/zoron/common/lib/aspen/index.ts:543:11)
+    at async Promise.all (index 2)
+    at async GET (/home/halp/zoron/lite/src/routes/api/home/launch/+server.ts:23:16)
+    at async Module.render_endpoint (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/endpoint.js:44:20)
+    at async resolve (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:517:17)
+    at async Object.handle (/home/halp/zoron/lite/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/lite/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T17:50:22.318Z] Error: Missing "./types/index.d.ts" specifier in "svelte" package
+    at e (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:46042:25)
+    at n (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:46042:627)
+    at o (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:46042:1297)
+    at resolveExportsOrImports (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:46663:18)
+    at resolveDeepImport (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:46686:25)
+    at tryNodeResolve (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:46451:16)
+    at ResolveIdContext.resolveId (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:46201:19)
+    at PluginContainer.resolveId (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49018:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async TransformPluginContext.resolve (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49178:15)
+[2025-08-10T17:50:26.132Z] Error: Missing ".//index.d.ts" specifier in "svelte" package
+    at e (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:46042:25)
+    at n (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:46042:627)
+    at o (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:46042:1297)
+    at resolveExportsOrImports (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:46663:18)
+    at resolveDeepImport (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:46686:25)
+    at tryNodeResolve (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:46451:16)
+    at ResolveIdContext.resolveId (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:46201:19)
+    at PluginContainer.resolveId (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49018:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async TransformPluginContext.resolve (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49178:15)
+[2025-08-10T18:08:17.712Z] CssSyntaxError: [postcss] /home/halp/zoron/lite/src/app.css:5:1: Unclosed block
+    at Input.error (/home/halp/zoron/lite/node_modules/postcss/lib/input.js:106:16)
+    at Parser.unclosedBlock (/home/halp/zoron/lite/node_modules/postcss/lib/parser.js:573:22)
+    at Parser.endFile (/home/halp/zoron/lite/node_modules/postcss/lib/parser.js:335:35)
+    at Parser.parse (/home/halp/zoron/lite/node_modules/postcss/lib/parser.js:474:10)
+    at parse (/home/halp/zoron/lite/node_modules/postcss/lib/parse.js:11:12)
+    at new LazyResult (/home/halp/zoron/lite/node_modules/postcss/lib/lazy-result.js:133:16)
+    at Processor.process (/home/halp/zoron/lite/node_modules/postcss/lib/processor.js:53:14)
+    at compileCSS (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:36898:59)
+    at async TransformPluginContext.transform (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:36171:11)
+    at async PluginContainer.transform (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49099:18)
+[2025-08-10T18:08:17.713Z] CssSyntaxError: [postcss] /home/halp/zoron/lite/src/app.css:5:1: Unclosed block
+    at Input.error (/home/halp/zoron/lite/node_modules/postcss/lib/input.js:106:16)
+    at Parser.unclosedBlock (/home/halp/zoron/lite/node_modules/postcss/lib/parser.js:573:22)
+    at Parser.endFile (/home/halp/zoron/lite/node_modules/postcss/lib/parser.js:335:35)
+    at Parser.parse (/home/halp/zoron/lite/node_modules/postcss/lib/parser.js:474:10)
+    at parse (/home/halp/zoron/lite/node_modules/postcss/lib/parse.js:11:12)
+    at new LazyResult (/home/halp/zoron/lite/node_modules/postcss/lib/lazy-result.js:133:16)
+    at Processor.process (/home/halp/zoron/lite/node_modules/postcss/lib/processor.js:53:14)
+    at compileCSS (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:36898:59)
+    at async TransformPluginContext.transform (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:36171:11)
+    at async PluginContainer.transform (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49099:18)
+[2025-08-10T18:08:19.508Z] CssSyntaxError: [postcss] /home/halp/zoron/lite/src/app.css:5:1: Unclosed block
+    at Input.error (/home/halp/zoron/lite/node_modules/postcss/lib/input.js:106:16)
+    at Parser.unclosedBlock (/home/halp/zoron/lite/node_modules/postcss/lib/parser.js:573:22)
+    at Parser.endFile (/home/halp/zoron/lite/node_modules/postcss/lib/parser.js:335:35)
+    at Parser.parse (/home/halp/zoron/lite/node_modules/postcss/lib/parser.js:474:10)
+    at parse (/home/halp/zoron/lite/node_modules/postcss/lib/parse.js:11:12)
+    at new LazyResult (/home/halp/zoron/lite/node_modules/postcss/lib/lazy-result.js:133:16)
+    at Processor.process (/home/halp/zoron/lite/node_modules/postcss/lib/processor.js:53:14)
+    at compileCSS (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:36898:59)
+    at async TransformPluginContext.transform (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:36171:11)
+    at async PluginContainer.transform (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49099:18)
+[2025-08-10T18:08:19.510Z] CssSyntaxError: [postcss] /home/halp/zoron/lite/src/app.css:5:1: Unclosed block
+    at Input.error (/home/halp/zoron/lite/node_modules/postcss/lib/input.js:106:16)
+    at Parser.unclosedBlock (/home/halp/zoron/lite/node_modules/postcss/lib/parser.js:573:22)
+    at Parser.endFile (/home/halp/zoron/lite/node_modules/postcss/lib/parser.js:335:35)
+    at Parser.parse (/home/halp/zoron/lite/node_modules/postcss/lib/parser.js:474:10)
+    at parse (/home/halp/zoron/lite/node_modules/postcss/lib/parse.js:11:12)
+    at new LazyResult (/home/halp/zoron/lite/node_modules/postcss/lib/lazy-result.js:133:16)
+    at Processor.process (/home/halp/zoron/lite/node_modules/postcss/lib/processor.js:53:14)
+    at compileCSS (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:36898:59)
+    at async TransformPluginContext.transform (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:36171:11)
+    at async PluginContainer.transform (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49099:18)
+[2025-08-10T18:26:08.779Z] Error: Missing +page.svelte component for route /account/update
+    at /home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:132:13
+    at Array.map (<anonymous>)
+    at Module.render_response (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:129:12)
+    at Module.render_page (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/index.js:312:16)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolve (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:522:18)
+    at async Object.handle (/home/halp/zoron/lite/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/lite/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T18:26:12.258Z] Error: Missing +page.svelte component for route /account/update
+    at /home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:132:13
+    at Array.map (<anonymous>)
+    at Module.render_response (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:129:12)
+    at Module.render_page (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/index.js:312:16)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolve (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:522:18)
+    at async Object.handle (/home/halp/zoron/lite/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/lite/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T18:40:20.036Z] Error: Missing +page.svelte component for route /home
+    at /home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:132:13
+    at Array.map (<anonymous>)
+    at Module.render_response (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:129:12)
+    at Module.render_page (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/index.js:312:16)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolve (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:522:18)
+    at async Object.handle (/home/halp/zoron/lite/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/lite/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T18:40:21.892Z] Error: Missing +page.svelte component for route /home
+    at /home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:132:13
+    at Array.map (<anonymous>)
+    at Module.render_response (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:129:12)
+    at Module.render_page (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/index.js:312:16)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolve (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:522:18)
+    at async Object.handle (/home/halp/zoron/lite/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/lite/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T18:40:25.189Z] Error: Failed to load url ./schedule.css (resolved id: ./schedule.css) in /home/halp/zoron/lite/src/routes/home/+page.svelte. Does the file exist?
+    at loadAndTransform (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:51968:17)
+    at async instantiateModule (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:52922:44)
+[2025-08-10T18:40:30.045Z] Error: Failed to load url ./schedule.css (resolved id: ./schedule.css) in /home/halp/zoron/lite/src/routes/home/+page.svelte. Does the file exist?
+    at loadAndTransform (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:51968:17)
+    at async instantiateModule (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:52922:44)
+[2025-08-10T18:40:52.658Z] Error: Failed to load url ./schedule.css (resolved id: ./schedule.css) in /home/halp/zoron/lite/src/routes/home/+page.svelte. Does the file exist?
+    at loadAndTransform (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:51968:17)
+    at async instantiateModule (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:52922:44)
+[2025-08-10T18:40:58.645Z] Error: Transform failed with 1 error:
+/home/halp/zoron/lite/src/routes/home/+page.server.ts:18:91: ERROR: Expected identifier but found "?"
+    at failureErrorWithLog (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:1472:15)
+    at /home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:755:50
+    at responseCallbacks.<computed> (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:622:9)
+    at handleIncomingPacket (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:677:12)
+    at Socket.readFromStdout (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:600:7)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+[2025-08-10T18:41:02.956Z] Error: Failed to load url ./schedule.css (resolved id: ./schedule.css) in /home/halp/zoron/lite/src/routes/home/+page.svelte. Does the file exist?
+    at loadAndTransform (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:51968:17)
+    at async instantiateModule (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:52922:44)
+[2025-08-10T18:41:04.093Z] Error: Failed to load url ./schedule.css (resolved id: ./schedule.css) in /home/halp/zoron/lite/src/routes/home/+page.svelte. Does the file exist?
+    at loadAndTransform (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:51968:17)
+    at async instantiateModule (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:52922:44)
+[2025-08-10T18:41:20.415Z] TypeError: Cannot read properties of null (reading 'schedule')
+    at _page (/home/halp/zoron/lite/src/routes/home/+page.svelte:42:7)
+    at eval (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:112:9)
+    at _layout (/home/halp/zoron/lite/src/routes/home/+layout.svelte:328:24)
+    at eval (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:78:6)
+    at _layout (/home/halp/zoron/lite/src/routes/+layout.svelte:68:20)
+    at Root (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:65:3)
+    at Module.render (/home/halp/zoron/lite/node_modules/svelte/src/internal/server/index.js:90:3)
+    at Function._render [as render] (/home/halp/zoron/lite/node_modules/svelte/src/legacy/legacy-server.js:27:18)
+    at /home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:53
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+[2025-08-10T18:41:21.447Z] TypeError: Cannot read properties of null (reading 'schedule')
+    at _page (/home/halp/zoron/lite/src/routes/home/+page.svelte:42:7)
+    at eval (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:112:9)
+    at _layout (/home/halp/zoron/lite/src/routes/home/+layout.svelte:328:24)
+    at eval (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:78:6)
+    at _layout (/home/halp/zoron/lite/src/routes/+layout.svelte:68:20)
+    at Root (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:65:3)
+    at Module.render (/home/halp/zoron/lite/node_modules/svelte/src/internal/server/index.js:90:3)
+    at Function._render [as render] (/home/halp/zoron/lite/node_modules/svelte/src/legacy/legacy-server.js:27:18)
+    at /home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:53
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+[2025-08-10T18:41:58.525Z] TypeError: Cannot read properties of null (reading 'schedule')
+    at _page (/home/halp/zoron/lite/src/routes/home/+page.svelte:42:7)
+    at eval (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:112:9)
+    at _layout (/home/halp/zoron/lite/src/routes/home/+layout.svelte:328:24)
+    at eval (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:78:6)
+    at _layout (/home/halp/zoron/lite/src/routes/+layout.svelte:68:20)
+    at Root (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:65:3)
+    at Module.render (/home/halp/zoron/lite/node_modules/svelte/src/internal/server/index.js:90:3)
+    at Function._render [as render] (/home/halp/zoron/lite/node_modules/svelte/src/legacy/legacy-server.js:27:18)
+    at /home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:53
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+[2025-08-10T18:41:59.132Z] TypeError: Cannot read properties of null (reading 'schedule')
+    at _page (/home/halp/zoron/lite/src/routes/home/+page.svelte:42:7)
+    at eval (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:112:9)
+    at _layout (/home/halp/zoron/lite/src/routes/home/+layout.svelte:328:24)
+    at eval (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:78:6)
+    at _layout (/home/halp/zoron/lite/src/routes/+layout.svelte:68:20)
+    at Root (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:65:3)
+    at Module.render (/home/halp/zoron/lite/node_modules/svelte/src/internal/server/index.js:90:3)
+    at Function._render [as render] (/home/halp/zoron/lite/node_modules/svelte/src/legacy/legacy-server.js:27:18)
+    at /home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:53
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+[2025-08-10T18:43:11.094Z] Svelte error: store_invalid_shape
+`zoron` is not a store with a `subscribe` method
+https://svelte.dev/e/store_invalid_shape
+    at Module.store_invalid_shape (/home/halp/zoron/lite/node_modules/svelte/src/internal/shared/errors.js:93:17)
+    at Module.validate_store (/home/halp/zoron/lite/node_modules/svelte/src/internal/shared/validate.js:33:5)
+    at Module.store_get (/home/halp/zoron/lite/node_modules/svelte/src/internal/server/index.js:276:3)
+    at _layout (/home/halp/zoron/lite/src/routes/home/+layout.svelte:44:24)
+    at eval (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:78:6)
+    at _layout (/home/halp/zoron/lite/src/routes/+layout.svelte:68:20)
+    at Root (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:65:3)
+    at Module.render (/home/halp/zoron/lite/node_modules/svelte/src/internal/server/index.js:90:3)
+    at Function._render [as render] (/home/halp/zoron/lite/node_modules/svelte/src/legacy/legacy-server.js:27:18)
+    at /home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:53
+[2025-08-10T18:43:23.369Z] Error: Cannot find module '@zoron/common/ap' imported from '/home/halp/zoron/lite/src/routes/home/+layout.svelte'
+    at nodeImport (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:53095:19)
+    at ssrImport (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:52962:22)
+    at eval (/home/halp/zoron/lite/src/routes/home/+layout.svelte:17:38)
+    at async instantiateModule (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:53020:5)
+[2025-08-10T18:43:31.785Z] TypeError: Cannot read properties of null (reading 'schedule')
+    at _layout (/home/halp/zoron/lite/src/routes/home/+layout.svelte:44:94)
+    at eval (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:78:6)
+    at _layout (/home/halp/zoron/lite/src/routes/+layout.svelte:68:20)
+    at Root (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:65:3)
+    at Module.render (/home/halp/zoron/lite/node_modules/svelte/src/internal/server/index.js:90:3)
+    at Function._render [as render] (/home/halp/zoron/lite/node_modules/svelte/src/legacy/legacy-server.js:27:18)
+    at /home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:53
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+    at Module.with_event (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/app/server/event.js:49:20)
+    at Module.render_response (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:16)
+[2025-08-10T18:43:51.464Z] ReferenceError: schedule is not defined
+    at _layout (/home/halp/zoron/lite/src/routes/home/+layout.svelte:33:3)
+    at eval (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:78:6)
+    at _layout (/home/halp/zoron/lite/src/routes/+layout.svelte:68:20)
+    at Root (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:65:3)
+    at Module.render (/home/halp/zoron/lite/node_modules/svelte/src/internal/server/index.js:90:3)
+    at Function._render [as render] (/home/halp/zoron/lite/node_modules/svelte/src/legacy/legacy-server.js:27:18)
+    at /home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:53
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+    at Module.with_event (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/app/server/event.js:49:20)
+    at Module.render_response (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:16)
+[2025-08-10T18:44:06.205Z] ReferenceError: schedule is not defined
+    at _layout (/home/halp/zoron/lite/src/routes/home/+layout.svelte:33:3)
+    at eval (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:78:6)
+    at _layout (/home/halp/zoron/lite/src/routes/+layout.svelte:68:20)
+    at Root (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:65:3)
+    at Module.render (/home/halp/zoron/lite/node_modules/svelte/src/internal/server/index.js:90:3)
+    at Function._render [as render] (/home/halp/zoron/lite/node_modules/svelte/src/legacy/legacy-server.js:27:18)
+    at /home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:53
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+    at Module.with_event (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/app/server/event.js:49:20)
+    at Module.render_response (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:16)
+[2025-08-10T18:44:12.599Z] ReferenceError: schedule is not defined
+    at _layout (/home/halp/zoron/lite/src/routes/home/+layout.svelte:33:3)
+    at eval (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:78:6)
+    at _layout (/home/halp/zoron/lite/src/routes/+layout.svelte:68:20)
+    at Root (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:65:3)
+    at Module.render (/home/halp/zoron/lite/node_modules/svelte/src/internal/server/index.js:90:3)
+    at Function._render [as render] (/home/halp/zoron/lite/node_modules/svelte/src/legacy/legacy-server.js:27:18)
+    at /home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:53
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+    at Module.with_event (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/app/server/event.js:49:20)
+    at Module.render_response (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:16)
+[2025-08-10T18:45:11.296Z] Error: Transform failed with 1 error:
+/home/halp/zoron/lite/src/routes/home/+layout.server.ts:14:16: ERROR: Expected ";" but found "{"
+    at failureErrorWithLog (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:1472:15)
+    at /home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:755:50
+    at responseCallbacks.<computed> (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:622:9)
+    at handleIncomingPacket (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:677:12)
+    at Socket.readFromStdout (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:600:7)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+[2025-08-10T18:45:12.821Z] Error: Transform failed with 1 error:
+/home/halp/zoron/lite/src/routes/home/+layout.server.ts:16:0: ERROR: Expected "finally" but found "}"
+    at failureErrorWithLog (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:1472:15)
+    at /home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:755:50
+    at responseCallbacks.<computed> (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:622:9)
+    at handleIncomingPacket (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:677:12)
+    at Socket.readFromStdout (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:600:7)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+[2025-08-10T18:45:15.647Z] 
+[2025-08-10T18:45:26.472Z] Error: Transform failed with 1 error:
+/home/halp/zoron/lite/src/routes/home/+layout.server.ts:15:24: ERROR: Expected "=>" but found "<"
+    at failureErrorWithLog (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:1472:15)
+    at /home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:755:50
+    at responseCallbacks.<computed> (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:622:9)
+    at handleIncomingPacket (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:677:12)
+    at Socket.readFromStdout (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:600:7)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+[2025-08-10T18:45:29.826Z] Error: Transform failed with 1 error:
+/home/halp/zoron/lite/src/routes/home/+layout.server.ts:23:0: ERROR: Expected ")" but found "}"
+    at failureErrorWithLog (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:1472:15)
+    at /home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:755:50
+    at responseCallbacks.<computed> (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:622:9)
+    at handleIncomingPacket (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:677:12)
+    at Socket.readFromStdout (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:600:7)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+[2025-08-10T18:45:33.452Z] Error: Transform failed with 1 error:
+/home/halp/zoron/lite/src/routes/home/+layout.server.ts:25:0: ERROR: Expected ")" but found "}"
+    at failureErrorWithLog (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:1472:15)
+    at /home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:755:50
+    at responseCallbacks.<computed> (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:622:9)
+    at handleIncomingPacket (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:677:12)
+    at Socket.readFromStdout (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:600:7)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+[2025-08-10T18:45:35.283Z] Error: Transform failed with 1 error:
+/home/halp/zoron/lite/src/routes/home/+layout.server.ts:25:0: ERROR: Unexpected "}"
+    at failureErrorWithLog (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:1472:15)
+    at /home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:755:50
+    at responseCallbacks.<computed> (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:622:9)
+    at handleIncomingPacket (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:677:12)
+    at Socket.readFromStdout (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:600:7)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+[2025-08-10T18:45:37.083Z] Error: Transform failed with 1 error:
+/home/halp/zoron/lite/src/routes/home/+layout.server.ts:23:3: ERROR: Unexpected "}"
+    at failureErrorWithLog (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:1472:15)
+    at /home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:755:50
+    at responseCallbacks.<computed> (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:622:9)
+    at handleIncomingPacket (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:677:12)
+    at Socket.readFromStdout (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:600:7)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+[2025-08-10T18:45:40.001Z] 
+[2025-08-10T18:45:44.813Z] ReferenceError: schedule is not defined
+    at _layout (/home/halp/zoron/lite/src/routes/home/+layout.svelte:33:3)
+    at eval (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:78:6)
+    at _layout (/home/halp/zoron/lite/src/routes/+layout.svelte:68:20)
+    at Root (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:65:3)
+    at Module.render (/home/halp/zoron/lite/node_modules/svelte/src/internal/server/index.js:90:3)
+    at Function._render [as render] (/home/halp/zoron/lite/node_modules/svelte/src/legacy/legacy-server.js:27:18)
+    at /home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:53
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+    at Module.with_event (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/app/server/event.js:49:20)
+    at Module.render_response (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:16)
+[2025-08-10T18:45:54.342Z] ReferenceError: schedule is not defined
+    at _layout (/home/halp/zoron/lite/src/routes/home/+layout.svelte:33:3)
+    at eval (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:78:6)
+    at _layout (/home/halp/zoron/lite/src/routes/+layout.svelte:68:20)
+    at Root (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:65:3)
+    at Module.render (/home/halp/zoron/lite/node_modules/svelte/src/internal/server/index.js:90:3)
+    at Function._render [as render] (/home/halp/zoron/lite/node_modules/svelte/src/legacy/legacy-server.js:27:18)
+    at /home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:53
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+    at Module.with_event (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/app/server/event.js:49:20)
+    at Module.render_response (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:16)
+[2025-08-10T18:46:01.398Z] ReferenceError: schedule is not defined
+    at _layout (/home/halp/zoron/lite/src/routes/home/+layout.svelte:33:3)
+    at eval (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:78:6)
+    at _layout (/home/halp/zoron/lite/src/routes/+layout.svelte:96:12)
+    at Root (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:65:3)
+    at Module.render (/home/halp/zoron/lite/node_modules/svelte/src/internal/server/index.js:90:3)
+    at Function._render [as render] (/home/halp/zoron/lite/node_modules/svelte/src/legacy/legacy-server.js:27:18)
+    at /home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:53
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+    at Module.with_event (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/app/server/event.js:49:20)
+    at Module.render_response (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:16)
+[2025-08-10T18:46:02.718Z] ReferenceError: schedule is not defined
+    at _layout (/home/halp/zoron/lite/src/routes/home/+layout.svelte:33:3)
+    at eval (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:78:6)
+    at _layout (/home/halp/zoron/lite/src/routes/+layout.svelte:68:20)
+    at Root (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:65:3)
+    at Module.render (/home/halp/zoron/lite/node_modules/svelte/src/internal/server/index.js:90:3)
+    at Function._render [as render] (/home/halp/zoron/lite/node_modules/svelte/src/legacy/legacy-server.js:27:18)
+    at /home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:53
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+    at Module.with_event (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/app/server/event.js:49:20)
+    at Module.render_response (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:16)
+[2025-08-10T18:46:26.350Z] Error: Transform failed with 1 error:
+/home/halp/zoron/lite/src/routes/home/+layout.server.ts:26:2: ERROR: Unexpected "}"
+    at failureErrorWithLog (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:1472:15)
+    at /home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:755:50
+    at responseCallbacks.<computed> (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:622:9)
+    at handleIncomingPacket (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:677:12)
+    at Socket.readFromStdout (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:600:7)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+[2025-08-10T18:46:41.124Z] Error: Transform failed with 1 error:
+/home/halp/zoron/lite/src/routes/home/+layout.server.ts:27:2: ERROR: Unexpected "}"
+    at failureErrorWithLog (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:1472:15)
+    at /home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:755:50
+    at responseCallbacks.<computed> (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:622:9)
+    at handleIncomingPacket (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:677:12)
+    at Socket.readFromStdout (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:600:7)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+[2025-08-10T18:46:42.658Z] Error: Transform failed with 1 error:
+/home/halp/zoron/lite/src/routes/home/+layout.server.ts:28:2: ERROR: Unexpected "}"
+    at failureErrorWithLog (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:1472:15)
+    at /home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:755:50
+    at responseCallbacks.<computed> (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:622:9)
+    at handleIncomingPacket (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:677:12)
+    at Socket.readFromStdout (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:600:7)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+[2025-08-10T18:46:46.568Z] Error: Transform failed with 1 error:
+/home/halp/zoron/lite/src/routes/home/+layout.server.ts:28:2: ERROR: Unexpected "}"
+    at failureErrorWithLog (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:1472:15)
+    at /home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:755:50
+    at responseCallbacks.<computed> (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:622:9)
+    at handleIncomingPacket (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:677:12)
+    at Socket.readFromStdout (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:600:7)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+[2025-08-10T18:46:51.479Z] ReferenceError: schedule is not defined
+    at _layout (/home/halp/zoron/lite/src/routes/home/+layout.svelte:33:3)
+    at eval (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:78:6)
+    at _layout (/home/halp/zoron/lite/src/routes/+layout.svelte:68:20)
+    at Root (/home/halp/zoron/lite/.svelte-kit/generated/root.svelte:65:3)
+    at Module.render (/home/halp/zoron/lite/node_modules/svelte/src/internal/server/index.js:90:3)
+    at Function._render [as render] (/home/halp/zoron/lite/node_modules/svelte/src/legacy/legacy-server.js:27:18)
+    at /home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:53
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+    at Module.with_event (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/app/server/event.js:49:20)
+    at Module.render_response (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/page/render.js:194:16)
+[2025-08-10T18:47:06.420Z] Error: Transform failed with 1 error:
+/home/halp/zoron/lite/src/routes/home/+layout.server.ts:28:3: ERROR: Expected "}" but found ";"
+    at failureErrorWithLog (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:1472:15)
+    at /home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:755:50
+    at responseCallbacks.<computed> (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:622:9)
+    at handleIncomingPacket (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:677:12)
+    at Socket.readFromStdout (/home/halp/zoron/lite/node_modules/vite/node_modules/esbuild/lib/main.js:600:7)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+[2025-08-10T18:48:15.016Z] Error: Failed to load url ../assets/placeholders (resolved id: ../assets/placeholders) in /home/halp/zoron/lite/src/routes/home/+page.svelte. Does the file exist?
+    at loadAndTransform (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:51968:17)
+    at async instantiateModule (file:///home/halp/zoron/lite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:52922:44)
+[2025-08-10T19:41:11.656Z] Error: {"status":404,"body":{"message":"{\"success\":false,\"error\":\"This user has not loaded their schedule\"}"}}
+    at Module.coalesce_to_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/utils/error.js:11:5)
+    at Module.handle_fatal_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/utils.js:74:47)
+    at resolve (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:637:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Object.handle (/home/halp/zoron/lite/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/lite/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T19:41:14.017Z] Error: {"status":404,"body":{"message":"{\"success\":false,\"error\":\"This user has not loaded their schedule\"}"}}
+    at Module.coalesce_to_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/utils/error.js:11:5)
+    at Module.handle_fatal_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/utils.js:74:47)
+    at resolve (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:637:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Object.handle (/home/halp/zoron/lite/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/lite/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T19:42:49.324Z] Error: {"status":404,"body":{"message":"{\"success\":false,\"error\":\"This user has not loaded their schedule\"}"}}
+    at Module.coalesce_to_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/utils/error.js:11:5)
+    at Module.handle_fatal_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/utils.js:74:47)
+    at resolve (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:637:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Object.handle (/home/halp/zoron/lite/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/lite/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T19:45:41.443Z] Error: {"status":404,"body":{"message":"{\"success\":false,\"error\":\"This user has not loaded their schedule\"}"}}
+    at Module.coalesce_to_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/utils/error.js:11:5)
+    at Module.handle_fatal_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/utils.js:74:47)
+    at resolve (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:637:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Object.handle (/home/halp/zoron/lite/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/lite/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T19:46:42.580Z] Error: {"status":404,"body":{"message":"{\"success\":false,\"error\":\"This user has not loaded their schedule\"}"}}
+    at Module.coalesce_to_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/utils/error.js:11:5)
+    at Module.handle_fatal_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/utils.js:74:47)
+    at resolve (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:637:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Object.handle (/home/halp/zoron/lite/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/lite/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T19:47:00.142Z] Error: {"status":404,"body":{"message":"{\"success\":false,\"error\":\"This user has not loaded their schedule\"}"}}
+    at Module.coalesce_to_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/utils/error.js:11:5)
+    at Module.handle_fatal_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/utils.js:74:47)
+    at resolve (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:637:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Object.handle (/home/halp/zoron/lite/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/lite/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T19:48:47.663Z] Error: {"status":404,"body":{"message":"{\"success\":false,\"error\":\"This user has not loaded their schedule\"}"}}
+    at Module.coalesce_to_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/utils/error.js:11:5)
+    at Module.handle_fatal_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/utils.js:74:47)
+    at resolve (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:637:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Object.handle (/home/halp/zoron/lite/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/lite/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T19:49:00.360Z] Error: {"status":404,"body":{"message":"{\"success\":false,\"error\":\"This user has not loaded their schedule\"}"}}
+    at Module.coalesce_to_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/utils/error.js:11:5)
+    at Module.handle_fatal_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/utils.js:74:47)
+    at resolve (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:637:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Object.handle (/home/halp/zoron/lite/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/lite/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T19:49:45.110Z] Error: {"status":404,"body":{"message":"{\"success\":false,\"error\":\"This user has not loaded their schedule\"}"}}
+    at Module.coalesce_to_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/utils/error.js:11:5)
+    at Module.handle_fatal_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/utils.js:74:47)
+    at resolve (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:637:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Object.handle (/home/halp/zoron/lite/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/lite/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T19:50:50.583Z] Error: {"status":404,"body":{"message":"{\"success\":false,\"error\":\"This user has not loaded their schedule\"}"}}
+    at Module.coalesce_to_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/utils/error.js:11:5)
+    at Module.handle_fatal_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/utils.js:74:47)
+    at resolve (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:637:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Object.handle (/home/halp/zoron/lite/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/lite/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T19:52:19.041Z] Error: {"status":404,"body":{"message":"{\"success\":false,\"error\":\"This user has not loaded their schedule\"}"}}
+    at Module.coalesce_to_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/utils/error.js:11:5)
+    at Module.handle_fatal_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/utils.js:74:47)
+    at resolve (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:637:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Object.handle (/home/halp/zoron/lite/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/lite/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T19:52:51.181Z] Error: {"status":404,"body":{"message":"{\"success\":false,\"error\":\"This user has not loaded their schedule\"}"}}
+    at Module.coalesce_to_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/utils/error.js:11:5)
+    at Module.handle_fatal_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/utils.js:74:47)
+    at resolve (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:637:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Object.handle (/home/halp/zoron/lite/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/lite/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T19:53:21.366Z] Error: {"status":404,"body":{"message":"{\"success\":false,\"error\":\"This user has not loaded their schedule\"}"}}
+    at Module.coalesce_to_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/utils/error.js:11:5)
+    at Module.handle_fatal_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/utils.js:74:47)
+    at resolve (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:637:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Object.handle (/home/halp/zoron/lite/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/lite/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T19:53:55.941Z] Error: {"status":404,"body":{"message":"{\"success\":false,\"error\":\"This user has not loaded their schedule\"}"}}
+    at Module.coalesce_to_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/utils/error.js:11:5)
+    at Module.handle_fatal_error (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/utils.js:74:47)
+    at resolve (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:637:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Object.handle (/home/halp/zoron/lite/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/lite/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/lite/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T21:03:04.018Z] Error: Failed to get classes: 500
+    at /home/halp/zoron/common/lib/aspen/index.ts:572:21
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async aspen2.classes (/home/halp/zoron/common/lib/aspen/index.ts:543:11)
+    at async Promise.all (index 2)
+    at async GET (/home/halp/zoron/main/src/routes/api/home/launch/+server.ts:23:16)
+    at async Module.render_endpoint (/home/halp/zoron/main/node_modules/@sveltejs/kit/src/runtime/server/endpoint.js:44:20)
+    at async resolve (/home/halp/zoron/main/node_modules/@sveltejs/kit/src/runtime/server/respond.js:517:17)
+    at async Object.handle (/home/halp/zoron/main/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/main/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/main/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T21:50:42.235Z] Error: Invalid response from route /api/social/shared: handler should return a Response object
+    at Module.render_endpoint (/home/halp/zoron/main/node_modules/@sveltejs/kit/src/runtime/server/endpoint.js:49:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolve (/home/halp/zoron/main/node_modules/@sveltejs/kit/src/runtime/server/respond.js:517:17)
+    at async Object.handle (/home/halp/zoron/main/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/main/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/main/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T21:50:42.240Z] Error: Invalid response from route /api/social/shared: handler should return a Response object
+    at Module.render_endpoint (/home/halp/zoron/main/node_modules/@sveltejs/kit/src/runtime/server/endpoint.js:49:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolve (/home/halp/zoron/main/node_modules/@sveltejs/kit/src/runtime/server/respond.js:517:17)
+    at async Object.handle (/home/halp/zoron/main/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/main/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/main/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T21:50:49.526Z] Error: Invalid response from route /api/social/shared: handler should return a Response object
+    at Module.render_endpoint (/home/halp/zoron/main/node_modules/@sveltejs/kit/src/runtime/server/endpoint.js:49:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolve (/home/halp/zoron/main/node_modules/@sveltejs/kit/src/runtime/server/respond.js:517:17)
+    at async Object.handle (/home/halp/zoron/main/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/main/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/main/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-10T21:50:49.574Z] Error: Invalid response from route /api/social/shared: handler should return a Response object
+    at Module.render_endpoint (/home/halp/zoron/main/node_modules/@sveltejs/kit/src/runtime/server/endpoint.js:49:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolve (/home/halp/zoron/main/node_modules/@sveltejs/kit/src/runtime/server/respond.js:517:17)
+    at async Object.handle (/home/halp/zoron/main/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/main/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/main/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-11T01:41:28.482Z] Error: Invalid response from route /api/social/shared: handler should return a Response object
+    at Module.render_endpoint (/home/halp/zoron/main/node_modules/@sveltejs/kit/src/runtime/server/endpoint.js:49:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolve (/home/halp/zoron/main/node_modules/@sveltejs/kit/src/runtime/server/respond.js:517:17)
+    at async Object.handle (/home/halp/zoron/main/src/hooks.server.ts:69:10)
+    at async Module.respond (/home/halp/zoron/main/node_modules/@sveltejs/kit/src/runtime/server/respond.js:382:20)
+    at async file:///home/halp/zoron/main/node_modules/@sveltejs/kit/src/exports/vite/dev/index.js:551:22
+[2025-08-11T01:55:29.912Z] Error: Cannot find module '@fortawesome/free-solid-svg-icons' imported from '/home/halp/zoron/common/lib/components/ScheduleBlockDetails.svelte'
+    at nodeImport (file:///home/halp/zoron/main/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:53095:19)
+    at ssrImport (file:///home/halp/zoron/main/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:52962:22)
+    at eval (/home/halp/zoron/common/lib/components/ScheduleBlockDetails.svelte:8:37)
+    at async instantiateModule (file:///home/halp/zoron/main/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:53020:5)
+[2025-08-11T01:56:02.751Z] Error: Cannot find module '@fortawesome/free-solid-svg-icons' imported from '/home/halp/zoron/common/lib/components/ScheduleBlockDetails.svelte'
+    at nodeImport (file:///home/halp/zoron/main/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:53095:19)
+    at ssrImport (file:///home/halp/zoron/main/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:52962:22)
+    at eval (/home/halp/zoron/common/lib/components/ScheduleBlockDetails.svelte:8:37)
+    at async instantiateModule (file:///home/halp/zoron/main/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:53020:5)
+[2025-08-11T01:57:31.243Z] Error: Cannot find module '@fort' imported from '/home/halp/zoron/common/lib/components/ScheduleBlockDetails.svelte'
+    at nodeImport (file:///home/halp/zoron/main/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:53095:19)
+    at ssrImport (file:///home/halp/zoron/main/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:52962:22)
+    at eval (/home/halp/zoron/common/lib/components/ScheduleBlockDetails.svelte:8:37)
+    at async instantiateModule (file:///home/halp/zoron/main/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:53020:5)
+[2025-08-11T01:57:59.306Z] Error: Cannot find module '@fortawesome/free-solid-svg-icons/index.mjs' imported from '/home/halp/zoron/common/lib/components/ScheduleBlockDetails.svelte'
+    at nodeImport (file:///home/halp/zoron/main/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:53095:19)
+    at ssrImport (file:///home/halp/zoron/main/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:52962:22)
+    at eval (/home/halp/zoron/common/lib/components/ScheduleBlockDetails.svelte:8:37)
+    at async instantiateModule (file:///home/halp/zoron/main/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:53020:5)
+[2025-08-11T01:58:01.837Z] Error: Cannot find module '@fortawesome/free-solid-svg-icons/index.' imported from '/home/halp/zoron/common/lib/components/ScheduleBlockDetails.svelte'
+    at nodeImport (file:///home/halp/zoron/main/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:53095:19)
+    at ssrImport (file:///home/halp/zoron/main/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:52962:22)
+    at eval (/home/halp/zoron/common/lib/components/ScheduleBlockDetails.svelte:8:37)
+    at async instantiateModule (file:///home/halp/zoron/main/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:53020:5)
+[2025-08-11T01:58:05.079Z] Error: Cannot find module '@fortawesome/free-solid-svg-icons/index.mjs' imported from '/home/halp/zoron/common/lib/components/ScheduleBlockDetails.svelte'
+    at nodeImport (file:///home/halp/zoron/main/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:53095:19)
+    at ssrImport (file:///home/halp/zoron/main/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:52962:22)
+    at eval (/home/halp/zoron/common/lib/components/ScheduleBlockDetails.svelte:8:37)
+    at async instantiateModule (file:///home/halp/zoron/main/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:53020:5)
