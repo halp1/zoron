@@ -14,14 +14,10 @@ const commit = execSync("git rev-parse --short HEAD").toString().trim();
 
 export const load: LayoutServerLoad = async (event) => {
   const auth = await event.locals.auth();
-  const cookies = event.cookies;
-  const aspenName =
-    auth?.user?.aspen && cookies.get("secret")
-      ? aspen.decrypt(cookies.get("secret")!, auth.user.aspen).username
-      : undefined;
+	
   return {
     session: auth,
-    username: aspenName,
+    username: auth?.user?.name ?? "Unknown",
     env: {
       vapid: VAPID_PUBLIC,
       name: CONSTANTS.name,

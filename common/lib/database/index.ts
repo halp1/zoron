@@ -130,4 +130,4 @@ export const transformID = <T>(object: WithId<T>) => {
   };
 };
 
-// update("users", {}, { $unset: { schedule: "" } });
+// update("users", {}, { $set: { usedLegacy: true } });

@@ -6,17 +6,27 @@
 
   import { twMerge } from "tailwind-merge";
   import ScheduleBlockDetails from "./ScheduleBlockDetails.svelte";
+  import type { aspen } from "../aspen";
 
   interface Props {
     block: Block;
     index: number;
     className?: string;
     freeFontSize?: string;
+    lunch: aspen.Types.Schedule.Lunch;
+    day: number;
   }
 
-  let { block, className = "", freeFontSize = "text-xl", index }: Props = $props();
+  let {
+    block,
+    className = "",
+    freeFontSize = "text-xl",
+    index,
+    lunch,
+    day,
+  }: Props = $props();
 
-	let popoverVisible = $state(false);
+  let popoverVisible = $state(false);
 </script>
 
 <button
@@ -32,7 +42,9 @@
     y: -20,
     easing: motion.transitions.spring(400, 20),
   }}
-  onclick={() => {popoverVisible = true}}
+  onclick={() => {
+    popoverVisible = true;
+  }}
 >
   {#if block.type === "block"}
     <div
@@ -57,5 +69,5 @@
 </button>
 
 {#if popoverVisible}
-  <ScheduleBlockDetails block={block} onClose={() => (popoverVisible = false)} />
+  <ScheduleBlockDetails {block} onClose={() => (popoverVisible = false)} {lunch} {day} />
 {/if}
