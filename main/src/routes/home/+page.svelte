@@ -137,7 +137,7 @@
     return newSchedule;
   };
 
-  let mode: "full" | "day" = $state("day");
+  let mode: "full" | "day" = $state("full");
 
   const now = () => new Date(Date.now() + ($zoron.constants?.timeDelta || 0));
 
