@@ -1,6 +1,9 @@
 #! /usr/bin/bash
 git reset HEAD --hard
 git pull
-npm i --force
+cd ../common
+bun i
+cd ../pro
+bun i
 bun run build
 pm2 restart "zoron-pro"
