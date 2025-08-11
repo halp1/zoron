@@ -26,7 +26,8 @@
     "../main/tests/**/*.svelte",
     "../common/**/*.js",
     "../common/**/*.ts",
-    "../common/**/*.svelte"
+    "../common/**/*.svelte",
+    "scripts/**/*.ts"
   ]
   // Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
   // except @zoron/common which is handled by https://kit.svelte.dev/docs/configuration#files
