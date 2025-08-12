@@ -13,9 +13,12 @@ const config = {
     csrf: { checkOrigin: false },
     alias: {
       // Every `import … from '@zoron/common/…'` goes to ../common/lib/…
-      "@zoron/common": fileURLToPath(new URL("../common/lib", import.meta.url))
-    }
-  }
+      "@zoron/common": fileURLToPath(new URL("../common/lib", import.meta.url)),
+    },
+    files: {
+      assets: fileURLToPath(new URL("../common/assets", import.meta.url)),
+    },
+  },
 };
 
 export default config;

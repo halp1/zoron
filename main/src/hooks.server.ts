@@ -1,11 +1,8 @@
-import { zoron } from "@zoron/common";
 import { handle as authHandle } from "@zoron/common/auth";
 import { logger } from "@zoron/common/logs";
 
 import { MONGODB_URI } from "$env/static/private";
 import type { Handle } from "@sveltejs/kit";
-
-import { jobs } from "./jobs";
 
 declare namespace globalThis {
   export let env: {
@@ -99,11 +96,3 @@ export const handleError = (params) => {
     };
   }
 };
-
-if ("stopAllJobs" in global) (global as any).stopAllJobs();
-
-jobs.init();
-(global as any).stopAllJobs = (() => () => {
-  const j = jobs.jobs;
-  return () => j.forEach((j) => j.stop());
-})();

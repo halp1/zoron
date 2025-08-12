@@ -34,8 +34,8 @@
   import { DatePicker } from "date-picker-svelte";
   import _ from "lodash";
 
-  import choobs from "../../assets/choobs.png";
-  import { randomPlaceholderImage } from "../../assets/placeholders";
+  import choobs from "@zoron/common/assets/choobs.png";
+  import { randomPlaceholderImage } from "@zoron/common/assets/placeholders";
   import { updateChoobsSchedule } from "./schedule/choobs";
   import "./schedule/schedule.css";
 
@@ -672,12 +672,12 @@
   </div>
 {:else}
   <div
-    class="relative flex h-full flex-col-reverse items-center gap-3 md:flex-row md:pt-0"
+    class="relative flex h-full flex-col-reverse items-center gap-3 md:flex-row md:pt-0 px-10"
   >
     <div
-      class="-mb-3 hidden items-center gap-3 rounded-full {$theme === 'amoled'
+      class="items-center gap-3 rounded-full {$theme === 'amoled'
         ? 'border-2 border-white bg-black'
-        : 'bg-slate-800'} p-2 md:mb-0 md:flex md:flex-col"
+        : 'bg-slate-800'} p-2 mb-4 md:mb-0 flex md:flex-col md:fixed md:left-6 md:top-1/2 md:-translate-y-1/2"
     >
       <button
         class="btn-circle relative border-2 bg-black {$theme === 'amoled'
@@ -744,8 +744,8 @@
       </button>
     </div>
     {#if mode === "full"}
-      <div class="flex min-h-full flex-1 flex-col">
-        <div class="py-2 text-center text-slate-600">
+      <div class="flex md:min-h-full flex-1 flex-col md:ml-16">
+        <div class="py-2 text-center text-slate-600 mt-[env(safe-area-inset-top)]">
           Click a class to see who you share it with.
         </div>
         <div

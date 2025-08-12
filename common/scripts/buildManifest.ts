@@ -9,7 +9,7 @@ const __dirname = path.dirname(new URL(import.meta.url).pathname);
   await templateFile(
     path.resolve(__dirname, "../static/site.webmanifest"),
     { name: CONSTANTS.name },
-    path.resolve(__dirname, "../.svelte-kit/output/client/site.webmanifest")
+    path.resolve(process.cwd(), ".svelte-kit/output/client/site.webmanifest")
   );
   process.exit(0);
 })();
