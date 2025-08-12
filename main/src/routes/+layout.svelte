@@ -49,7 +49,7 @@
   <meta property="og:title" content={page.data.env.name} />
   <meta
     property="og:description"
-    content="The new way to see your schedule and grades at LHS."
+    content="LHS Scheduling, Done Right."
   />
   <meta property="og:image" content="/screenshots/desktop.png" />
   <meta property="og:url" content="https://zoron.app" />
@@ -59,7 +59,7 @@
   <meta name="twitter:title" content={page.data.env.name} />
   <meta
     name="twitter:description"
-    content="The new way to see your schedule and grades at LHS."
+    content="LHS Scheduling, Done Right."
   />
   <meta name="twitter:image" content="/screenshots/desktop.png" />
 </svelte:head>
