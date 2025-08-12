@@ -26,7 +26,7 @@
     faUser
   } from "@fortawesome/free-solid-svg-icons";
 
-  import bgSrc from "../../assets/bg.png";
+  import bgSrc from "@zoron/common/assets/bg.png";
   import { changelog } from "../changelog/changelog";
   import "./home.css";
 

@@ -30,8 +30,8 @@
   import { DatePicker } from "date-picker-svelte";
   import _ from "lodash";
 
-  import choobs from "../../../assets/choobs.png";
-  import { randomPlaceholderImage } from "../../../assets/placeholders";
+  import choobs from "@zoron/common/assets/choobs.png";
+  import { randomPlaceholderImage } from "@zoron/common/assets/placeholders";
   import { updateChoobsSchedule } from "./choobs";
   import "./schedule.css";
 

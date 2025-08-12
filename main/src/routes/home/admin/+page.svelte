@@ -5,7 +5,7 @@
 
   import { page } from "$app/state";
 
-  import Toggle from "@zoron/common/components/Toggle.svelte";
+  import {Toggle} from "@zoron/common/components";
   import { motion } from "@zoron/common/motion";
   import { requests, toast } from "@zoron/common/web";
   import { theme } from "@zoron/common/web/theme";

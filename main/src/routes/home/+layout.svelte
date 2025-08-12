@@ -25,7 +25,7 @@
     faUserFriends
   } from "@fortawesome/free-solid-svg-icons";
 
-  import bgSrc from "../../assets/bg.png";
+  import bgSrc from "@zoron/common/assets/bg.png";
   import { changelog } from "../changelog/changelog";
   import "./home.css";
 
@@ -331,7 +331,7 @@
 
   {#key page.url}
     <div
-      class="view-anim-{animationDirection} no-scroll flex w-full flex-1 flex-col gap-2 overflow-y-auto overflow-x-hidden px-10"
+      class="view-anim-{animationDirection} no-scroll flex w-full flex-1 flex-col gap-2 overflow-y-auto overflow-x-hidden"
     >
       {@render children?.()}
     </div>

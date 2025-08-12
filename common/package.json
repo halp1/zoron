@@ -1,6 +1,7 @@
 {
   "name": "@zoron/common",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@auth/mongodb-adapter": "^3.10.0",
     "@auth/sveltekit": "^1.10.0",
@@ -11,6 +12,7 @@
     "@simplewebauthn/server": "^13.1.2",
     "@simplewebauthn/types": "^12.0.0",
     "@supabase/supabase-js": "^2.54.0",
+    "@sveltejs/adapter-node": "^5.2.14",
     "@sveltejs/kit": "^2.27.3",
     "@types/jsdom": "^21.1.7",
     "@types/web-push": "^3.6.4",
@@ -20,6 +22,7 @@
     "jsdom": "^26.1.0",
     "mongodb": "^6.18.0",
     "pdf2json": "^3.2.0",
+    "sharp": "^0.34.3",
     "svelte": "^5.38.0",
     "svelte-fa": "^4.0.4",
     "svelte-french-toast": "^1.2.0",

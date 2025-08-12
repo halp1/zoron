@@ -8,9 +8,9 @@
   import { motion } from "@zoron/common/motion";
   import { PWA } from "@zoron/common/web";
 
-  import iosInstructions1 from "../../assets/instructions/pwa/ios/1.png";
-  import iosInstructions2 from "../../assets/instructions/pwa/ios/2.png";
-  import iosInstructions3 from "../../assets/instructions/pwa/ios/3.png";
+  import iosInstructions1 from "@zoron/common/assets/instructions/pwa/ios/1.png";
+  import iosInstructions2 from "@zoron/common/assets/instructions/pwa/ios/2.png";
+  import iosInstructions3 from "@zoron/common/assets/instructions/pwa/ios/3.png";
   import { changelog } from "../changelog/changelog";
 
   const name = page.data?.session?.user?.name;

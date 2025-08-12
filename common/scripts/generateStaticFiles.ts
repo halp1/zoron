@@ -21,7 +21,7 @@ async function getAllFilePaths(dir: string): Promise<string[]> {
 
 // Main execution
 const staticDir = join(__dirname, "../static");
-const serviceWorkerPath = join(__dirname, "../src/service-worker.js");
+const serviceWorkerPath = join(process.cwd(), "src/service-worker.js");
 
 const allFiles = await getAllFilePaths(staticDir);
 const relativePaths = allFiles.map(

@@ -13,9 +13,12 @@
     "types": ["@types/wicg-file-system-access"]
   },
   "include": [
-    "../main/.svelte-kit/ambient.d.ts",
-    "../main/.svelte-kit/non-ambient.d.ts",
-    "../main/.svelte-kit/types/**/$types.d.ts",
+    "../common/.svelte-kit/ambient.d.ts",
+    "../common/.svelte-kit/non-ambient.d.ts",
+    "../common/.svelte-kit/types/**/$types.d.ts",
+    ".svelte-kit/ambient.d.ts",
+    ".svelte-kit/non-ambient.d.ts",
+    ".svelte-kit/types/**/$types.d.ts",
     "../main/vite.config.js",
     "../main/vite.config.ts",
     "../main/src/**/*.js",
@@ -27,7 +30,7 @@
     "../common/**/*.js",
     "../common/**/*.ts",
     "../common/**/*.svelte",
-    "scripts/**/*.ts"
+    "../common/scripts/**/*.ts"
   ]
   // Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
   // except @zoron/common which is handled by https://kit.svelte.dev/docs/configuration#files
