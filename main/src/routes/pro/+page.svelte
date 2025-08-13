@@ -33,13 +33,15 @@
 
 <main class="relative flex h-screen w-full flex-col">
   <div
-    class="z-10 mx-auto mt-10 rounded-xl border-2 border-white p-4 text-center text-6xl backdrop-blur-sm"
+    class="z-10 mx-2 mt-10 rounded-xl border-2 border-white p-4 text-center text-6xl backdrop-blur-sm md:mx-auto"
   >
     Upgrade your experience.
   </div>
-  <div class="flex justify-center gap-24 pt-8">
+  <div
+    class="flex flex-col-reverse items-center justify-center gap-24 pb-24 pt-8 md:flex-row md:items-stretch md:pb-0"
+  >
     <div
-      class="z-10 flex w-96 flex-col rounded-3xl border-4 border-white p-10 backdrop-blur-sm"
+      class="z-10 flex w-96 flex-col overflow-y-auto rounded-3xl border-4 border-white p-10 backdrop-blur-sm"
     >
       <div class="text-center text-4xl">Zoron</div>
       <div
@@ -58,12 +60,12 @@
           <div class="text-lg text-white">Aspen integration</div>
         </li>
       </ul>
-      <a class="btn-full btn-outlined mt-auto w-full" href="/home">
+      <a class="btn-full btn-outlined mt-8 w-full md:mt-auto" href="/home">
         Continue without PRO
       </a>
     </div>
     <div
-      class="z-10 w-96 rounded-3xl border-4 border-white p-10 backdrop-blur-sm"
+      class="z-10 w-96 overflow-y-auto rounded-3xl border-4 border-white p-10 backdrop-blur-sm"
     >
       <div class="text-center text-4xl">
         Zoron <span class="shine-text" data-text="PRO">PRO</span>
@@ -72,7 +74,7 @@
         class="mt-2 text-center text-xl text-green-400"
         style="text-shadow: 0 0 20px #4ade80;"
       >
-        Also Free Forever
+        <span class="hidden md:inline">Also</span> Free Forever
       </div>
 
       <ul class="mt-3">
@@ -102,5 +104,5 @@
   </div>
   <canvas bind:this={canvas} class="absolute left-0 top-0 h-screen w-screen"
   ></canvas>
-  <Footer fixed />
 </main>
+<Footer fixed className="z-20" />
