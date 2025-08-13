@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
+  import Footer from "@zoron/common/components/Footer.svelte";
+
   import Fa from "svelte-fa";
 
   import { faCheck, faWarning, faX } from "@fortawesome/free-solid-svg-icons";
@@ -31,13 +33,13 @@
 
 <main class="relative flex h-screen w-full flex-col">
   <div
-    class="z-10 mx-auto mt-10 rounded-xl border border-slate-400 p-4 text-center text-6xl backdrop-blur-xl"
+    class="z-10 mx-auto mt-10 rounded-xl border-2 border-white p-4 text-center text-6xl backdrop-blur-sm"
   >
     Upgrade your experience.
   </div>
   <div class="flex justify-center gap-24 pt-8">
     <div
-      class="z-10 flex w-96 flex-col rounded-3xl border-4 border-white p-10 backdrop-blur-xl"
+      class="z-10 flex w-96 flex-col rounded-3xl border-4 border-white p-10 backdrop-blur-sm"
     >
       <div class="text-center text-4xl">Zoron</div>
       <div
@@ -61,7 +63,7 @@
       </a>
     </div>
     <div
-      class="z-10 w-96 rounded-3xl border-4 border-white p-10 backdrop-blur-xl"
+      class="z-10 w-96 rounded-3xl border-4 border-white p-10 backdrop-blur-sm"
     >
       <div class="text-center text-4xl">
         Zoron <span class="shine-text" data-text="PRO">PRO</span>
@@ -74,10 +76,8 @@
       </div>
 
       <ul class="mt-3">
+        {@render detail("Everything in normal Zoron")}
         {@render detail("Automatic schedule import")}
-        {@render detail("See your daily classes")}
-        {@render detail("View who's in your classes")}
-        {@render detail("Share your schedule with friends")}
         {@render detail("Aspen activity notifications")}
         {@render detail("View all your grades on one page")}
         {@render detail("Automatic GPA calculation")}
@@ -102,4 +102,5 @@
   </div>
   <canvas bind:this={canvas} class="absolute left-0 top-0 h-screen w-screen"
   ></canvas>
+  <Footer fixed />
 </main>
