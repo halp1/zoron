@@ -353,7 +353,7 @@
     </div>
   {/key}
   {#if typeof window === "undefined" || windowWidth < 768}
-    <div class="h-14 md:hidden {isIOS() ? 'pb-5' : ''}"></div>
+    <div class="h-14 md:hidden pb-[env(safe-area-inset-bottom)]"></div>
     <div
       class="fixed bottom-0 left-0 right-0 flex w-full items-center justify-evenly rounded-t-2xl pb-2 pt-2 shadow-xl md:hidden {$theme ===
       'amoled'
