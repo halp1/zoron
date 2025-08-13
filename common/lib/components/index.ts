@@ -6,3 +6,4 @@ export { default as Footer } from "./Footer.svelte";
 export { default as ScheduleBlock } from "./ScheduleBlock.svelte";
 export { default as Swipeable } from "./Swipeable.svelte";
 export { default as ListSelect } from "./ListSelect.svelte";
+export { default as Root } from "./Root.svelte";
