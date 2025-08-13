@@ -16,7 +16,7 @@
     property="og:description"
     content="LHS Scheduling, Done Right."
   />
-  <meta property="og:image" content="/screenshots/desktop.png" />
+  <meta property="og:image" content="/seo/og-image.png" />
   <meta property="og:url" content="https://zoron.app" />
   <meta property="og:type" content="website" />
 
@@ -26,5 +26,5 @@
     name="twitter:description"
     content="LHS Scheduling, Done Right."
   />
-  <meta name="twitter:image" content="/screenshots/desktop.png" />
+  <meta name="twitter:image" content="/seo/og-image.png" />
 </svelte:head>
