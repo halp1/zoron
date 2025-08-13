@@ -5,13 +5,14 @@
 
   import { page } from "$app/state";
 
-  import {Toggle} from "@zoron/common/components";
+  import { Toggle } from "@zoron/common/components";
   import { motion } from "@zoron/common/motion";
   import { requests, toast } from "@zoron/common/web";
   import { theme } from "@zoron/common/web/theme";
 
-  import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
   import Fa from "svelte-fa";
+
+  import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
   let tick = $state(0);
   onMount(() => {
@@ -39,7 +40,7 @@
   Admin Panel
 </div>
 <div
-  class="mb-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+  class="mb-10 grid grid-cols-1 gap-5 px-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
 >
   <div
     class="rounded-3xl border-2 {$theme === 'amoled'
@@ -323,7 +324,7 @@
       easing: motion.transitions.spring(400, 20)
     }}
   >
-		<div class="text-3xl">Tools</div>
+    <div class="text-3xl">Tools</div>
     <a
       href="/home/admin/logs"
       class="flex items-center gap-2 text-xl underline"
