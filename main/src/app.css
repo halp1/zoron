@@ -56,6 +56,50 @@
   .custom-scroll-right::-webkit-scrollbar-thumb {
     @apply rounded-l-full;
   }
+
+  .shine-text {
+    @apply relative overflow-visible font-bold tracking-wider text-yellow-200 shadow-yellow-200/50;
+    text-shadow: 0 0 20px rgba(255, 255, 153, 0.8);
+    /* animation: glow-pulse 2s ease-in-out infinite alternate; */
+  }
+
+  .shine-text::before {
+    @apply absolute left-0 top-0 h-full w-full text-transparent;
+		content: attr(data-text);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      transparent 40%,
+      rgba(255, 255, 255, 0.8) 50%,
+      transparent 60%,
+      transparent 100%
+    );
+		background-clip: text;
+		-webkit-background-clip: text;
+    background-size: 200% 100%;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+    animation: shine 3s linear infinite;
+  }
+
+  @keyframes shine {
+    0% {
+      background-position: 100% 0;
+    }
+    100% {
+      background-position: -100% 0;
+    }
+  }
+
+  @keyframes glow-pulse {
+    from {
+      text-shadow: 0 0 20px rgba(255, 255, 153, 0.5);
+    }
+    to {
+      text-shadow: 0 0 30px rgba(255, 255, 153, 0.8);
+    }
+  }
 }
 
 .suse {

@@ -7,6 +7,7 @@
   import { onNavigate } from "$app/navigation";
   import { page } from "$app/state";
 
+  import bgSrc from "@zoron/common/assets/bg.png";
   import { motion } from "@zoron/common/motion";
   import { PWA, isIOS, storage } from "@zoron/common/web";
   import { zoron } from "@zoron/common/web";
@@ -25,7 +26,6 @@
     faUserFriends
   } from "@fortawesome/free-solid-svg-icons";
 
-  import bgSrc from "@zoron/common/assets/bg.png";
   import { changelog } from "../changelog/changelog";
   import "./home.css";
 
@@ -191,7 +191,7 @@
         style="view-transition-name: header;"
         bind:this={tabContainer}
       >
-        <div class="flex w-60 items-center text-3xl">
+        <div class="flex w-72 items-center text-3xl">
           <img
             src="/favicon.png"
             alt="Site Icon"
@@ -272,7 +272,23 @@
           </a>
         {/each}
         <div class="mr-auto"></div>
-        <div class="flex w-60 items-center justify-end gap-2">
+        <div class="flex w-72 items-center justify-end gap-2">
+          <!-- <a
+            class="flex h-8 px-2 items-center justify-center rounded-full border-2 bg-white bg-opacity-0 transition-all hover:bg-opacity-10 {$theme ===
+            'amoled'
+              ? 'border-white'
+              : 'border-blue-400'}"
+            href="/pro"
+            in:fly|global={{
+              delay: 500,
+              duration: 1000,
+              opacity: 0,
+              x: 20,
+              easing: motion.transitions.spring(500, 15, 1.2)
+            }}
+          >
+            <span class="shine-text" data-text="PRO">PRO</span>
+          </a> -->
           <a
             class="flex h-8 w-32 items-center justify-center gap-2 rounded-full border-2 {$theme ===
             'amoled'
@@ -480,48 +496,5 @@
 
   .view-anim-right {
     view-transition-name: slide-in-out-right;
-  }
-
-  .shine-text::before {
-    content: "LITE";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      transparent 40%,
-      rgba(255, 255, 255, 0.8) 50%,
-      transparent 60%,
-      transparent 100%
-    );
-    background-size: 200% 100%;
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    font-size: inherit;
-    font-weight: inherit;
-    letter-spacing: inherit;
-    animation: shine 3s infinite;
-  }
-
-  @keyframes shine {
-    0% {
-      background-position: 100% 0;
-    }
-    100% {
-      background-position: -100% 0;
-    }
-  }
-
-  @keyframes glow-pulse {
-    from {
-      text-shadow: 0 0 20px rgba(255, 255, 153, 0.5);
-    }
-    to {
-      text-shadow: 0 0 30px rgba(255, 255, 153, 0.8);
-    }
   }
 </style>

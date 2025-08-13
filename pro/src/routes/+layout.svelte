@@ -4,11 +4,11 @@
   import { browser } from "$app/environment";
   import { page } from "$app/state";
 
+  import "@zoron/common/css/app.css";
   import { PWA, isMobile } from "@zoron/common/web";
+
   import posthog from "posthog-js";
   import { Toaster } from "svelte-french-toast";
-
-  import "../app.css";
 
   interface Props {
     children?: import("svelte").Snippet;
@@ -21,7 +21,7 @@
     document.body.classList.add("suse");
 
     PWA.initialize();
-		
+
     if (browser && !import.meta.env.DEV) {
       posthog.init(page.data.env.posthog.key, {
         api_host: "/posthog-proxy",
