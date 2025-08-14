@@ -2,6 +2,15 @@ import type { ChangelogEntry } from "./types";
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "2.0.0",
+    date: "08/13/2025",
+    overview: "Zoron 2.0",
+    changes: [
+      "Reorganized the codebase and split Zoron into two apps: Zoron and Zoron PRO"
+    ],
+    bugfixes: []
+  },
+  {
     version: "1.2.0",
     date: "04/09/2025",
     overview: "Friends",

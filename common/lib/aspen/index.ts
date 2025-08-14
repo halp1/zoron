@@ -9,7 +9,7 @@ import type {
   AuthResponse,
   PeriodAttendance,
   PostedGrade,
-  RecentActivityList
+  RecentActivityList,
 } from "./types";
 
 export namespace aspen {
@@ -186,10 +186,10 @@ export namespace aspen {
           cookie,
           Referer:
             "https://ma-lexington.myfollett.com/aspen-login/?deploymentId=ma-lexington",
-          "Referrer-Policy": "strict-origin-when-cross-origin"
+          "Referrer-Policy": "strict-origin-when-cross-origin",
         },
         body: null,
-        method: "GET"
+        method: "GET",
       }
     );
 
@@ -201,32 +201,28 @@ export namespace aspen {
 
     cookie = `${cookie}; ${getCookies(sessionRes).join("; ")}`;
 
-    const authRes = await fetch(
-      "https://ma-lexington.myfollett.com/app/rest/auth",
-      {
-        headers: {
-          accept: "application/json",
-          "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
-          "cache-control": "no-cache",
-          "content-type": "application/x-www-form-urlencoded",
-          deploymentid: "ma-lexington",
-          pragma: "no-cache",
-          "sec-ch-ua":
-            '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
-          "sec-ch-ua-mobile": "?0",
-          "sec-ch-ua-platform": '"Windows"',
-          "sec-fetch-dest": "empty",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-site": "same-origin",
-          cookie,
-          Referer:
-            "https://ma-lexington.myfollett.com/aspen-login/?deploymentId=ma-lexington",
-          "Referrer-Policy": "strict-origin-when-cross-origin"
-        },
-        body: `username=${username}&password=${password}`,
-        method: "POST"
-      }
-    );
+    const authRes = await fetch("https://ma-lexington.myfollett.com/app/rest/auth", {
+      headers: {
+        accept: "application/json",
+        "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+        "cache-control": "no-cache",
+        "content-type": "application/x-www-form-urlencoded",
+        deploymentid: "ma-lexington",
+        pragma: "no-cache",
+        "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"Windows"',
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-origin",
+        cookie,
+        Referer:
+          "https://ma-lexington.myfollett.com/aspen-login/?deploymentId=ma-lexington",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+      },
+      body: `username=${username}&password=${password}`,
+      method: "POST",
+    });
 
     // check auth
     if (authRes.status !== 200) {
@@ -245,8 +241,7 @@ export namespace aspen {
         "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
         "cache-control": "no-cache",
         pragma: "no-cache",
-        "sec-ch-ua":
-          '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
         "sec-ch-ua-mobile": "?0",
         "sec-ch-ua-platform": '"Windows"',
         "sec-fetch-dest": "document",
@@ -257,10 +252,10 @@ export namespace aspen {
         cookie,
         Referer:
           "https://ma-lexington.myfollett.com/aspen-login/?deploymentId=ma-lexington",
-        "Referrer-Policy": "strict-origin-when-cross-origin"
+        "Referrer-Policy": "strict-origin-when-cross-origin",
       },
       body: null,
-      method: "GET"
+      method: "GET",
     });
 
     if (authTokenRes.status !== 200) {
@@ -269,33 +264,29 @@ export namespace aspen {
 
     tick();
 
-    const homeRes = await fetch(
-      "https://ma-lexington.myfollett.com/aspen/home.do",
-      {
-        headers: {
-          accept:
-            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-          "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
-          "cache-control": "no-cache",
-          pragma: "no-cache",
-          "sec-ch-ua":
-            '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
-          "sec-ch-ua-mobile": "?0",
-          "sec-ch-ua-platform": '"Windows"',
-          "sec-fetch-dest": "document",
-          "sec-fetch-mode": "navigate",
-          "sec-fetch-site": "same-origin",
-          "sec-fetch-user": "?1",
-          "upgrade-insecure-requests": "1",
-          cookie,
-          Referer:
-            "https://ma-lexington.myfollett.com/aspen/portalAssignmentDetail.do?navkey=academics.classes.list.gcd.detail&oid=GCD0000017PfFO",
-          "Referrer-Policy": "strict-origin-when-cross-origin"
-        },
-        body: null,
-        method: "GET"
-      }
-    );
+    const homeRes = await fetch("https://ma-lexington.myfollett.com/aspen/home.do", {
+      headers: {
+        accept:
+          "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+        "cache-control": "no-cache",
+        pragma: "no-cache",
+        "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"Windows"',
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-site": "same-origin",
+        "sec-fetch-user": "?1",
+        "upgrade-insecure-requests": "1",
+        cookie,
+        Referer:
+          "https://ma-lexington.myfollett.com/aspen/portalAssignmentDetail.do?navkey=academics.classes.list.gcd.detail&oid=GCD0000017PfFO",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+      },
+      body: null,
+      method: "GET",
+    });
 
     if (homeRes.status !== 200) {
       throw new Error(`Failed to get home: ${await homeRes.text()}`);
@@ -327,6 +318,108 @@ export namespace aspen {
     return { cookie, token, name: { first, last } };
   };
 
+  export const announcements = async (cookie: string): Promise<string[]> => {
+    const homeRes = await fetch("https://ma-lexington.myfollett.com/aspen/home.do", {
+      headers: {
+        accept:
+          "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+        "cache-control": "no-cache",
+        pragma: "no-cache",
+        "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"Windows"',
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-site": "same-origin",
+        "sec-fetch-user": "?1",
+        "upgrade-insecure-requests": "1",
+        cookie,
+        Referer:
+          "https://ma-lexington.myfollett.com/aspen/portalAssignmentDetail.do?navkey=academics.classes.list.gcd.detail&oid=GCD0000017PfFO",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+      },
+      body: null,
+      method: "GET",
+    });
+
+    if (homeRes.status !== 200) {
+      throw new Error(`Failed to get home page: ${await homeRes.text()}`);
+    }
+
+    const widgetsRes = await fetch(
+      "https://ma-lexington.myfollett.com/aspen/widgets.do",
+      {
+        headers: {
+          accept: "text/html, */*; q=0.01",
+          "accept-language": "en-US,en;q=0.9,es-US;q=0.8,es;q=0.7",
+          "cache-control": "no-cache",
+          pragma: "no-cache",
+          "sec-ch-ua":
+            '"Not;A=Brand";v="99", "Google Chrome";v="139", "Chromium";v="139"',
+          "sec-ch-ua-mobile": "?0",
+          "sec-ch-ua-platform": '"Windows"',
+          "sec-fetch-dest": "empty",
+          "sec-fetch-mode": "cors",
+          "sec-fetch-site": "same-origin",
+          "x-requested-with": "XMLHttpRequest",
+          cookie,
+          Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
+        },
+        body: null,
+        method: "GET",
+      }
+    );
+
+    if (widgetsRes.status !== 200) {
+      throw new Error(`Failed to get widgets: ${await widgetsRes.text()}`);
+    }
+
+    const widgetsText = await widgetsRes.text();
+
+    const searchString = `addWidget(new Widget("announcements_0", "`;
+    const start = widgetsText.indexOf(searchString) + searchString.length;
+    const end = widgetsText.indexOf('"', start);
+    const widgetId = widgetsText.substring(start, end);
+
+    const res = await fetch(
+      `https://ma-lexington.myfollett.com/aspen/announcementsWidget.do?groupPageWidgetOid=${widgetId}&widgetId=announcements_0`,
+      {
+        headers: {
+          accept: "*/*",
+          "accept-language": "en-US,en;q=0.9,es-US;q=0.8,es;q=0.7",
+          "cache-control": "no-cache",
+          pragma: "no-cache",
+          "sec-ch-ua":
+            '"Not;A=Brand";v="99", "Google Chrome";v="139", "Chromium";v="139"',
+          "sec-ch-ua-mobile": "?0",
+          "sec-ch-ua-platform": '"Windows"',
+          "sec-fetch-dest": "empty",
+          "sec-fetch-mode": "cors",
+          "sec-fetch-site": "same-origin",
+          "x-requested-with": "XMLHttpRequest",
+          cookie,
+          Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
+        },
+        body: null,
+        method: "GET",
+      }
+    );
+
+    const text = await res.text();
+    const {
+      window: { document },
+    } = new JSDOM(text);
+
+    const elements =
+      document.querySelector(".portletContent.portletContentIE")?.children?.[0]
+        ?.children ?? [];
+    const announcements = Array.from(elements)
+      .map((el) => el.textContent?.trim())
+      .filter(Boolean);
+    return announcements;
+  };
+
   export const email = async (cookie: string) => {
     const mainPageRes = await fetch(
       "https://ma-lexington.myfollett.com/aspen/portalStudentDetail.do?navkey=myInfo.details.detail",
@@ -347,10 +440,10 @@ export namespace aspen {
           cookie,
           Referer:
             "https://ma-lexington.myfollett.com/aspen-login/?deploymentId=ma-lexington",
-          "Referrer-Policy": "strict-origin-when-cross-origin"
+          "Referrer-Policy": "strict-origin-when-cross-origin",
         },
         body: null,
-        method: "GET"
+        method: "GET",
       }
     );
 
@@ -367,9 +460,7 @@ export namespace aspen {
     formData.set("userParam", "3");
     formData.set("userEvent", "2030");
 
-    const body = new mainPageDom.window.URLSearchParams(
-      formData as any
-    ).toString();
+    const body = new mainPageDom.window.URLSearchParams(formData as any).toString();
 
     const pageRes = await fetch(
       `https://ma-lexington.myfollett.com/aspen/portalStudentDetail.do`,
@@ -390,17 +481,15 @@ export namespace aspen {
           "x-requested-with": "XMLHttpRequest",
           cookie,
           Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
-          "Referrer-Policy": "strict-origin-when-cross-origin"
+          "Referrer-Policy": "strict-origin-when-cross-origin",
         },
         body,
-        method: "POST"
+        method: "POST",
       }
     );
 
     const email = [
-      ...new JSDOM(await pageRes.text()).window.document.querySelectorAll(
-        "input"
-      )
+      ...new JSDOM(await pageRes.text()).window.document.querySelectorAll("input"),
     ].filter((i) => i.value.includes("@lexingtonma.org"))[0].value;
 
     return email;
@@ -425,10 +514,10 @@ export namespace aspen {
           "x-requested-with": "XMLHttpRequest",
           cookie: cookie,
           Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
-          "Referrer-Policy": "strict-origin-when-cross-origin"
+          "Referrer-Policy": "strict-origin-when-cross-origin",
         },
         body: null,
-        method: "GET"
+        method: "GET",
       }
     );
 
@@ -440,69 +529,65 @@ export namespace aspen {
     const activity: RecentActivityList = await parseStringPromise(activityXml);
 
     const attendance =
-      activity["recent-activity-list"]["recent-activity"][0].attendance?.map(
-        (period) => {
-          return {
-            type: "attendance",
-            date: period.$.date,
-            code: period.$.code,
-            absent: period.$.absent === "true",
-            dismissed: period.$.dismissed === "true",
-            tardy: period.$.tardy === "true",
-            excused: period.$.excused === "true",
-            portionabsent: parseFloat(period.$.portionabsent),
-            id: period.$.oid
-          } satisfies Attendance;
-        }
-      ) || [];
+      activity["recent-activity-list"]["recent-activity"][0].attendance?.map((period) => {
+        return {
+          type: "attendance",
+          date: period.$.date,
+          code: period.$.code,
+          absent: period.$.absent === "true",
+          dismissed: period.$.dismissed === "true",
+          tardy: period.$.tardy === "true",
+          excused: period.$.excused === "true",
+          portionabsent: parseFloat(period.$.portionabsent),
+          id: period.$.oid,
+        } satisfies Attendance;
+      }) || [];
 
     const periodAttendance =
-      activity["recent-activity-list"][
-        "recent-activity"
-      ][0].periodAttendance?.map((period) => {
-        return {
-          type: "period-attendance",
-          date: period.$.date,
-          period: period.$.period,
-          code: period.$.code,
-          class: period.$.classname,
-          id: period.$.oid,
-          sscid: period.$.sscoid
-        } satisfies PeriodAttendance;
-      }) || [];
-
-    const grades =
-      activity["recent-activity-list"][
-        "recent-activity"
-      ][0].gradebookScore?.map((score) => {
-        return {
-          type: "grade",
-          date: score.$.date,
-          assignment: score.$.assignmentname,
-          class: score.$.classname,
-          grade: score.$.grade,
-          id: score.$.assignmentoid,
-          sscid: score.$.sscoid,
-          gtmid: score.$.gtmoid
-        } satisfies Assignment;
-      }) || [];
-    const postedGrades =
-      activity["recent-activity-list"]["recent-activity"][0].gradePost?.map(
-        (score) => {
+      activity["recent-activity-list"]["recent-activity"][0].periodAttendance?.map(
+        (period) => {
           return {
-            type: "posted-grade",
-            date: score.$.date,
-            classname: score.$.classname,
-            oid: score.$.oid,
-            teacher: {
-              first: score.$.teacherfirst,
-              last: score.$.teacherlast
-            },
-            postType: parseInt(score.$.type),
-            sscid: score.$.sscoid
-          } satisfies PostedGrade;
+            type: "period-attendance",
+            date: period.$.date,
+            period: period.$.period,
+            code: period.$.code,
+            class: period.$.classname,
+            id: period.$.oid,
+            sscid: period.$.sscoid,
+          } satisfies PeriodAttendance;
         }
       ) || [];
+
+    const grades =
+      activity["recent-activity-list"]["recent-activity"][0].gradebookScore?.map(
+        (score) => {
+          return {
+            type: "grade",
+            date: score.$.date,
+            assignment: score.$.assignmentname,
+            class: score.$.classname,
+            grade: score.$.grade,
+            id: score.$.assignmentoid,
+            sscid: score.$.sscoid,
+            gtmid: score.$.gtmoid,
+          } satisfies Assignment;
+        }
+      ) || [];
+    const postedGrades =
+      activity["recent-activity-list"]["recent-activity"][0].gradePost?.map((score) => {
+        return {
+          type: "posted-grade",
+          date: score.$.date,
+          classname: score.$.classname,
+          oid: score.$.oid,
+          teacher: {
+            first: score.$.teacherfirst,
+            last: score.$.teacherlast,
+          },
+          postType: parseInt(score.$.type),
+          sscid: score.$.sscoid,
+        } satisfies PostedGrade;
+      }) || [];
 
     const computeMilliseconds = (date: string): number => {
       const d = new Date(
@@ -513,14 +598,12 @@ export namespace aspen {
       return d.getTime();
     };
 
-    const mergedActivity: (
-      | Assignment
-      | PeriodAttendance
-      | Attendance
-      | PostedGrade
-    )[] = [...attendance, ...grades, ...periodAttendance, ...postedGrades].sort(
-      (a, b) => computeMilliseconds(b.date) - computeMilliseconds(a.date)
-    );
+    const mergedActivity: (Assignment | PeriodAttendance | Attendance | PostedGrade)[] = [
+      ...attendance,
+      ...grades,
+      ...periodAttendance,
+      ...postedGrades,
+    ].sort((a, b) => computeMilliseconds(b.date) - computeMilliseconds(a.date));
     return {
       merged: mergedActivity,
       attendance: attendance.sort(
@@ -529,7 +612,7 @@ export namespace aspen {
       grades: grades.sort(
         (a, b) => computeMilliseconds(b.date) - computeMilliseconds(a.date)
       ),
-      raw: activity
+      raw: activity,
     };
   };
 
@@ -561,10 +644,10 @@ export namespace aspen {
                   "upgrade-insecure-requests": "1",
                   cookie: cookie,
                   Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
-                  "Referrer-Policy": "strict-origin-when-cross-origin"
+                  "Referrer-Policy": "strict-origin-when-cross-origin",
                 },
                 body: null,
-                method: "GET"
+                method: "GET",
               }
             );
 
@@ -578,9 +661,7 @@ export namespace aspen {
 
     if (options && !("type" in options)) {
       if (options.year === "previous" && options.term === 0) {
-        throw new Error(
-          "Invalid options: cannot get current term of previous year"
-        );
+        throw new Error("Invalid options: cannot get current term of previous year");
       }
       const formData = new dom.window.FormData(
         dom.window.document.forms["classListForm" as any]
@@ -590,14 +671,11 @@ export namespace aspen {
       formData.set(
         "termFilter",
         (
-          [
-            ...dom.window.document.querySelectorAll("select#termFilter option")
-          ].find((option) =>
-            option
-              .textContent!.toLowerCase()
-              .includes(
-                options.term === 0 ? "current" : options.term.toString()
-              )
+          [...dom.window.document.querySelectorAll("select#termFilter option")].find(
+            (option) =>
+              option
+                .textContent!.toLowerCase()
+                .includes(options.term === 0 ? "current" : options.term.toString())
           ) as HTMLOptionElement
         ).value
       );
@@ -624,10 +702,10 @@ export namespace aspen {
             cookie,
             Referer:
               "https://ma-lexington.myfollett.com/aspen/portalClassList.do?navkey=academics.classes.list&maximized=false",
-            "Referrer-Policy": "strict-origin-when-cross-origin"
+            "Referrer-Policy": "strict-origin-when-cross-origin",
           },
           body,
-          method: "POST"
+          method: "POST",
         }
       );
 
@@ -637,7 +715,7 @@ export namespace aspen {
 
       return await classes(cookie, {
         type: "dom",
-        dom: new JSDOM(await res.text())
+        dom: new JSDOM(await res.text()),
       });
     }
 
@@ -650,8 +728,7 @@ export namespace aspen {
       const items = [...row.children].slice(1) as HTMLTableCellElement[];
       if (items.length === 0) continue;
       const getItem = (index: number) =>
-        [...items[index].children][0]?.innerHTML?.trim() ||
-        items[index].innerHTML.trim();
+        [...items[index].children][0]?.innerHTML?.trim() || items[index].innerHTML.trim();
       data.push({
         id: items[0].id,
         name: getItem(0),
@@ -663,25 +740,25 @@ export namespace aspen {
             (item) =>
               ({
                 first: item.split(", ")[1],
-                last: item.split(", ")[0]
-              }) satisfies Types.Name
+                last: item.split(", ")[0],
+              } satisfies Types.Name)
           ),
         email: getItem(4),
         room: getItem(5),
         grade: {
           number: Math.round(parseFloat(getItem(6).split(" ")[0]) * 100) / 100,
-          letter: getItem(6).split(" ")[1]
+          letter: getItem(6).split(" ")[1],
         },
         attendance: {
           absent: parseInt(getItem(7)),
           tardy: parseInt(getItem(8)),
-          dismissed: parseInt(getItem(9))
-        }
+          dismissed: parseInt(getItem(9)),
+        },
       });
     }
 
     return {
-      classes: data
+      classes: data,
     };
   };
 
@@ -699,10 +776,7 @@ export namespace aspen {
         url =
           parts[0] +
           "?" +
-          parts[1]
-            .replaceAll(":", "%3A")
-            .replaceAll("[", "%5B")
-            .replaceAll("]", "%5D");
+          parts[1].replaceAll(":", "%3A").replaceAll("[", "%5B").replaceAll("]", "%5D");
     }
     return url;
   };
@@ -714,8 +788,8 @@ export namespace aspen {
     onProgress,
     assignments = {
       category: "All",
-      term: 0
-    }
+      term: 0,
+    },
   }: {
     cookie: string;
     classID: string;
@@ -737,8 +811,7 @@ export namespace aspen {
           "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
           "cache-control": "no-cache",
           pragma: "no-cache",
-          "sec-ch-ua":
-            '"Not A(Brand";v="8", "Chromium";v="132", "Google Chrome";v="132"',
+          "sec-ch-ua": '"Not A(Brand";v="8", "Chromium";v="132", "Google Chrome";v="132"',
           "sec-ch-ua-mobile": "?0",
           "sec-ch-ua-platform": '"Windows"',
           "sec-fetch-dest": "document",
@@ -749,10 +822,10 @@ export namespace aspen {
           cookie: cookie,
           Referer:
             "https://ma-lexington.myfollett.com/aspen/portalClassDetail.do?navkey=academics.classes.list.detail",
-          "Referrer-Policy": "strict-origin-when-cross-origin"
+          "Referrer-Policy": "strict-origin-when-cross-origin",
         },
         body: null,
-        method: "GET"
+        method: "GET",
       }
     );
 
@@ -770,9 +843,7 @@ export namespace aspen {
       formData.set("userEvent", "950");
       formData.set("yearFilter", year);
 
-      const body = new prefetchDom.window.URLSearchParams(
-        formData as any
-      ).toString();
+      const body = new prefetchDom.window.URLSearchParams(formData as any).toString();
 
       const res = await fetch(
         "https://ma-lexington.myfollett.com/aspen/portalClassList.do",
@@ -796,10 +867,10 @@ export namespace aspen {
             cookie,
             Referer:
               "https://ma-lexington.myfollett.com/aspen/portalClassList.do?navkey=academics.classes.list&maximized=false",
-            "Referrer-Policy": "strict-origin-when-cross-origin"
+            "Referrer-Policy": "strict-origin-when-cross-origin",
           },
           body,
-          method: "POST"
+          method: "POST",
         }
       );
 
@@ -812,14 +883,11 @@ export namespace aspen {
 
     tick();
 
-    const prefetchForm =
-      prefetchDom.window.document.forms["classListForm" as any];
+    const prefetchForm = prefetchDom.window.document.forms["classListForm" as any];
     const formData = new prefetchDom.window.FormData(prefetchForm);
     formData.set("userParam", classID);
     formData.set("userEvent", "2100");
-    const body = new prefetchDom.window.URLSearchParams(
-      formData as any
-    ).toString();
+    const body = new prefetchDom.window.URLSearchParams(formData as any).toString();
 
     const res = await fetch(
       "https://ma-lexington.myfollett.com/aspen/portalClassList.do",
@@ -831,8 +899,7 @@ export namespace aspen {
           "cache-control": "no-cache",
           "content-type": "application/x-www-form-urlencoded",
           pragma: "no-cache",
-          "sec-ch-ua":
-            '"Not A(Brand";v="8", "Chromium";v="132", "Google Chrome";v="132"',
+          "sec-ch-ua": '"Not A(Brand";v="8", "Chromium";v="132", "Google Chrome";v="132"',
           "sec-ch-ua-mobile": "?0",
           "sec-ch-ua-platform": '"Windows"',
           "sec-fetch-dest": "document",
@@ -843,10 +910,10 @@ export namespace aspen {
           cookie,
           Referer:
             "https://ma-lexington.myfollett.com/aspen/portalClassList.do?navkey=academics.classes.list&maximized=false",
-          "Referrer-Policy": "strict-origin-when-cross-origin"
+          "Referrer-Policy": "strict-origin-when-cross-origin",
         },
         body,
-        method: "POST"
+        method: "POST",
       }
     );
 
@@ -875,7 +942,7 @@ export namespace aspen {
           (categories.length > 0 && {
             categories: [],
             averages: [],
-            posted: []
+            posted: [],
           }) ||
           undefined;
         if (categories.length > 0) {
@@ -897,7 +964,7 @@ export namespace aspen {
                     item.length > 0 &&
                     ([
                       Math.round(100 * parseFloat(item.split(" ")[0])) / 100,
-                      item.split(" ")[1]
+                      item.split(" ")[1],
                     ] as const)) ||
                   undefined
               );
@@ -910,29 +977,27 @@ export namespace aspen {
                     grade: grades[idx]
                       ? {
                           number: grades[idx][0],
-                          letter: grades[idx][1]
+                          letter: grades[idx][1],
                         }
-                      : undefined
-                  }) satisfies Types.ClassDetailCategory["terms"][number]
-              )
+                      : undefined,
+                  } satisfies Types.ClassDetailCategory["terms"][number])
+              ),
             };
 
             result!.categories.push(r);
           }
 
           result!.averages = [
-            ...(
-              table.querySelector("tr.listCellHighlight") as HTMLTableRowElement
-            ).children
+            ...(table.querySelector("tr.listCellHighlight") as HTMLTableRowElement)
+              .children,
           ]
             .slice(1)
             .map((item) => item.textContent?.trim())
             .map((item) =>
               item && item.length > 0
                 ? ({
-                    number:
-                      Math.round(100 * parseFloat(item.split(" ")[0])) / 100,
-                    letter: item.split(" ")[1] ?? item
+                    number: Math.round(100 * parseFloat(item.split(" ")[0])) / 100,
+                    letter: item.split(" ")[1] ?? item,
                   } satisfies Types.Grade)
                 : undefined
             );
@@ -943,9 +1008,8 @@ export namespace aspen {
             .map((item) =>
               item && item.length > 0
                 ? ({
-                    number:
-                      Math.round(100 * parseFloat(item.split(" ")[0])) / 100,
-                    letter: item.split(" ")[1] ?? item
+                    number: Math.round(100 * parseFloat(item.split(" ")[0])) / 100,
+                    letter: item.split(" ")[1] ?? item,
                   } satisfies Types.Grade)
                 : undefined
             );
@@ -954,20 +1018,19 @@ export namespace aspen {
             ...[
               ...dom.window.document.querySelectorAll(
                 "div.detailContainer table tbody tr td.detailProperty.headerLabelBackground"
-              )
-            ].at(-1)!.parentNode!.children
+              ),
+            ].at(-1)!.parentNode!.children,
           ].at(-1)!.textContent;
           if (!finalText) throw new Error("Failed to find final grade");
           if (finalText.trim().length > 1) {
             try {
               result!.final = {
-                number:
-                  Math.round(parseFloat(finalText.split(" ")[0]) * 100) / 100,
-                letter: finalText.split(" ")[1].trim()
+                number: Math.round(parseFloat(finalText.split(" ")[0]) * 100) / 100,
+                letter: finalText.split(" ")[1].trim(),
               };
             } catch {
               result!.final = {
-                letter: finalText.trim()
+                letter: finalText.trim(),
               };
             }
           }
@@ -994,18 +1057,16 @@ export namespace aspen {
               "sec-fetch-site": "none",
               "sec-fetch-user": "?1",
               "upgrade-insecure-requests": "1",
-              cookie
+              cookie,
             },
             referrerPolicy: "strict-origin-when-cross-origin",
             body: null,
-            method: "GET"
+            method: "GET",
           }
         );
 
         if (initialRes.status !== 200) {
-          throw new Error(
-            `Failed to get initial assignments: ${initialRes.status}`
-          );
+          throw new Error(`Failed to get initial assignments: ${initialRes.status}`);
         }
 
         const parseAssignements = (
@@ -1013,9 +1074,7 @@ export namespace aspen {
         ): Types.Assignment[] => {
           try {
             const rows = [
-              ...document.querySelectorAll(
-                "#dataGrid > table > tbody > tr.listCell"
-              )
+              ...document.querySelectorAll("#dataGrid > table > tbody > tr.listCell"),
             ];
 
             if (
@@ -1049,18 +1108,15 @@ export namespace aspen {
                           const str = items[items.length - 2]
                             .textContent!.trim()
                             .split(" / ");
-                          const scored =
-                            Math.round(parseFloat(str[0]) * 100) / 100;
-                          const total =
-                            Math.round(parseFloat(str[1]) * 100) / 100;
+                          const scored = Math.round(parseFloat(str[0]) * 100) / 100;
+                          const total = Math.round(parseFloat(str[1]) * 100) / 100;
                           return {
                             scored,
                             total,
-                            percentage:
-                              Math.round((scored / total) * 100 * 100) / 100
+                            percentage: Math.round((scored / total) * 100 * 100) / 100,
                           };
-                        })()
-                }) satisfies Types.Assignment
+                        })(),
+                } satisfies Types.Assignment)
             );
           } catch (e) {
             throw e;
@@ -1072,8 +1128,7 @@ export namespace aspen {
 
         if (
           !assignments ||
-          (assignments.category === undefined &&
-            assignments.term === undefined) ||
+          (assignments.category === undefined && assignments.term === undefined) ||
           (assignments.category === "All" && assignments.term === undefined)
         ) {
           return parseAssignements(document);
@@ -1126,10 +1181,10 @@ export namespace aspen {
                 cookie,
                 Referer:
                   "https://ma-lexington.myfollett.com/aspen/portalAssignmentList.do?navkey=academics.classes.list.gcd",
-                "Referrer-Policy": "strict-origin-when-cross-origin"
+                "Referrer-Policy": "strict-origin-when-cross-origin",
               },
               body,
-              method: "POST"
+              method: "POST",
             }
           );
 
@@ -1143,12 +1198,12 @@ export namespace aspen {
           const newAssignmentsDom = new JSDOM(newAssignmentsText);
           return parseAssignements(newAssignmentsDom.window.document);
         }
-      })()
+      })(),
     ] as const);
 
     return {
       grades,
-      assignments: ass
+      assignments: ass,
     } satisfies Types.ClassDetail;
   };
 
@@ -1157,7 +1212,7 @@ export namespace aspen {
     assignment,
     studentID,
     token,
-    onProgress
+    onProgress,
   }: {
     cookie: string;
     token: string;
@@ -1189,10 +1244,10 @@ export namespace aspen {
           "upgrade-insecure-requests": "1",
           cookie: cookie,
           Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
-          "Referrer-Policy": "strict-origin-when-cross-origin"
+          "Referrer-Policy": "strict-origin-when-cross-origin",
         },
         body: null,
-        method: "GET"
+        method: "GET",
       }
     );
 
@@ -1221,10 +1276,10 @@ export namespace aspen {
           "x-requested-with": "XMLHttpRequest",
           cookie,
           Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
-          "Referrer-Policy": "strict-origin-when-cross-origin"
+          "Referrer-Policy": "strict-origin-when-cross-origin",
         },
         body: `selectedStudentOid=${studentID}&userEvent=2210&org.apache.struts.taglib.html.TOKEN=${token}`,
-        method: "POST"
+        method: "POST",
       }
     );
 
@@ -1253,10 +1308,10 @@ export namespace aspen {
           "x-requested-with": "XMLHttpRequest",
           cookie,
           Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
-          "Referrer-Policy": "strict-origin-when-cross-origin"
+          "Referrer-Policy": "strict-origin-when-cross-origin",
         },
         body: `filterDefinitionId=%23%23%23all&userEvent=2060&org.apache.struts.taglib.html.TOKEN=${token}`,
-        method: "POST"
+        method: "POST",
       }
     );
 
@@ -1284,10 +1339,10 @@ export namespace aspen {
           "x-requested-with": "XMLHttpRequest",
           cookie,
           Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
-          "Referrer-Policy": "strict-origin-when-cross-origin"
+          "Referrer-Policy": "strict-origin-when-cross-origin",
         },
         body: null,
-        method: "GET"
+        method: "GET",
       }
     );
 
@@ -1317,10 +1372,10 @@ export namespace aspen {
           "upgrade-insecure-requests": "1",
           cookie: cookie,
           Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
-          "Referrer-Policy": "strict-origin-when-cross-origin"
+          "Referrer-Policy": "strict-origin-when-cross-origin",
         },
         body: null,
-        method: "GET"
+        method: "GET",
       }
     );
 
@@ -1340,9 +1395,7 @@ export namespace aspen {
     );
 
     const [rawPoints]: [string] = [
-      ...dom.window.document.querySelectorAll(
-        "td.detailValue table tbody tr td"
-      )
+      ...dom.window.document.querySelectorAll("td.detailValue table tbody tr td"),
     ]
       .map((td) => td.textContent)
       .filter((item) => item?.includes(" / ")) as any;
@@ -1354,22 +1407,21 @@ export namespace aspen {
       .split(" / ")
       .map((item) => parseFloat(item.trim()));
 
-    if (Number.isNaN(percentage))
-      percentage = Math.round((points / maxPoints) * 100);
+    if (Number.isNaN(percentage)) percentage = Math.round((points / maxPoints) * 100);
 
     tick();
 
     return {
       percentage,
       scored: Math.round(points * 100) / 100,
-      total: maxPoints
+      total: maxPoints,
     };
   };
 
   export const transcript = async ({
     cookie,
     onProgress,
-    all
+    all,
   }: {
     cookie: string;
     onProgress?: Types.ProgressCallback;
@@ -1398,18 +1450,16 @@ export namespace aspen {
           "sec-fetch-site": "none",
           "sec-fetch-user": "?1",
           "upgrade-insecure-requests": "1",
-          cookie
+          cookie,
         },
         referrerPolicy: "strict-origin-when-cross-origin",
         body: null,
-        method: "GET"
+        method: "GET",
       }
     );
 
     if (res.status !== 200) {
-      throw new Error(
-        `Failed to get transcript page: ${res.status} (${res.statusText})`
-      );
+      throw new Error(`Failed to get transcript page: ${res.status} (${res.statusText})`);
     }
 
     tick();
@@ -1419,9 +1469,7 @@ export namespace aspen {
     const nanNull = (v: number) => (Number.isNaN(v) ? null : v);
     const strnn = (v: string) => nanNull(parseFloat(v));
 
-    const parseClasses = (
-      body: HTMLTableSectionElement
-    ): Types.TranscriptItem[] =>
+    const parseClasses = (body: HTMLTableSectionElement): Types.TranscriptItem[] =>
       [...body.querySelectorAll("tr.listCell")].map((row) => {
         const cells = [...row.querySelectorAll("td")].map(
           (cell) => cell.textContent?.trim() || ""
@@ -1438,8 +1486,8 @@ export namespace aspen {
             strnn(cells[6]),
             strnn(cells[7]),
             strnn(cells[8]),
-            strnn(cells[9])
-          ]
+            strnn(cells[9]),
+          ],
         };
       });
 
@@ -1451,7 +1499,7 @@ export namespace aspen {
       if (!body) throw new Error("Failed to find data");
 
       return {
-        classes: parseClasses(body)
+        classes: parseClasses(body),
       };
     }
 
@@ -1486,10 +1534,10 @@ export namespace aspen {
           cookie,
           Referer:
             "https://ma-lexington.myfollett.com/aspen/transcriptList.do?navkey=myInfo.trn.list",
-          "Referrer-Policy": "strict-origin-when-cross-origin"
+          "Referrer-Policy": "strict-origin-when-cross-origin",
         },
         body: formBody,
-        method: "POST"
+        method: "POST",
       }
     );
 
@@ -1500,8 +1548,7 @@ export namespace aspen {
     for (
       let i = 1;
       i <
-      (page1Window.document.querySelector("#listHeaderDropdown")?.children
-        .length ?? 1);
+      (page1Window.document.querySelector("#listHeaderDropdown")?.children.length ?? 1);
       i++
     ) {
       const form = new page1Window.FormData(
@@ -1533,12 +1580,11 @@ export namespace aspen {
             "sec-fetch-user": "?1",
             "upgrade-insecure-requests": "1",
             cookie,
-            Referer:
-              "https://ma-lexington.myfollett.com/aspen/transcriptList.do",
-            "Referrer-Policy": "strict-origin-when-cross-origin"
+            Referer: "https://ma-lexington.myfollett.com/aspen/transcriptList.do",
+            "Referrer-Policy": "strict-origin-when-cross-origin",
           },
           body: formBody,
-          method: "POST"
+          method: "POST",
         }
       );
 
@@ -1557,7 +1603,7 @@ export namespace aspen {
         parseClasses(
           doc.querySelector("#dataGrid table tbody") as HTMLTableSectionElement
         )
-      )
+      ),
     };
   };
 
@@ -1588,10 +1634,10 @@ export namespace aspen {
             "upgrade-insecure-requests": "1",
             cookie,
             Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
-            "Referrer-Policy": "strict-origin-when-cross-origin"
+            "Referrer-Policy": "strict-origin-when-cross-origin",
           },
           body: null,
-          method: "GET"
+          method: "GET",
         }
       );
 
@@ -1606,9 +1652,7 @@ export namespace aspen {
       const { window: toolWindow } = new JSDOM(await toolRes.text());
       const { document: toolDoc } = toolWindow;
 
-      const toolForm = new toolWindow.FormData(
-        toolDoc.forms["toolInputForm" as any]
-      );
+      const toolForm = new toolWindow.FormData(toolDoc.forms["toolInputForm" as any]);
       // toolForm.set("formatStr", "0"); // we don't want csv anymore :((
       toolForm.set("userEvent", "960");
 
@@ -1617,35 +1661,30 @@ export namespace aspen {
         body.append(key, value);
       }
 
-      const res = await fetch(
-        `https://ma-lexington.myfollett.com/aspen/runTool.do`,
-        {
-          headers: {
-            accept: "*/*",
-            "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
-            "cache-control": "no-cache",
-            pragma: "no-cache",
-            "sec-ch-ua":
-              '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
-            "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": '"Windows"',
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "x-requested-with": "XMLHttpRequest",
-            cookie,
-            Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
-            "Referrer-Policy": "strict-origin-when-cross-origin"
-          },
-          body,
-          method: "POST"
-        }
-      );
+      const res = await fetch(`https://ma-lexington.myfollett.com/aspen/runTool.do`, {
+        headers: {
+          accept: "*/*",
+          "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+          "cache-control": "no-cache",
+          pragma: "no-cache",
+          "sec-ch-ua":
+            '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+          "sec-ch-ua-mobile": "?0",
+          "sec-ch-ua-platform": '"Windows"',
+          "sec-fetch-dest": "empty",
+          "sec-fetch-mode": "cors",
+          "sec-fetch-site": "same-origin",
+          "x-requested-with": "XMLHttpRequest",
+          cookie,
+          Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
+          "Referrer-Policy": "strict-origin-when-cross-origin",
+        },
+        body,
+        method: "POST",
+      });
 
       if (res.status !== 200) {
-        throw new Error(
-          `Failed to run schedule job: ${res.status} (${res.status})`
-        );
+        throw new Error(`Failed to run schedule job: ${res.status} (${res.status})`);
       }
 
       tick();
@@ -1661,31 +1700,28 @@ export namespace aspen {
         text.indexOf("'", idx + urlStart.length + 1)
       );
 
-      const prePdfRes = await fetch(
-        `https://ma-lexington.myfollett.com/aspen/${url}`,
-        {
-          headers: {
-            accept: "*/*",
-            "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
-            "cache-control": "no-cache",
-            pragma: "no-cache",
-            "sec-ch-ua":
-              '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
-            "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": '"Windows"',
-            "sec-fetch-dest": "document",
-            "sec-fetch-mode": "navigate",
-            "sec-fetch-site": "same-origin",
-            "sec-fetch-user": "?1",
-            "upgrade-insecure-requests": "1",
-            cookie,
-            Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
-            "Referrer-Policy": "strict-origin-when-cross-origin"
-          },
-          body: null,
-          method: "GET"
-        }
-      );
+      const prePdfRes = await fetch(`https://ma-lexington.myfollett.com/aspen/${url}`, {
+        headers: {
+          accept: "*/*",
+          "accept-language": "en-US,en;q=0.9,und;q=0.8,es;q=0.7",
+          "cache-control": "no-cache",
+          pragma: "no-cache",
+          "sec-ch-ua":
+            '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+          "sec-ch-ua-mobile": "?0",
+          "sec-ch-ua-platform": '"Windows"',
+          "sec-fetch-dest": "document",
+          "sec-fetch-mode": "navigate",
+          "sec-fetch-site": "same-origin",
+          "sec-fetch-user": "?1",
+          "upgrade-insecure-requests": "1",
+          cookie,
+          Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
+          "Referrer-Policy": "strict-origin-when-cross-origin",
+        },
+        body: null,
+        method: "GET",
+      });
 
       if (prePdfRes.status !== 200) {
         throw new Error(
@@ -1699,10 +1735,7 @@ export namespace aspen {
       const prePdfText = await prePdfRes.text();
       const pdfURL = prePdfText.substring(
         prePdfText.indexOf(pdfURLStart) + pdfURLStart.length,
-        prePdfText.indexOf(
-          "')",
-          prePdfText.indexOf(pdfURLStart) + pdfURLStart.length
-        )
+        prePdfText.indexOf("')", prePdfText.indexOf(pdfURLStart) + pdfURLStart.length)
       );
 
       const pdfRes = await fetch(pdfURL, {
@@ -1722,9 +1755,9 @@ export namespace aspen {
           "upgrade-insecure-requests": "1",
           cookie,
           Referer: "https://ma-lexington.myfollett.com/aspen/home.do",
-          "Referrer-Policy": "strict-origin-when-cross-origin"
+          "Referrer-Policy": "strict-origin-when-cross-origin",
         },
-        method: "GET"
+        method: "GET",
       });
 
       if (pdfRes.status !== 200) {
@@ -1747,9 +1780,7 @@ export namespace aspen {
       ): Promise<import("pdf2json").Page[]> =>
         new Promise<Page[]>((res, rej) => {
           const parser = new Parser();
-          parser.on("pdfParser_dataError", (errData) =>
-            rej(errData.parserError)
-          );
+          parser.on("pdfParser_dataError", (errData) => rej(errData.parserError));
           parser.on("pdfParser_dataReady", (pdfData) => {
             res(pdfData.Pages);
           });
@@ -1773,7 +1804,7 @@ export namespace aspen {
           21.438: "teacher",
           26.813: "term",
           29.375: "schedule",
-          34.125: "credit"
+          34.125: "credit",
         };
 
         const res: Types.Schedule.Course[] = [];
@@ -1803,12 +1834,10 @@ export namespace aspen {
           ["B2", "A2", "G2", "H2", "I", "C2"],
           ["A3", "B3", "C3", "D3", "E3", "F3"],
           ["E4", "F4", "G3", "H3", "I", "D4"],
-          ["B4", "A4", "G4", "H4", "I", "C4"]
+          ["B4", "A4", "G4", "H4", "I", "C4"],
         ].flat();
         /** @type {({...(typeof data.courses[number]), $: boolean} | null)[]} */
-        const res: (null | Types.Schedule.Course)[] = Array(
-          schedule.length
-        ).fill(null);
+        const res: (null | Types.Schedule.Course)[] = Array(schedule.length).fill(null);
         const lunches: Types.Schedule.Lunch[] = Array(6).fill(3);
         data.courses.forEach((course) => {
           if (
@@ -1828,8 +1857,7 @@ export namespace aspen {
           for (const char of course.schedule.split("")) {
             if (char === "$") {
               blocks.at(-1)![1] = true;
-            } else if ("1234".includes(char))
-              blocks.at(-1)!.push(parseInt(char));
+            } else if ("1234".includes(char)) blocks.at(-1)!.push(parseInt(char));
             else blocks.push([char, false]);
           }
           blocks.forEach((block) => {
@@ -1843,7 +1871,7 @@ export namespace aspen {
                 res[i] = {
                   ...course,
                   $: b[1],
-                  block: block[0] + (b[1] ? "$" : "") + day.toString()
+                  block: block[0] + (b[1] ? "$" : "") + day.toString(),
                 };
             });
           });

@@ -1,11 +1,13 @@
+import { aspen } from "@zoron/common/aspen";
+import { CONSTANTS } from "@zoron/common/constants";
+
 import {
   POSTHOG,
   SUPABASE_PUBLIC_KEY,
   SUPABASE_URI,
   VAPID_PUBLIC
 } from "$env/static/private";
-import { aspen } from "@zoron/common/aspen";
-import { CONSTANTS } from "@zoron/common/constants";
+import { redirect } from "@sveltejs/kit";
 import { execSync } from "child_process";
 
 import type { LayoutServerLoad } from "./$types";
@@ -14,6 +16,10 @@ const commit = execSync("git rev-parse --short HEAD").toString().trim();
 
 export const load: LayoutServerLoad = async (event) => {
   const auth = await event.locals.auth();
+  if (!auth?.user?.email) return redirect(302, "https://zoron.app/login");
+  if (!auth?.user?.pro) {
+    return redirect(302, "https://zoron.app/pro");
+  }
   const cookies = event.cookies;
   const aspenName =
     auth?.user?.aspen && cookies.get("secret")
