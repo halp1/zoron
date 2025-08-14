@@ -16,7 +16,7 @@ const config = {
       "@zoron/common": fileURLToPath(new URL("../common/lib", import.meta.url)),
     },
     files: {
-      assets: fileURLToPath(new URL("../common/assets", import.meta.url)),
+      assets: fileURLToPath(new URL("../common/static", import.meta.url)),
     },
   },
 };

@@ -27,6 +27,7 @@ declare module "@auth/sveltekit" {
       options: PublicKeyCredentialCreationOptionsJSON;
     };
     relationships?: Relationship[];
+		pro?: boolean;
   }
 }
 declare module '*.svelte' {

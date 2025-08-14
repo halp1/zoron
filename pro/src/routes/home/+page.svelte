@@ -5,12 +5,12 @@
 
   import { page } from "$app/state";
 
-  import { motion } from "@zoron/common/motion";
-  import { PWA } from "@zoron/common/web";
-
   import iosInstructions1 from "@zoron/common/assets/instructions/pwa/ios/1.png";
   import iosInstructions2 from "@zoron/common/assets/instructions/pwa/ios/2.png";
   import iosInstructions3 from "@zoron/common/assets/instructions/pwa/ios/3.png";
+  import { motion } from "@zoron/common/motion";
+  import { PWA, theme, zoron } from "@zoron/common/web";
+
   import { changelog } from "../changelog/changelog";
 
   const name = page.data?.session?.user?.name;
@@ -49,18 +49,27 @@
     >
       Announcements:
     </div>
-    <div
-      class="ml-2 mr-auto mt-2 text-slate-400 sm:mr-0"
-      in:fly|global={{
-        delay: 450,
-        duration: 1000,
-        opacity: 0,
-        y: -20,
-        easing: motion.transitions.spring(400, 20)
-      }}
-    >
-      This feature is coming soon!
-    </div>
+    {#if $zoron.announcements.length > 0}
+      {#each $zoron.announcements as announcement, idx}
+        <div
+          class="mt-5 max-w-96 rounded-md border-white p-2 text-lg sm:w-auto {$theme ===
+          'amoled'
+            ? 'border-2'
+            : ''} {$theme === 'zoron' ? 'bg-slate-600' : ''}"
+          in:fly|global={{
+            delay: 450 + idx * 25,
+            duration: 1000,
+            opacity: 0,
+            y: -20,
+            easing: motion.transitions.spring(400, 20)
+          }}
+        >
+          {announcement}
+        </div>
+      {/each}
+    {:else}
+      <div class="mt-5 text-slate-400">No announcements at this time.</div>
+    {/if}
     <div
       class="mt-5 w-full text-2xl sm:w-auto"
       in:fly|global={{
@@ -83,7 +92,7 @@
         }}
         class="px-auto mx-2 mt-2 max-h-80 w-full border-2 border-slate-600 px-1 py-3 sm:w-96"
       >
-        {#each changelog as update}
+        {#each changelog.slice(0, 5) as update}
           <a
             class="relative flex items-center gap-3 rounded-full px-2 hover:bg-slate-50 hover:bg-opacity-5"
             href="/changelog#{update.version}"
@@ -92,7 +101,7 @@
               class="flex h-full items-center border-r-2 border-slate-600 pr-2"
             >
               <div>
-                {update.version}
+                {update.version}	
               </div>
             </div>
             <div class="ml-auto text-lg">

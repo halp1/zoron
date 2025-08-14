@@ -1,10 +1,11 @@
-import type { RequestHandler } from "@sveltejs/kit";
 import { aspen } from "@zoron/common/aspen";
 import { adapter } from "@zoron/common/auth";
 import { cache } from "@zoron/common/cache";
 import { query, transformID } from "@zoron/common/database";
 import { api } from "@zoron/common/server";
 import type { AppState } from "@zoron/common/web";
+
+import type { RequestHandler } from "@sveltejs/kit";
 import { ObjectId } from "mongodb";
 
 export const GET: RequestHandler = async ({ locals: { auth }, cookies }) => {
@@ -21,6 +22,7 @@ export const GET: RequestHandler = async ({ locals: { auth }, cookies }) => {
   cache.setUser(session.user.id, cookies.get("secret")!);
 
   const data = await Promise.all([
+    a().then((cookie) => aspen.announcements(cookie)),
     query<{ name: "timeDelta"; data: number }>({
       collection: "app",
       query: { name: "timeDelta" }
@@ -39,18 +41,19 @@ export const GET: RequestHandler = async ({ locals: { auth }, cookies }) => {
   ] as const);
 
   const response = api.json<AppState>({
+    announcements: data[0],
     schedule: user?.schedule,
     constants: {
-      timeDelta: data[0]
+      timeDelta: data[1]
     },
     preloadedActivity: user?.activity || [],
     session: {
-      cookie: data[1].cookie,
-      token: data[1].token
+      cookie: data[2].cookie,
+      token: data[2].token
     },
-    classes: data[2],
-    activity: data[3],
-    transcript: data[4]
+    classes: data[3],
+    activity: data[4],
+    transcript: data[5]
   });
 
   cookies.set("active-session", session.user.aspen, {
