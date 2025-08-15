@@ -30,7 +30,6 @@
   import _ from "lodash";
   const { clamp } = _;
 
-  import choobs from "@zoron/common/assets/choobs.png";
   import { randomPlaceholderImage } from "@zoron/common/assets/placeholders";
   import "./schedule.css";
 
@@ -82,6 +81,7 @@
     // "bg-lime-400",
     // "bg-teal-400"
   ];
+
   // @ts-expect-error for the tailwind
   "border-red-400" ||
     "border-blue-400" ||
@@ -1152,6 +1152,9 @@
 {/if}
 
 <style>
+	@import "tailwindcss";
+	@source inline("bg-{red,blue,purple,orange,green,yellow,pink,indigo,lime,teal}-400/50");
+
   .day-anim-left {
     view-transition-name: schedule-in-out-left;
   }
@@ -1184,4 +1187,6 @@
   .animate-in-right {
     animation: slide-in-left 0.3s;
   }
+
+
 </style>

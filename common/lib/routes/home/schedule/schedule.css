@@ -1,3 +1,6 @@
+@import "tailwindcss";
+@source inline("bg-{red,blue,purple,orange,green,yellow,pink,indigo,lime,teal,gray,cyan}-400/50");
+
 @layer home {
   @keyframes schedule-in-left {
     0% {
