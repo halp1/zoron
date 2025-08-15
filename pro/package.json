@@ -40,6 +40,7 @@
     "@types/lodash": "^4.17.20",
     "@types/node": "^24.2.1",
     "@types/web-push": "^3.6.4",
+    "@types/wicg-file-system-access": "^2023.10.6",
     "@types/xml2js": "^0.4.14",
     "autoprefixer": "^10.4.21",
     "bits-ui": "^1.8.0",

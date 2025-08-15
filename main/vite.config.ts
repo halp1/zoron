@@ -1,9 +1,10 @@
 import { sveltekit } from "@sveltejs/kit/vite";
-import { defineConfig } from "vite";
-import tailwindcss from '@tailwindcss/vite';
+import tailwindcss from "@tailwindcss/vite";
+import path from "path";
+import { defineConfig, searchForWorkspaceRoot } from "vite";
 
 export default defineConfig({
-  plugins: [tailwindcss(), sveltekit()],
+  plugins: [sveltekit(), tailwindcss()],
   optimizeDeps: {
     // pre-bundle it for dev
     include: ["@zoron/common"]
@@ -11,5 +12,13 @@ export default defineConfig({
   ssr: {
     // during SSR/bundling, don't treat it as external
     noExternal: ["@zoron/common"]
+  },
+  server: {
+    fs: {
+      allow: [
+        searchForWorkspaceRoot(process.cwd()),
+        path.resolve(__dirname, "../common")
+      ]
+    }
   }
 });

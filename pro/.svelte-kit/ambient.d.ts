@@ -72,6 +72,7 @@ declare module '$env/static/private' {
 	export const npm_package_name: string;
 	export const LESSOPEN: string;
 	export const USER: string;
+	export const GIT_PAGER: string;
 	export const VSCODE_GIT_IPC_HANDLE: string;
 	export const HOMEBREW_CELLAR: string;
 	export const DISPLAY: string;
@@ -175,6 +176,7 @@ declare module '$env/dynamic/private' {
 		npm_package_name: string;
 		LESSOPEN: string;
 		USER: string;
+		GIT_PAGER: string;
 		VSCODE_GIT_IPC_HANDLE: string;
 		HOMEBREW_CELLAR: string;
 		DISPLAY: string;
