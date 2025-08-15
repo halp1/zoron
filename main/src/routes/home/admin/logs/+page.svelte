@@ -54,26 +54,26 @@
   };
 
   onMount(() => {
-		fetchLogs();
+    fetchLogs();
 
-		// idk causes crash
-		// const eventSource = new EventSource('/api/admin/logs/stream');
-		// eventSource.onmessage = (event) => {
-		// 	const newLog = JSON.parse(event.data);
-		// 	if (newLog) {
-		// 		logs = [newLog, ...logs];
-		// 		next += 1; // Increment next for each new log
-		// 	}
-		// };
-		// eventSource.onerror = (error) => {
-		// 	console.error("EventSource error:", error);
-		// 	eventSource.close(); // Close the connection on error
-		// 	history.go(0);
-		// };
+    // idk causes crash
+    // const eventSource = new EventSource('/api/admin/logs/stream');
+    // eventSource.onmessage = (event) => {
+    // 	const newLog = JSON.parse(event.data);
+    // 	if (newLog) {
+    // 		logs = [newLog, ...logs];
+    // 		next += 1; // Increment next for each new log
+    // 	}
+    // };
+    // eventSource.onerror = (error) => {
+    // 	console.error("EventSource error:", error);
+    // 	eventSource.close(); // Close the connection on error
+    // 	history.go(0);
+    // };
 
-		// return () => {
-		// 	eventSource.close(); // Clean up on component unmount
-		// };
+    // return () => {
+    // 	eventSource.close(); // Clean up on component unmount
+    // };
   });
 
   let sentinelElement = $state<HTMLDivElement | undefined>(undefined);
@@ -131,8 +131,8 @@
     {#if logs.length > 0}
       <div
         class="space-y-1 rounded-md border-2 {$theme === 'amoled'
-          ? 'border-white bg-black'
-          : 'border-gray-300 bg-slate-800'} bg-opacity-50 p-3 font-mono text-sm"
+          ? 'border-white bg-black/50'
+          : 'border-gray-300 bg-slate-800/50'} p-3 font-mono text-sm"
       >
         {#each logs as log, i (i)}
           <!-- Using index as key, assuming logs are appended only -->

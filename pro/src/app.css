@@ -1,6 +1,4 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@import "tailwindcss";
 
 @layer components {
   body {
@@ -10,7 +8,7 @@
     @apply bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-900 via-[#0c1c3d] to-[#0a0f24];
   }
   .btn-circle {
-    @apply flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-opacity-10 p-2 hover:bg-slate-800;
+    @apply flex h-8 w-8 cursor-pointer items-center justify-center rounded-full p-2 hover:bg-slate-800/10;
   }
 
   .theme-amoled .btn-circle {
@@ -26,10 +24,10 @@
   }
 
   .btn-outlined {
-    @apply border-2 border-blue-400 bg-white bg-opacity-0 transition-all hover:bg-opacity-5 disabled:cursor-not-allowed disabled:border-slate-400;
+    @apply border-2 border-blue-400 bg-white/0 transition-all hover:bg-white/5 disabled:cursor-not-allowed disabled:border-slate-400;
   }
   .theme-amoled .btn-outlined:not(.theme-override) {
-    @apply border-white bg-opacity-5 hover:bg-opacity-10;
+    @apply border-white bg-white/5 hover:bg-white/10;
   }
 
   .custom-scroll::-webkit-scrollbar {
@@ -64,8 +62,8 @@
   }
 
   .shine-text::before {
-    @apply absolute left-0 top-0 h-full w-full text-transparent;
-		content: attr(data-text);
+    @apply absolute top-0 left-0 h-full w-full text-transparent;
+    content: attr(data-text);
     background: linear-gradient(
       90deg,
       transparent 0%,
@@ -74,8 +72,8 @@
       transparent 60%,
       transparent 100%
     );
-		background-clip: text;
-		-webkit-background-clip: text;
+    background-clip: text;
+    -webkit-background-clip: text;
     background-size: 200% 100%;
     font-size: inherit;
     font-weight: inherit;

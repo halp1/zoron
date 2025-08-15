@@ -1,0 +1,165 @@
+@import 'tailwindcss';
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility bg-gradient {
+  @apply bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-900 via-[#0c1c3d] to-[#0a0f24];
+}
+
+@utility btn-circle {
+  @apply flex h-8 w-8 cursor-pointer items-center justify-center rounded-full p-2 hover:bg-slate-800/10;
+
+  .theme-amoled & {
+    @apply hover:bg-gray-800;
+  }
+}
+
+@utility theme-amoled {
+  & .btn-circle {
+    @apply hover:bg-gray-800;
+  }
+  & .btn-outlined:not(.theme-override) {
+    @apply border-white;
+  }
+
+  &body .custom_scroll::-webkit-scrollbar-track {
+    @apply bg-gray-900;
+  }
+
+  &body .custom-scroll::-webkit-scrollbar-thumb {
+    @apply bg-white hover:bg-gray-100;
+  }
+}
+
+@utility btn-full {
+  @apply flex cursor-pointer items-center justify-center gap-4 rounded-xl px-5 py-3 text-2xl;
+}
+
+@utility btn-filled {
+  @apply bg-blue-400 disabled:bg-slate-400;
+}
+
+@utility btn-outlined {
+  @apply border-2 border-blue-400 bg-white/0 transition-all hover:bg-white/5 disabled:cursor-not-allowed disabled:border-slate-400;
+  .theme-amoled &:not(.theme-override) {
+    @apply border-white bg-white/5 hover:bg-white/10;
+  }
+}
+
+@utility custom-scroll {
+  &::-webkit-scrollbar {
+    @apply w-2;
+  }
+  /* Style the track */
+  &::-webkit-scrollbar-track {
+    @apply bg-slate-800;
+  }
+
+  /* Style the scrollbar thumb */
+  &::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-slate-400 hover:bg-slate-500;
+  }
+
+  body.theme-amoled &::-webkit-scrollbar-thumb {
+    @apply bg-white hover:bg-gray-100;
+  }
+}
+
+@utility custom_scroll {
+  body.theme-amoled &::-webkit-scrollbar-track {
+    @apply bg-gray-900;
+  }
+}
+
+@utility custom-scroll-right {
+  &::-webkit-scrollbar-thumb {
+    @apply rounded-l-full;
+  }
+}
+
+@utility shine-text {
+  @apply relative overflow-visible font-bold tracking-wider text-yellow-200 shadow-yellow-200/50;
+  text-shadow: 0 0 20px rgba(255, 255, 153, 0.8);
+  /* animation: glow-pulse 2s ease-in-out infinite alternate; */
+
+  &::before {
+    @apply absolute left-0 top-0 h-full w-full text-transparent;
+    content: attr(data-text);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      transparent 40%,
+      rgba(255, 255, 255, 0.8) 50%,
+      transparent 60%,
+      transparent 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    background-size: 200% 100%;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+    animation: shine 3s linear infinite;
+  }
+}
+
+@layer components {
+  body {
+    @apply text-white;
+  }
+
+  @keyframes shine {
+    0% {
+      background-position: 100% 0;
+    }
+    100% {
+      background-position: -100% 0;
+    }
+  }
+
+  @keyframes glow-pulse {
+    from {
+      text-shadow: 0 0 20px rgba(255, 255, 153, 0.5);
+    }
+    to {
+      text-shadow: 0 0 30px rgba(255, 255, 153, 0.8);
+    }
+  }
+}
+
+.suse {
+  font-family: "SUSE", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.no-scroll::-webkit-scrollbar {
+  display: none;
+}
+.no-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*,
+::before,
+::after {
+  transition: all 0.2s ease-in-out;
+}

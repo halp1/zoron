@@ -38,7 +38,8 @@ export const load: LayoutServerLoad = async (event) => {
       posthog: {
         key: POSTHOG
       },
-      commit: commit
+      commit: commit,
+      pro: true
     },
     hideFooter: event.cookies.get("hide-footer") === "1"
   };

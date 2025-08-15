@@ -1,14 +1,47 @@
+import type { aspen } from "@zoron/common/aspen";
+import type { Passkey } from "@zoron/common/auth/webauthn/types";
+import type { Relationship, Settings, Subscription } from "@zoron/common/types";
+
 import type { PublicKeyCredentialCreationOptionsJSON } from "@simplewebauthn/types";
-import type { aspen } from "./lib/aspen";
-import type { Passkey } from "./lib/auth/webauthn/types";
-import type { Relationship, Settings, Subscription } from "./lib/types";
-import type { SvelteComponent } from "svelte";
-import type { LegacyComponentType } from "svelte/legacy";
 
 interface ActivityRecord {
   id: string;
   lastLoaded: string;
   data: { scored: number; total: number; percentage: number } | null;
+}
+
+// for information about these interfaces
+declare global {
+  namespace App {
+    // interface Error {}
+    // interface Locals {}
+    interface PageData {
+      username?: string;
+      env: {
+        vapid: string;
+        name: string;
+        supabase: {
+          uri: string;
+          key: string;
+        };
+        posthog: {
+          key: string;
+        };
+        commit: string;
+      };
+      hideFooter: boolean;
+      users?: {
+        id: string;
+        name: string;
+        email: string;
+        image: string;
+      }[];
+      app?: {
+        timeDelta: number;
+        schedule: aspen.Types.Schedule.Schedule & { updated: number };
+      };
+    }
+  }
 }
 
 declare module "@auth/sveltekit" {
@@ -27,15 +60,41 @@ declare module "@auth/sveltekit" {
       options: PublicKeyCredentialCreationOptionsJSON;
     };
     relationships?: Relationship[];
-		pro?: boolean;
+    pro?: boolean;
   }
 }
-declare module '*.svelte' {
-	// use prettier-ignore for a while because of https://github.com/sveltejs/language-tools/commit/026111228b5814a9109cc4d779d37fb02955fb8b
-	// prettier-ignore
-	import { SvelteComponent } from 'svelte'
-	import { LegacyComponentType } from 'svelte/legacy';
-	const Comp: LegacyComponentType;
-	type Comp = SvelteComponent;
-	export default Comp;
+
+declare module "*.svelte" {
+  import { SvelteComponent } from "svelte";
+  import { LegacyComponentType } from "svelte/legacy";
+  const Comp: LegacyComponentType;
+  type Comp = SvelteComponent;
+  export default Comp;
+}
+
+interface PeriodicSyncManager {
+  register(tag: string, options?: PeriodicSyncOptions): Promise<void>;
+  unregister(tag: string): Promise<void>;
+  getTags(): Promise<string[]>;
+}
+
+interface PeriodicSyncOptions {
+  minInterval: number;
+  powerState?: boolean;
+  networkState?: boolean;
+}
+
+interface PeriodicSyncEvent extends ExtendableEvent {
+  readonly tag: string;
+}
+
+declare var PeriodicSyncManager: {
+  prototype: PeriodicSyncManager;
+  new (): PeriodicSyncManager;
+};
+
+declare global {
+  interface ServiceWorkerRegistration {
+    readonly periodicSync: PeriodicSyncManager;
+  }
 }

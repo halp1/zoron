@@ -31,8 +31,8 @@
 
 <button
   class={twMerge(
-    "row-span-1 flex flex-col items-center gap-2 border-slate-800 bg-opacity-50 py-2 text-sm cursor-pointer after:opacity-0 after:bg-white/15 relative after:w-full after:h-full after:absolute after:top-0 after:left-0 hover:after:opacity-100 after:transition-opacity focus-within:outline-none outline-none",
-    block.color,
+    "row-span-1 flex flex-col items-center gap-2 border-slate-800  py-2 text-sm cursor-pointer after:opacity-0 after:bg-white/15 relative after:w-full after:h-full after:absolute after:top-0 after:left-0 hover:after:opacity-100 after:transition-opacity focus-within:outline-none outline-none",
+    block.color + "/50",
     className
   )}
   in:fly|global={{

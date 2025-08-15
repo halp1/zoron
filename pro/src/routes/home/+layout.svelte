@@ -7,6 +7,7 @@
   import { goto, onNavigate } from "$app/navigation";
   import { page } from "$app/state";
 
+  import bgSrc from "@zoron/common/assets/bg.png";
   import { motion } from "@zoron/common/motion";
   import { PWA, isIOS, storage, zoron } from "@zoron/common/web";
   import { theme } from "@zoron/common/web/theme";
@@ -26,7 +27,6 @@
     faUser
   } from "@fortawesome/free-solid-svg-icons";
 
-  import bgSrc from "@zoron/common/assets/bg.png";
   import { changelog } from "../changelog/changelog";
   import "./home.css";
 
@@ -276,10 +276,9 @@
         <div class="mr-auto"></div>
         <div class="flex w-60 items-center justify-end gap-2">
           <a
-            class="flex h-8 w-32 items-center justify-center gap-2 rounded-full border-2 {$theme ===
-            'amoled'
-              ? 'border-white'
-              : 'border-blue-400'} bg-white bg-opacity-0 transition-all hover:bg-opacity-10"
+            class="flex h-8 w-32 items-center justify-center gap-2 rounded-full border-2 bg-white/0 transition-all hover:bg-white/10"
+            class:border-white={$theme === "amoled"}
+            class:border-blue-400={$theme === "zoron"}
             href="/account"
             in:fly|global={{
               delay: 500,
@@ -301,10 +300,9 @@
             My Account
           </a>
           <a
-            class="flex h-8 w-[100px] items-center justify-center gap-2 rounded-full border-2 {$theme ===
-            'amoled'
-              ? 'border-white'
-              : 'border-blue-400'} bg-white bg-opacity-0 transition-all hover:bg-opacity-10"
+            class="flex h-8 w-32 items-center justify-center gap-2 rounded-full border-2 bg-white/0 transition-all hover:bg-white/10"
+            class:border-white={$theme === "amoled"}
+            class:border-blue-400={$theme === "zoron"}
             href="/logout"
             in:fly|global={{
               delay: 300,
