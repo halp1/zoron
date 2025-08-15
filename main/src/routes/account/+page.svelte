@@ -267,7 +267,7 @@
         >
           Delete account
           <div
-            class="pointer-events-none absolute left-0 h-full bg-red-500 bg-opacity-40 transition-all {deleting ===
+            class="pointer-events-none absolute left-0 h-full bg-red-500/40 transition-all {deleting ===
             0
               ? 'duration-200'
               : 'duration-0'}"

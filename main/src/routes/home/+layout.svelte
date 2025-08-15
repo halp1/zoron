@@ -274,7 +274,7 @@
         <div class="mr-auto"></div>
         <div class="flex w-72 items-center justify-end gap-2">
           <!-- <a
-            class="flex h-8 px-2 items-center justify-center rounded-full border-2 bg-white bg-opacity-0 transition-all hover:bg-opacity-10 {$theme ===
+            class="flex h-8 px-2 items-center justify-center rounded-full border-2 bg-white/0 transition-all hover:bg-white/10 {$theme ===
             'amoled'
               ? 'border-white'
               : 'border-blue-400'}"
@@ -293,7 +293,7 @@
             class="flex h-8 w-32 items-center justify-center gap-2 rounded-full border-2 {$theme ===
             'amoled'
               ? 'border-white'
-              : 'border-blue-400'} bg-white bg-opacity-0 transition-all hover:bg-opacity-10"
+              : 'border-blue-400'} bg-white/0 transition-all hover:bg-white/10"
             href="/account"
             in:fly|global={{
               delay: 500,
@@ -318,7 +318,7 @@
             class="flex h-8 w-[100px] items-center justify-center gap-2 rounded-full border-2 {$theme ===
             'amoled'
               ? 'border-white'
-              : 'border-blue-400'} bg-white bg-opacity-0 transition-all hover:bg-opacity-10"
+              : 'border-blue-400'} bg-white/0 transition-all hover:bg-white/10"
             href="/logout"
             in:fly|global={{
               delay: 300,

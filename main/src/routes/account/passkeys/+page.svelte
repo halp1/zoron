@@ -116,7 +116,7 @@
 
 {#if showNameDialog}
   <div
-    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+    class="fixed inset-0 flex items-center justify-center bg-black/50"
   >
     <div class="w-96 rounded-2xl bg-slate-800 p-10">
       <h2 class="mb-4 text-2xl">Name Your Passkey</h2>

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Root } from "@zoron/common/components";
 
-  import "../app.css";
+  import "@zoron/common/css/app.css";
 
   interface Props {
     children?: import("svelte").Snippet;

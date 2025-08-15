@@ -19,11 +19,14 @@
     "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.1.11",
     "@types/jsdom": "^21.1.7",
+    "@types/lodash": "^4.17.20",
     "@types/web-push": "^3.6.4",
     "@types/wicg-file-system-access": "^2023.10.6",
     "@types/xml2js": "^0.4.14",
     "chalk": "^5.5.0",
+    "date-picker-svelte": "^2.16.0",
     "jsdom": "^26.1.0",
+    "lodash": "^4.17.21",
     "mongodb": "^6.18.0",
     "pdf2json": "^3.2.0",
     "posthog-js": "^1.259.0",
@@ -32,7 +35,7 @@
     "svelte-fa": "^4.0.4",
     "svelte-french-toast": "^1.2.0",
     "tailwind-merge": "^3.3.1",
-    "tailwindcss": "3",
+    "tailwindcss": "4.0.13",
     "web-push": "^3.6.7",
     "xml2js": "^0.6.2"
   }
