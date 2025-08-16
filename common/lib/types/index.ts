@@ -5,3 +5,4 @@ export * from "./gcal";
 export * from "./schedule";
 export * from "./chat";
 export * from "./sw";
+export * from "./navigation";
