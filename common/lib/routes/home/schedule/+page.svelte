@@ -1152,9 +1152,6 @@
 {/if}
 
 <style>
-	@import "tailwindcss";
-	@source inline("bg-{red,blue,purple,orange,green,yellow,pink,indigo,lime,teal}-400/50");
-
   .day-anim-left {
     view-transition-name: schedule-in-out-left;
   }

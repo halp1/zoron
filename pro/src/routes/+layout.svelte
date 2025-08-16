@@ -4,7 +4,7 @@
   import { browser } from "$app/environment";
   import { page } from "$app/state";
 
-  import "../app.css";
+  import "@zoron/common/css/app.css";
   import { PWA, isMobile } from "@zoron/common/web";
 
   import posthog from "posthog-js";

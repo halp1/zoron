@@ -1,3 +1,5 @@
+// This file is symlinked into the subapps.
+
 import type { aspen } from "@zoron/common/aspen";
 import type { Passkey } from "@zoron/common/auth/webauthn/types";
 import type { Relationship, Settings, Subscription } from "@zoron/common/types";
