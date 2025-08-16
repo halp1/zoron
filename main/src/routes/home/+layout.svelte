@@ -51,7 +51,5 @@
   headerWidthClass="w-72"
   contentPaddingClass=""
 >
-  {#snippet children()}
-    {@render children?.()}
-  {/snippet}
+  {@render children?.()}
 </AppHeader>

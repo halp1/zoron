@@ -1,4 +1,5 @@
 import { aspen } from "@zoron/common/aspen";
+import { adapter } from "@zoron/common/auth";
 import { CONSTANTS } from "@zoron/common/constants";
 
 import {
@@ -7,6 +8,7 @@ import {
   SUPABASE_URI,
   VAPID_PUBLIC
 } from "$env/static/private";
+import type { User } from "@auth/sveltekit";
 import { redirect } from "@sveltejs/kit";
 import { execSync } from "child_process";
 
@@ -15,18 +17,27 @@ import type { LayoutServerLoad } from "./$types";
 const commit = execSync("git rev-parse --short HEAD").toString().trim();
 
 export const load: LayoutServerLoad = async (event) => {
-  const auth = await event.locals.auth();
-  if (!auth?.user?.email) return redirect(302, "https://zoron.app/login");
-  if (!auth?.user?.pro) {
-    return redirect(302, "https://zoron.app/pro");
+  const session = await event.locals.auth();
+  if (!session?.user?.email || !session?.user?.id)
+    return redirect(302, "https://zoron.app/login");
+  if (!session.user.pro) {
+    if (import.meta.env.DEV) {
+      await adapter.updateUser!({
+        id: session.user.id,
+        pro: true
+      } satisfies User as any);
+      session.user.pro = true;
+    } else {
+      return redirect(302, "https://zoron.app/pro");
+    }
   }
   const cookies = event.cookies;
   const aspenName =
-    auth?.user?.aspen && cookies.get("secret")
-      ? aspen.decrypt(cookies.get("secret")!, auth.user.aspen).username
+    session?.user?.aspen && cookies.get("secret")
+      ? aspen.decrypt(cookies.get("secret")!, session.user.aspen).username
       : undefined;
   return {
-    session: auth,
+    session,
     username: aspenName,
     env: {
       vapid: VAPID_PUBLIC,

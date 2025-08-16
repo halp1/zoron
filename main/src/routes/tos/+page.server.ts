@@ -1,3 +1,1 @@
-import { redirect } from "@sveltejs/kit";
-
-export const load = () => redirect(301, "/legal/tos");
+../../../../common/lib/routes/tos/+page.server.ts
