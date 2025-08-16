@@ -1,7 +1,9 @@
 <script lang="ts">
+  import { page } from "$app/state";
+
   import { AppHeader } from "@zoron/common/components";
   import type { Tab } from "@zoron/common/types";
-  import { page } from "$app/state";
+
   import {
     faCalendar,
     faChartLine,
@@ -10,6 +12,7 @@
     faShieldAlt,
     faUser
   } from "@fortawesome/free-solid-svg-icons";
+
   import { changelog } from "../changelog/changelog";
   import "./home.css";
 
@@ -37,14 +40,12 @@
   ];
 </script>
 
-<AppHeader 
-  {tabs} 
-  {changelog} 
+<AppHeader
+  {tabs}
+  {changelog}
   isPro={true}
   headerWidthClass="w-60"
   contentPaddingClass="px-10"
 >
-  {#snippet children()}
-    {@render children?.()}
-  {/snippet}
+  {@render children?.()}
 </AppHeader>
