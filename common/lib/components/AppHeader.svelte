@@ -165,8 +165,7 @@
 
           {#if isPro}
             <div
-              class="shine-text relative -mb-[1px] ml-2 overflow-visible text-3xl font-bold tracking-wider text-yellow-200 shadow-yellow-200/50"
-              style="text-shadow: 0 0 20px rgba(255, 255, 153, 0.5); animation: glow-pulse 2s ease-in-out infinite alternate;"
+              class="shine-text ml-2 font-semibold"
               in:fly|global={{
                 x: -20,
                 opacity: 0,
@@ -181,7 +180,7 @@
 
           {#if changelog[0].version[0] === "0" || import.meta.env.DEV}
             <div
-              class="mb-[1px] ml-2 {isPro ? '' : 'mt-[2px]'} font-mono text-slate-600"
+              class="mb-[1px] ml-2 font-mono text-slate-600"
               in:fly|global={{
                 x: -20,
                 opacity: 0,
@@ -199,7 +198,7 @@
           {/if}
 
           <div
-            class="group mb-[3px] ml-2 mt-auto flex items-center font-mono text-sm text-slate-600"
+            class="group mb-[4px] ml-2 mt-auto flex items-center font-mono text-sm text-slate-600"
             in:fly|global={{
               delay: 400 + proDelay + tagDelay,
               duration: 1000,

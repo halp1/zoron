@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { quadIn } from "svelte/easing";
   import { fade, fly, scale } from "svelte/transition";
 
   import { page } from "$app/state";
@@ -80,7 +79,7 @@
         </div>
         <a
           href="/home"
-          class="btn-full btn-outlined mx-auto flex items-center justify-center gap-3 border-green-400 text-base"
+          class="theme-override btn-full btn-outlined mx-auto flex items-center justify-center gap-3 border-green-400 text-base"
           in:fly|global={{
             delay: 450,
             duration: 1000,
@@ -113,7 +112,7 @@
         <div class="grid grid-cols-2 gap-2">
           <a
             href="/account/settings"
-            class="btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-blue-400 text-base"
+            class="theme-override btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-blue-400 text-base"
             in:fly|global={{
               delay: 600,
               duration: 1000,
@@ -127,7 +126,7 @@
           </a>
           <a
             href="/account/friends"
-            class="btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-blue-400 text-base"
+            class="theme-override btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-blue-400 text-base"
             in:fly|global={{
               delay: 700,
               duration: 1000,
@@ -142,7 +141,7 @@
           {#if page.data.session.user.password}
             <a
               href="/account/password"
-              class="btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-orange-400 text-base"
+              class="theme-override btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-orange-400 text-base"
               in:fly|global={{
                 delay: 800,
                 duration: 1000,
@@ -157,7 +156,7 @@
           {:else}
             <a
               href="/account/password"
-              class="btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-orange-400 text-base"
+              class="theme-override btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-orange-400 text-base"
               in:fly|global={{
                 delay: 800,
                 duration: 1000,
@@ -172,7 +171,7 @@
           {/if}
           <a
             href="/account/update"
-            class="btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-orange-400 text-base"
+            class="theme-override btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-orange-400 text-base"
             in:fly|global={{
               delay: 900,
               duration: 1000,
@@ -190,7 +189,7 @@
               await signOut({ redirect: true, callbackUrl: "/" });
               toast.success("You have been signed out.");
             }}
-            class="btn-full btn-outlined col-span-1 flex flex-1 items-center justify-center gap-3 border-red-500 text-base"
+            class="theme-override btn-full btn-outlined col-span-1 flex flex-1 items-center justify-center gap-3 border-red-500 text-base"
             in:fly|global={{
               delay: 1000,
               duration: 1000,
@@ -206,7 +205,7 @@
             onclick={() => {
               deleting = 0;
             }}
-            class="btn-full btn-outlined col-span-1 flex flex-1 items-center justify-center gap-3 border-red-500 text-base"
+            class="theme-override btn-full btn-outlined col-span-1 flex flex-1 items-center justify-center gap-3 border-red-500 text-base"
             in:fly|global={{
               delay: 1100,
               duration: 1000,

@@ -94,7 +94,7 @@
       >
         {#each changelog.slice(0, 5) as update}
           <a
-            class="relative flex items-center gap-3 rounded-full px-2 hover:bg-slate-50 hover:bg-opacity-5"
+            class="relative flex items-center gap-3 rounded-full px-2 hover:bg-slate-50/10"
             href="/changelog#{update.version}"
           >
             <div

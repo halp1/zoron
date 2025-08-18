@@ -30,6 +30,7 @@ declare global {
           key: string;
         };
         commit: string;
+				pro: boolean;
       };
       hideFooter: boolean;
       users?: {
