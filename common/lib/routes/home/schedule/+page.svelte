@@ -37,11 +37,38 @@
   const uploadSchedule = async () => {
     if (updating) return toast.error("Schedule is already updating");
 
-    const [handle] = await window.showOpenFilePicker({
-      types: [{ accept: { "application/pdf": [".pdf"] }, description: "PDF files" }],
-    });
+    let file: File;
 
-    const file = await handle.getFile();
+    // Check if File System Access API is supported
+    if (window.showOpenFilePicker) {
+      const [handle] = await window.showOpenFilePicker({
+        types: [{ accept: { "application/pdf": [".pdf"] }, description: "PDF files" }],
+      });
+      file = await handle.getFile();
+    } else {
+      // Fallback to input element
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = "application/pdf,.pdf";
+      input.multiple = false;
+
+      const fileSelected = new Promise<File>((resolve, reject) => {
+        input.onchange = () => {
+          const selectedFile = input.files?.[0];
+          if (selectedFile) {
+            resolve(selectedFile);
+          } else {
+            reject(new Error("No file selected"));
+          }
+        };
+        input.oncancel = () => {
+          reject(new Error("File selection cancelled"));
+        };
+      });
+
+      input.click();
+      file = await fileSelected;
+    }
 
     const base64Content = await file
       .arrayBuffer()
@@ -49,14 +76,37 @@
 
     updating = true;
     const currentDate = new Date();
-    const jan25_2024 = new Date(2026, 0, 25);
-    const semester = currentDate >= jan25_2024 ? 2 : 1;
+    const cuttoff = new Date(2026, 0, 25);
+    const semester = currentDate >= cuttoff ? 2 : 1;
 
     const { dismiss } = toast.loading("Generating schedule...");
     const res = await requests.post("/api/aspen/schedule/gen", {
       semester,
       schedule: base64Content,
     });
+    if (res.success === true) {
+      history.go(0);
+      toast.success("Schedule updated successfully");
+    } else toast.error(res.error);
+    dismiss();
+    updating = false;
+  };
+
+  const getLoadingText = (percentage: number) =>
+    `Generating schedule (${percentage}%)...`;
+  const updateSchedule = async () => {
+    if (updating) return toast.error("Schedule is already updating");
+    updating = true;
+    const currentDate = new Date();
+    const cuttoff = new Date(2026, 0, 25);
+    const semester = currentDate >= cuttoff ? 2 : 1;
+
+    const { dismiss, update } = toast.loading(getLoadingText(0));
+    const res = await requests.stream(
+      "/api/aspen/schedule/gen",
+      { semester },
+      (step, total) => update(getLoadingText(Math.round((step / total) * 100)))
+    );
     if (res.success === true) {
       history.go(0);
       toast.success("Schedule updated successfully");
@@ -625,14 +675,14 @@
     </div>
     <button
       class="btn-full btn-outlined text-base"
-      onclick={uploadSchedule}
+      onclick={page.data.env.pro ? updateSchedule : uploadSchedule}
       in:fly|global={{
         delay: 350,
         duration: 1000,
         opacity: 0,
         y: -20,
         easing: motion.transitions.spring(400, 20),
-      }}>Upload Schedule</button
+      }}>{page.data.env.pro ? "Load" : "Upload"} Schedule</button
     >
     <div
       class="flex max-w-96 flex-wrap items-center justify-center gap-1 px-3 text-slate-600"
@@ -721,7 +771,7 @@
         class="btn-circle relative border-2 {$theme === 'amoled'
           ? 'border-white'
           : 'border-slate-600'}"
-        onclick={uploadSchedule}
+        onclick={page.data.env.pro ? updateSchedule : uploadSchedule}
         disabled={updating}
         title="Refresh schedule"
       >
