@@ -1,4 +1,4 @@
-import type { ChangelogEntry } from "./types";
+import type { ChangelogEntry } from "@zoron/common/routes/changelog/types";
 
 export const changelog: ChangelogEntry[] = [
   {

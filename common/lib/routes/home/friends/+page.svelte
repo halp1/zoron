@@ -219,7 +219,7 @@
   <title>Friends | {page.data.env.name}</title>
 </svelte:head>
 
-<main class="relative h-screen overflow-hidden">
+<div class="relative h-screen overflow-hidden">
   <button
     class="btn-circle absolute left-4 top-4 z-50 border-2 border-slate-600"
     onclick={async () => {
@@ -470,6 +470,8 @@
                         className="border-b-4 border-r-4 {i <= 5
                           ? 'border-t-4'
                           : ''} {i % 6 === 0 ? 'border-l-4' : ''}"
+												day={i % 6}
+												lunch={friend.data.schedule.lunches[i % 6]}
                       />
                     {/each}
                   </div>
@@ -519,6 +521,8 @@
                           {block}
                           className="border-2 border-slate-800 row-span-2"
                           freeFontSize="text-2xl"
+                          day={selectedDay}
+                          lunch={friend.data.schedule.lunches[selectedDay]}
                         />
                       {/each}
                     </div>
@@ -535,4 +539,4 @@
       {/if}
     </div>
   </div>
-</main>
+</div>
