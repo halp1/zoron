@@ -1,8 +1,9 @@
-import { redirect } from "@sveltejs/kit";
 import { adapter } from "@zoron/common/auth";
 import { query, transformID } from "@zoron/common/database";
 
-import type { PageServerLoad } from "./$types";
+import { redirect } from "@sveltejs/kit";
+
+import type { PageServerLoad } from "../../../../../main/.svelte-kit/types/src/routes/home/friends/$types";
 
 export const load: PageServerLoad = async ({ locals: { auth } }) => {
   const session = await auth();

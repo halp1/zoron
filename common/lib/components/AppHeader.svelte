@@ -1,12 +1,12 @@
 <script lang="ts">
   import { get, writable } from "svelte/store";
-  import { fade, fly, scale } from "svelte/transition";
+  import { fly, scale } from "svelte/transition";
   import { onMount } from "svelte";
   import { onNavigate } from "$app/navigation";
   import { page } from "$app/state";
   import bgSrc from "@zoron/common/assets/bg.png";
   import { motion } from "@zoron/common/motion";
-  import { PWA, isIOS, storage } from "@zoron/common/web";
+  import { PWA, isIOS, storage, toast } from "@zoron/common/web";
   import { theme } from "@zoron/common/web/theme";
   import type { Tab, Changelog } from "@zoron/common/types";
   import Fa from "svelte-fa";
@@ -25,7 +25,6 @@
     tabs,
     changelog,
     isPro = false,
-    headerWidthClass = "w-72",
     contentPaddingClass = "px-10",
     children,
   }: Props = $props();
@@ -65,6 +64,8 @@
     activeTabIndex === -1 ? 0 : tabRefs[activeTabIndex]?.offsetWidth || 0
   );
 
+  let availableTabs = $derived(tabs.filter((tab) => !tab.mobileOnly));
+
   let animationDirection: "left" | "right" | "none" = $state("none");
 
   onNavigate((navigation) => {
@@ -92,6 +93,9 @@
   });
 
   const prompt = PWA.prompt;
+
+  const tagDelay = changelog[0].version[0] === "0" || import.meta.env.DEV ? 100 : 0;
+  const proDelay = isPro ? 100 : 0;
 </script>
 
 <svelte:head>
@@ -133,7 +137,7 @@
         bind:this={tabContainer}
       >
         <!-- Logo and title section -->
-        <div class="flex {headerWidthClass} items-center text-3xl">
+        <div class="flex w-80 items-center text-3xl">
           <img
             src="/favicon.png"
             alt="Site Icon"
@@ -143,6 +147,7 @@
               easing: motion.transitions.spring(500, 15, 1.2),
               opacity: 0,
               duration: 1000,
+              delay: 100,
             }}
           />
           <div
@@ -152,7 +157,7 @@
               opacity: 0,
               easing: motion.transitions.spring(300, 30),
               duration: 1000,
-              delay: 0.2,
+              delay: 200,
             }}
           >
             {page.data.env.name}
@@ -162,6 +167,13 @@
             <div
               class="shine-text relative -mb-[1px] ml-2 overflow-visible text-3xl font-bold tracking-wider text-yellow-200 shadow-yellow-200/50"
               style="text-shadow: 0 0 20px rgba(255, 255, 153, 0.5); animation: glow-pulse 2s ease-in-out infinite alternate;"
+              in:fly|global={{
+                x: -20,
+                opacity: 0,
+                easing: motion.transitions.spring(300, 30),
+                duration: 1000,
+                delay: 300,
+              }}
             >
               PRO
             </div>
@@ -171,11 +183,11 @@
             <div
               class="mb-[1px] ml-2 {isPro ? '' : 'mt-[2px]'} font-mono text-slate-600"
               in:fly|global={{
-                delay: 0.5,
-                duration: 1000,
+                x: -20,
                 opacity: 0,
-                x: 20,
-                easing: motion.transitions.spring(500, 15, 0.2),
+                easing: motion.transitions.spring(300, 30),
+                duration: 1000,
+                delay: 300 + proDelay,
               }}
             >
               {#if import.meta.env.DEV}
@@ -189,7 +201,7 @@
           <div
             class="group mb-[3px] ml-2 mt-auto flex items-center font-mono text-sm text-slate-600"
             in:fly|global={{
-              delay: 0.35,
+              delay: 400 + proDelay + tagDelay,
               duration: 1000,
               opacity: 0,
               y: 20,
@@ -206,7 +218,7 @@
         <div class="ml-auto"></div>
 
         <!-- Navigation tabs -->
-        {#each tabs.filter((tab) => !tab.mobileOnly) as tab, idx}
+        {#each availableTabs as tab, idx}
           <a
             href={tab.path}
             data-sveltekit-preload-code
@@ -215,7 +227,7 @@
             class:active={activeTabIndex === tabs.indexOf(tab)}
             bind:this={tabRefs[idx]}
             in:fly|global={{
-              delay: (idx + 1) * 75,
+              delay: idx * 100 + 500 + proDelay + tagDelay,
               duration: 1000,
               opacity: 0,
               y: -5,
@@ -229,18 +241,41 @@
         <div class="mr-auto"></div>
 
         <!-- User actions section -->
-        <div class="flex {headerWidthClass} items-center justify-end gap-2">
+        <div class="flex w-80 items-center justify-end gap-2">
+          {#if !isPro}
+            <!-- svelte-ignore a11y_mouse_events_have_key_events -->
+            <a
+              class="flex h-8 px-2 items-center justify-center rounded-full border-2 bg-white/0 transition-all hover:bg-white/10 {$theme ===
+              'amoled'
+                ? 'border-white'
+                : 'border-blue-400'}"
+              href="/pro"
+              in:fly|global={{
+                delay: availableTabs.length * 100 + 600 + tagDelay,
+                duration: 1000,
+                opacity: 0,
+                x: 20,
+                easing: motion.transitions.spring(300, 30),
+              }}
+              onclick={(e) => {
+                e.preventDefault();
+                toast.error(`${page.data.env.name} PRO is coming soon!`);
+              }}
+            >
+              <span class="shine-text" data-text="PRO">PRO</span>
+            </a>
+          {/if}
           <a
             class="flex h-8 w-32 items-center justify-center gap-2 rounded-full border-2 bg-white/0 transition-all hover:bg-white/10"
             class:border-white={$theme === "amoled"}
             class:border-blue-400={$theme === "zoron"}
             href="/account"
             in:fly|global={{
-              delay: 500,
+              delay: availableTabs.length * 100 + 700 + tagDelay,
               duration: 1000,
               opacity: 0,
               x: 20,
-              easing: motion.transitions.spring(500, 15, 1.2),
+              easing: motion.transitions.spring(300, 30),
             }}
           >
             {#if typeof page.data.session?.user?.image === "string"}
@@ -255,18 +290,16 @@
             My Account
           </a>
           <a
-            class="flex h-8 {isPro
-              ? 'w-32'
-              : 'w-[100px]'} items-center justify-center gap-2 rounded-full border-2 bg-white/0 transition-all hover:bg-white/10"
+            class="flex h-8 w-32 items-center justify-center gap-2 rounded-full border-2 bg-white/0 transition-all hover:bg-white/10"
             class:border-white={$theme === "amoled"}
             class:border-blue-400={$theme === "zoron"}
             href="/logout"
             in:fly|global={{
-              delay: 300,
+              delay: availableTabs.length * 100 + 800 + tagDelay,
               duration: 1000,
               opacity: 0,
               x: 20,
-              easing: motion.transitions.spring(500, 15, 1.2),
+              easing: motion.transitions.spring(300, 30),
             }}
           >
             <Fa icon={faSignOut} />
@@ -283,6 +316,13 @@
             (tabContainer?.getBoundingClientRect().left || 0) -
             windowWidth +
             windowWidth}px"
+          in:fly|global={{
+            y: 10,
+            opacity: 0,
+            easing: motion.transitions.spring(300, 30),
+            duration: 1000,
+            delay: 1000,
+          }}
         ></div>
       </div>
     </div>

@@ -20,7 +20,6 @@
     faChevronLeft,
     faChevronRight,
     faClose,
-    faInfoCircle,
     faListUl,
     faRotateRight,
   } from "@fortawesome/free-solid-svg-icons";
@@ -591,6 +590,19 @@
       dayViewRef?.parentElement?.removeEventListener("wheel", scrollHandler as any);
     };
   });
+
+  let windowWidth = $state(typeof window === "undefined" ? 767 : window.innerWidth);
+  let isMobile = $derived(windowWidth < 768);
+  onMount(() => {
+    const handleResize = () => {
+      windowWidth = window.innerWidth;
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  });
 </script>
 
 <svelte:head>
@@ -646,6 +658,14 @@
       class="items-center gap-3 rounded-full {$theme === 'amoled'
         ? 'border-2 border-white bg-black'
         : 'bg-slate-800'} p-2 mb-4 md:mb-0 flex md:flex-col md:fixed md:left-6 md:top-1/2 md:-translate-y-1/2"
+      in:fly|global={{
+        delay: 200,
+        duration: 1000,
+        opacity: 0,
+        x: isMobile ? 0 : -20,
+        y: isMobile ? 20 : 0,
+        easing: motion.transitions.spring(300, 30),
+      }}
     >
       <button
         class="btn-circle relative border-2 bg-black {$theme === 'amoled'
@@ -713,7 +733,16 @@
     </div>
     {#if mode === "full"}
       <div class="flex md:min-h-full flex-1 flex-col md:ml-16">
-        <div class="py-2 text-center text-slate-600 mt-[env(safe-area-inset-top)]">
+        <div
+          class="py-2 text-center text-slate-600 mt-[env(safe-area-inset-top)]"
+          in:fly|global={{
+            delay: 200,
+            duration: 1000,
+            opacity: 0,
+            y: -20,
+            easing: motion.transitions.spring(300, 30),
+          }}
+        >
           Click a class to see who you share it with.
         </div>
         <div
@@ -1184,6 +1213,4 @@
   .animate-in-right {
     animation: slide-in-left 0.3s;
   }
-
-
 </style>
