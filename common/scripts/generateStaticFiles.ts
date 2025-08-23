@@ -1,7 +1,5 @@
-import { readFile, readdir, writeFile } from "fs/promises";
-import { join, relative } from "path";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
+import { mkdir, readdir, writeFile } from "node:fs/promises";
+import { dirname, join, relative } from "node:path";
 
 async function getAllFilePaths(dir: string): Promise<string[]> {
   const files = await readdir(dir, { withFileTypes: true });
@@ -21,16 +19,18 @@ async function getAllFilePaths(dir: string): Promise<string[]> {
 
 // Main execution
 const staticDir = join(__dirname, "../static");
-const serviceWorkerPath = join(process.cwd(), "src/service-worker.js");
+const serviceWorkerPath = join(__dirname, "../lib/sw/index.ts");
 
 const allFiles = await getAllFilePaths(staticDir);
 const relativePaths = allFiles.map(
   (file) => "/" + relative(staticDir, file).replace(/\\/g, "/")
 );
 
-const serviceWorkerContent = await readFile(serviceWorkerPath, "utf-8");
-const lines = serviceWorkerContent.split("\n");
-lines[8] = `const assets = ${JSON.stringify(relativePaths)};`;
+await mkdir(dirname(serviceWorkerPath), { recursive: true });
 
-await writeFile(serviceWorkerPath, lines.join("\n"), "utf-8");
+await writeFile(
+  serviceWorkerPath,
+  `export const assets = ${JSON.stringify(relativePaths)};`,
+  "utf-8"
+);
 console.log("Static assets list updated successfully");

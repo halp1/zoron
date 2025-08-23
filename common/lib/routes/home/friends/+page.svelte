@@ -20,7 +20,7 @@
     faCheck,
     faChevronLeft,
     faChevronRight,
-    faClose
+    faClose,
   } from "@fortawesome/free-solid-svg-icons";
 
   const users = page.data.users!.sort((a, b) => {
@@ -33,11 +33,10 @@
     (page.data.session!.user!.relationships ?? [])
       .map((rel) => ({
         ...rel,
-        userData: users.find((user) => user.id === rel.user)
+        userData: users.find((user) => user.id === rel.user),
       }))
       .filter(
-        (r): r is { userData: (typeof users)[number] } & Relationship =>
-          !!r.userData
+        (r): r is { userData: (typeof users)[number] } & Relationship => !!r.userData
       )
   );
 
@@ -103,10 +102,7 @@
       if (res.success === false) {
         toast.error(res.error);
       } else {
-        relationships = [
-          ...relationships,
-          { ...res.data.created, userData: user }
-        ];
+        relationships = [...relationships, { ...res.data.created, userData: user }];
         toast.success(res.data.message);
       }
     };
@@ -120,6 +116,7 @@
         toast.error(res.error);
       } else {
         relationships = relationships.filter((rel) => rel.user !== user.id);
+        
         toast.success(res.data.message);
       }
     };
@@ -135,12 +132,13 @@
       } else {
         relationships = [
           ...relationships.filter((rel) => rel.user !== user.id), // Remove the old request
-          { ...res.data.created, userData: user } // Add the new accepted relationship
+          { ...res.data.created, userData: user }, // Add the new accepted relationship
         ];
         toast.success(res.data.message);
       }
     };
   }
+  $inspect(relationships);
 
   // schedule viewing
   let selectedDay = $state(0);
@@ -155,7 +153,7 @@
     "bg-green-400",
     "bg-yellow-400",
     "bg-pink-400",
-    "bg-indigo-400"
+    "bg-indigo-400",
     // "bg-lime-400",
     // "bg-teal-400"
   ];
@@ -180,10 +178,7 @@
       if (course === null) continue;
       if (course.course === null) continue;
       if (courseColorMap.has(course.course)) continue;
-      courseColorMap.set(
-        course.course,
-        colors[courseColorMap.size % colors.length]
-      );
+      courseColorMap.set(course.course, colors[courseColorMap.size % colors.length]);
     }
     const newSchedule: Block[] = schedule.schedule
       .slice()
@@ -199,7 +194,7 @@
       const index = i * 6 + (lunch === 1 ? 2 : lunch === 2 ? 3 : 4);
       newSchedule.splice(index, 0, {
         type: "lunch",
-        color: courseColorMap.get("lunch")!
+        color: courseColorMap.get("lunch")!,
       });
     }
 
@@ -232,9 +227,7 @@
     class="relative flex h-full w-[200vw] md:w-auto md:!transform-none"
     style="transform: translateX(-{!showFriend ? 0 : 100}vw);"
   >
-    <div
-      class="h-full w-screen border-r-2 border-slate-600 px-10 pt-10 md:w-1/3"
-    >
+    <div class="h-full w-screen border-r-2 border-slate-600 px-10 pt-10 md:w-1/3">
       <div class="text-center text-4xl">Friends</div>
       <div class="relative">
         <input
@@ -289,14 +282,11 @@
                   }}
                 >
                   {user.name}
-                  <span class="ml-2 text-sm text-slate-400">({user.email})</span
-                  >
+                  <span class="ml-2 text-sm text-slate-400">({user.email})</span>
                 </button>
               {/each}
             {:else}
-              <div class="p-2 text-center text-sm text-slate-400">
-                No matches found
-              </div>
+              <div class="p-2 text-center text-sm text-slate-400">No matches found</div>
             {/if}
           </div>
         {/if}
@@ -314,9 +304,7 @@
                 : ''}"
             >
               <span>{rel.userData.name}</span>
-              <div
-                class="mx-2 flex-1 border-t-2 border-dashed border-slate-400"
-              ></div>
+              <div class="mx-2 flex-1 border-t-2 border-dashed border-slate-400"></div>
               <button
                 class="btn-circle cursor-pointer border-2 border-slate-600 text-red-500"
                 onclick={() => {
@@ -337,14 +325,10 @@
           {/each}
 
           {#if relationships.filter((rel) => rel.type === "request-incoming").length === 0}
-            <div class="p-2 text-center text-sm text-slate-400">
-              No incoming requests
-            </div>
+            <div class="p-2 text-center text-sm text-slate-400">No incoming requests</div>
           {/if}
         </div>
-        <div
-          class="mx-2 mt-2 hidden w-0.5 rounded-full bg-slate-600 md:block"
-        ></div>
+        <div class="mx-2 mt-2 hidden w-0.5 rounded-full bg-slate-600 md:block"></div>
         <div class="flex-1">
           <div class="text-center text-xl">Outgoing</div>
           {#each relationships.filter((rel) => rel.type === "request-outgoing") as rel, idx (rel.user)}
@@ -354,9 +338,7 @@
                 : ''}"
             >
               <span>{rel.userData.name}</span>
-              <div
-                class="mx-2 flex-1 border-t-2 border-dashed border-slate-400"
-              ></div>
+              <div class="mx-2 flex-1 border-t-2 border-dashed border-slate-400"></div>
               <button
                 class="btn-circle cursor-pointer border-2 border-slate-600 text-red-500"
                 onclick={() => {
@@ -368,16 +350,14 @@
             </div>
           {/each}
           {#if relationships.filter((rel) => rel.type === "request-outgoing").length === 0}
-            <div class="p-2 text-center text-sm text-slate-400">
-              No outgoing requests
-            </div>
+            <div class="p-2 text-center text-sm text-slate-400">No outgoing requests</div>
           {/if}
         </div>
       </div>
       <div class="mt-5 text-center text-2xl">Friends</div>
       <div
-        class="grid gap-3 {relationships.filter((rel) => rel.type === 'friend')
-          .length === 0
+        class="grid gap-3 {relationships.filter((rel) => rel.type === 'friend').length ===
+        0
           ? 'grid-cols-1'
           : 'grid-cols-1 md:grid-cols-2'}"
       >
@@ -393,8 +373,8 @@
               friend = {
                 ...rel,
                 data: {
-                  status: "loading"
-                }
+                  status: "loading",
+                },
               };
 
               const res = await requests.get<aspen.Types.Schedule.Schedule>(
@@ -407,9 +387,7 @@
             }}
           >
             <span>{rel.userData.name}</span>
-            <div
-              class="mx-2 flex-1 border-t-2 border-dashed border-slate-400"
-            ></div>
+            <div class="mx-2 flex-1 border-t-2 border-dashed border-slate-400"></div>
             <button
               class="btn-circle cursor-pointer border-2 border-slate-600 text-red-500"
               onclick={(e) => {
@@ -439,9 +417,7 @@
         <Fa icon={faArrowLeft} />
       </button>
       {#if !friend}
-        <div class="m-auto text-center text-2xl">
-          Select a friend to view details.
-        </div>
+        <div class="m-auto text-center text-2xl">Select a friend to view details.</div>
       {:else}
         <div class=" mx-4 my-auto md:m-auto">
           <div class="text-center text-2xl">{friend.userData.name}</div>
@@ -460,18 +436,18 @@
                 <div
                   class="custom-scroll hidden min-h-full flex-1 justify-center overflow-auto pt-10 md:flex"
                 >
-                  <div
-                    class="grid min-h-full grid-cols-6 border-0 border-slate-800"
-                  >
+                  <div class="grid min-h-full grid-cols-6 border-0 border-slate-800">
                     {#each generated as block, i}
                       <ScheduleBlock
                         index={i}
                         {block}
-                        className="border-b-4 border-r-4 {i <= 5
-                          ? 'border-t-4'
-                          : ''} {i % 6 === 0 ? 'border-l-4' : ''}"
-												day={i % 6}
-												lunch={friend.data.schedule.lunches[i % 6]}
+                        className="border-b-4 border-r-4 {i <= 5 ? 'border-t-4' : ''} {i %
+                          6 ===
+                        0
+                          ? 'border-l-4'
+                          : ''}"
+                        day={i % 6}
+                        lunch={friend.data.schedule.lunches[i % 6]}
                       />
                     {/each}
                   </div>
@@ -529,9 +505,7 @@
                   {/key}
                 </Swipeable>
               {:else}
-                <div class="text-center text-slate-500">
-                  No schedule available
-                </div>
+                <div class="text-center text-slate-500">No schedule available</div>
               {/if}
             </div>
           {/if}

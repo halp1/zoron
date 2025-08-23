@@ -8,6 +8,7 @@ import { AUTH_SECRET, DOMAIN, MAILGUN_KEY } from "$env/static/private";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import { SvelteKitAuth, type SvelteKitAuthConfig, type User } from "@auth/sveltekit";
 import type { Adapter } from "@auth/core/adapters";
+
 import type { EmailUserConfig } from "@auth/core/providers/email";
 
 export const adapter: Adapter = MongoDBAdapter(dbClient, {

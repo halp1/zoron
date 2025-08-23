@@ -242,11 +242,13 @@
   const individualGPA = (
     letter?: string,
     level: "honors" | "ap" | "cp" = "cp",
-		aPlus: boolean = true
+    aPlus: boolean = true
   ) => {
     if (!letter) return null;
     const bonus = level === "honors" ? 0.5 : level === "ap" ? 1.0 : 0.0;
-    return Math.min((gpaData[letter as LetterGrade] ?? 0), aPlus ? 4.33 : 4) + bonus;
+    return (
+      Math.min(gpaData[letter as LetterGrade] ?? 0, aPlus ? 4.33 : 4) + bonus
+    );
   };
 
   const calculateGPA = (
@@ -288,7 +290,7 @@
   let transcriptTime: "current" | "g9" | "g10" | "g11" | "g12" | "all" =
     $state("current");
 
-  let weightedGPA = $state(false);
+  let weightedGPA = $state<"unweighted" | "lhs" | "weighted">("lhs");
 
   let transcript = $derived(
     $zoron.transcript.classes.filter((c) => {
@@ -326,13 +328,14 @@
         (c) =>
           (individualGPA(
             c.final!,
-            !weightedGPA
+            weightedGPA !== "weighted"
               ? "cp"
               : c.level === "Honors"
                 ? "honors"
                 : c.level === "AP"
                   ? "ap"
-                  : "cp", !weightedGPA
+                  : "cp",
+            weightedGPA === "lhs"
           ) ?? 0) * c.credit
       )
       .reduce((a, b) => a + b, 0) /
@@ -494,8 +497,9 @@
     />
     <ListSelect
       items={[
-        { value: false, label: "Unweighted" },
-        { value: true, label: "Weighted" }
+        { value: "unweighted", label: "Unweighted" },
+        { value: "lhs", label: "LHS" },
+        { value: "weighted", label: "Weighted" }
       ]}
       bind:value={weightedGPA}
     />

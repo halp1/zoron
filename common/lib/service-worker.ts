@@ -1,31 +1,30 @@
-import { version } from "$service-worker";
-
-/// <reference types="@sveltejs/kit" />
 /// <reference no-default-lib="true"/>
 /// <reference lib="esnext" />
-/// <reference path="../node_modules/typescript/lib/lib.webworker.d.ts" />
+/// <reference lib="webworker" />
+/// <reference types="@sveltejs/kit" />
+/// <reference types="../.svelte-kit/ambient.d.ts" />
+import { version } from "$service-worker";
 
-// prettier-ignore
-const assets = ["/web-app-manifest-192x192.png","/screenshots/desktop.png","/screenshots/mobile.png","/apple-touch-icon.png","/web-app-manifest-512x512.png","/favicon-48x48.png","/fonts/suse/regular.ttf","/fonts/suse/bold.ttf","/favicon.png","/apple-touch-icon-precomposed.png","/robots.txt","/favicon.ico","/site.webmanifest","/seo/og-image.png","/icons/icon-152x152.png","/icons/icon-384x384.png","/icons/icon-192x192.png","/icons/icon-96x96.png","/icons/icon-144x144.png","/icons/icon-72x72.png","/icons/icon-512x512.png","/icons/icon-128x128.png"];
+import type { PushEvent } from "../../common/lib/types";
 
-const sw = /** @type {ServiceWorkerGlobalScope} */ (
-  /** @type {unknown} */ (self)
-);
+import { assets } from "../../common/lib/sw";
 
 const CACHE_NAME = `app-cache-${version}`;
+declare var self: ServiceWorkerGlobalScope;
+declare var clients: Clients;
 
 if (!import.meta.env.DEV) {
-  sw.addEventListener("install", (event) => {
+  self.addEventListener("install", (event: ExtendableEvent) => {
     console.log(`[SW] Installed (${version})`);
     event.waitUntil(
       caches
         .open(CACHE_NAME)
-        .then((cache) => cache.addAll(assets))
-        .then(() => sw.skipWaiting())
+        .then((cache: Cache) => cache.addAll(assets))
+        .then(() => self.skipWaiting())
     );
   });
 
-  sw.addEventListener("fetch", (event) => {
+  self.addEventListener("fetch", (event) => {
     event.respondWith(
       caches.match(event.request).then(
         (response) =>
@@ -38,27 +37,24 @@ if (!import.meta.env.DEV) {
     );
   });
 
-  sw.addEventListener("activate", (event) => {
+  self.addEventListener("activate", (event) => {
     event.waitUntil(
       caches
         .keys()
         .then((keys) =>
           Promise.all(
-            keys
-              .filter((key) => key !== CACHE_NAME)
-              .map((key) => caches.delete(key))
+            keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
           )
         )
-        .then(() => sw.clients.claim())
+        .then(() => self.clients.claim())
     );
   });
 
-  sw.addEventListener("push", (event) => {
+  self.addEventListener("push", (event) => {
     event.waitUntil(
-      new Promise(async (resolve, reject) => {
+      new Promise<void>(async (resolve, reject) => {
         try {
-          /** @type {import('./lib/types/sw').PushEvent} */
-          const data = event.data ? event.data.json() : {};
+          const data: PushEvent = event.data ? event.data.json() : {};
 
           if (data.type === "auth-request") {
             await Promise.all(
@@ -69,7 +65,13 @@ if (!import.meta.env.DEV) {
                 switch (item.type) {
                   case "grade":
                     title = `Grade posted: ${item.class}`;
-                    body = `Assignment: ${item.assignment}\nGrade: ${item.scoring ? (item.grade === item.scoring.scored.toString() ? `${item.scoring.scored} / ${item.scoring.total}` : `${item.grade} (${item.scoring.scored} / ${item.scoring.total})`) : `${item.grade}`}`;
+                    body = `Assignment: ${item.assignment}\nGrade: ${
+                      typeof item.scoring === "object" && item.scoring
+                        ? item.grade === item.scoring.scored.toString()
+                          ? `${item.scoring.scored} / ${item.scoring.total}`
+                          : `${item.grade} (${item.scoring.scored} / ${item.scoring.total})`
+                        : `${item.grade}`
+                    }`;
                     break;
                   case "posted-grade":
                     title = `Term grade posted for ${item.classname}`;
@@ -84,9 +86,9 @@ if (!import.meta.env.DEV) {
                     break;
                 }
 
-                await sw.registration.showNotification(title, {
+                await self.registration.showNotification(title, {
                   body,
-                  icon: "/favicon.png"
+                  icon: "/favicon.png",
                 });
               })
             );
@@ -100,7 +102,7 @@ if (!import.meta.env.DEV) {
     );
   });
 
-  sw.addEventListener("notificationclick", (e) => {
+  self.addEventListener("notificationclick", (e) => {
     // Close the notification popout
     e.notification.close();
     e.waitUntil(

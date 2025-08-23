@@ -27,3 +27,4 @@ cache.json
 
 *.log
 .VSCodeCounter
+*/lib/sw/index.ts

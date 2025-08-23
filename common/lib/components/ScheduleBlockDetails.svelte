@@ -62,7 +62,7 @@
   <div
     class="{$theme === 'amoled'
       ? 'bg-black border-4 border-white'
-      : 'bg-slate-800'}  w-full md:w-96 rounded-xl m-4 p-5 flex flex-col"
+      : 'bg-slate-800'}  max-w-96 rounded-xl m-4 p-5 flex flex-col"
   >
     <h1 class="text-2xl text-center mb-1">
       {block.type === "block"

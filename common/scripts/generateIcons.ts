@@ -4,7 +4,7 @@ import sharp from "sharp";
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
-const relative = (p) => path.resolve(__dirname, "../static", p);
+const relative = (p: string) => path.resolve(__dirname, "../static", p);
 
 const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
 const inputPath = relative("./favicon.png");

@@ -9,7 +9,8 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "lib": ["esnext", "DOM", "DOM.Iterable", "WebWorker"]
   },
   "include": [
     ".svelte-kit/ambient.d.ts",
@@ -26,7 +27,7 @@
     "../common/**/*.js",
     "../common/**/*.ts",
     "../common/**/*.svelte",
-		"scripts/**/*.ts"
+    "scripts/**/*.ts"
   ]
   // Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
   // except @zoron/common which is handled by https://kit.svelte.dev/docs/configuration#files
