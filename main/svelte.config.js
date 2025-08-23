@@ -17,6 +17,14 @@ const config = {
     },
     files: {
       assets: fileURLToPath(new URL("../common/static", import.meta.url))
+    },
+    experimental: {
+      remoteFunctions: true
+    }
+  },
+  compilerOptions: {
+    experimental: {
+      async: true
     }
   }
 };

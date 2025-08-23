@@ -13,12 +13,20 @@ const config = {
     csrf: { checkOrigin: false },
     alias: {
       // Every `import … from '@zoron/common/…'` goes to ../common/lib/…
-      "@zoron/common": fileURLToPath(new URL("../common/lib", import.meta.url)),
+      "@zoron/common": fileURLToPath(new URL("../common/lib", import.meta.url))
     },
     files: {
-      assets: fileURLToPath(new URL("../common/static", import.meta.url)),
+      assets: fileURLToPath(new URL("../common/static", import.meta.url))
     },
+    experimental: {
+      remoteFunctions: true
+    }
   },
+  compilerOptions: {
+    experimental: {
+      async: true
+    }
+  }
 };
 
 export default config;
