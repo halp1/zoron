@@ -3,6 +3,7 @@ import { api } from "@zoron/common/server";
 import type { Relationship } from "@zoron/common/types";
 
 import type { RequestHandler } from "./$types";
+import type { User } from "@auth/sveltekit";
 
 export const POST: RequestHandler = async ({ locals: { auth }, request }) => {
   const session = await auth();

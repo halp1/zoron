@@ -47,6 +47,7 @@ declare global {
   }
 }
 
+
 declare module "@auth/sveltekit" {
   interface User {
     role?: "user" | "admin";
@@ -65,6 +66,12 @@ declare module "@auth/sveltekit" {
     relationships?: Relationship[];
     pro?: boolean;
   }
+}
+
+declare module "@auth/core/adapters" {
+	interface AdapterUser extends User {
+		balls: boolean;
+	}
 }
 
 declare module "*.svelte" {

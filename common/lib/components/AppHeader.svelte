@@ -10,7 +10,14 @@
   import { theme } from "@zoron/common/web/theme";
   import type { Tab, Changelog } from "@zoron/common/types";
   import Fa from "svelte-fa";
-  import { faClose, faSignOut, faUser } from "@fortawesome/free-solid-svg-icons";
+  import {
+    faArrowRight,
+    faClose,
+    faSignOut,
+    faUser,
+  } from "@fortawesome/free-solid-svg-icons";
+
+  import arrowRight from "../assets/arrow-loop-right.png";
 
   interface Props {
     tabs: Tab[];
@@ -137,7 +144,7 @@
         bind:this={tabContainer}
       >
         <!-- Logo and title section -->
-        <div class="flex w-80 items-center text-3xl">
+        <div class="flex w-[24rem] items-center text-3xl">
           <img
             src="/favicon.png"
             alt="Site Icon"
@@ -240,17 +247,32 @@
         <div class="mr-auto"></div>
 
         <!-- User actions section -->
-        <div class="flex w-80 items-center justify-end gap-2">
+        <div class="flex w-[24rem] items-center justify-end gap-2">
           {#if !isPro}
+            <span
+              class="text-green-300 font-mono text-xs whitespace-nowrap flex items-center justify-center"
+              in:fly|global={{
+                delay: availableTabs.length * 100 + 900 + tagDelay,
+                duration: 1000,
+                opacity: 0,
+                x: 20,
+                easing: motion.transitions.spring(300, 30),
+              }}
+              >free btw
+              <div
+                class="bg-green-300 inline-block w-8 h-8 -mr-1"
+                style="mask-image: url('{arrowRight}'); mask-repeat: no-repeat; mask-position: center; mask-size: contain"
+              ></div>
+            </span>
             <!-- svelte-ignore a11y_mouse_events_have_key_events -->
             <a
-              class="flex h-8 px-2 items-center justify-center rounded-full border-2 bg-white/0 transition-all hover:bg-white/10 {$theme ===
+              class="flex h-8 px-2 gap-1 items-center justify-center rounded-full border-2 bg-white/0 transition-all hover:bg-white/10 {$theme ===
               'amoled'
                 ? 'border-white'
                 : 'border-blue-400'}"
               href="/pro"
               in:fly|global={{
-                delay: availableTabs.length * 100 + 600 + tagDelay,
+                delay: availableTabs.length * 100 + 800 + tagDelay,
                 duration: 1000,
                 opacity: 0,
                 x: 20,
@@ -265,7 +287,7 @@
             </a>
           {/if}
           <a
-            class="flex h-8 w-32 items-center justify-center gap-2 rounded-full border-2 bg-white/0 transition-all hover:bg-white/10"
+            class="flex h-8 px-2 items-center justify-center gap-2 rounded-full border-2 bg-white/0 transition-all hover:bg-white/10"
             class:border-white={$theme === "amoled"}
             class:border-blue-400={$theme === "zoron"}
             href="/account"
@@ -289,12 +311,12 @@
             My Account
           </a>
           <a
-            class="flex h-8 w-32 items-center justify-center gap-2 rounded-full border-2 bg-white/0 transition-all hover:bg-white/10"
+            class="flex h-8 px-2 items-center justify-center gap-2 rounded-full border-2 bg-white/0 transition-all hover:bg-white/10"
             class:border-white={$theme === "amoled"}
             class:border-blue-400={$theme === "zoron"}
             href="/logout"
             in:fly|global={{
-              delay: availableTabs.length * 100 + 800 + tagDelay,
+              delay: availableTabs.length * 100 + 600 + tagDelay,
               duration: 1000,
               opacity: 0,
               x: 20,

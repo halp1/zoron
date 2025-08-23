@@ -7,7 +7,7 @@
   import { page } from "$app/state";
 
   import type { aspen } from "@zoron/common/aspen";
-  import { Collapsible, ScheduleBlock, Swipeable } from "@zoron/common/components";
+  import { ScheduleBlock, Swipeable } from "@zoron/common/components";
   import { motion } from "@zoron/common/motion";
   import type { Block, CalendarEvent } from "@zoron/common/types";
   import { requests, toast, zoron } from "@zoron/common/web";
@@ -143,6 +143,15 @@
   ("border-lime-400");
   ("border-teal-400");
 
+  const blockSchedule = [
+    ["A1", "B1", "C1", "D1", "E1", "F1"],
+    ["E2", "F2", "G1", "H1", "R", "D2"],
+    ["B2", "A2", "G2", "H2", "I", "C2"],
+    ["A3", "B3", "C3", "D3", "E3", "F3"],
+    ["E4", "F4", "G3", "H3", "I", "D4"],
+    ["B4", "A4", "G4", "H4", "I", "C4"],
+  ];
+
   const insertLunches = (schedule: aspen.Types.Schedule.Schedule) => {
     const courseColorMap = new Map<string, string>();
     courseColorMap.set("lunch", "bg-gray-400");
@@ -155,15 +164,17 @@
       if (courseColorMap.has(course.course)) continue;
       courseColorMap.set(course.course, colors[courseColorMap.size % colors.length]);
     }
-    const newSchedule: Block[] = schedule.schedule
-      .slice()
-      .map((item, idx) =>
-        item === null
-          ? [2, 4, 5].includes(Math.floor(idx / 6)) && idx % 6 === 4
-            ? { type: "I-block", color: courseColorMap.get("I-block")! }
-            : { type: "free", color: courseColorMap.get("free")! }
-          : { ...item, type: "block", color: courseColorMap.get(item.course)! }
-      );
+    const newSchedule: Block[] = schedule.schedule.slice().map((item, idx) =>
+      item === null
+        ? [2, 4, 5].includes(Math.floor(idx / 6)) && idx % 6 === 4
+          ? { type: "I-block", color: courseColorMap.get("I-block")! }
+          : {
+              type: "free",
+              color: courseColorMap.get("free")!,
+              block: blockSchedule[Math.floor(idx / 6)][idx % 6],
+            }
+        : { ...item, type: "block", color: courseColorMap.get(item.course)! }
+    );
     for (let i = 6 - 1; i >= 0; i--) {
       const lunch = schedule.lunches[i];
       const index = i * 6 + (lunch === 1 ? 2 : lunch === 2 ? 3 : 4);
@@ -176,7 +187,7 @@
     return newSchedule;
   };
 
-  let mode: "full" | "day" = $state("full");
+  let mode: "full" | "day" = $state("day");
 
   const now = () => new Date(Date.now() + ($zoron.constants?.timeDelta || 0));
 
@@ -251,10 +262,17 @@
                   ? 6
                   : 0) - 1;
 
-    const today =
+    const today = (
       dayNumber === -1
         ? $zoron.schedule!.schedule!
-        : $zoron.schedule!.schedule!.slice(dayNumber * 6, (dayNumber + 1) * 6);
+        : $zoron.schedule!.schedule!.slice(dayNumber * 6, (dayNumber + 1) * 6)
+    ).map((item, idx) =>
+      item === null
+        ? [2, 4, 5].includes(Math.floor(idx / 6)) && idx % 6 === 4
+          ? null
+          : { block: blockSchedule[Math.max(dayNumber, 0)][idx], schedule: null }
+        : item
+    );
     const blocks = today
       .filter((block) => block?.block || block?.schedule)
       .map((block) => block!.block || block!.schedule)
@@ -267,13 +285,9 @@
       "Lunch 3",
       ..."ABCDEFGH"
         .split("")
-        .map((c) =>
-          new Array(6)
-            .fill(null)
-            // prettier seems to be removing the $
-            .map((_, i) => [`${c}${i + 1}`, `${c}\u0024${i + 1}`])
+        .flatMap((c) =>
+          new Array(6).fill(null).map((_, i) => [`${c}${i + 1}`, `${c}$${i + 1}`])
         )
-        .flat()
         .flat(),
       "I-block",
       "Advisory",
@@ -420,6 +434,9 @@
       }
     );
 
+    if (!res.success)
+      toast.error("A network error occurred while trying to load the schedule.");
+
     if (!res.success) throw res.error;
     return generateBlocks(date, res.data);
   };
@@ -541,6 +558,9 @@
     y: number;
   } | null = $state(null);
 
+  let swipeVelocity = $state(0);
+  let lastSwipeY = $state(0);
+
   let dayViewRef: HTMLDivElement | null = $state(null);
 
   $effect(() => {
@@ -558,6 +578,8 @@
           parseInt(e.currentTarget.getAttribute("data-swipe") || "0"),
       };
       e.currentTarget.style.transition = "none";
+
+      lastSwipeY = swipeStart.y;
     };
     const touchMove = (
       e: TouchEvent & {
@@ -570,6 +592,8 @@
       const y = e.touches[0].clientY;
       const deltaX = x - swipeStart.x;
       const deltaY = y - swipeStart.y;
+      swipeVelocity = y - lastSwipeY;
+      lastSwipeY = y;
       if (Math.abs(deltaX) > 50 && deltaY < 50) {
         e.stopPropagation();
         e.stopImmediatePropagation();
@@ -633,11 +657,34 @@
     dayViewRef?.parentElement?.addEventListener("wheel", scrollHandler as any, {
       passive: false,
     });
+
+    let frame: number;
+    const tick = () => {
+      console.log(swipeVelocity);
+      if (swipeVelocity > 0) {
+        swipeVelocity -= Math.min(1, swipeVelocity);
+      } else if (swipeVelocity < 0) {
+        swipeVelocity += Math.min(1, -swipeVelocity);
+      }
+
+      if (swipeVelocity != 0 && dayViewRef && !swipeStart) {
+        const currentYTransform = getComputedStyle(dayViewRef).transform;
+        const matrix = new DOMMatrix(currentYTransform);
+        matrix.translateSelf(0, swipeVelocity * 10);
+        matrix.e = 0;
+				console.log(matrix.toString())
+        dayViewRef.style.transform = matrix.toString();
+      }
+      frame = requestAnimationFrame(tick);
+    };
+
+    // frame = requestAnimationFrame(tick);
     return () => {
       dayViewRef?.removeEventListener("touchstart", touchStart as any);
       dayViewRef?.removeEventListener("touchmove", touchMove as any);
       dayViewRef?.removeEventListener("touchend", touchEnd as any);
       dayViewRef?.parentElement?.removeEventListener("wheel", scrollHandler as any);
+      // cancelAnimationFrame(frame)	;
     };
   });
 
@@ -1092,96 +1139,104 @@
                       id={block.progression ? "progression" : ""}
                       style={block.class?.type === "lunch"
                         ? "border: double 3px transparent; background-clip: padding-box, border-box; background-image: linear-gradient(#263048E5, #263048E5), linear-gradient(45deg, #fc4778e5, #3952f5e5); background-origin: border-box;"
-                        : ""}
+                        : block.class?.type === "free"
+                          ? "border: double 3px transparent; background-clip: padding-box, border-box; background-image: linear-gradient(#263048E5, #263048E5), linear-gradient(45deg, #dc2626e5, #eab308e5); background-origin: border-box;"
+                          : ""}
                       class="w-80 rounded-xl border-2 {$theme === 'amoled'
                         ? 'bg-black/90'
-                        : 'bg-[#263048]/90'} p-5 shadow-xl backdrop-blur-xl {block.class
-                        ?.type === 'block'
+                        : 'bg-[#263048]/90'} relative shadow-xl backdrop-blur-xl {block
+                        .class?.type === 'block'
                         ? block.class.color.replace('bg', 'border')
                         : block.class?.type === 'I-block'
                           ? 'border-cyan-400'
                           : 'border-slate-600'}"
                     >
-                      <div class="flex items-center">
-                        <div>
-                          {#if block.class?.type === "block"}
-                            {block.class.description}
-                          {:else if block.class.type === "free"}
-                            Free
-                          {:else if block.class.type === "I-block"}
-                            I Block
-                          {:else if block.class.type === "lunch"}
-                            {#if "lunch" in block.class}
-                              {block.class.lunch === 1
-                                ? "First"
-                                : block.class.lunch === 2
-                                  ? "Second"
-                                  : block.class.lunch === 3
-                                    ? "Third"
-                                    : ""}
+                      <div
+                        class="p-5 rounded-xl"
+                        class:bg-black={$theme === "amoled"}
+                        class:bg-slate-800={$theme === "zoron"}
+                      >
+                        <div class="flex items-center">
+                          <div>
+                            {#if block.class?.type === "block"}
+                              {block.class.description}
+                            {:else if block.class.type === "free"}
+                              Free
+                            {:else if block.class.type === "I-block"}
+                              I Block
+                            {:else if block.class.type === "lunch"}
+                              {#if "lunch" in block.class}
+                                {block.class.lunch === 1
+                                  ? "First"
+                                  : block.class.lunch === 2
+                                    ? "Second"
+                                    : block.class.lunch === 3
+                                      ? "Third"
+                                      : ""}
+                              {/if}
+                              Lunch
+                            {:else}
+                              {"block" in block ? block.block : block.name}
                             {/if}
-                            Lunch
-                          {:else}
-                            {"block" in block ? block.block : block.name}
-                          {/if}
-                        </div>
-                        <div class="ml-auto">
-                          {#if block.class?.type === "block"}
-                            Room: <strong>{block.class.room}</strong>
-                          {/if}
-                        </div>
-                      </div>
-
-                      <div class="italic">
-                        {dateToTime(block.start)} - {dateToTime(block.end)}
-                      </div>
-                      <div class="italic">
-                        {block.duration} minutes
-                        {#if block.timeToStart}
-                          <span class="ml-1"></span>
-                          Starts in {Math.floor(
-                            block.timeToStart / 1000 / 60
-                          )}:{Math.floor(((block.timeToStart / 1000 / 60) % 1) * 60)
-                            .toString()
-                            .padStart(2, "0")}
-                        {/if}
-                        {#if block.progression},
-                          <span class="ml-1"></span>
-                          {Math.floor(
-                            block.duration - (block.progression / 100) * block.duration
-                          )}:{Math.floor(
-                            ((block.duration -
-                              (block.progression / 100) * block.duration) %
-                              1) *
-                              60
-                          )
-                            .toString()
-                            .padStart(2, "0")} remaining
-                        {/if}
-                      </div>
-                      {#if block.progression}
-                        <div
-                          class="relative mt-2 flex h-6 items-center border-2 {$theme ===
-                          'amoled'
-                            ? 'bg-black'
-                            : 'bg-slate-800'} text-sm {block.class?.type === 'block'
-                            ? block.class.color.replace('bg', 'border')
-                            : block.class?.type === 'I-block'
-                              ? 'border-cyan-400'
-                              : 'border-slate-600'}"
-                        >
-                          <div class="z-10 pl-2">
-                            {block.progression.toFixed(0)}%
                           </div>
-                          <div
-                            class="absolute left-0 top-0 h-full {block.class?.type ===
-                            'block'
-                              ? block.class.color
-                              : 'bg-slate-600'}"
-                            style="width: {block.progression}%"
-                          ></div>
+                          <div class="ml-auto">
+                            {#if block.class?.type === "block"}
+                              Room: <strong>{block.class.room}</strong>
+                            {/if}
+                          </div>
                         </div>
-                      {/if}
+
+                        <div class="italic">
+                          {dateToTime(block.start)} - {dateToTime(block.end)}
+                        </div>
+                        <div class="italic">
+                          {block.duration} minutes
+                          {#if block.timeToStart}
+                            <span class="ml-1"></span>
+                            Starts in {Math.floor(
+                              block.timeToStart / 1000 / 60
+                            )}:{Math.floor(((block.timeToStart / 1000 / 60) % 1) * 60)
+                              .toString()
+                              .padStart(2, "0")}
+                          {/if}
+                          {#if block.progression},
+                            <span class="ml-1"></span>
+                            {Math.floor(
+                              block.duration - (block.progression / 100) * block.duration
+                            )}:{Math.floor(
+                              ((block.duration -
+                                (block.progression / 100) * block.duration) %
+                                1) *
+                                60
+                            )
+                              .toString()
+                              .padStart(2, "0")} remaining
+                          {/if}
+                        </div>
+                        {#if block.progression}
+                          <div
+                            class="relative mt-2 flex h-6 items-center border-2 {$theme ===
+                            'amoled'
+                              ? 'bg-black'
+                              : 'bg-slate-800'} text-sm {block.class?.type === 'block'
+                              ? block.class.color.replace('bg', 'border')
+                              : block.class?.type === 'I-block'
+                                ? 'border-cyan-400'
+                                : 'border-slate-600'}"
+                          >
+                            <div class="z-10 pl-2">
+                              {block.progression.toFixed(0)}%
+                            </div>
+                            <div
+                              class="absolute left-0 top-0 h-full {block.class?.type ===
+                              'block'
+                                ? block.class.color
+                                : 'bg-slate-600'}"
+                              style="width: {block.progression}%"
+                            ></div>
+                          </div>
+                        {/if}
+                      </div>
                     </div>
                   {/each}
                 {:else}

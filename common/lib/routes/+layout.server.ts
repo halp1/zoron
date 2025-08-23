@@ -16,9 +16,11 @@ import type { LayoutServerLoad } from "../../../main/.svelte-kit/types/src/route
 
 const commit = execSync("git rev-parse --short HEAD").toString().trim();
 
+const pro = process.cwd().includes("/pro");
+
 export const load: LayoutServerLoad = async (event) => {
   const session = await event.locals.auth();
-  if (!session?.user?.email || !session?.user?.id)
+  if (!session?.user?.email || (!session?.user?.id && pro))
     return redirect(302, "https://zoron.app/login");
   if (!session.user.pro) {
     if (import.meta.env.DEV) {
@@ -50,7 +52,7 @@ export const load: LayoutServerLoad = async (event) => {
         key: POSTHOG,
       },
       commit: commit,
-      pro: false,
+      pro,
     },
     hideFooter: event.cookies.get("hide-footer") === "1",
   };
