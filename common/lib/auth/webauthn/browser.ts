@@ -1,13 +1,15 @@
-import { account } from "../../api";
 import { requests } from "../../web";
 
-import { startAuthentication, startRegistration } from "@simplewebauthn/browser";
+import {
+  startAuthentication,
+  startRegistration
+} from "@simplewebauthn/browser";
 import type { VerifiedRegistrationResponse } from "@simplewebauthn/server";
 import type {
   AuthenticationResponseJSON,
   PublicKeyCredentialCreationOptionsJSON,
   PublicKeyCredentialRequestOptionsJSON,
-  RegistrationResponseJSON,
+  RegistrationResponseJSON
 } from "@simplewebauthn/types";
 
 /**
@@ -18,20 +20,32 @@ import type {
 export async function addPasskey(name: string): Promise<boolean> {
   try {
     // Get registration options from server
-    const optionsData = await account.getPasskeyRegistrationOptions();
+    const optionsRes =
+      await requests.get<PublicKeyCredentialCreationOptionsJSON>(
+        "/api/account/passkeys/options"
+      );
+    if (!optionsRes.success) {
+      throw new Error(
+        "Failed to get registration options: " + optionsRes.error
+      );
+    }
 
     // Create credential using SimpleWebAuthn
     const responseData = await startRegistration({
-      optionsJSON: optionsData,
+      optionsJSON: optionsRes.data
     });
 
     // Send response to server for verification
-    const verifyResult = await account.verifyPasskeyRegistration({
-      name,
-      registration: responseData,
-    });
+    const verifyRes = await requests.post<VerifiedRegistrationResponse>(
+      "/api/account/passkeys/verify",
+      { ...responseData, name }
+    );
 
-    return verifyResult.verified;
+    if (!verifyRes.success) {
+      throw new Error("Failed to verify registration:" + verifyRes.error);
+    }
+
+    return verifyRes.data.verified;
   } catch (error) {
     console.error("Error adding passkey:", error);
     throw error;
@@ -45,21 +59,36 @@ export async function addPasskey(name: string): Promise<boolean> {
 export const usePasskey = async (): Promise<string> => {
   try {
     // Get authentication options from server
-    const authData = await account.getPasskeyAuthenticationOptions();
-    const { sessionID, options } = authData;
+    const optionsRes = await requests.get<{
+      sessionID: string;
+      options: PublicKeyCredentialRequestOptionsJSON;
+    }>("/api/account/passkeys/auth/options");
+    if (!optionsRes.success) {
+      throw new Error(
+        "Failed to get authentication options: " + optionsRes.error
+      );
+    }
+    const { sessionID, options } = optionsRes.data;
 
     // Get credential using SimpleWebAuthn
     const responseData = await startAuthentication({
-      optionsJSON: options,
+      optionsJSON: options
     });
 
     // Send response to server for verification
-    const verifyResult = await account.verifyPasskeyAuthentication({
-      sessionID,
-      response: responseData,
-    });
+    const verifyRes = await requests.post<{ verified: true; user: string }>(
+      "/api/account/passkeys/auth/verify",
+      {
+        sessionID,
+        response: responseData
+      }
+    );
 
-    const { verified, user } = verifyResult;
+    if (!verifyRes.success) {
+      throw new Error("Failed to verify authentication:" + verifyRes.error);
+    }
+
+    const { verified, user } = verifyRes.data;
     if (!verified) {
       throw new Error("Authentication failed");
     }

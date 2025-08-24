@@ -1,7 +1,6 @@
 <script lang="ts">
   import { page } from "$app/state";
 
-  import { account } from "@zoron/common/api";
   import { addPasskey } from "@zoron/common/auth/webauthn/browser";
   import { requests, toast } from "@zoron/common/web";
 
@@ -41,11 +40,17 @@
 
   const handleDeletePasskey = async (passkeyId: string) => {
     try {
-      await account.deletePasskey({ passkeyId });
-      toast.success("Passkey deleted successfully!");
-      window.location.reload();
-    } catch (error: any) {
-      toast.error("Failed to delete passkey: " + (error.message || error));
+      const res = await requests.post("/api/account/passkeys/delete", {
+        passkeyId
+      });
+      if (res.success) {
+        toast.success("Passkey deleted successfully!");
+        window.location.reload();
+      } else {
+        toast.error("Failed to delete passkey");
+      }
+    } catch (e) {
+      toast.error((e as Error).message);
     }
   };
 

@@ -3,7 +3,6 @@
 
   import { page } from "$app/state";
 
-  import { account } from "@zoron/common/api";
   import { motion } from "@zoron/common/motion";
   import { requests, toast } from "@zoron/common/web";
   import { theme } from "@zoron/common/web/theme";
@@ -323,18 +322,17 @@
                   // @ts-expect-error
                   clearInterval(deleteInterval);
                   const { dismiss } = toast.loading("Deleting account...");
-                  try {
-                    await account.deleteAccount();
+                  const res = await requests.del("/api/account/delete");
+                  if (res.success) {
                     toast.success("Account deleted.");
                     await signOut({ redirect: true, callbackUrl: "/" });
-                  } catch (error: any) {
+                  } else {
                     toast.error(
                       "An error occurred while deleting your account: " +
-                        (error.message || error)
+                        res.error
                     );
-                  } finally {
-                    dismiss();
                   }
+                  dismiss();
                 }
               }, 1000 / 120);
             }}
@@ -348,18 +346,17 @@
                   // @ts-expect-error
                   clearInterval(deleteInterval);
                   const { dismiss } = toast.loading("Deleting account...");
-                  try {
-                    await account.deleteAccount();
+                  const res = await requests.del("/api/account/delete");
+                  if (res.success) {
                     toast.success("Account deleted.");
                     await signOut({ redirect: true, callbackUrl: "/" });
-                  } catch (error: any) {
+                  } else {
                     toast.error(
                       "An error occurred while deleting your account: " +
-                        (error.message || error)
+                        res.error
                     );
-                  } finally {
-                    dismiss();
                   }
+                  dismiss();
                 }
               }, 1000 / 120);
             }}
