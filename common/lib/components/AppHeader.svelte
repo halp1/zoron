@@ -21,6 +21,7 @@
   } from "@fortawesome/free-solid-svg-icons";
 
   import arrowRight from "../assets/arrow-loop-right.png";
+  import { twMerge } from "tailwind-merge";
 
   interface Props {
     tabs: Tab[];
@@ -31,13 +32,7 @@
     children?: import("svelte").Snippet;
   }
 
-  let {
-    tabs,
-    changelog,
-    isPro = false,
-    contentPaddingClass = "px-10",
-    children,
-  }: Props = $props();
+  let { tabs, changelog, isPro = false, children }: Props = $props();
 
   let windowWidth = $state(0);
 
@@ -389,7 +384,7 @@
   <!-- Main content area -->
   {#key page.url}
     <div
-      class="view-anim-{animationDirection} no-scroll flex w-full flex-1 flex-col gap-2 overflow-y-auto overflow-x-hidden {contentPaddingClass} mt-[env(safe-area-inset-top)]"
+      class="view-anim-{animationDirection} no-scroll flex w-full flex-1 flex-col gap-2 overflow-y-auto overflow-x-hidden mt-[env(safe-area-inset-top)]"
     >
       {@render children?.()}
     </div>
@@ -433,13 +428,19 @@
             <img
               src={tab.icon}
               alt=""
-              class="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full"
+              class={twMerge(
+                "absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full",
+                tab.iconClass ?? ""
+              )}
             />
           {:else}
             <Fa
               icon={tab.icon}
               size="lg"
-              class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+              class={twMerge(
+                "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
+                tab.iconClass ?? ""
+              )}
             />
           {/if}
         </a>

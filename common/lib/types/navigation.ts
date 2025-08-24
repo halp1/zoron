@@ -5,6 +5,7 @@ export interface Tab {
   path: string;
   icon: IconDefinition | string;
   mobileOnly?: boolean;
+	iconClass?: string;
 }
 
 export interface Changelog {

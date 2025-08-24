@@ -7,6 +7,7 @@
   import { page } from "$app/state";
 
   import type { aspen } from "@zoron/common/aspen";
+  import { randomPlaceholderImage } from "@zoron/common/assets/placeholders";
   import { ScheduleBlock, Swipeable } from "@zoron/common/components";
   import { motion } from "@zoron/common/motion";
   import type { Block, CalendarEvent } from "@zoron/common/types";
@@ -21,16 +22,16 @@
     faChevronRight,
     faClose,
     faListUl,
-    faRotateRight,
+    faRotateRight
   } from "@fortawesome/free-solid-svg-icons";
 
   import type { User } from "@auth/sveltekit";
   import { DatePicker } from "date-picker-svelte";
   import _ from "lodash";
-  const { clamp } = _;
 
-  import { randomPlaceholderImage } from "@zoron/common/assets/placeholders";
   import "./schedule.css";
+
+  const { clamp } = _;
 
   let schedule = $derived($zoron.schedule as User["schedule"]);
 
@@ -42,7 +43,9 @@
     // Check if File System Access API is supported
     if (window.showOpenFilePicker) {
       const [handle] = await window.showOpenFilePicker({
-        types: [{ accept: { "application/pdf": [".pdf"] }, description: "PDF files" }],
+        types: [
+          { accept: { "application/pdf": [".pdf"] }, description: "PDF files" }
+        ]
       });
       file = await handle.getFile();
     } else {
@@ -82,7 +85,7 @@
     const { dismiss } = toast.loading("Generating schedule...");
     const res = await requests.post("/api/aspen/schedule/gen", {
       semester,
-      schedule: base64Content,
+      schedule: base64Content
     });
     if (res.success === true) {
       history.go(0);
@@ -126,7 +129,7 @@
     "bg-green-400",
     "bg-yellow-400",
     "bg-pink-400",
-    "bg-indigo-400",
+    "bg-indigo-400"
     // "bg-lime-400",
     // "bg-teal-400"
   ];
@@ -149,7 +152,7 @@
     ["B2", "A2", "G2", "H2", "I", "C2"],
     ["A3", "B3", "C3", "D3", "E3", "F3"],
     ["E4", "F4", "G3", "H3", "I", "D4"],
-    ["B4", "A4", "G4", "H4", "I", "C4"],
+    ["B4", "A4", "G4", "H4", "I", "C4"]
   ];
 
   const insertLunches = (schedule: aspen.Types.Schedule.Schedule) => {
@@ -162,7 +165,10 @@
       if (course === null) continue;
       if (course.course === null) continue;
       if (courseColorMap.has(course.course)) continue;
-      courseColorMap.set(course.course, colors[courseColorMap.size % colors.length]);
+      courseColorMap.set(
+        course.course,
+        colors[courseColorMap.size % colors.length]
+      );
     }
     const newSchedule: Block[] = schedule.schedule.slice().map((item, idx) =>
       item === null
@@ -171,7 +177,7 @@
           : {
               type: "free",
               color: courseColorMap.get("free")!,
-              block: blockSchedule[Math.floor(idx / 6)][idx % 6],
+              block: blockSchedule[Math.floor(idx / 6)][idx % 6]
             }
         : { ...item, type: "block", color: courseColorMap.get(item.course)! }
     );
@@ -180,7 +186,7 @@
       const index = i * 6 + (lunch === 1 ? 2 : lunch === 2 ? 3 : 4);
       newSchedule.splice(index, 0, {
         type: "lunch",
-        color: courseColorMap.get("lunch")!,
+        color: courseColorMap.get("lunch")!
       });
     }
 
@@ -194,7 +200,9 @@
   let dayViewDay: Date = $state(now());
   let selectedDay: number = $state(0);
   let generated = $derived(
-    schedule ? transpose(insertLunches(schedule), 6, 7) : (null as any as Block[])
+    schedule
+      ? transpose(insertLunches(schedule), 6, 7)
+      : (null as any as Block[])
   );
 
   let datePickerOpen = $state(false);
@@ -207,7 +215,9 @@
   const generateBlocks = (date: Date, calendar: CalendarEvent) => {
     if (!schedule) return { day: "", blocks: [] };
     const currentDayEvents = calendar.items.filter((event) => {
-      const eventStartDate = new Date(event.start.dateTime || event.start.date!);
+      const eventStartDate = new Date(
+        event.start.dateTime || event.start.date!
+      );
       const isFullDayEvent = !event.start.dateTime && !event.end.dateTime;
 
       return (
@@ -234,7 +244,7 @@
       .map((event) => ({
         name: event.summary.trim(),
         start: new Date(event.start.dateTime || event.start.date!),
-        end: new Date(event.end.dateTime || event.end.date!),
+        end: new Date(event.end.dateTime || event.end.date!)
       }))
       .map((event) => ({
         ...event,
@@ -243,7 +253,7 @@
           return (this.end.getTime() - this.start.getTime()) / 1000 / 60;
         },
         progression: calculateProgression(event.start, event.end),
-        timeToStart: calculateTimeToStart(event.start),
+        timeToStart: calculateTimeToStart(event.start)
       }));
     if (allEvents.length === 0) return { day, blocks: [] };
 
@@ -270,14 +280,19 @@
       item === null
         ? [2, 4, 5].includes(Math.floor(idx / 6)) && idx % 6 === 4
           ? null
-          : { block: blockSchedule[Math.max(dayNumber, 0)][idx], schedule: null }
+          : {
+              block: blockSchedule[Math.max(dayNumber, 0)][idx],
+              schedule: null
+            }
         : item
     );
     const blocks = today
       .filter((block) => block?.block || block?.schedule)
       .map((block) => block!.block || block!.schedule)
       .map((item) => (item === "HR" ? "Advisory" : item))
-      .map((item, idx) => ((idx < 2 || idx > 3) && item ? item.replace("$", "") : item));
+      .map((item, idx) =>
+        (idx < 2 || idx > 3) && item ? item.replace("$", "") : item
+      );
 
     const blockNames = [
       "Lunch 1",
@@ -286,11 +301,13 @@
       ..."ABCDEFGH"
         .split("")
         .flatMap((c) =>
-          new Array(6).fill(null).map((_, i) => [`${c}${i + 1}`, `${c}$${i + 1}`])
+          new Array(6)
+            .fill(null)
+            .map((_, i) => [`${c}${i + 1}`, `${c}${i + 1}`])
         )
         .flat(),
       "I-block",
-      "Advisory",
+      "Advisory"
     ];
 
     const filtered = allEvents.filter(
@@ -305,14 +322,15 @@
         ...event,
         class: generated.find(
           (b) =>
-            ((b as any).block?.replace("$", "") || b.type).trim() === event.name ||
+            ((b as any).block?.replace("$", "") || b.type).trim() ===
+              event.name ||
             ((b as any).block || b.type).trim() === event.name ||
             ((b as any).schedule?.trim() === "HR" && event.name === "Advisory")
         ) || {
           type: "other" as const,
           color: "bg-gray-600" as const,
-          block: event.name,
-        },
+          block: event.name
+        }
       }))
       .sort((a, b) => a.start.getTime() - b.start.getTime());
 
@@ -332,7 +350,7 @@
 
         Object.assign(last, {
           progression: calculateProgression(event.start, event.end),
-          timeToStart: calculateTimeToStart(event.start),
+          timeToStart: calculateTimeToStart(event.start)
         });
 
         // now *define* a true getter for .duration on `last`
@@ -341,7 +359,7 @@
           configurable: true,
           get() {
             return (this.end.getTime() - this.start.getTime()) / 1000 / 60;
-          },
+          }
         });
       }
     }
@@ -360,7 +378,8 @@
       ) {
         if (last) {
           last.end = new Date(last.end.getTime() - 1000 * 60 * 30);
-          last.duration = (last.end.getTime() - last.start.getTime()) / 1000 / 60;
+          last.duration =
+            (last.end.getTime() - last.start.getTime()) / 1000 / 60;
         }
         // second lunch
         return {
@@ -369,9 +388,9 @@
             ...blockEvents,
             {
               ...allEvents.find((event) => event.name.includes("Lunch 2"))!,
-              class: { type: "lunch" as const, lunch: 2 as const },
-            },
-          ].sort((a, b) => a.start.getTime() - b.start.getTime()),
+              class: { type: "lunch" as const, lunch: 2 as const }
+            }
+          ].sort((a, b) => a.start.getTime() - b.start.getTime())
         };
       }
 
@@ -386,16 +405,17 @@
             ...allEvents.find((event) => event.name.includes("Lunch 1"))!,
             class: {
               type: "lunch" as const,
-              lunch: 1 as const,
-            },
-          },
-        ].sort((a, b) => a.start.getTime() - b.start.getTime()),
+              lunch: 1 as const
+            }
+          }
+        ].sort((a, b) => a.start.getTime() - b.start.getTime())
       };
     } else {
       const targetLunch = schedule?.lunches[dayNumber];
       const lunchData =
-        allEvents.find((event) => event.name.includes(`Lunch ${targetLunch}`)) ||
-        allEvents.find((event) => event.name.includes("Lunch"))!;
+        allEvents.find((event) =>
+          event.name.includes(`Lunch ${targetLunch}`)
+        ) || allEvents.find((event) => event.name.includes("Lunch"))!;
       return {
         day,
         blocks: [
@@ -408,10 +428,10 @@
               type: "lunch" as const,
               lunch: lunchData.name.includes((targetLunch || -1).toString())
                 ? targetLunch
-                : 0,
-            },
-          },
-        ].sort((a, b) => a.start.getTime() - b.start.getTime()),
+                : 0
+            }
+          }
+        ].sort((a, b) => a.start.getTime() - b.start.getTime())
       };
     }
   };
@@ -430,12 +450,14 @@
         maxResults: 20,
         timeMin: `${key}T04:00:00-04:00`,
         timeMax: `${key}T23:59:59-04:00`,
-        key: "AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs",
+        key: "AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs"
       }
     );
 
     if (!res.success)
-      toast.error("A network error occurred while trying to load the schedule.");
+      toast.error(
+        "A network error occurred while trying to load the schedule."
+      );
 
     if (!res.success) throw res.error;
     return generateBlocks(date, res.data);
@@ -447,7 +469,9 @@
       ? null
       : now().getTime() > end.getTime()
         ? null
-        : ((now().getTime() - start.getTime()) / (end.getTime() - start.getTime())) * 100;
+        : ((now().getTime() - start.getTime()) /
+            (end.getTime() - start.getTime())) *
+          100;
 
   const calculateTimeToStart = (start: Date): number | null =>
     // @ts-ignore
@@ -518,17 +542,23 @@
     // keybinds
     const keydown = async (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") {
-        (document.querySelector("#day-transition") as HTMLDivElement).style.transform =
+        (
+          document.querySelector("#day-transition") as HTMLDivElement
+        ).style.transform =
           "translateX(100vw)" +
-          (document.querySelector("#day-transition") as HTMLDivElement).style.transform;
+          (document.querySelector("#day-transition") as HTMLDivElement).style
+            .transform;
         await new Promise((r) => setTimeout(r, 200));
 
         dayViewDay = new Date(dayViewDay.getTime() - 1000 * 60 * 60 * 24);
         swipeDirection = "right";
       } else if (e.key === "ArrowRight") {
-        (document.querySelector("#day-transition") as HTMLDivElement).style.transform =
+        (
+          document.querySelector("#day-transition") as HTMLDivElement
+        ).style.transform =
           "translateX(-100vw)" +
-          (document.querySelector("#day-transition") as HTMLDivElement).style.transform;
+          (document.querySelector("#day-transition") as HTMLDivElement).style
+            .transform;
         await new Promise((r) => setTimeout(r, 200));
         dayViewDay = new Date(dayViewDay.getTime() + 1000 * 60 * 60 * 24);
         swipeDirection = "left";
@@ -575,7 +605,7 @@
         x: e.touches[0].clientX,
         y:
           e.touches[0].clientY -
-          parseInt(e.currentTarget.getAttribute("data-swipe") || "0"),
+          parseInt(e.currentTarget.getAttribute("data-swipe") || "0")
       };
       e.currentTarget.style.transition = "none";
 
@@ -639,23 +669,25 @@
       swipeStart = null;
     };
 
-    const scrollHandler = (e: WheelEvent & { currentTarget: HTMLDivElement }) => {
+    const scrollHandler = (
+      e: WheelEvent & { currentTarget: HTMLDivElement }
+    ) => {
       // reset transform
       (e.currentTarget.children[0] as HTMLDivElement).style.transform =
         "translateY(0px) scale(1)";
     };
 
     dayViewRef?.addEventListener("touchstart", touchStart as any, {
-      passive: false,
+      passive: false
     });
     dayViewRef?.addEventListener("touchmove", touchMove as any, {
-      passive: false,
+      passive: false
     });
     dayViewRef?.addEventListener("touchend", touchEnd as any, {
-      passive: false,
+      passive: false
     });
     dayViewRef?.parentElement?.addEventListener("wheel", scrollHandler as any, {
-      passive: false,
+      passive: false
     });
 
     let frame: number;
@@ -683,12 +715,17 @@
       dayViewRef?.removeEventListener("touchstart", touchStart as any);
       dayViewRef?.removeEventListener("touchmove", touchMove as any);
       dayViewRef?.removeEventListener("touchend", touchEnd as any);
-      dayViewRef?.parentElement?.removeEventListener("wheel", scrollHandler as any);
+      dayViewRef?.parentElement?.removeEventListener(
+        "wheel",
+        scrollHandler as any
+      );
       // cancelAnimationFrame(frame)	;
     };
   });
 
-  let windowWidth = $state(typeof window === "undefined" ? 767 : window.innerWidth);
+  let windowWidth = $state(
+    typeof window === "undefined" ? 767 : window.innerWidth
+  );
   let isMobile = $derived(windowWidth < 768);
   onMount(() => {
     const handleResize = () => {
@@ -715,7 +752,7 @@
         duration: 1000,
         opacity: 0,
         y: -20,
-        easing: motion.transitions.spring(400, 20),
+        easing: motion.transitions.spring(400, 20)
       }}
     >
       Your schedule has not been loaded
@@ -728,7 +765,7 @@
         duration: 1000,
         opacity: 0,
         y: -20,
-        easing: motion.transitions.spring(400, 20),
+        easing: motion.transitions.spring(400, 20)
       }}>{page.data.env.pro ? "Load" : "Upload"} Schedule</button
     >
     <div
@@ -741,7 +778,7 @@
             duration: 1000,
             opacity: 0,
             x: -20,
-            easing: motion.transitions.spring(400, 20),
+            easing: motion.transitions.spring(400, 20)
           }}>{word}</span
         >
       {/each}
@@ -749,10 +786,10 @@
   </div>
 {:else}
   <div
-    class="relative flex h-full flex-col-reverse items-center gap-3 md:flex-row md:pt-0 px-10"
+    class="relative flex h-full flex-col-reverse items-center gap-3 px-10 md:flex-row md:pt-0"
   >
     <div
-      class="items-center gap-3 rounded-full border-white p-2 mb-4 md:mb-0 backdrop-blur-xs flex md:flex-col fixed z-10 md:left-6 md:top-1/2 md:-translate-y-1/2"
+      class="backdrop-blur-xs fixed z-10 mb-4 flex items-center gap-3 rounded-full border-white p-2 md:left-6 md:top-1/2 md:mb-0 md:-translate-y-1/2 md:flex-col"
       class:border-2={$theme === "amoled"}
       in:fly|global={{
         delay: 200,
@@ -760,7 +797,7 @@
         opacity: 0,
         x: isMobile ? 0 : -20,
         y: isMobile ? 20 : 0,
-        easing: motion.transitions.spring(300, 30),
+        easing: motion.transitions.spring(300, 30)
       }}
     >
       <button
@@ -828,15 +865,15 @@
       </button>
     </div>
     {#if mode === "full"}
-      <div class="flex md:min-h-full flex-1 flex-col md:ml-16">
+      <div class="flex flex-1 flex-col md:ml-16 md:min-h-full">
         <div
-          class="py-2 text-center text-slate-600 mt-[env(safe-area-inset-top)]"
+          class="mt-[env(safe-area-inset-top)] py-2 text-center text-slate-600"
           in:fly|global={{
             delay: 200,
             duration: 1000,
             opacity: 0,
             y: -20,
-            easing: motion.transitions.spring(300, 30),
+            easing: motion.transitions.spring(300, 30)
           }}
         >
           Click a class to see who you share it with.
@@ -849,9 +886,9 @@
               <ScheduleBlock
                 index={i}
                 {block}
-                className="border-b-4 border-r-4 {i <= 5 ? 'border-t-4' : ''} {i % 6 === 0
-                  ? 'border-l-4'
-                  : ''}"
+                className="border-b-4 border-r-4 {i <= 5
+                  ? 'border-t-4'
+                  : ''} {i % 6 === 0 ? 'border-l-4' : ''}"
                 lunch={schedule.lunches[i % 6]}
                 day={i % 6}
               />
@@ -896,7 +933,7 @@
       </div>
     {:else}
       <div
-        class="mx-auto flex h-full md:flex-none md:h-full w-80 flex-col items-center gap-5 overflow-x-visible"
+        class="mx-auto flex h-full w-80 flex-col items-center gap-5 overflow-x-visible md:h-full md:flex-none"
       >
         <div
           class="-mb-3 mt-3 text-xl text-slate-400"
@@ -905,7 +942,7 @@
             duration: 1000,
             opacity: 0,
             y: -20,
-            easing: motion.transitions.spring(400, 20),
+            easing: motion.transitions.spring(400, 20)
           }}
         >
           {dayViewDay.toLocaleDateString("en-US", { weekday: "long" })},
@@ -921,7 +958,7 @@
             "September",
             "October",
             "November",
-            "December",
+            "December"
           ][dayViewDay.getMonth()]}
           {dayViewDay.getDate()}{(() => {
             switch (dayViewDay.getDate()) {
@@ -943,7 +980,7 @@
             duration: 1000,
             opacity: 0,
             y: -20,
-            easing: motion.transitions.spring(400, 20),
+            easing: motion.transitions.spring(400, 20)
           }}
         >
           {#key key}
@@ -961,7 +998,7 @@
               duration: 1000,
               opacity: 0,
               y: -20,
-              easing: motion.transitions.spring(400, 20),
+              easing: motion.transitions.spring(400, 20)
             }}
           >
             loading...
@@ -974,7 +1011,7 @@
                 duration: 1000,
                 opacity: 0,
                 y: -20,
-                easing: motion.transitions.spring(400, 20),
+                easing: motion.transitions.spring(400, 20)
               }}
               class="btn-circle border-2 {$theme === 'amoled'
                 ? 'border-white'
@@ -984,11 +1021,13 @@
                   document.querySelector("#day-transition") as HTMLDivElement
                 ).style.transform =
                   "translateX(100vw)" +
-                  (document.querySelector("#day-transition") as HTMLDivElement).style
-                    .transform;
+                  (document.querySelector("#day-transition") as HTMLDivElement)
+                    .style.transform;
                 await new Promise((r) => setTimeout(r, 200));
 
-                dayViewDay = new Date(dayViewDay.getTime() - 1000 * 60 * 60 * 24);
+                dayViewDay = new Date(
+                  dayViewDay.getTime() - 1000 * 60 * 60 * 24
+                );
                 swipeDirection = "right";
               }}
             >
@@ -1000,7 +1039,7 @@
                 duration: 1000,
                 opacity: 0,
                 y: -20,
-                easing: motion.transitions.spring(400, 20),
+                easing: motion.transitions.spring(400, 20)
               }}
               class="btn-circle border-2 {$theme === 'amoled'
                 ? 'border-white'
@@ -1013,8 +1052,8 @@
                   document.querySelector("#day-transition") as HTMLDivElement
                 ).style.transform =
                   `translateX(${direction === "left" ? "" : "-"}100vw)` +
-                  (document.querySelector("#day-transition") as HTMLDivElement).style
-                    .transform;
+                  (document.querySelector("#day-transition") as HTMLDivElement)
+                    .style.transform;
                 await new Promise((r) => setTimeout(r, 200));
 
                 dayViewDay = target;
@@ -1030,7 +1069,7 @@
                 duration: 1000,
                 opacity: 0,
                 y: -20,
-                easing: motion.transitions.spring(400, 20),
+                easing: motion.transitions.spring(400, 20)
               }}
             >
               {#if !day.day || day.blocks.length === 0}
@@ -1045,7 +1084,7 @@
                 duration: 500,
                 opacity: 0,
                 y: -20,
-                easing: motion.transitions.spring(400, 20),
+                easing: motion.transitions.spring(400, 20)
               }}
               class="btn-circle border-2 {$theme === 'amoled'
                 ? 'border-white'
@@ -1059,13 +1098,15 @@
               <!-- svelte-ignore a11y_no_static_element_interactions -->
               <!-- svelte-ignore a11y_click_events_have_key_events -->
               <div
-                class="absolute right-0 top-10 z-10 {$theme === 'amoled' ? 'invert' : ''}"
+                class="absolute right-0 top-10 z-10 {$theme === 'amoled'
+                  ? 'invert'
+                  : ''}"
                 transition:fly|global={{
                   delay: 0,
                   duration: 1000,
                   opacity: 0,
                   y: -30,
-                  easing: motion.transitions.spring(300, 20),
+                  easing: motion.transitions.spring(300, 20)
                 }}
                 onmousedown={(e) => {
                   e.stopPropagation();
@@ -1082,11 +1123,16 @@
 
                     const direction = target < dayViewDay ? "left" : "right";
                     (
-                      document.querySelector("#day-transition") as HTMLDivElement
+                      document.querySelector(
+                        "#day-transition"
+                      ) as HTMLDivElement
                     ).style.transform =
                       `translateX(${direction === "left" ? "" : "-"}100vw)` +
-                      (document.querySelector("#day-transition") as HTMLDivElement).style
-                        .transform;
+                      (
+                        document.querySelector(
+                          "#day-transition"
+                        ) as HTMLDivElement
+                      ).style.transform;
                     await new Promise((r) => setTimeout(r, 200));
 
                     dayViewDay = target;
@@ -1101,7 +1147,7 @@
                 duration: 1000,
                 opacity: 0,
                 y: -20,
-                easing: motion.transitions.spring(400, 20),
+                easing: motion.transitions.spring(400, 20)
               }}
               class="btn-circle border-2 {$theme === 'amoled'
                 ? 'border-white'
@@ -1111,10 +1157,12 @@
                   document.querySelector("#day-transition") as HTMLDivElement
                 ).style.transform =
                   "translateX(-100vw)" +
-                  (document.querySelector("#day-transition") as HTMLDivElement).style
-                    .transform;
+                  (document.querySelector("#day-transition") as HTMLDivElement)
+                    .style.transform;
                 await new Promise((r) => setTimeout(r, 200));
-                dayViewDay = new Date(dayViewDay.getTime() + 1000 * 60 * 60 * 24);
+                dayViewDay = new Date(
+                  dayViewDay.getTime() + 1000 * 60 * 60 * 24
+                );
                 swipeDirection = "left";
               }}
             >
@@ -1128,7 +1176,7 @@
               style="padding: 0 10000px 0 10000px; margin: 0 -10000px 0 -10000px;"
             >
               <div
-                class="flex min-h-[60vh] min-w-[336px] flex-col items-center gap-5 pb-5 pr-2 animate-in-{swipeDirection}"
+                class="flex min-h-[60vh] min-w-[336px] flex-col items-center gap-5 pr-2 animate-in-{swipeDirection} pb-20 md:pb-5"
                 style="transition: inherit;"
                 bind:this={dayViewRef}
               >
@@ -1151,7 +1199,7 @@
                           : 'border-slate-600'}"
                     >
                       <div
-                        class="p-5 rounded-xl"
+                        class="rounded-xl p-5"
                         class:bg-black={$theme === "amoled"}
                         class:bg-slate-800={$theme === "zoron"}
                       >
@@ -1194,14 +1242,17 @@
                             <span class="ml-1"></span>
                             Starts in {Math.floor(
                               block.timeToStart / 1000 / 60
-                            )}:{Math.floor(((block.timeToStart / 1000 / 60) % 1) * 60)
+                            )}:{Math.floor(
+                              ((block.timeToStart / 1000 / 60) % 1) * 60
+                            )
                               .toString()
                               .padStart(2, "0")}
                           {/if}
                           {#if block.progression},
                             <span class="ml-1"></span>
                             {Math.floor(
-                              block.duration - (block.progression / 100) * block.duration
+                              block.duration -
+                                (block.progression / 100) * block.duration
                             )}:{Math.floor(
                               ((block.duration -
                                 (block.progression / 100) * block.duration) %
@@ -1217,7 +1268,8 @@
                             class="relative mt-2 flex h-6 items-center border-2 {$theme ===
                             'amoled'
                               ? 'bg-black'
-                              : 'bg-slate-800'} text-sm {block.class?.type === 'block'
+                              : 'bg-slate-800'} text-sm {block.class?.type ===
+                            'block'
                               ? block.class.color.replace('bg', 'border')
                               : block.class?.type === 'I-block'
                                 ? 'border-cyan-400'
@@ -1227,8 +1279,8 @@
                               {block.progression.toFixed(0)}%
                             </div>
                             <div
-                              class="absolute left-0 top-0 h-full {block.class?.type ===
-                              'block'
+                              class="absolute left-0 top-0 h-full {block.class
+                                ?.type === 'block'
                                 ? block.class.color
                                 : 'bg-slate-600'}"
                               style="width: {block.progression}%"
@@ -1268,7 +1320,9 @@
       }
     }}
   >
-    <div class="relative flex flex-col items-center rounded-lg bg-slate-800 p-5">
+    <div
+      class="relative flex flex-col items-center rounded-lg bg-slate-800 p-5"
+    >
       <button
         class="btn-circle absolute right-2 top-2"
         onclick={() => {
