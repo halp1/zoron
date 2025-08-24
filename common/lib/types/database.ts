@@ -14,7 +14,7 @@ export interface Settings {
     grades: boolean;
   };
   home: {
-    default: "home" | "schedule" | "grades" | "activity";
+    default: "home" | "schedule" | "grades" | "activity" | "friends";
     hideGPA: boolean;
   };
   social: {

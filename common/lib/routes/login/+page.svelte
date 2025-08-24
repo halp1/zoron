@@ -3,11 +3,11 @@
 
   import { page } from "$app/state";
 
+  import { account } from "@zoron/common/api";
   import { usePasskey } from "@zoron/common/auth/webauthn/browser";
   import Footer from "@zoron/common/components/Footer.svelte";
   import { validEmail } from "@zoron/common/email";
   import { storage, theme, toast } from "@zoron/common/web";
-  import { requests } from "@zoron/common/web";
 
   const encryptPassword = async (password: string) =>
     Array.from(
@@ -44,18 +44,19 @@
     const secret = await encryptPassword(password);
 
     const { dismiss } = toast.loading("Logging in...");
-    const res = await requests.post("/api/account/login", {
-      email,
-      password,
-      secret
-    });
-    dismiss();
-    if (res.success) {
+    try {
+      const result = await account.login({
+        email,
+        password,
+        secret
+      });
       localStorage.setItem(storage.key("auth.secret"), secret);
       location.href = "/launch";
-    } else {
-      toast.error(res.error);
+      toast.success("Logged in successfully!");
+    } catch (error: any) {
+      toast.error(error.message || "Login failed");
     }
+    dismiss();
   };
 
   const handlePasskeyLogin = async () => {
@@ -95,7 +96,7 @@
 <main class="flex h-screen w-screen flex-col items-center justify-center px-5">
   <img src="/favicon.png" alt="Site icon" class="mb-3 w-32" />
   <h1 class="mb-10 text-center text-4xl">Log in to {page.data.env.name}</h1>
-  <form onsubmit={handleSubmission} class="flex w-96 flex-col gap-2">
+  <form {...account.login} class="flex w-96 flex-col gap-2">
     <input
       class="w-full rounded-lg border-2 border-dashed {$theme === 'amoled'
         ? 'border-white'

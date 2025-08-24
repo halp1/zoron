@@ -1,14 +1,13 @@
 <script lang="ts">
   import { page } from "$app/state";
 
+  import { account } from "@zoron/common/api";
   import { requests, toast } from "@zoron/common/web";
   import { theme } from "@zoron/common/web/theme";
 
   import Fa from "svelte-fa";
 
   import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-
-  import type { AccountUpdateRes } from "../../api/account/update/+server";
 
   let fullName = $state("");
 
@@ -39,16 +38,17 @@
     const { dismiss } = toast.loading("Updating your information...");
     submitting = true;
 
-    const res = await requests.post<AccountUpdateRes>("/api/account/update", {
-      fullName: fullName.trim()
-    });
-    dismiss();
-    submitting = false;
-    if (!res.success)
-      return toast.error("An error occurred while updating: " + res.error);
-    else {
-      toast.success(`Information updated successfully!`);
+    try {
+      await account.updateProfile({ fullName: fullName.trim() });
+      toast.success("Information updated successfully!");
       location.href = "/account";
+    } catch (error: any) {
+      toast.error(
+        "An error occurred while updating: " + (error.message || error)
+      );
+    } finally {
+      dismiss();
+      submitting = false;
     }
   };
 </script>

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state";
 
+  import { account } from "@zoron/common/api";
   import { requests, toast } from "@zoron/common/web";
   import { theme } from "@zoron/common/web/theme";
 
