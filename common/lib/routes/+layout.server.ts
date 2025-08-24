@@ -6,7 +6,7 @@ import {
   POSTHOG,
   SUPABASE_PUBLIC_KEY,
   SUPABASE_URI,
-  VAPID_PUBLIC,
+  VAPID_PUBLIC
 } from "$env/static/private";
 import type { User } from "@auth/sveltekit";
 import { redirect } from "@sveltejs/kit";
@@ -20,17 +20,19 @@ const pro = process.cwd().includes("/pro");
 
 export const load: LayoutServerLoad = async (event) => {
   const session = await event.locals.auth();
-  if (!session?.user?.email || (!session?.user?.id && pro))
+  if ((!session?.user?.email || !session?.user?.id) && pro)
     return redirect(302, "https://zoron.app/login");
-  if (!session.user.pro) {
-    if (import.meta.env.DEV) {
-      await adapter.updateUser!({
-        id: session.user.id,
-        pro: true,
-      } satisfies User as any);
-      session.user.pro = true;
-    } else {
-      return redirect(302, "https://zoron.app/pro");
+  if (session?.user) {
+    if (!session.user.pro) {
+      if (import.meta.env.DEV) {
+        await adapter.updateUser!({
+          id: session.user.id,
+          pro: true
+        } satisfies User as any);
+        session.user.pro = true;
+      } else if (pro) {
+        return redirect(302, "https://zoron.app/pro");
+      }
     }
   }
   const cookies = event.cookies;
@@ -46,14 +48,14 @@ export const load: LayoutServerLoad = async (event) => {
       name: CONSTANTS.name,
       supabase: {
         uri: SUPABASE_URI,
-        key: SUPABASE_PUBLIC_KEY,
+        key: SUPABASE_PUBLIC_KEY
       },
       posthog: {
-        key: POSTHOG,
+        key: POSTHOG
       },
       commit: commit,
-      pro,
+      pro
     },
-    hideFooter: event.cookies.get("hide-footer") === "1",
+    hideFooter: event.cookies.get("hide-footer") === "1"
   };
 };

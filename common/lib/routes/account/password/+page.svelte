@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state";
 
+  import { account } from "@zoron/common/api";
   import { requests, toast } from "@zoron/common/web";
   import { theme } from "@zoron/common/web/theme";
 
@@ -28,19 +29,18 @@
     const { dismiss } = toast.loading("Verifying credentials...");
     submitting = true;
 
-    const res = await requests.post<any>("/api/account/password", {
-      password
-    });
-    dismiss();
-    submitting = false;
-    if (!res.success)
-      return toast.error(
-        "An error occurred while updating password: " + res.error
-      );
-    else {
-      toast.success(`Your password has been updated.`);
+    try {
+      await account.updatePassword({ password });
+      toast.success("Your password has been updated.");
       // requires a hard refresh to update the session
       location.href = "/account";
+    } catch (error: any) {
+      toast.error(
+        "An error occurred while updating password: " + (error.message || error)
+      );
+    } finally {
+      dismiss();
+      submitting = false;
     }
   };
 

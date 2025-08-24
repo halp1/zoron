@@ -8,9 +8,9 @@ fi
 
 REL_PATH="$1"
 
-SRC_MAIN="main/src/routes/$REL_PATH"
-SRC_PRO="pro/src/routes/$REL_PATH"
-DEST="common/lib/routes/$REL_PATH"
+SRC_MAIN="main/src/api/$REL_PATH"
+SRC_PRO="pro/src/api/$REL_PATH"
+DEST="common/lib/api/$REL_PATH"
 
 # Ensure destination directory exists
 mkdir -p "$(dirname "$DEST")"

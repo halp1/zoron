@@ -6,6 +6,8 @@
 
   import { page } from "$app/state";
 
+  import { account } from "@zoron/common/api";
+  import { defaultSettings } from "@zoron/common/api/account/defaults";
   import { Toggle } from "@zoron/common/components";
   import ImageEditor from "@zoron/common/components/ImageEditor.svelte";
   import { motion } from "@zoron/common/motion";
@@ -29,8 +31,6 @@
   import { faCamera } from "@fortawesome/free-solid-svg-icons/faCamera";
 
   import _ from "lodash";
-
-  import { defaultSettings } from "../../api/account/settings/defaults";
 
   let device = $state<Device | null>(null);
   onMount(() => {
@@ -60,14 +60,19 @@
 
   settings.subscribe(async (value) => {
     if (!mounted) return;
-    const res = await requests.post<Settings>("/api/account/settings", {
-      notifications: value.notifications,
-      home: value.home,
-      social: value.social
-    });
-    if (!res.success)
-      toast.error("An error occurred while saving your settings: " + res.error);
-    else toast.success("Updated settings");
+    try {
+      await account.updateSettings({
+        notifications: value.notifications,
+        home: value.home,
+        social: value.social
+      });
+      toast.success("Updated settings");
+    } catch (error: any) {
+      toast.error(
+        "An error occurred while saving your settings: " +
+          (error.message || error)
+      );
+    }
   });
 
   const devices = page.data.session?.user?.devices ?? [];
@@ -152,21 +157,9 @@
       } = supabaseClient.storage.from("pfps").getPublicUrl(filePath);
 
       // Update user's profile picture URL
-      const profileResponse = await fetch(
-        "/api/account/settings/profile-picture",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ imageUrl: publicUrl + "?t=" + Date.now() })
-        }
-      );
-
-      if (!profileResponse.ok) {
-        const data = await profileResponse.json();
-        throw new Error(data.error || "Failed to update profile picture");
-      }
+      await account.updateProfilePicture({
+        imageUrl: publicUrl + "?t=" + Date.now()
+      });
 
       toast.success("Profile picture updated successfully");
       // Reload the page to reflect changes
@@ -394,21 +387,12 @@
                         toast.error("Could not identify device to remove");
                         return;
                       }
-                      const res = await requests.post(
-                        "/api/account/unsubscribe",
-                        {
-                          id: subscription.device.id
-                        }
-                      );
+                      const res = await account.unsubscribe({
+                        id: subscription.device.id
+                      });
 
-                      if (!res.success) {
-                        toast.error(
-                          "Failed to unregister device: " + res.error
-                        );
-                      } else {
-                        toast.success("Device unregistered successfully");
-                        history.go(0); // Reload the page to reflect changes
-                      }
+                      toast.success("Device unregistered successfully");
+                      history.go(0); // Reload the page to reflect changes
                     }}
                   >
                     <Fa icon={faTrash} />
@@ -483,22 +467,19 @@
                 const subscription = await getSubscription(page.data.env.vapid);
 
                 try {
-                  const res = await requests.post("/api/account/subscribe", {
+                  await account.subscribe({
                     device,
                     subscription
                   });
 
-                  if (!res.success)
-                    toast.error("Failed to register device: " + res.error);
-                  else {
-                    toast.success(
-                      "Device registered for notifications successfully"
-                    );
-                    history.go(0);
-                  }
-                } catch {
-                  // Handle any errors that may occur during the request
-                  toast.error("An error occurred while registering the device");
+                  toast.success(
+                    "Device registered for notifications successfully"
+                  );
+                  history.go(0);
+                } catch (error: any) {
+                  toast.error(
+                    "Failed to register device: " + (error.message || error)
+                  );
                 }
               }}
             >

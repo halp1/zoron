@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state";
 
+  import { account } from "@zoron/common/api";
   import { addPasskey } from "@zoron/common/auth/webauthn/browser";
   import { requests, toast } from "@zoron/common/web";
 
@@ -40,17 +41,11 @@
 
   const handleDeletePasskey = async (passkeyId: string) => {
     try {
-      const res = await requests.post("/api/account/passkeys/delete", {
-        passkeyId
-      });
-      if (res.success) {
-        toast.success("Passkey deleted successfully!");
-        window.location.reload();
-      } else {
-        toast.error("Failed to delete passkey");
-      }
-    } catch (e) {
-      toast.error((e as Error).message);
+      await account.deletePasskey({ passkeyId });
+      toast.success("Passkey deleted successfully!");
+      window.location.reload();
+    } catch (error: any) {
+      toast.error("Failed to delete passkey: " + (error.message || error));
     }
   };
 
@@ -115,9 +110,7 @@
 </main>
 
 {#if showNameDialog}
-  <div
-    class="fixed inset-0 flex items-center justify-center bg-black/50"
-  >
+  <div class="fixed inset-0 flex items-center justify-center bg-black/50">
     <div class="w-96 rounded-2xl bg-slate-800 p-10">
       <h2 class="mb-4 text-2xl">Name Your Passkey</h2>
       <input

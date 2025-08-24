@@ -6,6 +6,7 @@
 
   import { page } from "$app/state";
 
+  import { account } from "@zoron/common/api";
   import type {
     Assignment,
     Attendance,
@@ -99,8 +100,7 @@
         }
       );
 
-      await requests.post(
-        "/api/account/markAsRead",
+      await account.markAsRead(
         merged.map((item) =>
           item.type === "posted-grade" ? item.oid : item.id
         )
