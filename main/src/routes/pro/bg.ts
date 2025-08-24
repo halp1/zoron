@@ -45,6 +45,10 @@ export const initBG = (canvas: HTMLCanvasElement) => {
   let looping = true;
   const render = () => {
     if (!looping) return;
+    canvas.style.opacity = Math.min(
+      1,
+      parseFloat(canvas.style.opacity) + 0.01
+    ).toString();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     for (const connection of state.connections) {
@@ -56,7 +60,7 @@ export const initBG = (canvas: HTMLCanvasElement) => {
     }
 
     for (const point of state.points) {
-      ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+      ctx.fillStyle = "rgb(255, 255, 255)";
       ctx.beginPath();
       ctx.arc(point.x, point.y, point.r, 0, Math.PI * 2);
       ctx.fill();
@@ -88,11 +92,11 @@ export const initBG = (canvas: HTMLCanvasElement) => {
       looping = true;
       requestAnimationFrame(render);
     },
-		renderOnce: () => {
-			const prev = looping;
-			looping = true;
-			render();
-			looping = prev;
-		}
+    renderOnce: () => {
+      const prev = looping;
+      looping = true;
+      render();
+      looping = prev;
+    }
   };
 };

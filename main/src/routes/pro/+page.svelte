@@ -1,15 +1,23 @@
 <script lang="ts">
+  import { fade } from "svelte/transition";
+
   import { onMount } from "svelte";
 
+  import { goto } from "$app/navigation";
+
   import Footer from "@zoron/common/components/Footer.svelte";
+  import { toast } from "@zoron/common/web";
 
   import Fa from "svelte-fa";
 
   import { faCheck, faWarning, faX } from "@fortawesome/free-solid-svg-icons";
 
   import { initBG } from "./bg";
+  import { upgrade } from "./pro.remote";
 
   let canvas = $state<HTMLCanvasElement | null>(null);
+
+  let upgraded = $state(false);
 
   onMount(() => {
     if (!canvas) return;
@@ -65,7 +73,9 @@
       </a>
     </div>
     <div
-      class="z-10 w-96 overflow-y-auto rounded-3xl border-4 border-white p-10 backdrop-blur-sm"
+      class="z-10 w-96 rounded-3xl border-4 border-white p-10 backdrop-blur-sm"
+      class:overflow-y-auto={!upgraded}
+      class:overflow-visible={upgraded}
     >
       <div class="text-center text-4xl">
         Zoron <span class="shine-text" data-text="PRO">PRO</span>
@@ -97,12 +107,34 @@
       </ul>
 
       <button
-        class="btn-full btn-outlined theme-override mt-8 w-full border-yellow-200"
-        >Switch Now</button
+        class="btn-full btn-outlined theme-override mt-8 w-full border-yellow-200 transition-all"
+        style="transition-duration: 2s"
+        class:bg-yellow-200={upgraded}
+        class:text-transparent={upgraded}
+        class:hover:bg-yellow-200={upgraded}
+        class:scale-[1000]={upgraded}
+        onclick={() => {
+          upgrade()
+            .then(async () => {
+              toast.success("Welcome to Zoron PRO! Upgrading your account...");
+              document.querySelector("html")!.style.overflow = "visible";
+              upgraded = true;
+              await new Promise((r) => setTimeout(r, 2000));
+              window.location.href = "https://pro.zoron.app";
+            })
+            .catch((e) => toast.error(e.message));
+        }}
       >
+        Switch Now
+      </button>
     </div>
   </div>
-  <canvas bind:this={canvas} class="absolute left-0 top-0 h-screen w-screen"
+  <canvas
+    bind:this={canvas}
+    class="absolute left-0 top-0 h-screen w-screen"
+    style="opacity: 0"
   ></canvas>
 </main>
-<Footer fixed className="z-20" />
+{#if !upgraded}
+  <Footer fixed className="z-20 bg-transparent backdrop-blur-sm"/>
+{/if}

@@ -1,28 +1,6 @@
 @import "tailwindcss";
 @source "../components";
 
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
-@layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentcolor);
-  }
-}
-
-@utility bg-gradient {
-  @apply bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-900 via-[#0c1c3d] to-[#0a0f24];
-}
-
 @utility btn-circle {
   @apply flex h-8 w-8 cursor-pointer items-center justify-center rounded-full p-2 hover:bg-slate-800/10;
 
@@ -123,6 +101,19 @@
 @layer components {
   body {
     @apply text-white;
+  }
+
+  html.light {
+    @apply invert hue-rotate-180;
+  }
+
+  .light img {
+    @apply invert hue-rotate-180;
+  }
+
+	/* for some reason tailwind v4 gradient is broked */
+  .bg-gradient {
+    background-image: radial-gradient(circle at center, #0f172b, #0c1c3d, #0a0f24);
   }
 
   @keyframes shine {

@@ -138,7 +138,6 @@
       }
     };
   }
-  $inspect(relationships);
 
   // schedule viewing
   let selectedDay = $state(0);
