@@ -110,6 +110,9 @@
   .light img {
     @apply invert hue-rotate-180;
   }
+	input {
+		color-scheme: dark;
+	}
 
 	/* for some reason tailwind v4 gradient is broked */
   .bg-gradient {

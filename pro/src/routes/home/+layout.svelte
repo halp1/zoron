@@ -47,7 +47,6 @@
   {changelog}
   isPro={true}
   headerWidthClass="w-60"
-  contentPaddingClass="px-10"
 >
   {@render children?.()}
 </AppHeader>

@@ -6,6 +6,7 @@
   import { zoron } from "@zoron/common/web";
 
   import {
+    faArrowUp,
     faHome,
     faShieldAlt,
     faUser,
@@ -32,6 +33,12 @@
   const tabs: Tab[] = [
     { name: "Home", path: "/home?page=home", icon: faHome },
     { name: "Friends", path: "/home/friends", icon: faUserFriends },
+    {
+      name: "PRO",
+      path: "/pro",
+      icon: faArrowUp,
+      iconClass: "text-yellow-200"
+    },
     ...(page.data.session?.user?.role === "admin"
       ? [{ name: "Admin", path: "/home/admin", icon: faShieldAlt }]
       : []),
@@ -44,12 +51,6 @@
   ];
 </script>
 
-<AppHeader
-  {tabs}
-  {changelog}
-  isPro={false}
-  headerWidthClass="w-72"
-  contentPaddingClass=""
->
+<AppHeader {tabs} {changelog} isPro={false} headerWidthClass="w-72">
   {@render children?.()}
 </AppHeader>
