@@ -37,7 +37,8 @@
       name: "PRO",
       path: "/pro",
       icon: faArrowUp,
-      iconClass: "text-yellow-200"
+      iconClass: "text-yellow-200",
+			mobileOnly: true,
     },
     ...(page.data.session?.user?.role === "admin"
       ? [{ name: "Admin", path: "/home/admin", icon: faShieldAlt }]
