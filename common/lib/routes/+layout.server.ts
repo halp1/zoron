@@ -38,7 +38,7 @@ export const load: LayoutServerLoad = async (event) => {
         } satisfies User as any);
         session.user.pro = true;
       } else {
-        return redirect(302, "https://zoron.app/pro");
+        return redirect(302, "https://pro.zoron.app");
       }
     }
   }
