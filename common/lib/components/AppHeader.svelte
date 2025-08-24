@@ -399,13 +399,11 @@
           ? ''
           : 'pb-[env(safe-area-inset-bottom)]'}"
     ></div>
-    <!-- tailwind v4 doesnt like border-b-0 for some reason so we have to use style instead -->
     <div
-      class="fixed bottom-0 left-0 right-0 flex w-full items-center justify-evenly rounded-t-2xl pb-2 pt-2 shadow-xl md:hidden {$theme ===
+      class="fixed bottom-0 left-0 right-0 flex w-full items-center justify-evenly pb-2 pt-2 shadow-xl md:hidden {$theme ===
       'amoled'
-        ? 'border-2 border-white bg-black'
+        ? 'border-t-2 border-white bg-black'
         : 'bg-slate-800'}"
-      style="border-bottom: 0"
     >
       {#each tabs as tab, idx}
         <a
