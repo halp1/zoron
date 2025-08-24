@@ -15,19 +15,16 @@
   onMount(() => {
     loaded = true;
     (async () => {
-      try {
-        const res = await requests.get<AppState>("/api/home/launch");
-        if (res.success === false) toast.error(res.error);
-        else {
-          zoron.set(res.data);
-          const target = (
-            new URLSearchParams(window.location.search).get("path") || "/home"
-          ).replaceAll("/__data.json", "");
-          await goto(target);
-        }
-      } catch (e) {
-        toast.error(`Error loading launch data: ${e}\nTrying again...`);
+      const res = await requests.get<AppState>("/api/home/launch");
+      if (res.success === false) {
+        toast.error(`Error loading launch data: ${res.error}\nTrying again...`);
         history.go(0);
+      } else {
+        zoron.set(res.data);
+        const target = (
+          new URLSearchParams(window.location.search).get("path") || "/home"
+        ).replaceAll("/__data.json", "");
+        await goto(target);
       }
     })();
   });

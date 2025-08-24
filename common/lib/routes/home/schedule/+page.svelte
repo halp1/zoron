@@ -672,7 +672,7 @@
         const matrix = new DOMMatrix(currentYTransform);
         matrix.translateSelf(0, swipeVelocity * 10);
         matrix.e = 0;
-				console.log(matrix.toString())
+        console.log(matrix.toString());
         dayViewRef.style.transform = matrix.toString();
       }
       frame = requestAnimationFrame(tick);
@@ -752,9 +752,8 @@
     class="relative flex h-full flex-col-reverse items-center gap-3 md:flex-row md:pt-0 px-10"
   >
     <div
-      class="items-center gap-3 rounded-full {$theme === 'amoled'
-        ? 'border-2 border-white bg-black'
-        : 'bg-slate-800'} p-2 mb-4 md:mb-0 flex md:flex-col md:fixed md:left-6 md:top-1/2 md:-translate-y-1/2"
+      class="items-center gap-3 rounded-full border-white p-2 mb-4 md:mb-0 backdrop-blur-xs flex md:flex-col fixed z-10 md:left-6 md:top-1/2 md:-translate-y-1/2"
+      class:border-2={$theme === "amoled"}
       in:fly|global={{
         delay: 200,
         duration: 1000,
@@ -897,7 +896,7 @@
       </div>
     {:else}
       <div
-        class="mx-auto flex h-full w-80 flex-col items-center gap-5 overflow-x-visible"
+        class="mx-auto flex h-full md:flex-none md:h-full w-80 flex-col items-center gap-5 overflow-x-visible"
       >
         <div
           class="-mb-3 mt-3 text-xl text-slate-400"

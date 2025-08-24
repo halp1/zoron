@@ -109,7 +109,7 @@
             easing: motion.transitions.spring(400, 20)
           }}
         ></div>
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-2 gap-2 items-center">
           <a
             href="/account/settings"
             class="theme-override btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-blue-400 text-base"
@@ -125,7 +125,7 @@
             Settings
           </a>
           <a
-            href="/account/friends"
+            href="/home/friends"
             class="theme-override btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-blue-400 text-base"
             in:fly|global={{
               delay: 700,

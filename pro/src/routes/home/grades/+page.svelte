@@ -507,7 +507,7 @@
 </div>
 
 {#if displayMode === "grades"}
-  {#if classes}
+  {#if classes && classes.length}
     <div
       class="grid grid-cols-1 gap-5 pb-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
     >
@@ -1021,7 +1021,9 @@
         </div>
       {/each}
     </div>
-  {:else}
+  {:else if classes}
+		<div class="text-center text-slate-400">You don't have any class data available yet.</div>
+	{:else}
     <div
       class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
     >

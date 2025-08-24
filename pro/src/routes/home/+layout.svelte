@@ -10,7 +10,8 @@
     faHome,
     faList,
     faShieldAlt,
-    faUser
+    faUser,
+    faUserFriends
   } from "@fortawesome/free-solid-svg-icons";
 
   import { changelog } from "../changelog/changelog";
@@ -27,6 +28,7 @@
     { name: "Schedule", path: "/home/schedule", icon: faCalendar },
     { name: "Grades", path: "/home/grades", icon: faChartLine },
     { name: "Activity", path: "/home/activity", icon: faList },
+    { name: "Friends", path: "/home/friends", icon: faUserFriends },
     // { name: "Chat", path: "/home/chat", icon: faComments },
     ...(page.data.session?.user?.role === "admin"
       ? [{ name: "Admin", path: "/home/admin", icon: faShieldAlt }]
@@ -34,7 +36,7 @@
     {
       name: "Account",
       path: "/account",
-      icon: page.data.session?.user?.image || faUser,
+      icon: page.data.session?.user?.image ?? faUser,
       mobileOnly: true
     }
   ];

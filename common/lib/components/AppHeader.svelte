@@ -7,13 +7,16 @@
   import bgSrc from "@zoron/common/assets/bg.png";
   import { motion } from "@zoron/common/motion";
   import { PWA, isIOS, storage, toast } from "@zoron/common/web";
-  import { theme } from "@zoron/common/web/theme";
+  import { mode, theme } from "@zoron/common/web/theme";
   import type { Tab, Changelog } from "@zoron/common/types";
   import Fa from "svelte-fa";
   import {
     faArrowRight,
     faClose,
+    faCog,
+    faMoon,
     faSignOut,
+    faSun,
     faUser,
   } from "@fortawesome/free-solid-svg-icons";
 
@@ -103,6 +106,7 @@
 
   const tagDelay = changelog[0].version[0] === "0" || import.meta.env.DEV ? 100 : 0;
   const proDelay = isPro ? 100 : 0;
+  let modeSwitchDelay = $derived($theme === "amoled" ? 100 : 0);
 </script>
 
 <svelte:head>
@@ -252,13 +256,14 @@
             <span
               class="text-green-300 font-mono text-xs whitespace-nowrap flex items-center justify-center"
               in:fly|global={{
-                delay: availableTabs.length * 100 + 900 + tagDelay,
+                delay: availableTabs.length * 100 + 1100 + tagDelay + modeSwitchDelay,
                 duration: 1000,
                 opacity: 0,
                 x: 20,
                 easing: motion.transitions.spring(300, 30),
               }}
-              >free btw
+            >
+              free btw
               <div
                 class="bg-green-300 inline-block w-8 h-8 -mr-1"
                 style="mask-image: url('{arrowRight}'); mask-repeat: no-repeat; mask-position: center; mask-size: contain"
@@ -272,27 +277,45 @@
                 : 'border-blue-400'}"
               href="/pro"
               in:fly|global={{
-                delay: availableTabs.length * 100 + 800 + tagDelay,
+                delay: availableTabs.length * 100 + 1000 + tagDelay + modeSwitchDelay,
                 duration: 1000,
                 opacity: 0,
                 x: 20,
                 easing: motion.transitions.spring(300, 30),
               }}
-              onclick={(e) => {
-                e.preventDefault();
-                toast.error(`${page.data.env.name} PRO is coming soon!`);
-              }}
             >
               <span class="shine-text" data-text="PRO">PRO</span>
             </a>
           {/if}
+          {#if $theme === "amoled"}
+            <button
+              class="cursor-pointer flex h-8 w-8 items-center justify-center gap-2 rounded-full border-2 bg-white/0 transition-all hover:bg-white/10"
+              class:border-white={$theme === "amoled"}
+              onclick={() => {
+                mode.update((mode) => (mode === "light" ? "dark" : "light"));
+              }}
+              in:fly|global={{
+                delay: availableTabs.length * 100 + 900 + tagDelay,
+                duration: 1000,
+                opacity: 0,
+                x: 20,
+                easing: motion.transitions.spring(300, 30),
+              }}
+            >
+              {#if $mode === "dark"}
+                <Fa icon={faSun} />
+              {:else}
+                <Fa icon={faMoon} />
+              {/if}
+            </button>
+          {/if}
           <a
-            class="flex h-8 px-2 items-center justify-center gap-2 rounded-full border-2 bg-white/0 transition-all hover:bg-white/10"
+            class="flex h-8 w-8 items-center justify-center gap-2 rounded-full border-2 bg-white/0 transition-all hover:bg-white/10"
             class:border-white={$theme === "amoled"}
             class:border-blue-400={$theme === "zoron"}
             href="/account"
             in:fly|global={{
-              delay: availableTabs.length * 100 + 700 + tagDelay,
+              delay: availableTabs.length * 100 + 800 + tagDelay,
               duration: 1000,
               opacity: 0,
               x: 20,
@@ -308,10 +331,24 @@
             {:else}
               <Fa icon={faUser} />
             {/if}
-            My Account
           </a>
           <a
-            class="flex h-8 px-2 items-center justify-center gap-2 rounded-full border-2 bg-white/0 transition-all hover:bg-white/10"
+            class="flex h-8 w-8 items-center justify-center gap-2 rounded-full border-2 bg-white/0 transition-all hover:bg-white/10"
+            class:border-white={$theme === "amoled"}
+            class:border-blue-400={$theme === "zoron"}
+            href="/settings"
+            in:fly|global={{
+              delay: availableTabs.length * 100 + 700 + tagDelay,
+              duration: 1000,
+              opacity: 0,
+              x: 20,
+              easing: motion.transitions.spring(300, 30),
+            }}
+          >
+            <Fa icon={faCog} />
+          </a>
+          <a
+            class="flex h-8 w-8 items-center justify-center gap-2 rounded-full border-2 bg-white/0 transition-all hover:bg-white/10"
             class:border-white={$theme === "amoled"}
             class:border-blue-400={$theme === "zoron"}
             href="/logout"
@@ -324,7 +361,7 @@
             }}
           >
             <Fa icon={faSignOut} />
-            Log Out
+            <!-- Log Out -->
           </a>
         </div>
 
@@ -352,7 +389,7 @@
   <!-- Main content area -->
   {#key page.url}
     <div
-      class="view-anim-{animationDirection} no-scroll flex w-full flex-1 flex-col gap-2 overflow-y-auto overflow-x-hidden {contentPaddingClass}"
+      class="view-anim-{animationDirection} no-scroll flex w-full flex-1 flex-col gap-2 overflow-y-auto overflow-x-hidden {contentPaddingClass} mt-[env(safe-area-inset-top)]"
     >
       {@render children?.()}
     </div>
@@ -367,11 +404,13 @@
           ? ''
           : 'pb-[env(safe-area-inset-bottom)]'}"
     ></div>
+    <!-- tailwind v4 doesnt like border-b-0 for some reason so we have to use style instead -->
     <div
       class="fixed bottom-0 left-0 right-0 flex w-full items-center justify-evenly rounded-t-2xl pb-2 pt-2 shadow-xl md:hidden {$theme ===
       'amoled'
-        ? 'border-2 border-b-0 border-white bg-black'
+        ? 'border-2 border-white bg-black'
         : 'bg-slate-800'}"
+      style="border-bottom: 0"
     >
       {#each tabs as tab, idx}
         <a
@@ -414,7 +453,12 @@
       ? 'flex'
       : 'hidden'} items-center justify-center backdrop-blur-md"
   >
-    <div class="flex flex-col items-center justify-center rounded-md bg-slate-800 p-10">
+    <div
+      class="flex flex-col items-center justify-center rounded-md p-10 {$theme ===
+      'amoled'
+        ? 'bg-black border-2 border-white'
+        : 'bg-slate-800'}"
+    >
       <div class="mb-5 text-xl">Install {page.data.env.name}?</div>
       <div class="text-center">
         You appear to be on a mobile device.
