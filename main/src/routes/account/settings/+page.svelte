@@ -6,7 +6,7 @@
 
   import { page } from "$app/state";
 
-  import { defaultSettings } from "@zoron/common/api/account/defaults";
+  import { Toggle } from "@zoron/common/components";
   import ImageEditor from "@zoron/common/components/ImageEditor.svelte";
   import { motion } from "@zoron/common/motion";
   import type { Settings } from "@zoron/common/types";
@@ -23,12 +23,13 @@
 
   import Fa from "svelte-fa";
 
+  import { faTrash } from "@fortawesome/free-solid-svg-icons";
   import { faArrowLeft } from "@fortawesome/free-solid-svg-icons/faArrowLeft";
   import { faCamera } from "@fortawesome/free-solid-svg-icons/faCamera";
 
   import _ from "lodash";
 
-  import { account } from "../../../api";
+  import { defaultSettings } from "../../api/account/settings/defaults";
 
   let device = $state<Device | null>(null);
   onMount(() => {
@@ -49,19 +50,14 @@
 
   settings.subscribe(async (value) => {
     if (!mounted) return;
-    try {
-      await account.updateSettings({
-        notifications: value.notifications,
-        home: value.home,
-        social: value.social
-      });
-      toast.success("Updated settings");
-    } catch (error: any) {
-      toast.error(
-        "An error occurred while saving your settings: " +
-          (error.message || error)
-      );
-    }
+    const res = await requests.post<Settings>("/api/account/settings", {
+      notifications: value.notifications,
+      home: value.home,
+      social: value.social
+    });
+    if (!res.success)
+      toast.error("An error occurred while saving your settings: " + res.error);
+    else toast.success("Updated settings");
   });
 
   const devices = page.data.session?.user?.devices ?? [];
@@ -118,9 +114,21 @@
       const publicUrl = "";
 
       // Update user's profile picture URL
-      await account.updateProfilePicture({
-        imageUrl: publicUrl + "?t=" + Date.now()
-      });
+      const profileResponse = await fetch(
+        "/api/account/settings/profile-picture",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ imageUrl: publicUrl + "?t=" + Date.now() })
+        }
+      );
+
+      if (!profileResponse.ok) {
+        const data = await profileResponse.json();
+        throw new Error(data.error || "Failed to update profile picture");
+      }
 
       toast.success("Profile picture updated successfully");
       // Reload the page to reflect changes
