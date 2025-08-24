@@ -16,7 +16,7 @@ import type { LayoutServerLoad } from "../../../main/.svelte-kit/types/src/route
 
 const commit = execSync("git rev-parse --short HEAD").toString().trim();
 
-const pro = process.cwd().includes("/pro");
+const pro = process.cwd().slice(process.cwd().indexOf('zoron')).includes("/pro");
 
 export const load: LayoutServerLoad = async (event) => {
   const session = await event.locals.auth();
