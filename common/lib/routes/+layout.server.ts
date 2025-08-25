@@ -28,16 +28,18 @@ export const load: LayoutServerLoad = async (event) => {
   const session = await event.locals.auth();
   if (pro) {
     if (!session?.user?.id) return redirect(302, "https://zoron.app/login");
-    if (!session.user.pro) return redirect(302, "https://zoron.app/pro");
-  } else {
-    if (session?.user?.pro) {
+    if (!session.user.pro) {
       if (import.meta.env.DEV) {
         await adapter.updateUser!({
           id: session.user.id,
           pro: true
         } satisfies User as any);
         session.user.pro = true;
-      } else {
+      } else return redirect(302, "https://zoron.app/pro");
+    }
+  } else {
+    if (session?.user?.pro) {
+      if (!import.meta.env.DEV) {
         return redirect(302, "https://pro.zoron.app");
       }
     }
