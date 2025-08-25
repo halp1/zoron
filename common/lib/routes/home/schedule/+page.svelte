@@ -14,6 +14,8 @@
   import { requests, toast, zoron } from "@zoron/common/web";
   import { theme } from "@zoron/common/web/theme";
 
+  import type { User } from "@auth/sveltekit";
+
   import Fa from "svelte-fa";
 
   import {
@@ -25,7 +27,6 @@
     faRotateRight
   } from "@fortawesome/free-solid-svg-icons";
 
-  import type { User } from "@auth/sveltekit";
   import { DatePicker } from "date-picker-svelte";
   import _ from "lodash";
 
@@ -303,7 +304,8 @@
         .flatMap((c) =>
           new Array(6)
             .fill(null)
-            .map((_, i) => [`${c}${i + 1}`, `${c}${i + 1}`])
+            // prettier is fucking with the $ sign again
+            .map((_, i) => [`${c}${i + 1}`, `${c}\u0024${i + 1}`])
         )
         .flat(),
       "I-block",
@@ -933,79 +935,69 @@
       </div>
     {:else}
       <div
-        class="mx-auto flex h-full w-80 flex-col items-center gap-5 overflow-x-visible md:h-full md:flex-none"
+        class="relative mx-auto flex h-full w-80 flex-col items-center gap-5 overflow-x-visible md:h-full md:flex-none"
       >
         <div
-          class="-mb-3 mt-3 text-xl text-slate-400"
-          in:fly|global={{
-            delay: 250,
-            duration: 1000,
-            opacity: 0,
-            y: -20,
-            easing: motion.transitions.spring(400, 20)
-          }}
+          class="absolute left-1/2 top-0 z-10 mt-5 flex w-96 -translate-x-1/2 flex-col items-center gap-5 rounded-2xl border-2 border-white bg-black/20 p-2 pt-0 backdrop-blur-sm"
         >
-          {dayViewDay.toLocaleDateString("en-US", { weekday: "long" })},
-          {[
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December"
-          ][dayViewDay.getMonth()]}
-          {dayViewDay.getDate()}{(() => {
-            switch (dayViewDay.getDate()) {
-              case 1:
-                return "st";
-              case 2:
-                return "nd";
-              case 3:
-                return "rd";
-              default:
-                return "th";
-            }
-          })()}, {dayViewDay.getFullYear()}
-        </div>
-        <div
-          class="text-sm text-slate-500"
-          in:fly|global={{
-            delay: 350,
-            duration: 1000,
-            opacity: 0,
-            y: -20,
-            easing: motion.transitions.spring(400, 20)
-          }}
-        >
-          {#key key}
-            School clocks are {Math.abs(
-              ($zoron.constants?.timeDelta || 0) / 1000
-            ).toFixed(0)} seconds
-            {($zoron.constants?.timeDelta || 0) < 0 ? "behind" : "ahead"}: {now().toLocaleTimeString()}
-          {/key}
-        </div>
-
-        {#if !day}
           <div
+            class="-mb-3 mt-3 text-xl text-slate-400"
             in:fly|global={{
-              delay: 450,
+              delay: 250,
               duration: 1000,
               opacity: 0,
               y: -20,
               easing: motion.transitions.spring(400, 20)
             }}
           >
-            loading...
+            {dayViewDay.toLocaleDateString("en-US", { weekday: "long" })},
+            {[
+              "January",
+              "February",
+              "March",
+              "April",
+              "May",
+              "June",
+              "July",
+              "August",
+              "September",
+              "October",
+              "November",
+              "December"
+            ][dayViewDay.getMonth()]}
+            {dayViewDay.getDate()}{(() => {
+              switch (dayViewDay.getDate()) {
+                case 1:
+                  return "st";
+                case 2:
+                  return "nd";
+                case 3:
+                  return "rd";
+                default:
+                  return "th";
+              }
+            })()}, {dayViewDay.getFullYear()}
           </div>
-        {:else}
-          <div class="relative flex w-full justify-center gap-2">
-            <button
+          <div
+            class="text-sm text-slate-500"
+            in:fly|global={{
+              delay: 350,
+              duration: 1000,
+              opacity: 0,
+              y: -20,
+              easing: motion.transitions.spring(400, 20)
+            }}
+          >
+            {#key key}
+              School clocks are {Math.abs(
+                ($zoron.constants?.timeDelta || 0) / 1000
+              ).toFixed(0)} seconds
+              {($zoron.constants?.timeDelta || 0) < 0 ? "behind" : "ahead"}: {now().toLocaleTimeString()}
+            {/key}
+          </div>
+
+          {#if !day}
+            <div
               in:fly|global={{
                 delay: 450,
                 duration: 1000,
@@ -1013,162 +1005,188 @@
                 y: -20,
                 easing: motion.transitions.spring(400, 20)
               }}
-              class="btn-circle border-2 {$theme === 'amoled'
-                ? 'border-white'
-                : 'border-slate-600'}"
-              onclick={async () => {
-                (
-                  document.querySelector("#day-transition") as HTMLDivElement
-                ).style.transform =
-                  "translateX(100vw)" +
-                  (document.querySelector("#day-transition") as HTMLDivElement)
-                    .style.transform;
-                await new Promise((r) => setTimeout(r, 200));
-
-                dayViewDay = new Date(
-                  dayViewDay.getTime() - 1000 * 60 * 60 * 24
-                );
-                swipeDirection = "right";
-              }}
             >
-              <Fa icon={faChevronLeft} />
-            </button>
-            <button
-              in:fly|global={{
-                delay: 520,
-                duration: 1000,
-                opacity: 0,
-                y: -20,
-                easing: motion.transitions.spring(400, 20)
-              }}
-              class="btn-circle border-2 {$theme === 'amoled'
-                ? 'border-white'
-                : 'border-slate-600'}"
-              onclick={async () => {
-                const target = now();
-
-                const direction = target < dayViewDay ? "left" : "right";
-                (
-                  document.querySelector("#day-transition") as HTMLDivElement
-                ).style.transform =
-                  `translateX(${direction === "left" ? "" : "-"}100vw)` +
-                  (document.querySelector("#day-transition") as HTMLDivElement)
-                    .style.transform;
-                await new Promise((r) => setTimeout(r, 200));
-
-                dayViewDay = target;
-                swipeDirection = direction === "left" ? "right" : "left";
-              }}
-            >
-              <Fa icon={faRotateRight} />
-            </button>
-            <div
-              class="mx-auto text-center text-2xl"
-              in:fly|global={{
-                delay: 600,
-                duration: 1000,
-                opacity: 0,
-                y: -20,
-                easing: motion.transitions.spring(400, 20)
-              }}
-            >
-              {#if !day.day || day.blocks.length === 0}
-                No school
-              {:else}
-                {day.day}
-              {/if}
+              loading...
             </div>
-            <button
-              in:fly|global={{
-                delay: 675,
-                duration: 500,
-                opacity: 0,
-                y: -20,
-                easing: motion.transitions.spring(400, 20)
-              }}
-              class="btn-circle border-2 {$theme === 'amoled'
-                ? 'border-white'
-                : 'border-slate-600'}"
-              onclick={async () => {
-                datePickerOpen = !datePickerOpen;
-              }}
-            >
-              <Fa icon={faCalendar} />
-            </button>{#if datePickerOpen}
-              <!-- svelte-ignore a11y_no_static_element_interactions -->
-              <!-- svelte-ignore a11y_click_events_have_key_events -->
-              <div
-                class="absolute right-0 top-10 z-10 {$theme === 'amoled'
-                  ? 'invert'
-                  : ''}"
-                transition:fly|global={{
-                  delay: 0,
+          {:else}
+            <div class="relative flex w-full justify-center gap-2">
+              <button
+                in:fly|global={{
+                  delay: 450,
                   duration: 1000,
                   opacity: 0,
-                  y: -30,
-                  easing: motion.transitions.spring(300, 20)
+                  y: -20,
+                  easing: motion.transitions.spring(400, 20)
                 }}
-                onmousedown={(e) => {
-                  e.stopPropagation();
-                }}
-                ontouchstart={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                <DatePicker
-                  on:select={async (event: any) => {
-                    datePickerOpen = false;
-
-                    const target = event.detail;
-
-                    const direction = target < dayViewDay ? "left" : "right";
+                class="btn-circle border-2 {$theme === 'amoled'
+                  ? 'border-white'
+                  : 'border-slate-600'}"
+                onclick={async () => {
+                  (
+                    document.querySelector("#day-transition") as HTMLDivElement
+                  ).style.transform =
+                    "translateX(100vw)" +
                     (
                       document.querySelector(
                         "#day-transition"
                       ) as HTMLDivElement
-                    ).style.transform =
-                      `translateX(${direction === "left" ? "" : "-"}100vw)` +
+                    ).style.transform;
+                  await new Promise((r) => setTimeout(r, 200));
+
+                  dayViewDay = new Date(
+                    dayViewDay.getTime() - 1000 * 60 * 60 * 24
+                  );
+                  swipeDirection = "right";
+                }}
+              >
+                <Fa icon={faChevronLeft} />
+              </button>
+              <button
+                in:fly|global={{
+                  delay: 520,
+                  duration: 1000,
+                  opacity: 0,
+                  y: -20,
+                  easing: motion.transitions.spring(400, 20)
+                }}
+                class="btn-circle border-2 {$theme === 'amoled'
+                  ? 'border-white'
+                  : 'border-slate-600'}"
+                onclick={async () => {
+                  const target = now();
+
+                  const direction = target < dayViewDay ? "left" : "right";
+                  (
+                    document.querySelector("#day-transition") as HTMLDivElement
+                  ).style.transform =
+                    `translateX(${direction === "left" ? "" : "-"}100vw)` +
+                    (
+                      document.querySelector(
+                        "#day-transition"
+                      ) as HTMLDivElement
+                    ).style.transform;
+                  await new Promise((r) => setTimeout(r, 200));
+
+                  dayViewDay = target;
+                  swipeDirection = direction === "left" ? "right" : "left";
+                }}
+              >
+                <Fa icon={faRotateRight} />
+              </button>
+              <div
+                class="mx-auto text-center text-2xl"
+                in:fly|global={{
+                  delay: 600,
+                  duration: 1000,
+                  opacity: 0,
+                  y: -20,
+                  easing: motion.transitions.spring(400, 20)
+                }}
+              >
+                {#if !day.day || day.blocks.length === 0}
+                  No school
+                {:else}
+                  {day.day}
+                {/if}
+              </div>
+              <button
+                in:fly|global={{
+                  delay: 675,
+                  duration: 500,
+                  opacity: 0,
+                  y: -20,
+                  easing: motion.transitions.spring(400, 20)
+                }}
+                class="btn-circle border-2 {$theme === 'amoled'
+                  ? 'border-white'
+                  : 'border-slate-600'}"
+                onclick={async () => {
+                  datePickerOpen = !datePickerOpen;
+                }}
+              >
+                <Fa icon={faCalendar} />
+              </button>{#if datePickerOpen}
+                <!-- svelte-ignore a11y_no_static_element_interactions -->
+                <!-- svelte-ignore a11y_click_events_have_key_events -->
+                <div
+                  class="absolute right-0 top-10 z-10 {$theme === 'amoled'
+                    ? 'invert'
+                    : ''}"
+                  transition:fly|global={{
+                    delay: 0,
+                    duration: 1000,
+                    opacity: 0,
+                    y: -30,
+                    easing: motion.transitions.spring(300, 20)
+                  }}
+                  onmousedown={(e) => {
+                    e.stopPropagation();
+                  }}
+                  ontouchstart={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <DatePicker
+                    on:select={async (event: any) => {
+                      datePickerOpen = false;
+
+                      const target = event.detail;
+
+                      const direction = target < dayViewDay ? "left" : "right";
                       (
                         document.querySelector(
                           "#day-transition"
                         ) as HTMLDivElement
-                      ).style.transform;
-                    await new Promise((r) => setTimeout(r, 200));
+                      ).style.transform =
+                        `translateX(${direction === "left" ? "" : "-"}100vw)` +
+                        (
+                          document.querySelector(
+                            "#day-transition"
+                          ) as HTMLDivElement
+                        ).style.transform;
+                      await new Promise((r) => setTimeout(r, 200));
 
-                    dayViewDay = target;
-                    swipeDirection = direction === "left" ? "right" : "left";
-                  }}
-                />
-              </div>
-            {/if}
-            <button
-              in:fly|global={{
-                delay: 750,
-                duration: 1000,
-                opacity: 0,
-                y: -20,
-                easing: motion.transitions.spring(400, 20)
-              }}
-              class="btn-circle border-2 {$theme === 'amoled'
-                ? 'border-white'
-                : 'border-slate-600'}"
-              onclick={async () => {
-                (
-                  document.querySelector("#day-transition") as HTMLDivElement
-                ).style.transform =
-                  "translateX(-100vw)" +
-                  (document.querySelector("#day-transition") as HTMLDivElement)
-                    .style.transform;
-                await new Promise((r) => setTimeout(r, 200));
-                dayViewDay = new Date(
-                  dayViewDay.getTime() + 1000 * 60 * 60 * 24
-                );
-                swipeDirection = "left";
-              }}
-            >
-              <Fa icon={faChevronRight} />
-            </button>
-          </div>
+                      dayViewDay = target;
+                      swipeDirection = direction === "left" ? "right" : "left";
+                    }}
+                  />
+                </div>
+              {/if}
+              <button
+                in:fly|global={{
+                  delay: 750,
+                  duration: 1000,
+                  opacity: 0,
+                  y: -20,
+                  easing: motion.transitions.spring(400, 20)
+                }}
+                class="btn-circle border-2 {$theme === 'amoled'
+                  ? 'border-white'
+                  : 'border-slate-600'}"
+                onclick={async () => {
+                  (
+                    document.querySelector("#day-transition") as HTMLDivElement
+                  ).style.transform =
+                    "translateX(-100vw)" +
+                    (
+                      document.querySelector(
+                        "#day-transition"
+                      ) as HTMLDivElement
+                    ).style.transform;
+                  await new Promise((r) => setTimeout(r, 200));
+                  dayViewDay = new Date(
+                    dayViewDay.getTime() + 1000 * 60 * 60 * 24
+                  );
+                  swipeDirection = "left";
+                }}
+              >
+                <Fa icon={faChevronRight} />
+              </button>
+            </div>
+          {/if}
+        </div>
+
+        {#if day}
           {#key dayKey}
             <div
               id="day-transition"
@@ -1176,7 +1194,7 @@
               style="padding: 0 10000px 0 10000px; margin: 0 -10000px 0 -10000px;"
             >
               <div
-                class="flex min-h-[60vh] min-w-[336px] flex-col items-center gap-5 pr-2 animate-in-{swipeDirection} pb-20 md:pb-5"
+                class="flex min-h-[60vh] min-w-[336px] flex-col items-center gap-5 pr-2 animate-in-{swipeDirection} pb-20 pt-44 md:pb-5"
                 style="transition: inherit;"
                 bind:this={dayViewRef}
               >
