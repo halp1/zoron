@@ -1,9 +1,11 @@
+import type { Handle } from "@sveltejs/kit";
+import { isRedirect } from "@sveltejs/kit";
+
+import { MONGODB_URI } from "$env/static/private";
+
 import { zoron } from "@zoron/common";
 import { handle as authHandle } from "@zoron/common/auth";
 import { logger } from "@zoron/common/logs";
-
-import { MONGODB_URI } from "$env/static/private";
-import type { Handle } from "@sveltejs/kit";
 
 import { jobs } from "./jobs";
 

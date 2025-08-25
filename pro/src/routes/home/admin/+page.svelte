@@ -10,8 +10,11 @@
   import { requests, toast } from "@zoron/common/web";
   import { theme } from "@zoron/common/web/theme";
 
-  import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
   import Fa from "svelte-fa";
+
+  import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+
+  import { downgrade } from "./admin-pro.remote";
 
   let tick = $state(0);
   onMount(() => {
@@ -39,7 +42,7 @@
   Admin Panel
 </div>
 <div
-  class="mb-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+  class="mb-10 grid grid-cols-1 gap-5 px-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
 >
   <div
     class="rounded-3xl border-2 {$theme === 'amoled'
@@ -286,6 +289,31 @@
     </form>
   </div>
   <button
+    class="rounded-3xl border-2 text-6xl {$theme === 'amoled'
+      ? 'border-white'
+      : 'border-red-400'} {$theme === 'amoled'
+      ? 'bg-black'
+      : 'bg-slate-800'} p-5"
+    in:fly|global={{
+      delay: 550,
+      duration: 1000,
+      opacity: 0,
+      y: -20,
+      easing: motion.transitions.spring(400, 20)
+    }}
+    onclick={async () => {
+      try {
+        await downgrade();
+        toast.success("Account downgraded successfully");
+        history.go(0);
+      } catch (e: any) {
+        toast.error("Failed to downgrade account: " + e.message);
+      }
+    }}
+  >
+    Downgrade Account
+  </button>
+  <button
     class="rounded-3xl border-2 text-7xl {$theme === 'amoled'
       ? 'border-white'
       : 'border-red-400'} {$theme === 'amoled'
@@ -307,7 +335,7 @@
       }
     }}
   >
-    Restart Zoron
+    Restart {page.data.env.name}
   </button>
   <div
     class="flex flex-col gap-2 rounded-3xl border-2 {$theme === 'amoled'
@@ -323,7 +351,7 @@
       easing: motion.transitions.spring(400, 20)
     }}
   >
-		<div class="text-3xl">Tools</div>
+    <div class="text-3xl">Tools</div>
     <a
       href="/home/admin/logs"
       class="flex items-center gap-2 text-xl underline"
