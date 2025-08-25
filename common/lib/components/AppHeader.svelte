@@ -467,7 +467,7 @@
               icon={tab.icon}
               size="lg"
               class={twMerge(
-                "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
+                "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 scale-85",
                 $theme === "amoled" && idx === activeTabIndex
                   ? "text-black"
                   : "text-white",

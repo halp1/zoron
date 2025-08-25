@@ -1194,7 +1194,7 @@
               style="padding: 0 10000px 0 10000px; margin: 0 -10000px 0 -10000px;"
             >
               <div
-                class="flex min-h-[60vh] min-w-[336px] flex-col items-center gap-5 pr-2 animate-in-{swipeDirection} pb-20 pt-44 md:pb-5"
+                class="flex min-h-[60vh] min-w-[336px] flex-col items-center gap-5 animate-in-{swipeDirection} pb-20 pt-44 md:pb-5"
                 style="transition: inherit;"
                 bind:this={dayViewRef}
               >
