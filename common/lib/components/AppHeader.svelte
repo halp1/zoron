@@ -28,6 +28,7 @@
   import { twMerge } from "tailwind-merge";
 
   import arrowRight from "../assets/arrow-loop-right.png";
+  import { CONSTANTS } from "../constants";
 
   interface Props {
     tabs: Tab[];
@@ -268,7 +269,7 @@
 
         <!-- User actions section -->
         <div class="flex w-[24rem] items-center justify-end gap-2">
-          {#if !isPro}
+          {#if !isPro && (page.data.accountAge ?? 0) > CONSTANTS.proAccountAge}
             <span
               class="flex items-center justify-center whitespace-nowrap font-mono text-xs text-green-300"
               in:fly|global={{
@@ -422,11 +423,7 @@
   <!-- Mobile bottom navigation -->
   {#if typeof window === "undefined" || windowWidth < 768}
     <div
-      class="h-14 md:hidden {isIOS()
-        ? 'pb-5'
-        : isPro
-          ? ''
-          : 'pb-[env(safe-area-inset-bottom)]'}"
+      class="h-14 md:hidden pb-[env(safe-area-inset-bottom)]"
     ></div>
     <div
       class="fixed bottom-0 left-0 right-0 flex w-full items-center justify-evenly pb-2 pt-2 shadow-xl md:hidden {$theme ===

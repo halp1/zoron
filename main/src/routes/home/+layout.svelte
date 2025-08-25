@@ -2,6 +2,7 @@
   import { page } from "$app/state";
 
   import { AppHeader } from "@zoron/common/components";
+  import { CONSTANTS } from "@zoron/common/constants";
   import type { Tab } from "@zoron/common/types";
   import { zoron } from "@zoron/common/web";
 
@@ -33,13 +34,17 @@
   const tabs: Tab[] = [
     { name: "Home", path: "/home?page=home", icon: faHome },
     { name: "Friends", path: "/home/friends", icon: faUserFriends },
-    {
-      name: "PRO",
-      path: "/pro",
-      icon: faArrowUp,
-      iconClass: "text-yellow-200",
-			mobileOnly: true,
-    },
+    ...((page.data.accountAge ?? 0) > CONSTANTS.proAccountAge
+      ? [
+          {
+            name: "PRO",
+            path: "/pro",
+            icon: faArrowUp,
+            iconClass: "text-yellow-200",
+            mobileOnly: true
+          }
+        ]
+      : []),
     ...(page.data.session?.user?.role === "admin"
       ? [{ name: "Admin", path: "/home/admin", icon: faShieldAlt }]
       : []),
