@@ -39,7 +39,7 @@
 </svelte:head>
 
 <main>
-  <div class="flex h-screen w-screen flex-col items-center justify-center">
+  <div class="flex h-screen w-screen flex-col justify-center items-center px-10">
     {#if page.data && page.data.session && page.data.session.user}
       <div class="relative flex flex-col gap-5 sm:w-[550px]">
         <div
@@ -109,7 +109,7 @@
             easing: motion.transitions.spring(400, 20)
           }}
         ></div>
-        <div class="grid grid-cols-2 gap-2 items-center">
+        <div class="grid grid-cols-2 gap-2">
           <a
             href="/account/settings"
             class="theme-override btn-full btn-outlined flex flex-1 items-center justify-center gap-3 border-blue-400 text-base"

@@ -151,7 +151,7 @@
   />
 </div>
 <div
-  class="mx-auto mb-10 mt-5 flex w-full flex-1 flex-col gap-2 border-l-4 border-slate-600 lg:max-w-[1024px]"
+  class="mx-10 mb-10 mt-5 flex flex-1 flex-col gap-2 border-l-4 border-slate-600 lg:max-w-[1024px]"
 >
   {#each merged.filter((item) => {
     if ($filter === "grades") return item.type === "grade" || item.type === "posted-grade";
