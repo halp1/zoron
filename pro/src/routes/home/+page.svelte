@@ -23,7 +23,7 @@
   <title>Home | {page.data.env.name}</title>
 </svelte:head>
 
-<div class="flex h-full flex-col items-center pt-5">
+<div class="flex h-full flex-col items-center pt-5 px-10">
   {#if name}
     <div
       class="text-center text-3xl"
@@ -70,7 +70,7 @@
     {:else}
       <div class="mt-5 text-slate-400">No announcements at this time.</div>
     {/if}
-    <div
+    <!-- <div
       class="mt-5 w-full text-2xl sm:w-auto"
       in:fly|global={{
         delay: 550,
@@ -90,7 +90,7 @@
           y: -20,
           easing: motion.transitions.spring(400, 20)
         }}
-        class="px-auto mx-2 mt-2 max-h-80 w-full border-2 border-slate-600 px-1 py-3 sm:w-96"
+        class="px-auto mt-2 max-h-80 w-full border-2 border-slate-600 px-1 py-3 sm:w-96"
       >
         {#each changelog.slice(0, 5) as update}
           <a
@@ -111,7 +111,7 @@
           </a>
         {/each}
       </div>
-    </div>
+    </div> -->
     {#if $prompt}
       <button
         in:fly|global={{
