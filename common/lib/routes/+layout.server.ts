@@ -51,6 +51,16 @@ export const load: LayoutServerLoad = async (event) => {
   return {
     session,
     username: aspenName,
+    accountAge:
+      session?.user?.id &&
+      Math.floor(
+        (Date.now() -
+          new Date(
+            parseInt(session?.user?.id.toString().slice(0, 8), 16) * 1000
+          ).getTime()) /
+          (1000 * 60 * 60 * 24)
+      ),
+
     env: {
       vapid: VAPID_PUBLIC,
       name: CONSTANTS.name,

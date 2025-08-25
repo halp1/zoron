@@ -1,5 +1,4 @@
 // This file is symlinked into the subapps.
-
 import type { aspen } from "@zoron/common/aspen";
 import type { Passkey } from "@zoron/common/auth/webauthn/types";
 import type { Relationship, Settings, Subscription } from "@zoron/common/types";
@@ -19,6 +18,8 @@ declare global {
     // interface Locals {}
     interface PageData {
       username?: string;
+			/** Account age in days */
+      accountAge?: number;
       env: {
         vapid: string;
         name: string;
@@ -30,7 +31,7 @@ declare global {
           key: string;
         };
         commit: string;
-				pro: boolean;
+        pro: boolean;
       };
       hideFooter: boolean;
       users?: {
@@ -46,7 +47,6 @@ declare global {
     }
   }
 }
-
 
 declare module "@auth/sveltekit" {
   interface User {
@@ -66,12 +66,6 @@ declare module "@auth/sveltekit" {
     relationships?: Relationship[];
     pro?: boolean;
   }
-}
-
-declare module "@auth/core/adapters" {
-	interface AdapterUser extends User {
-		balls: boolean;
-	}
 }
 
 declare module "*.svelte" {
