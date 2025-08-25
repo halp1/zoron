@@ -361,7 +361,7 @@
             class="flex h-8 w-8 items-center justify-center gap-2 rounded-full border-2 bg-white/0 transition-all hover:bg-white/10"
             class:border-white={$theme === "amoled"}
             class:border-blue-400={$theme === "zoron"}
-            href="/settings"
+            href="/account/settings"
             in:fly|global={{
               delay: availableTabs.length * 100 + 700 + tagDelay,
               duration: 1000,

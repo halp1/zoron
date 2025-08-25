@@ -22,7 +22,7 @@
   }
 
   &body .custom-scroll::-webkit-scrollbar-thumb {
-    @apply bg-white hover:bg-gray-100;
+    @apply bg-gray-600 hover:bg-gray-400;
   }
 }
 
@@ -104,8 +104,11 @@
   }
 
   html.light {
-    @apply invert hue-rotate-180;
+    @apply invert hue-rotate-180 scheme-light;
   }
+	html:not(.light) {
+		@apply scheme-dark;
+	}
 
   .light img {
     @apply invert hue-rotate-180;
