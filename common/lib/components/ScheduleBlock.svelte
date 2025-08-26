@@ -33,7 +33,7 @@
 
 <button
   class={twMerge(
-    "relative row-span-1 flex cursor-pointer flex-col items-center  gap-2 border-slate-800 py-2 text-sm outline-none after:absolute after:left-0 after:top-0 after:h-full after:w-full after:bg-white/15 after:opacity-0 after:transition-opacity focus-within:outline-none hover:after:opacity-100",
+    "relative row-span-1 flex cursor-pointer flex-col items-center  gap-2 border-slate-800 py-2 text-sm outline-none after:absolute after:top-0 after:left-0 after:h-full after:w-full after:bg-white/15 after:opacity-0 after:transition-opacity focus-within:outline-none hover:after:opacity-100",
     block.color + "/50",
     className
   )}

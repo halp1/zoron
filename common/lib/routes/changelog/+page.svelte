@@ -15,7 +15,9 @@
 <svelte:head>
   <title>Changelog | {page.data.env.name}</title>
 </svelte:head>
-<button onclick={() => window.history.back()} class="btn-circle fixed left-4 top-4"
+<button
+  onclick={() => window.history.back()}
+  class="btn-circle fixed top-4 left-4"
   ><Fa icon={faArrowLeft} size="lg" /></button
 >
 <div class="mx-auto my-10 max-w-[800px]">
@@ -26,7 +28,7 @@
       duration: 1000,
       opacity: 0,
       y: -20,
-      easing: motion.transitions.spring(400, 20),
+      easing: motion.transitions.spring(400, 20)
     }}
   >
     Changelog
@@ -41,7 +43,7 @@
           duration: 1000,
           opacity: 0,
           y: -20,
-          easing: motion.transitions.spring(400, 20),
+          easing: motion.transitions.spring(400, 20)
         }}
       >
         <div class="flex justify-between">

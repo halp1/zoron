@@ -67,7 +67,7 @@
     <div
       class="relative flex w-96 flex-col gap-3 rounded-2xl bg-slate-800 p-10"
     >
-      <a class="btn-circle absolute left-5 top-5" href="/account">
+      <a class="btn-circle absolute top-5 left-5" href="/account">
         <Fa icon={faArrowLeft} />
       </a>
       <div class="border-b-2 border-slate-600 pb-1 text-center text-4xl">
@@ -116,7 +116,7 @@
 
 {#if showNameDialog}
   <div
-    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+    class="bg-opacity-50 fixed inset-0 flex items-center justify-center bg-black"
   >
     <div class="w-96 rounded-2xl bg-slate-800 p-10">
       <h2 class="mb-4 text-2xl">Name Your Passkey</h2>

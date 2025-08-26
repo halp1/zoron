@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state";
 
-  import { requests, toast, theme } from "../web";
+  import { requests, theme, toast } from "../web";
 
   interface Props {
     fixed?: boolean;
@@ -18,7 +18,7 @@
     class="{fixed
       ? 'fixed bottom-0 left-0'
       : 'relative'} flex w-screen items-center gap-3 {$theme === 'amoled'
-      ? 'bg-black border-t-2 border-white'
+      ? 'border-t-2 border-white bg-black'
       : 'bg-slate-800'} p-3 {className}"
   >
     <div class="w-full sm:w-auto">
@@ -28,7 +28,8 @@
     <div class="-my-2 flex flex-col items-end text-sm sm:ml-auto">
       <a
         href="/privacy"
-        class="{$theme === 'amoled' ? 'text-white' : 'text-white'} underline">Privacy</a
+        class="{$theme === 'amoled' ? 'text-white' : 'text-white'} underline"
+        >Privacy</a
       >
       <div class="-mt-1 flex gap-2">
         {#if hideable}
@@ -49,7 +50,8 @@
         {/if}
         <a
           href="/tos"
-          class="{$theme === 'amoled' ? 'text-white' : 'text-white'} underline">Terms</a
+          class="{$theme === 'amoled' ? 'text-white' : 'text-white'} underline"
+          >Terms</a
         >
       </div>
     </div>

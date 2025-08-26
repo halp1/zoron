@@ -1,4 +1,5 @@
 import { redirect } from "@sveltejs/kit";
+
 import { auth as authLib } from "@zoron/common/auth";
 
 import type { PageServerLoad } from "./$types";

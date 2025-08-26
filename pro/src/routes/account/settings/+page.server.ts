@@ -1,5 +1,7 @@
-import { SUPABASE_SERVICE_KEY, SUPABASE_URI } from "$env/static/private";
 import { redirect } from "@sveltejs/kit";
+
+import { SUPABASE_SERVICE_KEY, SUPABASE_URI } from "$env/static/private";
+
 import { aspen } from "@zoron/common/aspen";
 import { adapter } from "@zoron/common/auth";
 import { supabaseConnect } from "@zoron/common/supabase";

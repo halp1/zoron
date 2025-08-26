@@ -1,8 +1,8 @@
+import { aspen } from "@zoron/common/aspen";
 import { adapter } from "@zoron/common/auth";
 import { api, streamPromise } from "@zoron/common/server";
 
 import type { RequestHandler } from "./$types";
-import { aspen } from "@zoron/common/aspen";
 
 export const POST: RequestHandler = async ({
   locals: { auth },
@@ -20,9 +20,9 @@ export const POST: RequestHandler = async ({
     throw api.error("Invalid semester", 400);
 
   const content = body.schedule;
-	const parsed = Buffer.from(content, 'base64');
+  const parsed = Buffer.from(content, "base64");
 
-	const res = await aspen.schedule.parser.extract(parsed, semester);
+  const res = await aspen.schedule.parser.extract(parsed, semester);
 
   adapter.updateUser!({
     id: session!.user!.id!,

@@ -1,4 +1,5 @@
 import { SUPABASE_URI } from "$env/static/private";
+
 import { adapter } from "@zoron/common/auth";
 import { api } from "@zoron/common/server";
 

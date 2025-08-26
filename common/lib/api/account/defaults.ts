@@ -3,13 +3,13 @@ import type { Settings } from "@zoron/common/types";
 export const defaultSettings: Settings = {
   notifications: {
     attendance: false,
-    grades: false,
+    grades: false
   },
   home: {
     default: "schedule",
-    hideGPA: false,
+    hideGPA: false
   },
   social: {
-    schedule: "all",
-  },
+    schedule: "all"
+  }
 };

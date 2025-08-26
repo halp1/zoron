@@ -1,7 +1,8 @@
-import type { Session } from "@auth/sveltekit";
 import { aspen } from "@zoron/common/aspen";
 import type { Assignment } from "@zoron/common/aspen/types";
 import { adapter } from "@zoron/common/auth";
+
+import type { Session } from "@auth/sveltekit";
 
 export const assignment = async (
   session: Session,

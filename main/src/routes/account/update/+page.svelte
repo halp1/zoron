@@ -84,7 +84,7 @@
       Please enter a valid full name (at least 2 characters).
     </div>
     <div class="mb-3 text-sm text-slate-400">
-      <Fa icon={faInfoCircle} class="float-left mr-2 mt-[3px]" />
+      <Fa icon={faInfoCircle} class="float-left mt-[3px] mr-2" />
       Your information is stored securely on the server. You will always have the
       option to permanently delete your account and the data associated with it.
     </div>

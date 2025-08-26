@@ -1,3 +1,5 @@
+import { VAPID_PRIVATE, VAPID_PUBLIC } from "$env/static/private";
+
 import type { aspen } from "@zoron/common/aspen";
 import type {
   Assignment,
@@ -10,8 +12,8 @@ import { cache } from "@zoron/common/cache";
 import { query, transformID } from "@zoron/common/database";
 import type { PushEvent } from "@zoron/common/types";
 
-import { VAPID_PRIVATE, VAPID_PUBLIC } from "$env/static/private";
 import type { Session, User } from "@auth/sveltekit";
+
 import webpush from "web-push";
 
 import { activity } from "../../routes/api/aspen/activity";

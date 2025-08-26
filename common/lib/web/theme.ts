@@ -1,4 +1,5 @@
 import { writable } from "svelte/store";
+
 import { storage } from "./storage.svelte";
 
 export const theme = writable<"zoron" | "amoled">("amoled");
@@ -6,7 +7,8 @@ export const mode = writable<"light" | "dark">("dark");
 
 export const initTheme = () => {
   if (typeof document !== "undefined" && !("startViewTransition" in document))
-    (document as any).startViewTransition = ((func: () => void) => func()) as any;
+    (document as any).startViewTransition = ((func: () => void) =>
+      func()) as any;
 
   if (typeof document !== "undefined") {
     storage.use("theme.style", theme);

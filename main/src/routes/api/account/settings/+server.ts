@@ -1,6 +1,7 @@
 import { adapter } from "@zoron/common/auth";
 import { api } from "@zoron/common/server";
 import type { Settings } from "@zoron/common/types";
+
 import _ from "lodash";
 
 import type { RequestHandler } from "./$types";

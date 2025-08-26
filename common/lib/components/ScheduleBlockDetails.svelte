@@ -62,7 +62,7 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
   class={twMerge(
-    "fixed bottom-0 left-0 right-0 top-0 z-10 flex items-center justify-center bg-black/40 backdrop-blur-md",
+    "fixed top-0 right-0 bottom-0 left-0 z-10 flex items-center justify-center bg-black/40 backdrop-blur-md",
     className
   )}
   transition:fade={{

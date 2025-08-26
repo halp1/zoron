@@ -1,7 +1,7 @@
-import path from "node:path";
-
 import { templateFile } from "@zoron/common/build";
 import { CONSTANTS } from "@zoron/common/constants";
+
+import path from "node:path";
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 

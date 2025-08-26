@@ -1,7 +1,8 @@
+import { isRedirect, redirect } from "@sveltejs/kit";
+
 import { adapter } from "@zoron/common/auth/auth";
 import { query, transformID } from "@zoron/common/database";
 
-import { isRedirect, redirect } from "@sveltejs/kit";
 import { ObjectId } from "mongodb";
 
 import type { LayoutServerLoad } from "./$types";

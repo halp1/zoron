@@ -12,7 +12,7 @@
         properties: Record<string, any>;
       };
     };
-		class?: string;
+    class?: string;
   }
 
   let {
@@ -21,7 +21,7 @@
     direction = "vertical",
     children,
     transition,
-		class: className = "",
+    class: className = ""
   }: Props = $props();
   let transitionFunction = $derived(
     transition?.in?.function || (() => () => {})
@@ -73,7 +73,7 @@
     in:transitionFunction|global={transition?.in?.properties}
   >
     {#key key}
-      <div bind:this={content} class="absolute left-0 top-0 {className}">
+      <div bind:this={content} class="absolute top-0 left-0 {className}">
         {@render children?.()}
       </div>
     {/key}
@@ -86,7 +86,7 @@
     in:transitionFunction|global={transition?.in?.properties}
   >
     {#key key}
-      <div bind:this={content} class="{className}">
+      <div bind:this={content} class={className}>
         {@render children?.()}
       </div>
     {/key}

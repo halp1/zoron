@@ -16,13 +16,13 @@
     <img src="/favicon.png" alt="icon" class="w-28" />
     <div>{page.data.env.name}</div>
   </div>
-  <div class="mt-10 text-center text-3xl">
-		Make Scheduling Great Again.
-  </div>
+  <div class="mt-10 text-center text-3xl">Make Scheduling Great Again.</div>
   <div class="mt-10 flex items-center gap-10">
     <BubbleButton type="a" href="/register">Get Started</BubbleButton>
     <span class="-mx-3">or</span>
     <BubbleButton type="a" href="/login">Log in</BubbleButton>
   </div>
-	<div class="mt-10 text-white text-center">Used Zoron before? Log in with your existing account.</div>
+  <div class="mt-10 text-center text-white">
+    Used Zoron before? Log in with your existing account.
+  </div>
 </main>

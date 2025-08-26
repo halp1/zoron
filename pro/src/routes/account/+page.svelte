@@ -39,7 +39,9 @@
 </svelte:head>
 
 <main>
-  <div class="flex h-screen w-screen flex-col justify-center items-center px-10">
+  <div
+    class="flex h-screen w-screen flex-col items-center justify-center px-10"
+  >
     {#if page.data && page.data.session && page.data.session.user}
       <div class="relative flex flex-col gap-5 sm:w-[550px]">
         <div
@@ -242,7 +244,7 @@
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
-      class="fixed bottom-0 left-0 right-0 top-0 grid place-items-center backdrop-blur-md"
+      class="fixed top-0 right-0 bottom-0 left-0 grid place-items-center backdrop-blur-md"
       transition:fade={{
         duration: 200
       }}
@@ -257,7 +259,7 @@
           : 'bg-slate-800'} p-5"
       >
         <button
-          class="btn-circle absolute right-2 top-2"
+          class="btn-circle absolute top-2 right-2"
           onclick={() => {
             deleting = -1;
           }}
@@ -307,7 +309,7 @@
         >
           Delete account
           <div
-            class="pointer-events-none absolute left-0 h-full bg-red-500 bg-opacity-40 transition-all {deleting ===
+            class="bg-opacity-40 pointer-events-none absolute left-0 h-full bg-red-500 transition-all {deleting ===
             0
               ? 'duration-200'
               : 'duration-0'}"
@@ -362,7 +364,7 @@
             }}
             ontouchend={unclickDeleteAccountButton}
             ontouchcancel={unclickDeleteAccountButton}
-            class="absolute bottom-0 left-0 right-0 top-0 z-10 flex items-center justify-center text-white"
+            class="absolute top-0 right-0 bottom-0 left-0 z-10 flex items-center justify-center text-white"
           >
             Delete account
           </button>

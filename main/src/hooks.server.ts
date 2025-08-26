@@ -1,8 +1,9 @@
-import { handle as authHandle } from "@zoron/common/auth";
-import { logger } from "@zoron/common/logs";
+import type { Handle } from "@sveltejs/kit";
 
 import { MONGODB_URI } from "$env/static/private";
-import type { Handle } from "@sveltejs/kit";
+
+import { handle as authHandle } from "@zoron/common/auth";
+import { logger } from "@zoron/common/logs";
 
 declare namespace globalThis {
   export let env: {

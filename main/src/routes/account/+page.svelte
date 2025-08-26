@@ -202,7 +202,7 @@
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
-      class="fixed bottom-0 left-0 right-0 top-0 grid place-items-center backdrop-blur-md"
+      class="fixed top-0 right-0 bottom-0 left-0 grid place-items-center backdrop-blur-md"
       transition:fade={{
         duration: 200
       }}
@@ -217,7 +217,7 @@
           : 'bg-slate-800'} p-5"
       >
         <button
-          class="btn-circle absolute right-2 top-2"
+          class="btn-circle absolute top-2 right-2"
           onclick={() => {
             deleting = -1;
           }}
@@ -322,7 +322,7 @@
             }}
             ontouchend={unclickDeleteAccountButton}
             ontouchcancel={unclickDeleteAccountButton}
-            class="absolute bottom-0 left-0 right-0 top-0 z-10 flex items-center justify-center text-white"
+            class="absolute top-0 right-0 bottom-0 left-0 z-10 flex items-center justify-center text-white"
           >
             Delete account
           </button>

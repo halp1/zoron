@@ -211,7 +211,7 @@
         }}
       >
         <a
-          class="btn-circle absolute left-5 top-5"
+          class="btn-circle absolute top-5 left-5"
           href="/account"
           in:fly|global={{
             delay: autoAnim(),
@@ -279,7 +279,7 @@
               </div>
             {/if}
             <label
-              class="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full {$theme ===
+              class="absolute right-0 bottom-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full {$theme ===
               'amoled'
                 ? 'border-2 border-white bg-black'
                 : 'bg-blue-600 hover:bg-blue-700'}"

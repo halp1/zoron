@@ -1,7 +1,7 @@
+import { redirect } from "@sveltejs/kit";
+
 import { adapter } from "@zoron/common/auth";
 import { query, transformID } from "@zoron/common/database";
-
-import { redirect } from "@sveltejs/kit";
 
 import type { PageServerLoad } from "../../../../../main/.svelte-kit/types/src/routes/home/friends/$types";
 

@@ -1,9 +1,10 @@
+import { error, redirect } from "@sveltejs/kit";
+
 import { command, getRequestEvent } from "$app/server";
 
 import { adapter } from "@zoron/common/auth";
 
 import type { User } from "@auth/sveltekit";
-import { error, redirect } from "@sveltejs/kit";
 
 export const upgrade = command(async () => {
   const session = await getRequestEvent().locals.auth();

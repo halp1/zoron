@@ -42,11 +42,6 @@
   ];
 </script>
 
-<AppHeader
-  {tabs}
-  {changelog}
-  isPro={true}
-  headerWidthClass="w-60"
->
+<AppHeader {tabs} {changelog} isPro={true} headerWidthClass="w-60">
   {@render children?.()}
 </AppHeader>

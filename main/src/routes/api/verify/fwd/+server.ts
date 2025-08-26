@@ -1,6 +1,8 @@
 import { isRedirect, redirect } from "@sveltejs/kit";
+
 import { update } from "@zoron/common/database";
 import { api } from "@zoron/common/server";
+
 import { URLSearchParams } from "node:url";
 
 import type { RequestHandler } from "./$types";

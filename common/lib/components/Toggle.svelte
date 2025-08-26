@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { theme } from "../web/theme";
-
   import { twMerge } from "tailwind-merge";
+
+  import { theme } from "../web/theme";
 
   interface Props {
     checked?: boolean;
