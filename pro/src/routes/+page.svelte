@@ -15,19 +15,12 @@
   <div class="flex items-center gap-10 text-6xl sm:text-8xl">
     <img src="/favicon.png" alt="icon" class="w-28" />
     <div>{page.data.env.name}</div>
-    <span
-      class="shine-text text-8xl"
-    >
-      PRO
-    </span>
+    <span class="shine-text text-8xl"> PRO </span>
   </div>
-  <div class="mt-10 text-center text-3xl">
-		Make Aspen Great Again.™
-  </div>
+  <div class="mt-10 text-center text-3xl">Make Aspen Great Again.™</div>
   <div class="mt-10 flex items-center gap-10">
     <BubbleButton type="a" href="/register">Get Started</BubbleButton>
     <span class="-mx-3">or</span>
     <BubbleButton type="a" href="/login">Log in</BubbleButton>
   </div>
 </main>
-

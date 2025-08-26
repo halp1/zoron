@@ -1,5 +1,3 @@
-import { requests } from "../../web";
-
 import {
   startAuthentication,
   startRegistration
@@ -11,6 +9,8 @@ import type {
   PublicKeyCredentialRequestOptionsJSON,
   RegistrationResponseJSON
 } from "@simplewebauthn/types";
+
+import { requests } from "../../web";
 
 /**
  * Adds a new passkey for the current user

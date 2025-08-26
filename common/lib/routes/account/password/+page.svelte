@@ -87,7 +87,7 @@
         required
       />
       <button
-        class="btn-circle absolute right-2 top-1/2 -translate-y-1/2"
+        class="btn-circle absolute top-1/2 right-2 -translate-y-1/2"
         onclick={(e) => {
           e.preventDefault();
           showPassword = !showPassword;
@@ -103,7 +103,7 @@
       Passwords do not match
     </div>
     <div class="mb-3 text-sm text-slate-400">
-      <Fa icon={faInfoCircle} class="float-left mr-2 mt-[3px]" />
+      <Fa icon={faInfoCircle} class="float-left mt-[3px] mr-2" />
       If you ever lose your password, you will always be able to recover your account
       via your email.
     </div>

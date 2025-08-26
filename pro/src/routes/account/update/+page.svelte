@@ -109,7 +109,7 @@
         required
       />
       <button
-        class="btn-circle absolute right-2 top-1/2 -translate-y-1/2"
+        class="btn-circle absolute top-1/2 right-2 -translate-y-1/2"
         onclick={(e) => {
           e.preventDefault();
           showPassword = !showPassword;
@@ -126,7 +126,7 @@
       Your username or password is invalid.
     </div>
     <div class="mb-3 text-sm text-slate-400">
-      <Fa icon={faInfoCircle} class="float-left mr-2 mt-[3px]" />
+      <Fa icon={faInfoCircle} class="float-left mt-[3px] mr-2" />
       Your information is encrypted and stored securely on the server. We will never
       send your credentials to a 3rd party. You will always have the option to permanently
       delete your account and the data associated with it.

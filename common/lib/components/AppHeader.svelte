@@ -224,7 +224,7 @@
           {/if}
 
           <div
-            class="group mb-[4px] ml-2 mt-auto flex items-center font-mono text-sm text-slate-600"
+            class="group mt-auto mb-[4px] ml-2 flex items-center font-mono text-sm text-slate-600"
             in:fly|global={{
               delay: 400 + proDelay + tagDelay,
               duration: 1000,
@@ -271,7 +271,7 @@
         <div class="flex w-[24rem] items-center justify-end gap-2">
           {#if !isPro && (page.data.accountAge ?? 0) > CONSTANTS.proAccountAge}
             <span
-              class="flex items-center justify-center whitespace-nowrap font-mono text-xs text-green-300"
+              class="flex items-center justify-center font-mono text-xs whitespace-nowrap text-green-300"
               in:fly|global={{
                 delay:
                   availableTabs.length * 100 +
@@ -414,7 +414,7 @@
   <!-- Main content area -->
   {#key page.url}
     <div
-      class="view-anim-{animationDirection} no-scroll mt-[env(safe-area-inset-top)] flex w-full flex-1 flex-col gap-2 overflow-y-auto overflow-x-hidden"
+      class="view-anim-{animationDirection} no-scroll mt-[env(safe-area-inset-top)] flex w-full flex-1 flex-col gap-2 overflow-x-hidden overflow-y-auto"
     >
       {@render children?.()}
     </div>
@@ -422,11 +422,9 @@
 
   <!-- Mobile bottom navigation -->
   {#if typeof window === "undefined" || windowWidth < 768}
+    <div class="h-14 pb-[env(safe-area-inset-bottom)] md:hidden"></div>
     <div
-      class="h-14 md:hidden pb-[env(safe-area-inset-bottom)]"
-    ></div>
-    <div
-      class="fixed bottom-0 left-0 right-0 flex w-full items-center justify-evenly pb-2 pt-2 shadow-xl md:hidden {$theme ===
+      class="fixed right-0 bottom-0 left-0 flex w-full items-center justify-evenly pt-2 pb-2 shadow-xl md:hidden {$theme ===
       'amoled'
         ? 'border-t-2 border-white bg-black'
         : 'bg-slate-800'}"
@@ -455,7 +453,7 @@
               src={tab.icon}
               alt=""
               class={twMerge(
-                "absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full",
+                "absolute top-1/2 left-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full",
                 tab.iconClass ?? ""
               )}
             />
@@ -464,7 +462,7 @@
               icon={tab.icon}
               size="lg"
               class={twMerge(
-                "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 scale-85",
+                "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-85",
                 $theme === "amoled" && idx === activeTabIndex
                   ? "text-black"
                   : "text-white",
@@ -479,7 +477,7 @@
 
   <!-- PWA installation popup -->
   <div
-    class="fixed bottom-0 left-0 right-0 top-0 {$prompt
+    class="fixed top-0 right-0 bottom-0 left-0 {$prompt
       ? 'flex'
       : 'hidden'} items-center justify-center backdrop-blur-md"
   >
@@ -520,7 +518,7 @@
   <!-- Theme popup -->
   {#if $themePopup}
     <div
-      class="fixed bottom-10 right-0 mx-5 rounded-3xl border-4 p-8 md:right-10 md:mx-0 md:ml-0 md:w-96 {$theme ===
+      class="fixed right-0 bottom-10 mx-5 rounded-3xl border-4 p-8 md:right-10 md:mx-0 md:ml-0 md:w-96 {$theme ===
       'amoled'
         ? 'border-white bg-black'
         : 'border-slate-600 bg-slate-900'}"
@@ -573,7 +571,7 @@
   <img
     src={bgSrc}
     alt=""
-    class="fixed left-1/2 top-1/2 -z-10 mb-12 h-[70vh] -translate-x-1/2 -translate-y-1/2 opacity-10 blur-xl md:mt-12"
+    class="fixed top-1/2 left-1/2 -z-10 mb-12 h-[70vh] -translate-x-1/2 -translate-y-1/2 opacity-10 blur-xl md:mt-12"
   />
 {/if}
 

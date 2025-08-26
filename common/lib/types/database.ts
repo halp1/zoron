@@ -1,6 +1,6 @@
-import type { Device } from "../web";
-
 import type { PushSubscription } from "web-push";
+
+import type { Device } from "../web";
 
 export interface Subscription {
   created: Date;

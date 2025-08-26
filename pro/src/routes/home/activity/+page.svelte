@@ -151,7 +151,7 @@
   />
 </div>
 <div
-  class="mx-10 mb-10 mt-5 flex flex-1 flex-col gap-2 border-l-4 border-slate-600 lg:max-w-[1024px]"
+  class="mx-10 mt-5 mb-10 flex flex-1 flex-col gap-2 border-l-4 border-slate-600 lg:max-w-[1024px]"
 >
   {#each merged.filter((item) => {
     if ($filter === "grades") return item.type === "grade" || item.type === "posted-grade";
@@ -176,13 +176,13 @@
           <span class="text-green-300">Grade</span> -
           <a
             href="/home/grades#{encodeURIComponent(item.class)}"
-            class="border-b-2 border-slate-600 border-opacity-0 text-blue-300 hover:border-opacity-100"
+            class="border-opacity-0 hover:border-opacity-100 border-b-2 border-slate-600 text-blue-300"
             >{item.class}</a
           >
         </div>
         {item.assignment}:
         <div
-          class="flex h-8 items-center justify-center whitespace-nowrap border-4 border-slate-600 px-2"
+          class="flex h-8 items-center justify-center border-4 border-slate-600 px-2 whitespace-nowrap"
         >
           {#if !item.scoring || typeof item.scoring === "number"}
             {item.grade}
@@ -193,7 +193,7 @@
                   class="relative ml-2 h-2 w-12 overflow-hidden rounded-full bg-slate-600 sm:hidden"
                 >
                   <div
-                    class="absolute left-0 top-0 h-full bg-green-300"
+                    class="absolute top-0 left-0 h-full bg-green-300"
                     style="width: {item.scoring * 100}%"
                   ></div>
                 </div>
@@ -215,7 +215,7 @@
             class="relative ml-2 hidden h-2 w-12 overflow-hidden rounded-full bg-slate-600 sm:block"
           >
             <div
-              class="absolute left-0 top-0 h-full bg-green-300"
+              class="absolute top-0 left-0 h-full bg-green-300"
               style="width: {item.scoring * 100}%"
             ></div>
           </div>
@@ -228,7 +228,7 @@
           <span class="text-yellow-300">Attendance</span> -
           <a
             href="/home/grades#{encodeURIComponent(item.class)}"
-            class="border-b-2 border-slate-600 border-opacity-0 text-blue-300 hover:border-opacity-100"
+            class="border-opacity-0 hover:border-opacity-100 border-b-2 border-slate-600 text-blue-300"
             >{item.class}</a
           >
         </div>
@@ -271,7 +271,7 @@
           <span class="text-violet-300">Grades Posted</span> -
           <a
             href="/home/grades#{encodeURIComponent(item.classname)}"
-            class="border-b-2 border-slate-600 border-opacity-0 text-blue-300 hover:border-opacity-100"
+            class="border-opacity-0 hover:border-opacity-100 border-b-2 border-slate-600 text-blue-300"
             >{item.classname}</a
           >
         </div>
@@ -284,7 +284,7 @@
     </div>
   {/each}
   <div class="ml-4 text-sm text-slate-400">
-    <Fa icon={faInfoCircle} class="float-left mr-2 mt-[3px]" />
+    <Fa icon={faInfoCircle} class="float-left mt-[3px] mr-2" />
     Activity only goes back 60 days. To see more, visit
     <a
       href="/home/grades"

@@ -9,14 +9,16 @@ export namespace requests {
     return await fetch(uri, {
       method,
       headers: options.headers,
-      body: options.body,
+      body: options.body
     });
   };
 
   export const get = async <T = {}>(
     uri: string,
     data: Record<string, any> = {}
-  ): Promise<{ success: true; data: T } | { success: false; error: string }> => {
+  ): Promise<
+    { success: true; data: T } | { success: false; error: string }
+  > => {
     try {
       const url = new URL(uri, location.origin);
       for (const key in data) {
@@ -35,7 +37,9 @@ export namespace requests {
 
   export const del = async <T = {}>(
     uri: string
-  ): Promise<{ success: true; data: T } | { success: false; error: string }> => {
+  ): Promise<
+    { success: true; data: T } | { success: false; error: string }
+  > => {
     try {
       const res = await request("DELETE", uri).then((r) => r.json());
       if ("message" in res) return JSON.parse(res.message);
@@ -48,11 +52,13 @@ export namespace requests {
   export const post = async <T = {}>(
     uri: string,
     data: Record<string, any> = {}
-  ): Promise<{ success: true; data: T } | { success: false; error: string }> => {
+  ): Promise<
+    { success: true; data: T } | { success: false; error: string }
+  > => {
     try {
       const res = await request("POST", uri, {
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(data)
       }).then((r) => r.json());
       if ("message" in res) return JSON.parse(res.message);
       return res;
@@ -70,7 +76,7 @@ export namespace requests {
       const response = await fetch(uri, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(data)
       });
 
       const reader = response.body?.getReader();
@@ -97,7 +103,7 @@ export namespace requests {
                 return {
                   success: false as const,
                   error: data.error,
-                  code: data.code,
+                  code: data.code
                 };
               if (data.type === "progress" && onProgress)
                 onProgress(data.step, data.total, data.id, data.data);

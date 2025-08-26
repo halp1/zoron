@@ -467,7 +467,7 @@
       }}
     >
       <div
-        class="whitespace-nowrap text-center text-3xl"
+        class="text-center text-3xl whitespace-nowrap"
         style="view-transition-name: gpa;"
       >
         Quarter GPA: {#if classes && $zoron.schedule && $classQuery.year !== "previous" && !page.data?.session?.user?.settings?.home?.hideGPA && calculateGPA(classes.map( (c) => ({ grade: c.grade, courseID: c.course, credit: c.credit }) )) !== 0}
@@ -577,7 +577,7 @@
                         });
                       }
                     }}
-                    class="btn-circle z-10 -ml-2 mr-1"
+                    class="btn-circle z-10 mr-1 -ml-2"
                   >
                     <Fa
                       icon={faChevronRight}
@@ -587,7 +587,7 @@
                     />
                   </button>
                   <div
-                    class="overflow-hidden text-ellipsis whitespace-nowrap text-xl"
+                    class="overflow-hidden text-xl text-ellipsis whitespace-nowrap"
                   >
                     {c.name}
                   </div>
@@ -603,7 +603,7 @@
                 </div>
                 <div class="flex items-center">
                   <div
-                    class="mr-2 whitespace-nowrap border-r-2 {$theme ===
+                    class="mr-2 border-r-2 whitespace-nowrap {$theme ===
                     'amoled'
                       ? 'border-white'
                       : 'border-slate-600'} pr-2 text-sm {$theme === 'amoled'
@@ -796,14 +796,14 @@
                             >
                               .
                               <div
-                                class="absolute left-0 top-0 h-full bg-green-400 bg-opacity-80"
+                                class="bg-opacity-80 absolute top-0 left-0 h-full bg-green-400"
                                 style="width: {Math.min(
                                   assignment.score.percentage,
                                   100
                                 )}%"
                               ></div>
                               <div
-                                class="absolute right-0 top-1/2 z-10 -translate-y-1/2 font-bold text-white"
+                                class="absolute top-1/2 right-0 z-10 -translate-y-1/2 font-bold text-white"
                               >
                                 {assignment.score.percentage}%
                               </div>
@@ -900,7 +900,7 @@
                             {term.grade.number.toFixed(2)}
                             <div class="ml-1">({term.grade.letter})</div>
                           {:else}
-                            <div class="select-none text-transparent">.</div>
+                            <div class="text-transparent select-none">.</div>
                           {/if}
                         </div>
                       {/each}
@@ -933,7 +933,7 @@
                             {avg.letter}
                           {/if}
                         {:else}
-                          <div class="select-none text-transparent">.</div>
+                          <div class="text-transparent select-none">.</div>
                         {/if}
                       </div>
                     {/each}
@@ -962,7 +962,7 @@
                           {grade.number.toFixed(2)}
                           <div class="ml-1">({grade.letter})</div>
                         {:else}
-                          <div class="select-none text-transparent">.</div>
+                          <div class="text-transparent select-none">.</div>
                         {/if}
                       </div>
                     {/each}
@@ -992,7 +992,7 @@
                           {c.data.grades.final.letter}
                           <Fa
                             icon={faQuestionCircle}
-                            class="absolute right-2 top-1/2 -translate-y-1/2 cursor-help"
+                            class="absolute top-1/2 right-2 -translate-y-1/2 cursor-help"
                             title="No exact final grade is available."
                           />
                         {/if}
@@ -1000,7 +1000,7 @@
                         {calculateFinalGrade(c.data.grades).toFixed(2)}
                         <Fa
                           icon={faQuestionCircle}
-                          class="absolute right-2 top-1/2 -translate-y-1/2 cursor-help"
+                          class="absolute top-1/2 right-2 -translate-y-1/2 cursor-help"
                           title="This grade is calculated as an average of all terms. It may not accurately represent your final grade."
                         />
                       {/if}
@@ -1043,7 +1043,7 @@
                   <Skeleton class="rounded-full p-3" />
                 </button>
                 <div
-                  class="overflow-hidden text-ellipsis whitespace-nowrap text-xl"
+                  class="overflow-hidden text-xl text-ellipsis whitespace-nowrap"
                 >
                   <Skeleton class="h-4 w-36" />
                 </div>
@@ -1053,7 +1053,7 @@
               </div>
             </div>
             <div
-              class="ml-auto mt-1 flex flex-col border-r-2 border-transparent pr-1 {$theme ===
+              class="mt-1 ml-auto flex flex-col border-r-2 border-transparent pr-1 {$theme ===
               'amoled'
                 ? 'text-white'
                 : 'text-slate-400'}"
@@ -1065,12 +1065,12 @@
             </div>
           </div>
           <div class="mt-auto flex gap-0">
-            <div class="-ml-2 mt-auto flex flex-col justify-end">
+            <div class="mt-auto -ml-2 flex flex-col justify-end">
               <div class="flex items-center gap-2 pl-2">
                 <Skeleton class="h-4 w-24" />
               </div>
               <div
-                class="relative mx-2 -mb-3 mr-auto flex items-center text-xl"
+                class="relative mx-2 mr-auto -mb-3 flex items-center text-xl"
               >
                 <Skeleton class="my-2 h-5 w-24" />
               </div>
@@ -1312,7 +1312,7 @@
                 {course.grade}
               </div>
               <div
-                class="col-span-4 overflow-hidden overflow-ellipsis whitespace-nowrap border-2 p-2 {$theme ===
+                class="col-span-4 overflow-hidden border-2 p-2 overflow-ellipsis whitespace-nowrap {$theme ===
                 'amoled'
                   ? 'border-white'
                   : 'border-slate-600'}"

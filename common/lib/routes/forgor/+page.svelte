@@ -65,14 +65,14 @@
     </div>
 
     <div class="mb-1 text-sm text-slate-400">
-      <Fa icon={faInfoCircle} class="float-left mr-2 mt-[3px]" />
+      <Fa icon={faInfoCircle} class="float-left mt-[3px] mr-2" />
       You will recieve an email with a link to log in to your account. Once you are
       logged in to your account, head to your account settings at /account and the
       click the "update password" buttton. If you have not set a password, this button
       may say "add password".
     </div>
     <div class="mb-1 text-sm text-slate-400">
-      <Fa icon={faInfoCircle} class="float-left mr-2 mt-[3px]" />
+      <Fa icon={faInfoCircle} class="float-left mt-[3px] mr-2" />
       You will need to re-add your Aspen credentials after you have updated your
       password.
     </div>

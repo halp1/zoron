@@ -6,7 +6,13 @@ export interface WorkerMessageMap {
 }
 
 export interface BGUpdate {
-  connections: { x1: number; y1: number; x2: number; y2: number; strength: number }[];
+  connections: {
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+    strength: number;
+  }[];
   points: { x: number; y: number; r: number }[];
 }
 
@@ -21,7 +27,8 @@ const initBG = (data: WorkerMessageMap["init"]) => {
   let mouseControls = true;
   const mousePos = { x: 0, y: 0 };
 
-  const dots: { x: number; y: number; r: number; vx: number; vy: number }[] = [];
+  const dots: { x: number; y: number; r: number; vx: number; vy: number }[] =
+    [];
   const numDots = 200;
   for (let i = 0; i < numDots; i++) {
     dots.push({
@@ -97,10 +104,14 @@ const initBG = (data: WorkerMessageMap["init"]) => {
 
       dot.x += dot.vx;
       dot.y += dot.vy;
-      if (dot.x + dot.r + exitMargin < 0) dot.x = canvas.width + dot.r + exitMargin;
-      if (dot.x - dot.r - exitMargin > canvas.width) dot.x = -dot.r - exitMargin;
-      if (dot.y + dot.r + exitMargin < 0) dot.y = canvas.height + dot.r + exitMargin;
-      if (dot.y - dot.r - exitMargin > canvas.height) dot.y = -dot.r - exitMargin;
+      if (dot.x + dot.r + exitMargin < 0)
+        dot.x = canvas.width + dot.r + exitMargin;
+      if (dot.x - dot.r - exitMargin > canvas.width)
+        dot.x = -dot.r - exitMargin;
+      if (dot.y + dot.r + exitMargin < 0)
+        dot.y = canvas.height + dot.r + exitMargin;
+      if (dot.y - dot.r - exitMargin > canvas.height)
+        dot.y = -dot.r - exitMargin;
       res.points.push({ x: dot.x, y: dot.y, r: dot.r });
     }
 

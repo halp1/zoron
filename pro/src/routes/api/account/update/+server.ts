@@ -1,10 +1,12 @@
 import { MAILGUN_KEY } from "$env/static/private";
+
 import { aspen } from "@zoron/common/aspen";
 import { adapter } from "@zoron/common/auth";
 import { CONSTANTS } from "@zoron/common/constants";
 import { html, text, validEmail } from "@zoron/common/email";
 import { api } from "@zoron/common/server";
 import type { Session } from "@zoron/common/types";
+
 import _ from "lodash";
 
 import { defaultSettings } from "../settings/defaults";

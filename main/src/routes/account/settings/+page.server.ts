@@ -1,6 +1,6 @@
-import { adapter } from "@zoron/common/auth";
-
 import { redirect } from "@sveltejs/kit";
+
+import { adapter } from "@zoron/common/auth";
 
 import type { PageServerLoad } from "./$types";
 

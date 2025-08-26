@@ -5,9 +5,8 @@
 /// <reference types="../.svelte-kit/ambient.d.ts" />
 import { version } from "$service-worker";
 
-import type { PushEvent } from "../../common/lib/types";
-
 import { assets } from "../../common/lib/sw";
+import type { PushEvent } from "../../common/lib/types";
 
 const CACHE_NAME = `app-cache-${version}`;
 declare var self: ServiceWorkerGlobalScope;
@@ -43,7 +42,9 @@ if (!import.meta.env.DEV) {
         .keys()
         .then((keys) =>
           Promise.all(
-            keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+            keys
+              .filter((key) => key !== CACHE_NAME)
+              .map((key) => caches.delete(key))
           )
         )
         .then(() => self.clients.claim())
@@ -88,7 +89,7 @@ if (!import.meta.env.DEV) {
 
                 await self.registration.showNotification(title, {
                   body,
-                  icon: "/favicon.png",
+                  icon: "/favicon.png"
                 });
               })
             );

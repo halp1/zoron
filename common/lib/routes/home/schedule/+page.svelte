@@ -792,7 +792,7 @@
     class="relative flex h-full flex-col-reverse items-center gap-3 md:flex-row md:pt-0"
   >
     <div
-      class="backdrop-blur-xs fixed z-10 mb-4 flex items-center gap-3 rounded-full border-white p-2 md:left-6 md:top-1/2 md:mb-0 md:-translate-y-1/2 md:flex-col"
+      class="fixed z-10 mb-4 flex items-center gap-3 rounded-full border-white p-2 backdrop-blur-xs md:top-1/2 md:left-6 md:mb-0 md:-translate-y-1/2 md:flex-col"
       class:border-2={$theme === "amoled"}
       in:fly|global={{
         delay: 200,
@@ -818,7 +818,7 @@
       >
         <Fa
           icon={faListUl}
-          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         />
       </button>
       <button
@@ -838,7 +838,7 @@
       >
         <Fa
           icon={faCalendar}
-          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         />
       </button>
       <!-- <button
@@ -863,7 +863,7 @@
       >
         <Fa
           icon={faRotateRight}
-          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         />
       </button>
     </div>
@@ -905,8 +905,8 @@
               if (e === "left") selectedDay = (selectedDay + 1) % 6;
               else selectedDay = (selectedDay + 5) % 6;
             };
-						swipeDirection = e === "left" ? "right" : "left";
-						await tick();
+            swipeDirection = e === "left" ? "right" : "left";
+            await tick();
 
             if (!document.startViewTransition) return applyChange();
             document.startViewTransition(applyChange);
@@ -940,7 +940,7 @@
           class="absolute -top-1 left-1/2 z-10 flex w-[calc(100vw+4px)] -translate-x-1/2 flex-col items-center gap-5 border-2 border-white bg-black/20 p-2 pt-0 backdrop-blur-sm md:w-96 md:rounded-b-2xl"
         >
           <div
-            class="-mb-3 mt-3 text-xl text-slate-400"
+            class="mt-3 -mb-3 text-xl text-slate-400"
             in:fly|global={{
               delay: 250,
               duration: 1000,
@@ -1108,7 +1108,7 @@
                 <!-- svelte-ignore a11y_no_static_element_interactions -->
                 <!-- svelte-ignore a11y_click_events_have_key_events -->
                 <div
-                  class="absolute right-0 top-10 z-10 {$theme === 'amoled'
+                  class="absolute top-10 right-0 z-10 {$theme === 'amoled'
                     ? 'invert'
                     : ''}"
                   transition:fly|global={{
@@ -1193,7 +1193,7 @@
               style="padding: 0 10000px 0 10000px; margin: 0 -10000px 0 -10000px;"
             >
               <div
-                class="flex min-h-[60vh] min-w-[336px] flex-col items-center gap-5 animate-in-{swipeDirection} pb-20 pt-36 md:pb-5"
+                class="flex min-h-[60vh] min-w-[336px] flex-col items-center gap-5 animate-in-{swipeDirection} pt-36 pb-20 md:pb-5"
                 style="transition: inherit;"
                 bind:this={dayViewRef}
               >
@@ -1296,7 +1296,7 @@
                               {block.progression.toFixed(0)}%
                             </div>
                             <div
-                              class="absolute left-0 top-0 h-full {block.class
+                              class="absolute top-0 left-0 h-full {block.class
                                 ?.type === 'block'
                                 ? block.class.color
                                 : 'bg-slate-600'}"
@@ -1329,7 +1329,7 @@
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
-    class="fixed bottom-0 left-0 right-0 top-0 grid place-items-center bg-slate-900/90 backdrop-blur-xl"
+    class="fixed top-0 right-0 bottom-0 left-0 grid place-items-center bg-slate-900/90 backdrop-blur-xl"
     onclick={({ currentTarget, target }) => {
       if (currentTarget === target) {
         exportModalOpen = false;
@@ -1341,7 +1341,7 @@
       class="relative flex flex-col items-center rounded-lg bg-slate-800 p-5"
     >
       <button
-        class="btn-circle absolute right-2 top-2"
+        class="btn-circle absolute top-2 right-2"
         onclick={() => {
           exportModalOpen = false;
           exportChoice = null;

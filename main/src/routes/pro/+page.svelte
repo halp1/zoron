@@ -46,7 +46,7 @@
     Upgrade your experience.
   </div>
   <div
-    class="flex flex-col-reverse items-center justify-center gap-24 pb-24 pt-8 md:flex-row md:items-stretch md:pb-0"
+    class="flex flex-col-reverse items-center justify-center gap-24 pt-8 pb-24 md:flex-row md:items-stretch md:pb-0"
   >
     <div
       class="z-10 flex w-96 flex-col overflow-y-auto rounded-3xl border-4 border-white p-10 backdrop-blur-sm"
@@ -131,10 +131,10 @@
   </div>
   <canvas
     bind:this={canvas}
-    class="absolute left-0 top-0 h-screen w-screen"
+    class="absolute top-0 left-0 h-screen w-screen"
     style="opacity: 0"
   ></canvas>
 </main>
 {#if !upgraded}
-  <Footer fixed className="z-20 bg-transparent backdrop-blur-sm"/>
+  <Footer fixed className="z-20 bg-transparent backdrop-blur-sm" />
 {/if}

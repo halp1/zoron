@@ -37,7 +37,7 @@
 <main class="flex h-screen w-full items-center justify-center">
   {#if loaded}
     <div
-      class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
       in:scale|global={{
         duration: 1000,
         opacity: 0,
@@ -74,7 +74,7 @@
         </svg>
         <img
           src="/favicon.png"
-          class="absolute left-1/2 top-1/2 h-24 -translate-x-1/2 -translate-y-1/2"
+          class="absolute top-1/2 left-1/2 h-24 -translate-x-1/2 -translate-y-1/2"
           alt="site icon"
         />
       </div>

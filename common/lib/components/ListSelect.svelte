@@ -49,37 +49,36 @@
 </div>
 
 <style>
-	.glow {
-		border-color: white;
-		animation: glow 6s ease-in-out forwards;
-		box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
-	}
+  .glow {
+    border-color: white;
+    animation: glow 6s ease-in-out forwards;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+  }
 
-	@keyframes glow {
-		0% {
-			border-color: white;
-			box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
-		}
-		20% {
-			border-color: rgba(52, 168, 82, 1);
-			box-shadow: 0 0 20px rgba(52, 168, 82, 0.6);
-		}
-		40% {
-			border-color: rgba(255, 211, 20, 1);
-			box-shadow: 0 0 20px rgba(255, 211, 20, 0.6);
-		}
-		60% {
-			border-color: rgba(255, 70, 65, 1);
-			box-shadow: 0 0 20px rgba(255, 70, 65, 0.6);
-		}
-		80% {
-			border-color: rgba(49, 134, 255, 1);
-			box-shadow: 0 0 20px rgba(49, 134, 255, 0.6);
-		}
-		100% {
-			border-color: white;
-			box-shadow: 0 0 0px rgba(255, 255, 255, 0.6);
-		}
-	}
-
+  @keyframes glow {
+    0% {
+      border-color: white;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+    }
+    20% {
+      border-color: rgba(52, 168, 82, 1);
+      box-shadow: 0 0 20px rgba(52, 168, 82, 0.6);
+    }
+    40% {
+      border-color: rgba(255, 211, 20, 1);
+      box-shadow: 0 0 20px rgba(255, 211, 20, 0.6);
+    }
+    60% {
+      border-color: rgba(255, 70, 65, 1);
+      box-shadow: 0 0 20px rgba(255, 70, 65, 0.6);
+    }
+    80% {
+      border-color: rgba(49, 134, 255, 1);
+      box-shadow: 0 0 20px rgba(49, 134, 255, 0.6);
+    }
+    100% {
+      border-color: white;
+      box-shadow: 0 0 0px rgba(255, 255, 255, 0.6);
+    }
+  }
 </style>

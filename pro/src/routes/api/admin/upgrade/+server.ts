@@ -20,7 +20,7 @@ export const POST = async ({ locals: { auth } }) => {
     detached: true,
     stdio: "ignore"
   });
-	p2.unref();
+  p2.unref();
 
   return api.json("Server upgrading...");
 };

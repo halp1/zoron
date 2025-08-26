@@ -1,4 +1,5 @@
 import { json } from "@sveltejs/kit";
+
 import { dbClient } from "@zoron/common/database";
 
 export async function POST({ request }) {

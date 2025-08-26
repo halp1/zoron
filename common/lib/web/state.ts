@@ -1,8 +1,8 @@
 import { writable } from "svelte/store";
 
-import type { aspen } from "../aspen";
-
 import type { User } from "@auth/sveltekit";
+
+import type { aspen } from "../aspen";
 
 export interface AppState {
   announcements: string[];

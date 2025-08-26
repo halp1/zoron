@@ -2,10 +2,6 @@ import fsSync from "node:fs";
 import fs from "node:fs/promises";
 import path from "node:path";
 
-
-
-
-
 export namespace logger {
   export const LOG_PATH = path.join(process.cwd(), "logs", "logs.log");
 

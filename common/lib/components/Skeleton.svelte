@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { HTMLAttributes } from "svelte/elements";
 
-  import { theme } from "../web";
-
   import { twMerge } from "tailwind-merge";
+
+  import { theme } from "../web";
 
   type $Props = HTMLAttributes<HTMLDivElement>;
 

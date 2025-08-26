@@ -28,7 +28,7 @@
 </script>
 
 <div
-  class="mb-3 mt-10 text-center text-4xl"
+  class="mt-10 mb-3 text-center text-4xl"
   in:fly|global={{
     delay: 250,
     duration: 1000,
@@ -113,7 +113,7 @@
           type="number"
           class="w-10 rounded-full border-2 {$theme === 'amoled'
             ? 'border-white'
-            : 'border-slate-600'} bg-transparent px-2 text-center outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            : 'border-slate-600'} [appearance:textfield] bg-transparent px-2 text-center outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           placeholder="HH"
         />:
         <input
@@ -121,7 +121,7 @@
           type="number"
           class="w-10 rounded-full border-2 {$theme === 'amoled'
             ? 'border-white'
-            : 'border-slate-600'} bg-transparent px-2 text-center outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            : 'border-slate-600'} [appearance:textfield] bg-transparent px-2 text-center outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           placeholder="MM"
         />
         <select name="period" class="bg-transparent outline-none">

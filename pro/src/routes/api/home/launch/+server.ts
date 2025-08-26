@@ -1,3 +1,5 @@
+import type { RequestHandler } from "@sveltejs/kit";
+
 import { aspen } from "@zoron/common/aspen";
 import { adapter } from "@zoron/common/auth";
 import { cache } from "@zoron/common/cache";
@@ -5,7 +7,6 @@ import { query, transformID } from "@zoron/common/database";
 import { api } from "@zoron/common/server";
 import type { AppState } from "@zoron/common/web";
 
-import type { RequestHandler } from "@sveltejs/kit";
 import { ObjectId } from "mongodb";
 
 export const GET: RequestHandler = async ({ locals: { auth }, cookies }) => {

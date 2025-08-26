@@ -10,7 +10,7 @@ export const load: LayoutServerLoad = async (event) => {
     return redirect(307, "/account/password");
   }
   if (
-    (!account.user.name) &&
+    !account.user.name &&
     !new URL(event.request.url).pathname.includes("/update")
   )
     return redirect(307, "/account/update");

@@ -107,7 +107,7 @@
 </svelte:head>
 
 <div class="text-white">
-  <div class="container mx-auto px-4 pb-10 pt-10">
+  <div class="container mx-auto px-4 pt-10 pb-10">
     <h1 class="mb-6 text-3xl font-semibold">Admin Logs</h1>
 
     {#if !initialLoadAttempted && isLoading}
@@ -137,7 +137,7 @@
         {#each logs as log, i (i)}
           <!-- Using index as key, assuming logs are appended only -->
           <div
-            class="whitespace-pre-wrap rounded p-1.5 {$theme === 'amoled'
+            class="rounded p-1.5 whitespace-pre-wrap {$theme === 'amoled'
               ? 'hover:bg-gray-900'
               : 'hover:bg-slate-700'}"
           >

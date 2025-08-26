@@ -78,7 +78,7 @@
   /* animation: glow-pulse 2s ease-in-out infinite alternate; */
 
   &::before {
-    @apply absolute left-0 top-0 h-full w-full text-transparent;
+    @apply absolute top-0 left-0 h-full w-full text-transparent;
     content: attr(data-text);
     background: linear-gradient(
       90deg,
@@ -104,22 +104,27 @@
   }
 
   html.light {
-    @apply invert hue-rotate-180 scheme-light;
+    @apply scheme-light hue-rotate-180 invert;
   }
-	html:not(.light) {
-		@apply scheme-dark;
-	}
+  html:not(.light) {
+    @apply scheme-dark;
+  }
 
   .light img {
-    @apply invert hue-rotate-180;
+    @apply hue-rotate-180 invert;
   }
-	input {
-		color-scheme: dark;
-	}
+  input {
+    color-scheme: dark;
+  }
 
-	/* for some reason tailwind v4 gradient is broked */
+  /* for some reason tailwind v4 gradient is broked */
   .bg-gradient {
-    background-image: radial-gradient(circle at center, #0f172b, #0c1c3d, #0a0f24);
+    background-image: radial-gradient(
+      circle at center,
+      #0f172b,
+      #0c1c3d,
+      #0a0f24
+    );
   }
 
   @keyframes shine {

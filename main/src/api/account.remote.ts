@@ -1,5 +1,9 @@
+import { error } from "@sveltejs/kit";
+
 import { command, query } from "$app/server";
 import { getRequestEvent } from "$app/server";
+
+import { SUPABASE_URI } from "$env/static/private";
 
 import { defaultSettings } from "@zoron/common/api/account/defaults";
 import {
@@ -16,8 +20,6 @@ import {
 } from "@zoron/common/auth/webauthn/server";
 import type { Settings } from "@zoron/common/types";
 
-import { SUPABASE_URI } from "$env/static/private";
-import { error } from "@sveltejs/kit";
 import _ from "lodash";
 import crypto from "node:crypto";
 import * as v from "valibot";

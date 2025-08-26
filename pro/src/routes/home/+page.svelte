@@ -23,7 +23,7 @@
   <title>Home | {page.data.env.name}</title>
 </svelte:head>
 
-<div class="flex h-full flex-col items-center pt-5 px-10">
+<div class="flex h-full flex-col items-center px-10 pt-5">
   {#if name}
     <div
       class="text-center text-3xl"
@@ -38,7 +38,7 @@
       Hello, {name?.split(" ")[0]}.
     </div>
     <div
-      class="mr-auto mt-5 text-2xl sm:mr-0"
+      class="mt-5 mr-auto text-2xl sm:mr-0"
       in:fly|global={{
         delay: 350,
         duration: 1000,
@@ -121,7 +121,7 @@
           y: 20,
           easing: motion.transitions.spring(400, 20)
         }}
-        class="btn-full btn-outlined mb-10 mt-auto w-80 border-green-400 text-base"
+        class="btn-full btn-outlined mt-auto mb-10 w-80 border-green-400 text-base"
         onclick={() => {
           $prompt?.prompt();
           PWA.hidePrompt();
@@ -139,7 +139,7 @@
           y: 20,
           easing: motion.transitions.spring(400, 20)
         }}
-        class="btn-full btn-outlined mb-10 mt-auto w-80 border-green-400 text-base"
+        class="btn-full btn-outlined mt-auto mb-10 w-80 border-green-400 text-base"
         onclick={() => {
           iosInstructionsOpen = true;
         }}
@@ -154,7 +154,7 @@
 {#if iosInstructionsOpen}
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
-    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
+    class="bg-opacity-50 fixed inset-0 flex items-center justify-center bg-black backdrop-blur-sm"
     onkeydown={(e) => {
       if (e.key === "Escape") {
         iosInstructionsOpen = false;
@@ -167,9 +167,9 @@
     }}
   >
     <div
-      class="custom-scroll max-h-[80vh] w-96 mx-2 overflow-y-auto rounded-lg p-5"
-			class:bg-slate-800={$theme === 'zoron'}
-			class:bg-black={$theme === 'amoled'}
+      class="custom-scroll mx-2 max-h-[80vh] w-96 overflow-y-auto rounded-lg p-5"
+      class:bg-slate-800={$theme === "zoron"}
+      class:bg-black={$theme === "amoled"}
     >
       <div class="text-2xl">Instructions</div>
       <div class="mt-5 flex flex-col gap-5">

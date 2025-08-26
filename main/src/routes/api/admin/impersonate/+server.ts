@@ -1,7 +1,8 @@
-import "@auth/sveltekit";
 import { adapter, auth } from "@zoron/common/auth";
 import { query, remove, transformID } from "@zoron/common/database";
 import { api } from "@zoron/common/server";
+
+import "@auth/sveltekit";
 
 import type { RequestHandler } from "./$types";
 

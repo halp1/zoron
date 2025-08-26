@@ -1,4 +1,5 @@
 import { sveltekit } from "@sveltejs/kit/vite";
+
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 import { defineConfig, searchForWorkspaceRoot } from "vite";

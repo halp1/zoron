@@ -434,7 +434,7 @@
     </div>
     <div class="relative flex w-screen flex-col md:w-2/3">
       <button
-        class="btn-circle absolute left-4 top-4 border-2 border-slate-600 md:hidden"
+        class="btn-circle absolute top-4 left-4 border-2 border-slate-600 md:hidden"
         onclick={() => {
           showFriend = false;
         }}
@@ -495,7 +495,7 @@
                   {#key selectedDay}
                     <div class="flex flex-col">
                       <div
-                        class="mb-1 mt-4 flex w-full items-center justify-center gap-4 text-center text-xl"
+                        class="mt-4 mb-1 flex w-full items-center justify-center gap-4 text-center text-xl"
                       >
                         <button
                           class="btn-circle border-2 border-slate-600"
@@ -528,7 +528,7 @@
                             freeFontSize="text-2xl"
                             day={selectedDay}
                             lunch={friend.data.schedule.lunches[selectedDay]}
-														popoverClass="left-[100vw]"
+                            popoverClass="left-[100vw]"
                           />
                         {/each}
                       </div>

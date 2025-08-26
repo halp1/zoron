@@ -18,7 +18,7 @@ declare global {
     // interface Locals {}
     interface PageData {
       username?: string;
-			/** Account age in days */
+      /** Account age in days */
       accountAge?: number;
       env: {
         vapid: string;

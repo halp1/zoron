@@ -1,25 +1,35 @@
-import { query, form, command } from "$app/server";
 import { error, redirect } from "@sveltejs/kit";
-import * as v from "valibot";
-import { adapter, auth, verifyPassword, hashPassword } from "@zoron/common/auth";
+
+import { command, form, query } from "$app/server";
+import { getRequestEvent } from "$app/server";
+
+import { SUPABASE_URI } from "$env/static/private";
+
+import {
+  adapter,
+  auth,
+  hashPassword,
+  verifyPassword
+} from "@zoron/common/auth";
+import {
+  authenticate,
+  authenticationOptions,
+  register,
+  registrationOptions
+} from "@zoron/common/auth/webauthn/server";
 import { api } from "@zoron/common/server";
 import type { Settings } from "@zoron/common/types";
+
 import _ from "lodash";
-import { defaultSettings } from "./account/defaults";
-import { getRequestEvent } from "$app/server";
 import crypto from "node:crypto";
-import { SUPABASE_URI } from "$env/static/private";
-import {
-  registrationOptions,
-  register,
-  authenticationOptions,
-  authenticate,
-} from "@zoron/common/auth/webauthn/server";
+import * as v from "valibot";
+
+import { defaultSettings } from "./account/defaults";
 
 const LoginSchema = v.object({
   email: v.pipe(v.string(), v.email()),
   password: v.pipe(v.string(), v.minLength(1)),
-  secret: v.pipe(v.string(), v.minLength(1)),
+  secret: v.pipe(v.string(), v.minLength(1))
 });
 
 const SubscribeSchema = v.object({
@@ -29,23 +39,23 @@ const SubscribeSchema = v.object({
     browser: v.string(),
     os: v.string(),
     id: v.string(),
-    backgroundSync: v.optional(v.boolean()),
-  }),
+    backgroundSync: v.optional(v.boolean())
+  })
 });
 
 const UnsubscribeSchema = v.object({
-  id: v.string(),
+  id: v.string()
 });
 
 const MarkAsReadSchema = v.array(v.any());
 
 const PasskeyDeleteSchema = v.object({
-  passkeyId: v.string(),
+  passkeyId: v.string()
 });
 
 const PasskeyAuthSchema = v.object({
   sessionID: v.string(),
-  response: v.any(),
+  response: v.any()
 });
 
 export const login = form(async (data) => {
@@ -64,10 +74,17 @@ export const login = form(async (data) => {
     error(404, "Invalid email.");
   }
   if (!user.password) {
-    error(404, "No password set. You can set your password at /account/password");
+    error(
+      404,
+      "No password set. You can set your password at /account/password"
+    );
   }
 
-  const valid = await verifyPassword(password, user.password.salt, user.password.hash);
+  const valid = await verifyPassword(
+    password,
+    user.password.salt,
+    user.password.hash
+  );
   if (!valid) {
     error(401, "Invalid password.");
   }
@@ -78,7 +95,7 @@ export const login = form(async (data) => {
       "-" +
       Math.random().toString(36).substring(2),
     userId: user.id,
-    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
+    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365)
   });
 
   const cookieOptions = auth.cookies.sessionToken.options;
@@ -87,7 +104,7 @@ export const login = form(async (data) => {
     path: cookieOptions.path,
     httpOnly: cookieOptions.httpOnly,
     sameSite: cookieOptions.sameSite,
-    secure: cookieOptions.secure,
+    secure: cookieOptions.secure
   });
   cookies.set("secret", secret, {
     path: cookieOptions.path,
@@ -95,7 +112,7 @@ export const login = form(async (data) => {
     domain: cookieOptions.domain,
     sameSite: cookieOptions.sameSite,
     secure: cookieOptions.secure,
-    httpOnly: cookieOptions.httpOnly,
+    httpOnly: cookieOptions.httpOnly
   });
 
   return { user };
@@ -119,18 +136,22 @@ export const updatePassword = form(async (data) => {
   await adapter.updateUser!({
     id: session.user.id,
     password: { hash, salt },
-    aspen: undefined,
+    aspen: undefined
   } as any);
 
   const cookieOptions = auth.cookies.sessionToken.options;
-  cookies.set("secret", crypto.createHash("sha512").update(password).digest("hex"), {
-    path: cookieOptions.path,
-    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
-    domain: cookieOptions.domain,
-    sameSite: cookieOptions.sameSite,
-    secure: cookieOptions.secure,
-    httpOnly: cookieOptions.httpOnly,
-  });
+  cookies.set(
+    "secret",
+    crypto.createHash("sha512").update(password).digest("hex"),
+    {
+      path: cookieOptions.path,
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
+      domain: cookieOptions.domain,
+      sameSite: cookieOptions.sameSite,
+      secure: cookieOptions.secure,
+      httpOnly: cookieOptions.httpOnly
+    }
+  );
 
   return { success: true };
 });
@@ -150,13 +171,13 @@ export const updateSettings = form(async (data) => {
   if (data.get("notifications.attendance") !== null) {
     settingsData.notifications = {
       ...(settingsData.notifications || {}),
-      attendance: data.get("notifications.attendance") === "true",
+      attendance: data.get("notifications.attendance") === "true"
     };
   }
   if (data.get("notifications.grades") !== null) {
     settingsData.notifications = {
       ...(settingsData.notifications || {}),
-      grades: data.get("notifications.grades") === "true",
+      grades: data.get("notifications.grades") === "true"
     };
   }
 
@@ -164,13 +185,13 @@ export const updateSettings = form(async (data) => {
   if (data.get("home.default")) {
     settingsData.home = {
       ...(settingsData.home || {}),
-      default: data.get("home.default"),
+      default: data.get("home.default")
     };
   }
   if (data.get("home.hideGPA") !== null) {
     settingsData.home = {
       ...(settingsData.home || {}),
-      hideGPA: data.get("home.hideGPA") === "true",
+      hideGPA: data.get("home.hideGPA") === "true"
     };
   }
 
@@ -178,7 +199,7 @@ export const updateSettings = form(async (data) => {
   if (data.get("social.schedule")) {
     settingsData.social = {
       ...(settingsData.social || {}),
-      schedule: data.get("social.schedule"),
+      schedule: data.get("social.schedule")
     };
   }
 
@@ -190,7 +211,7 @@ export const updateSettings = form(async (data) => {
 
   await adapter.updateUser!({
     id: session.user.id!,
-    settings: settingsToUpdate,
+    settings: settingsToUpdate
   } as any);
 
   return settingsToUpdate;
@@ -240,7 +261,7 @@ export const subscribe = command(SubscribeSchema, async (body) => {
         device.device.id === body.device.id
           ? { ...device, subscription: body.subscription }
           : device
-      ),
+      )
     } as any);
   } else {
     await adapter.updateUser!({
@@ -254,11 +275,11 @@ export const subscribe = command(SubscribeSchema, async (body) => {
             id: body.device.id,
             browser: body.device.browser,
             os: body.device.os,
-            backgroundSync: body.device.backgroundSync || false,
+            backgroundSync: body.device.backgroundSync || false
           },
-          subscription: body.subscription,
-        },
-      ],
+          subscription: body.subscription
+        }
+      ]
     } as any);
   }
 
@@ -275,7 +296,9 @@ export const unsubscribe = command(UnsubscribeSchema, async (body) => {
 
   await adapter.updateUser!({
     id: session.user.id!,
-    devices: session.user.devices.filter((device: any) => device.device.id !== body.id),
+    devices: session.user.devices.filter(
+      (device: any) => device.device.id !== body.id
+    )
   } as any);
 
   return {};
@@ -294,9 +317,9 @@ export const markAsRead = command(MarkAsReadSchema, async (body) => {
     seenActivity: [
       ...new Set([
         ...((await adapter.getUser!(session.user.id))?.seenActivity || []),
-        ...body,
-      ]),
-    ],
+        ...body
+      ])
+    ]
   } as any);
 
   return "Marked as read";
@@ -325,7 +348,7 @@ export const updateProfile = form(async (data) => {
       settings: _.merge(defaultSettings, session.user.settings || {}),
       devices: [],
       activity: undefined,
-      schedule: undefined,
+      schedule: undefined
     } as any);
 
     return { name: trimmedName };
@@ -356,7 +379,7 @@ export const updateProfilePicture = form(async (data) => {
   try {
     await adapter.updateUser!({
       id: session.user.id,
-      image: imageUrl,
+      image: imageUrl
     } as any);
 
     return { success: true };
@@ -427,8 +450,8 @@ export const deletePasskey = command(PasskeyDeleteSchema, async (body) => {
     id: session.user.id,
     webauthn: {
       ...userWithWebauthn.webauthn,
-      passkeys: updatedPasskeys,
-    },
+      passkeys: updatedPasskeys
+    }
   } as any);
 
   return { success: true };
@@ -444,12 +467,15 @@ export const getPasskeyAuthenticationOptions = query(async () => {
   }
 });
 
-export const verifyPasskeyAuthentication = command(PasskeyAuthSchema, async (body) => {
-  try {
-    const data = await authenticate(body.sessionID, body.response);
-    return data;
-  } catch (e) {
-    const errorMessage = (e as Error).message;
-    error(400, errorMessage);
+export const verifyPasskeyAuthentication = command(
+  PasskeyAuthSchema,
+  async (body) => {
+    try {
+      const data = await authenticate(body.sessionID, body.response);
+      return data;
+    } catch (e) {
+      const errorMessage = (e as Error).message;
+      error(400, errorMessage);
+    }
   }
-});
+);

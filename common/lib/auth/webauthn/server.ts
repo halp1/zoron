@@ -1,21 +1,22 @@
-import { adapter } from "..";
-import { insert, query, transformID } from "../../database";
-
 import { DOMAIN } from "$env/static/private";
+
 import type { Session, User } from "@auth/sveltekit";
+
 import {
   generateAuthenticationOptions,
   generateRegistrationOptions,
   verifyAuthenticationResponse,
-  verifyRegistrationResponse,
+  verifyRegistrationResponse
 } from "@simplewebauthn/server";
 import type {
   AuthenticationResponseJSON,
   PublicKeyCredentialCreationOptionsJSON,
-  PublicKeyCredentialRequestOptionsJSON,
+  PublicKeyCredentialRequestOptionsJSON
 } from "@simplewebauthn/types";
 import { ObjectId } from "mongodb";
 
+import { adapter } from "..";
+import { insert, query, transformID } from "../../database";
 import type { Passkey, UserModel } from "./types";
 
 const rp = {
@@ -23,7 +24,7 @@ const rp = {
   id: DOMAIN,
   origin: `http${DOMAIN.includes("localhost") ? "" : "s"}://${DOMAIN}${
     DOMAIN.includes("localhost") ? ":5173" : ""
-  }`,
+  }`
 };
 
 // Note: Create this index in MongoDB UI using:
@@ -47,11 +48,12 @@ export const getCurrentRegistrationOptions = async (
 };
 
 export const registrationOptions = async (session: Session | null) => {
-  if (!session?.user?.id || !session.user.email) throw new Error("User not found");
+  if (!session?.user?.id || !session.user.email)
+    throw new Error("User not found");
 
   const user: UserModel = {
     id: session.user.id,
-    username: session.user?.email,
+    username: session.user?.email
   };
 
   const userPasskeys: Passkey[] = await getUserPasskeys(user.id);
@@ -63,12 +65,12 @@ export const registrationOptions = async (session: Session | null) => {
     attestationType: "none",
     excludeCredentials: userPasskeys.map((passkey) => ({
       id: passkey.id,
-      transports: passkey.transports,
+      transports: passkey.transports
     })),
     authenticatorSelection: {
       residentKey: "required",
-      userVerification: "preferred",
-    },
+      userVerification: "preferred"
+    }
   });
 
   // Store options in user's webauthn data
@@ -76,14 +78,17 @@ export const registrationOptions = async (session: Session | null) => {
     id: user.id,
     webauthn: {
       passkeys: userPasskeys,
-      options,
-    },
+      options
+    }
   } as any);
 
   return options;
 };
 
-export const register = async (session: Session | null, body: { name: string } & any) => {
+export const register = async (
+  session: Session | null,
+  body: { name: string } & any
+) => {
   if (!session?.user?.id) throw new Error("User not found");
 
   const currentOptions = await getCurrentRegistrationOptions(session.user.id);
@@ -94,7 +99,7 @@ export const register = async (session: Session | null, body: { name: string } &
     requireUserVerification: false,
     expectedChallenge: currentOptions.challenge,
     expectedOrigin: rp.origin,
-    expectedRPID: rp.id,
+    expectedRPID: rp.id
   });
 
   if (!verification.verified) {
@@ -106,11 +111,12 @@ export const register = async (session: Session | null, body: { name: string } &
     throw new Error("Missing registration info");
   }
 
-  const { credential, credentialDeviceType, credentialBackedUp } = registrationInfo;
+  const { credential, credentialDeviceType, credentialBackedUp } =
+    registrationInfo;
 
   const user: UserModel = {
     id: session.user.id,
-    username: session.user.email!,
+    username: session.user.email!
   };
 
   // Create new passkey entry
@@ -123,7 +129,7 @@ export const register = async (session: Session | null, body: { name: string } &
     transports: credential.transports,
     deviceType: credentialDeviceType,
     backedUp: credentialBackedUp,
-    name: body.name,
+    name: body.name
   };
 
   // Add the new passkey to the user's existing passkeys
@@ -134,8 +140,8 @@ export const register = async (session: Session | null, body: { name: string } &
     id: session.user.id,
     webauthn: {
       passkeys: updatedPasskeys,
-      options: null,
-    },
+      options: null
+    }
   } as any);
 
   return verification;
@@ -153,7 +159,7 @@ export const addChallenge = async (challenge: string) => {
   await insert("challenges", {
     session: randomSessionID,
     challenge,
-    expires,
+    expires
   });
 
   return randomSessionID;
@@ -163,7 +169,7 @@ export const authenticationOptions = async () => {
   const options = await generateAuthenticationOptions({
     rpID: rp.id,
     userVerification: "preferred",
-    allowCredentials: [],
+    allowCredentials: []
   });
 
   const sessionID = await addChallenge(options.challenge);
@@ -187,7 +193,7 @@ export const authenticate = async (
   const passkey = (
     await query({
       collection: "users",
-      query: { "webauthn.passkeys.id": body.id },
+      query: { "webauthn.passkeys.id": body.id }
     })
   )[0];
   if (!passkey) {
@@ -210,9 +216,9 @@ export const authenticate = async (
       id: authenticatingPasskey.id,
       publicKey: authenticatingPasskey.publicKey,
       counter: authenticatingPasskey.counter,
-      transports: authenticatingPasskey.transports,
+      transports: authenticatingPasskey.transports
     },
-    requireUserVerification: false,
+    requireUserVerification: false
   });
 
   if (!verification.verified) {
@@ -227,12 +233,12 @@ export const authenticate = async (
     id: passkey._id,
     webauthn: {
       passkeys: userPasskeys,
-      options: null,
-    },
+      options: null
+    }
   } as any);
 
   return {
     verified: true,
-    user: authenticatingPasskey.user.id,
+    user: authenticatingPasskey.user.id
   };
 };
