@@ -509,7 +509,7 @@
 {#if displayMode === "grades"}
   {#if classes && classes.length}
     <div
-      class="grid grid-cols-1 gap-5 pb-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+      class="grid grid-cols-1 gap-5 px-10 pb-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
     >
       {#each classes as c, idx}
         <div
@@ -697,15 +697,15 @@
               >
                 <div class="flex gap-2">
                   <div class="font-bold">Absent:</div>
-                  {c.attendance.absent}
+                  {c.attendance.absent ?? "N/A"}
                 </div>
                 <div class="-mt-1 flex gap-2">
                   <div class="font-bold">Tardy:</div>
-                  {c.attendance.tardy}
+                  {c.attendance.tardy ?? "N/A"}
                 </div>
                 <div class="-mt-1 flex gap-2">
                   <div class="font-bold">Dismissed:</div>
-                  {c.attendance.dismissed}
+                  {c.attendance.dismissed ?? "N/A"}
                 </div>
               </div>
             </div>
@@ -1022,10 +1022,12 @@
       {/each}
     </div>
   {:else if classes}
-		<div class="text-center text-slate-400">You don't have any class data available yet.</div>
-	{:else}
+    <div class="text-center text-slate-400">
+      You don't have any class data available yet.
+    </div>
+  {:else}
     <div
-      class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+      class="grid grid-cols-1 gap-5 px-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
     >
       {#each Array.from({ length: preloadLength }) as _, idx}
         <div

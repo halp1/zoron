@@ -788,7 +788,7 @@
   </div>
 {:else}
   <div
-    class="relative flex h-full flex-col-reverse items-center gap-3 px-10 md:flex-row md:pt-0"
+    class="relative flex h-full flex-col-reverse items-center gap-3 md:flex-row md:pt-0"
   >
     <div
       class="backdrop-blur-xs fixed z-10 mb-4 flex items-center gap-3 rounded-full border-white p-2 md:left-6 md:top-1/2 md:mb-0 md:-translate-y-1/2 md:flex-col"
@@ -935,10 +935,10 @@
       </div>
     {:else}
       <div
-        class="relative mx-auto flex h-full w-80 flex-col items-center gap-5 overflow-x-visible md:h-full md:flex-none"
+        class="relative mx-auto flex h-full max-w-80 flex-col items-center gap-5 overflow-x-visible md:h-full md:flex-none"
       >
         <div
-          class="absolute left-1/2 top-0 z-10 mt-5 flex w-96 -translate-x-1/2 flex-col items-center gap-5 rounded-2xl border-2 border-white bg-black/20 p-2 pt-0 backdrop-blur-sm"
+          class="absolute left-1/2 -top-1 z-10 flex w-[calc(100vw+4px)] md:w-96 -translate-x-1/2 flex-col items-center gap-5 border-2 border-white bg-black/20 p-2 pt-0 backdrop-blur-sm md:rounded-b-2xl"
         >
           <div
             class="-mb-3 mt-3 text-xl text-slate-400"
@@ -1009,7 +1009,7 @@
               loading...
             </div>
           {:else}
-            <div class="relative flex w-full justify-center gap-2">
+            <div class="relative flex w-full justify-center gap-2 -mt-2">
               <button
                 in:fly|global={{
                   delay: 450,
