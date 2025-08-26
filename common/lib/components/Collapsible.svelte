@@ -86,7 +86,7 @@
     in:transitionFunction|global={transition?.in?.properties}
   >
     {#key key}
-      <div bind:this={content} class="{className}"> >
+      <div bind:this={content} class="{className}">
         {@render children?.()}
       </div>
     {/key}

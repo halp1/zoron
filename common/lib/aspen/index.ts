@@ -46,9 +46,9 @@ export namespace aspen {
       room?: string;
       grade?: Grade;
       attendance: {
-        absent: number;
-        tardy: number;
-        dismissed: number;
+        absent: number | null;
+        tardy: number | null;
+        dismissed: number | null;
       };
     }
 
@@ -729,6 +729,14 @@ export namespace aspen {
       if (items.length === 0) continue;
       const getItem = (index: number) =>
         [...items[index].children][0]?.innerHTML?.trim() || items[index].innerHTML.trim();
+
+			const getItemWithFallback = <T, U>(index: number, handler: (item: string) =>T, fallback: U): U | T => {
+				try {
+					return handler(getItem(index));
+				} catch {
+					return fallback;
+				}
+			}
       data.push({
         id: items[0].id,
         name: getItem(0),
@@ -750,9 +758,9 @@ export namespace aspen {
           letter: getItem(6).split(" ")[1],
         },
         attendance: {
-          absent: parseInt(getItem(7)),
-          tardy: parseInt(getItem(8)),
-          dismissed: parseInt(getItem(9)),
+          absent: getItemWithFallback(7, parseInt, null),
+          tardy: getItemWithFallback(8, parseInt, null),
+          dismissed: getItemWithFallback(9, parseInt, null),
         },
       });
     }
