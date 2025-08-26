@@ -2,7 +2,7 @@
   import { run } from "svelte/legacy";
   import { fly } from "svelte/transition";
 
-  import { onMount, tick } from "svelte";
+  import { onMount, tick, untrack } from "svelte";
 
   import { page } from "$app/state";
 
@@ -32,6 +32,7 @@
   import _ from "lodash";
 
   import "./schedule.css";
+  import { browser } from "$app/environment";
 
   const { clamp } = _;
 
@@ -486,33 +487,47 @@
   let dayCache = $state(new Map<string, Awaited<ReturnType<typeof loadDay>>>());
   let day: Awaited<ReturnType<typeof loadDay>> | null = $state(null);
   let dayKey = $state(0);
-  run(() => {
-    mode === "day" &&
-      $zoron.schedule &&
-      typeof window !== "undefined" &&
-      (async () => {
-        if (dayCache.has(dayViewDay.toISOString())) {
-          day = dayCache.get(dayViewDay.toISOString())!;
-          dayKey++;
-          return;
-        }
-        const d = await loadDay(dayViewDay);
-        day = d;
-        dayKey++;
-        dayCache.set(dayViewDay.toISOString(), d);
+  $effect(() => {
+    if (mode !== 'day') return;
+    if (!$zoron.schedule) return;
+    if (!browser) return;
 
-        // load day to left and right
-        const left = new Date(dayViewDay.getTime() - 1000 * 60 * 60 * 24);
-        const right = new Date(dayViewDay.getTime() + 1000 * 60 * 60 * 24);
-        if (!dayCache.has(left.toISOString())) {
-          const d = await loadDay(left);
-          dayCache.set(left.toISOString(), d);
-        }
-        if (!dayCache.has(right.toISOString())) {
-          const d = await loadDay(right);
-          dayCache.set(right.toISOString(), d);
-        }
-      })();
+    // snapshot dependency we care about
+    const key = dayViewDay.toISOString();
+    const keyDate = new Date(key);
+
+    // all reads/writes below are untracked so they don't turn into deps
+    untrack(async () => {
+      // cache hit
+      if (dayCache.has(key)) {
+        day = dayCache.get(key)!;
+        dayKey++;               // harmless — not a dep of this effect
+        return;
+      }
+
+      // cache miss — load current day
+      const d = await loadDay(keyDate);
+
+      // guard against staleness if dayViewDay changed while awaiting
+      if (key !== untrack(() => dayViewDay.toISOString())) return;
+
+      day = d;
+      dayKey++;
+      dayCache.set(key, d);
+
+      // prefetch neighbors (no new deps)
+      const left = new Date(keyDate.getTime() - 86_400_000);
+      const right = new Date(keyDate.getTime() + 86_400_000);
+
+      if (!dayCache.has(left.toISOString())) {
+        const dl = await loadDay(left);
+        dayCache.set(left.toISOString(), dl);
+      }
+      if (!dayCache.has(right.toISOString())) {
+        const dr = await loadDay(right);
+        dayCache.set(right.toISOString(), dr);
+      }
+    });
   });
 
   const dateToTime = (date: Date) => {
