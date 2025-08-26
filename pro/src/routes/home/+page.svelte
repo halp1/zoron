@@ -167,7 +167,9 @@
     }}
   >
     <div
-      class="custom-scroll max-h-[80vh] w-96 overflow-y-auto rounded-lg bg-slate-800 p-5"
+      class="custom-scroll max-h-[80vh] w-96 mx-2 overflow-y-auto rounded-lg p-5"
+			class:bg-slate-800={$theme === 'zoron'}
+			class:bg-black={$theme === 'amoled'}
     >
       <div class="text-2xl">Instructions</div>
       <div class="mt-5 flex flex-col gap-5">
