@@ -2,13 +2,14 @@
   import { run } from "svelte/legacy";
   import { fly } from "svelte/transition";
 
-  import { onMount } from "svelte";
+  import { onMount, tick } from "svelte";
 
   import { page } from "$app/state";
 
   import type { aspen } from "@zoron/common/aspen";
   import { randomPlaceholderImage } from "@zoron/common/assets/placeholders";
   import { ScheduleBlock, Swipeable } from "@zoron/common/components";
+  import { CONSTANTS } from "@zoron/common/constants";
   import { motion } from "@zoron/common/motion";
   import type { Block, CalendarEvent } from "@zoron/common/types";
   import { requests, toast, zoron } from "@zoron/common/web";
@@ -646,7 +647,7 @@
       const y = e.changedTouches[0].clientY;
       const deltaX = x - swipeStart.x;
       const deltaY = y - swipeStart.y;
-      if (Math.abs(deltaX) > 100) {
+      if (Math.abs(deltaX) > CONSTANTS.scheduleSensitivity) {
         if (deltaX > 0) {
           dayViewDay = new Date(dayViewDay.getTime() - 1000 * 60 * 60 * 24);
           swipeDirection = "right";
@@ -869,7 +870,7 @@
     {#if mode === "full"}
       <div class="flex flex-1 flex-col md:ml-16 md:min-h-full">
         <div
-          class="mt-[env(safe-area-inset-top)] py-2 text-center text-slate-600"
+          class="mt-[env(safe-area-inset-top)] pt-2 text-center text-slate-600"
           in:fly|global={{
             delay: 200,
             duration: 1000,
@@ -898,19 +899,17 @@
           </div>
         </div>
         <Swipeable
-          className="md:hidden flex-1 relative w-full"
-          onswipe={(e) => {
+          className="md:hidden flex-1 relative w-full mb-20"
+          onswipe={async (e) => {
             const applyChange = () => {
               if (e === "left") selectedDay = (selectedDay + 1) % 6;
               else selectedDay = (selectedDay + 5) % 6;
             };
+						swipeDirection = e === "left" ? "right" : "left";
+						await tick();
 
             if (!document.startViewTransition) return applyChange();
-            document.startViewTransition(() => {
-              swipeDirection = e;
-              applyChange();
-              return new Promise((r) => setTimeout(r, 150));
-            });
+            document.startViewTransition(applyChange);
           }}
         >
           {#key selectedDay}
@@ -938,7 +937,7 @@
         class="relative mx-auto flex h-full max-w-80 flex-col items-center gap-5 overflow-x-visible md:h-full md:flex-none"
       >
         <div
-          class="absolute left-1/2 -top-1 z-10 flex w-[calc(100vw+4px)] md:w-96 -translate-x-1/2 flex-col items-center gap-5 border-2 border-white bg-black/20 p-2 pt-0 backdrop-blur-sm md:rounded-b-2xl"
+          class="absolute -top-1 left-1/2 z-10 flex w-[calc(100vw+4px)] -translate-x-1/2 flex-col items-center gap-5 border-2 border-white bg-black/20 p-2 pt-0 backdrop-blur-sm md:w-96 md:rounded-b-2xl"
         >
           <div
             class="-mb-3 mt-3 text-xl text-slate-400"
@@ -1009,7 +1008,7 @@
               loading...
             </div>
           {:else}
-            <div class="relative flex w-full justify-center gap-2 -mt-2">
+            <div class="relative -mt-2 flex w-full justify-center gap-2">
               <button
                 in:fly|global={{
                   delay: 450,
@@ -1194,7 +1193,7 @@
               style="padding: 0 10000px 0 10000px; margin: 0 -10000px 0 -10000px;"
             >
               <div
-                class="flex min-h-[60vh] min-w-[336px] flex-col items-center gap-5 animate-in-{swipeDirection} pb-20 pt-44 md:pb-5"
+                class="flex min-h-[60vh] min-w-[336px] flex-col items-center gap-5 animate-in-{swipeDirection} pb-20 pt-36 md:pb-5"
                 style="transition: inherit;"
                 bind:this={dayViewRef}
               >
