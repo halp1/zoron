@@ -22,7 +22,7 @@
   }
 
   &body .custom-scroll::-webkit-scrollbar-thumb {
-    @apply bg-gray-600 hover:bg-gray-400;
+    @apply !bg-gray-600 hover:!bg-gray-400;
   }
 }
 

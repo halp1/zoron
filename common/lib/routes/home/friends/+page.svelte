@@ -23,7 +23,7 @@
     faClose
   } from "@fortawesome/free-solid-svg-icons";
 
-	import '../schedule/schedule.css';
+  import "../schedule/schedule.css";
 
   const users = page.data.users!.sort((a, b) => {
     // Sort by name alphabetically
@@ -223,14 +223,14 @@
 </svelte:head>
 
 <div class="relative h-screen overflow-hidden">
-  <button
+  <!-- <button
     class="btn-circle absolute left-4 top-4 z-50 border-2 border-slate-600"
     onclick={async () => {
       await goto("/account");
     }}
   >
     <Fa icon={faArrowLeft} />
-  </button>
+  </button> -->
   <div
     class="relative flex h-full w-[200vw] md:w-auto md:!transform-none"
     style="transform: translateX(-{!showFriend ? 0 : 100}vw);"
@@ -446,7 +446,7 @@
           Select a friend to view details.
         </div>
       {:else}
-        <div class="mx-4 my-auto flex flex-col items-center md:m-auto h-full">
+        <div class="mx-4 my-auto flex h-full flex-col items-center md:m-auto">
           <div class="mt-5 text-center text-2xl">{friend.userData.name}</div>
           <div class="mt-1 text-center text-slate-400">
             {friend.userData.email}
@@ -458,10 +458,12 @@
               Error loading schedule: {friend.data.reason}
             </div>
           {:else}
-            <div class="flex-1 overflow-auto mt-10 custom-scroll border-t border-slate-600">
+            <div
+              class="mt-10 w-full flex-1 border-t border-slate-600 md:w-auto"
+            >
               {#if generated}
                 <div
-                  class="custom-scroll hidden min-h-full flex-1 justify-center overflow-auto md:flex"
+                  class="custom-scroll hidden max-h-[calc(100vh-100000px)] min-h-full flex-1 justify-center overflow-auto md:flex"
                 >
                   <div
                     class="grid min-h-full grid-cols-6 border-0 border-slate-800"
@@ -491,10 +493,7 @@
                   }}
                 >
                   {#key selectedDay}
-                    <div
-                      class="grid h-full w-full"
-                      style="grid-template-rows: repeat(15, minmax(0, 1fr));"
-                    >
+                    <div class="flex flex-col">
                       <div
                         class="mb-1 mt-4 flex w-full items-center justify-center gap-4 text-center text-xl"
                       >
@@ -518,16 +517,21 @@
                           <Fa icon={faChevronRight} />
                         </button>
                       </div>
-                      {#each generated.filter((_, i) => i % 6 === selectedDay) as block, idx}
-                        <ScheduleBlock
-                          index={idx}
-                          {block}
-                          className="border-2 border-slate-800 row-span-2"
-                          freeFontSize="text-2xl"
-                          day={selectedDay}
-                          lunch={friend.data.schedule.lunches[selectedDay]}
-                        />
-                      {/each}
+                      <div
+                        class="custom-scroll flex max-h-[calc(100vh-230px)] flex-col overflow-auto"
+                      >
+                        {#each generated.filter((_, i) => i % 6 === selectedDay) as block, idx}
+                          <ScheduleBlock
+                            index={idx}
+                            {block}
+                            className="border-2 border-slate-800 row-span-2"
+                            freeFontSize="text-2xl"
+                            day={selectedDay}
+                            lunch={friend.data.schedule.lunches[selectedDay]}
+														popoverClass="left-[100vw]"
+                          />
+                        {/each}
+                      </div>
                     </div>
                   {/key}
                 </Swipeable>

@@ -1,17 +1,18 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
 
+  import { twMerge } from "tailwind-merge";
+
+  import type { aspen } from "../aspen";
   import { motion } from "../motion";
   import type { Block } from "../types";
-
-  import { twMerge } from "tailwind-merge";
   import ScheduleBlockDetails from "./ScheduleBlockDetails.svelte";
-  import type { aspen } from "../aspen";
 
   interface Props {
     block: Block;
     index: number;
     className?: string;
+    popoverClass?: string;
     freeFontSize?: string;
     lunch: aspen.Types.Schedule.Lunch;
     day: number;
@@ -20,10 +21,11 @@
   let {
     block,
     className = "",
+    popoverClass = "",
     freeFontSize = "text-xl",
     index,
     lunch,
-    day,
+    day
   }: Props = $props();
 
   let popoverVisible = $state(false);
@@ -31,7 +33,7 @@
 
 <button
   class={twMerge(
-    "row-span-1 flex flex-col items-center gap-2 border-slate-800  py-2 text-sm cursor-pointer after:opacity-0 after:bg-white/15 relative after:w-full after:h-full after:absolute after:top-0 after:left-0 hover:after:opacity-100 after:transition-opacity focus-within:outline-none outline-none",
+    "relative row-span-1 flex cursor-pointer flex-col items-center  gap-2 border-slate-800 py-2 text-sm outline-none after:absolute after:left-0 after:top-0 after:h-full after:w-full after:bg-white/15 after:opacity-0 after:transition-opacity focus-within:outline-none hover:after:opacity-100",
     block.color + "/50",
     className
   )}
@@ -40,7 +42,7 @@
     duration: 1000,
     opacity: 0,
     y: -20,
-    easing: motion.transitions.spring(400, 20),
+    easing: motion.transitions.spring(400, 20)
   }}
   onclick={() => {
     popoverVisible = true;
@@ -63,11 +65,21 @@
     </div>
   {:else}
     <div class="my-auto {freeFontSize}">
-      {block.type === "lunch" ? "Lunch" : block.type === "I-block" ? "I Block" : "Free"}
+      {block.type === "lunch"
+        ? "Lunch"
+        : block.type === "I-block"
+          ? "I Block"
+          : "Free"}
     </div>
   {/if}
 </button>
 
 {#if popoverVisible}
-  <ScheduleBlockDetails {block} onClose={() => (popoverVisible = false)} {lunch} {day} />
+  <ScheduleBlockDetails
+    {block}
+    onClose={() => (popoverVisible = false)}
+    {lunch}
+    {day}
+    class={popoverClass}
+  />
 {/if}
