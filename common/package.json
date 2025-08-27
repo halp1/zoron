@@ -26,6 +26,8 @@
     "@types/xml2js": "^0.4.14",
     "chalk": "^5.5.0",
     "date-picker-svelte": "^2.16.0",
+    "html-to-image": "^1.11.13",
+    "html2canvas-pro": "^1.5.11",
     "jsdom": "^26.1.0",
     "lodash": "^4.17.21",
     "mongodb": "^6.18.0",
@@ -43,5 +45,8 @@
     "valibot": "^1.1.0",
     "web-push": "^3.6.7",
     "xml2js": "^0.6.2"
+  },
+  "devDependencies": {
+    "@types/html2canvas": "^1.0.0"
   }
 }

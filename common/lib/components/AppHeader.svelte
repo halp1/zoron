@@ -155,7 +155,7 @@
       <div
         class="fixed left-0 {$titleBarState
           ? 'top-12'
-          : 'top-0'} z-10 flex h-12 w-full items-center gap-4 {$theme ===
+          : 'top-0'} z-50 flex h-12 w-full items-center gap-4 {$theme ===
         'amoled'
           ? 'border-b-2 border-white bg-black'
           : 'bg-slate-800'} px-3 shadow-2xl transition-all"

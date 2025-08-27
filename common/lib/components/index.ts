@@ -1,10 +1,11 @@
-export { default as Collapsible } from "./Collapsible.svelte";
+export * from "./schedule";
+
+export { default as AppHeader } from "./AppHeader.svelte";
 export { default as BubbleButton } from "./BubbleButton.svelte";
-export { default as Toggle } from "./Toggle.svelte";
-export { default as Skeleton } from "./Skeleton.svelte";
+export { default as Collapsible } from "./Collapsible.svelte";
 export { default as Footer } from "./Footer.svelte";
-export { default as ScheduleBlock } from "./ScheduleBlock.svelte";
-export { default as Swipeable } from "./Swipeable.svelte";
 export { default as ListSelect } from "./ListSelect.svelte";
 export { default as Root } from "./Root.svelte";
-export { default as AppHeader } from "./AppHeader.svelte";
+export { default as Skeleton } from "./Skeleton.svelte";
+export { default as Swipeable } from "./Swipeable.svelte";
+export { default as Toggle } from "./Toggle.svelte";
