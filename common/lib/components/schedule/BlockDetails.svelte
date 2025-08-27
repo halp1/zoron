@@ -9,9 +9,9 @@
 
   import { twMerge } from "tailwind-merge";
 
-  import type { aspen } from "../aspen";
-  import type { Block } from "../types";
-  import { requests, theme, toast } from "../web";
+  import type { aspen } from "../../aspen";
+  import type { Block } from "../../types";
+  import { requests, theme, toast } from "../../web";
 
   interface Props {
     block: Block;

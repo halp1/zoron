@@ -3,10 +3,10 @@
 
   import { twMerge } from "tailwind-merge";
 
-  import type { aspen } from "../aspen";
-  import { motion } from "../motion";
-  import type { Block } from "../types";
-  import ScheduleBlockDetails from "./ScheduleBlockDetails.svelte";
+  import type { aspen } from "../../aspen";
+  import { motion } from "../../motion";
+  import type { Block } from "../../types";
+  import ScheduleBlockDetails from "./BlockDetails.svelte";
 
   interface Props {
     block: Block;

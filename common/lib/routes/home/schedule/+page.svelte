@@ -1,14 +1,15 @@
 <script lang="ts">
   import { run } from "svelte/legacy";
-  import { fly } from "svelte/transition";
+  import { fade, fly } from "svelte/transition";
 
   import { onMount, tick, untrack } from "svelte";
 
+  import { browser } from "$app/environment";
   import { page } from "$app/state";
 
   import type { aspen } from "@zoron/common/aspen";
   import { randomPlaceholderImage } from "@zoron/common/assets/placeholders";
-  import { ScheduleBlock, Swipeable } from "@zoron/common/components";
+  import { ScheduleBlock, ScheduleExportModal, Swipeable } from "@zoron/common/components";
   import { CONSTANTS } from "@zoron/common/constants";
   import { motion } from "@zoron/common/motion";
   import type { Block, CalendarEvent } from "@zoron/common/types";
@@ -24,15 +25,17 @@
     faChevronLeft,
     faChevronRight,
     faClose,
+    faDownload,
+    faFileExport,
     faListUl,
     faRotateRight
   } from "@fortawesome/free-solid-svg-icons";
 
   import { DatePicker } from "date-picker-svelte";
+  import html2canvas from "html2canvas-pro";
   import _ from "lodash";
 
   import "./schedule.css";
-  import { browser } from "$app/environment";
 
   const { clamp } = _;
 
@@ -211,7 +214,6 @@
   let datePickerOpen = $state(false);
 
   let exportModalOpen = $state(false);
-  let exportChoice: null | "choobs" = $state(null);
 
   let updating = $state(false);
 
@@ -488,7 +490,7 @@
   let day: Awaited<ReturnType<typeof loadDay>> | null = $state(null);
   let dayKey = $state(0);
   $effect(() => {
-    if (mode !== 'day') return;
+    if (mode !== "day") return;
     if (!$zoron.schedule) return;
     if (!browser) return;
 
@@ -501,7 +503,7 @@
       // cache hit
       if (dayCache.has(key)) {
         day = dayCache.get(key)!;
-        dayKey++;               // harmless — not a dep of this effect
+        dayKey++; // harmless — not a dep of this effect
         return;
       }
 
@@ -755,6 +757,8 @@
       window.removeEventListener("resize", handleResize);
     };
   });
+
+  let imageSchedule = $state<HTMLDivElement>(null as any);
 </script>
 
 <svelte:head>
@@ -807,7 +811,7 @@
     class="relative flex h-full flex-col-reverse items-center gap-3 md:flex-row md:pt-0"
   >
     <div
-      class="fixed z-10 mb-4 flex items-center gap-3 rounded-full border-white p-2 backdrop-blur-xs md:top-1/2 md:left-6 md:mb-0 md:-translate-y-1/2 md:flex-col"
+      class="backdrop-blur-xs fixed z-10 mb-4 flex items-center gap-3 rounded-full border-white p-2 md:left-6 md:top-1/2 md:mb-0 md:-translate-y-1/2 md:flex-col"
       class:border-2={$theme === "amoled"}
       in:fly|global={{
         delay: 200,
@@ -833,7 +837,7 @@
       >
         <Fa
           icon={faListUl}
-          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
         />
       </button>
       <button
@@ -853,12 +857,14 @@
       >
         <Fa
           icon={faCalendar}
-          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
         />
       </button>
-      <!-- <button
-        class="btn-circle relative border-2 {$theme === "amoled" ? "border-white" : "border-slate-600"}"
-        on:click={() => {
+      <button
+        class="btn-circle relative border-2 {$theme === 'amoled'
+          ? 'border-white'
+          : 'border-slate-600'}"
+        onclick={() => {
           exportModalOpen = true;
         }}
         title="Export schedule"
@@ -867,7 +873,7 @@
           icon={faFileExport}
           class="absolute left-1/2 top-1/2 ml-[2px] -translate-x-1/2 -translate-y-1/2"
         />
-      </button> -->
+      </button>
       <button
         class="btn-circle relative border-2 {$theme === 'amoled'
           ? 'border-white'
@@ -878,7 +884,7 @@
       >
         <Fa
           icon={faRotateRight}
-          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
         />
       </button>
     </div>
@@ -955,7 +961,7 @@
           class="absolute -top-1 left-1/2 z-10 flex w-[calc(100vw+4px)] -translate-x-1/2 flex-col items-center gap-5 border-2 border-white bg-black/20 p-2 pt-0 backdrop-blur-sm md:w-96 md:rounded-b-2xl"
         >
           <div
-            class="mt-3 -mb-3 text-xl text-slate-400"
+            class="-mb-3 mt-3 text-xl text-slate-400"
             in:fly|global={{
               delay: 250,
               duration: 1000,
@@ -1123,7 +1129,7 @@
                 <!-- svelte-ignore a11y_no_static_element_interactions -->
                 <!-- svelte-ignore a11y_click_events_have_key_events -->
                 <div
-                  class="absolute top-10 right-0 z-10 {$theme === 'amoled'
+                  class="absolute right-0 top-10 z-10 {$theme === 'amoled'
                     ? 'invert'
                     : ''}"
                   transition:fly|global={{
@@ -1208,7 +1214,7 @@
               style="padding: 0 10000px 0 10000px; margin: 0 -10000px 0 -10000px;"
             >
               <div
-                class="flex min-h-[60vh] min-w-[336px] flex-col items-center gap-5 animate-in-{swipeDirection} pt-36 pb-20 md:pb-5"
+                class="flex min-h-[60vh] min-w-[336px] flex-col items-center gap-5 animate-in-{swipeDirection} pb-20 pt-36 md:pb-5"
                 style="transition: inherit;"
                 bind:this={dayViewRef}
               >
@@ -1311,7 +1317,7 @@
                               {block.progression.toFixed(0)}%
                             </div>
                             <div
-                              class="absolute top-0 left-0 h-full {block.class
+                              class="absolute left-0 top-0 h-full {block.class
                                 ?.type === 'block'
                                 ? block.class.color
                                 : 'bg-slate-600'}"
@@ -1338,37 +1344,31 @@
       </div>
     {/if}
   </div>
-{/if}
 
-{#if exportModalOpen}
-  <!-- svelte-ignore a11y_click_events_have_key_events -->
-  <!-- svelte-ignore a11y_no_static_element_interactions -->
+  <!-- image schedule -->
   <div
-    class="fixed top-0 right-0 bottom-0 left-0 grid place-items-center bg-slate-900/90 backdrop-blur-xl"
-    onclick={({ currentTarget, target }) => {
-      if (currentTarget === target) {
-        exportModalOpen = false;
-        exportChoice = null;
-      }
-    }}
+    bind:this={imageSchedule}
+    class="fixed left-[300vw] top-[300vh] flex h-[720px] w-[1280px] flex-1 justify-center overflow-auto bg-black pb-10"
   >
-    <div
-      class="relative flex flex-col items-center rounded-lg bg-slate-800 p-5"
-    >
-      <button
-        class="btn-circle absolute top-2 right-2"
-        onclick={() => {
-          exportModalOpen = false;
-          exportChoice = null;
-        }}><Fa icon={faClose} /></button
-      >
-      <div class="text-2xl">Export Calendar</div>
-      <div class="text-sm text-slate-400">
-        Use this calendar on other sites, imported automatically.
-      </div>
+    <div class="grid min-h-full grid-cols-6 border-0 border-slate-800">
+      {#each generated as block, i}
+        <ScheduleBlock
+          index={i}
+          {block}
+          className="border-b-4 border-r-4 {i <= 5 ? 'border-t-4' : ''} {i %
+            6 ===
+          0
+            ? 'border-l-4'
+            : ''}"
+          lunch={schedule.lunches[i % 6]}
+          day={i % 6}
+        />
+      {/each}
     </div>
   </div>
 {/if}
+
+<ScheduleExportModal open={exportModalOpen} {imageSchedule} />
 
 <style>
   .day-anim-left {
