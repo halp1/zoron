@@ -30,6 +30,7 @@
   import _ from "lodash";
 
   import { defaultSettings } from "../../api/account/settings/defaults";
+  import { updateProfilePicture } from "./settings.remote";
 
   let device = $state<Device | null>(null);
   onMount(() => {
@@ -100,65 +101,11 @@
   };
 
   const handleCroppedImage = async (imageDataUrl: string) => {
-    const supabaseClient = $supabase;
-    if (!supabaseClient) {
-      toast.error("Supabase client not initialized");
-      return;
-    }
-
     uploading = true;
     showEditor = false;
     const { dismiss } = toast.loading("Updating profile picture...");
     try {
-      const userId = page.data.session?.user?.id;
-      const filePath = `${userId}/profile-picture.jpg`; // Always use jpg since we convert in compressImage
-
-      // First delete the existing profile picture if it exists
-      const { error: deleteError } = await supabaseClient.storage
-        .from("pfps")
-        .remove([filePath]);
-
-      if (deleteError && deleteError.message !== "Object not found") {
-        throw deleteError;
-      }
-
-      // Convert data URL to blob
-      const blobResponse = await fetch(imageDataUrl);
-      const blob = await blobResponse.blob();
-
-      // Create a new File object from the blob
-      const processedFile = new File([blob], "profile-picture.jpg", {
-        type: "image/jpeg"
-      });
-
-      // Upload processed image to Supabase storage
-      const { error: uploadError, data } = await supabaseClient.storage
-        .from("pfps")
-        .upload(filePath, processedFile);
-
-      if (uploadError) throw uploadError;
-
-      // Get the public URL
-      const {
-        data: { publicUrl }
-      } = supabaseClient.storage.from("pfps").getPublicUrl(filePath);
-
-      // Update user's profile picture URL
-      const profileResponse = await fetch(
-        "/api/account/settings/profile-picture",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ imageUrl: publicUrl + "?t=" + Date.now() })
-        }
-      );
-
-      if (!profileResponse.ok) {
-        const data = await profileResponse.json();
-        throw new Error(data.error || "Failed to update profile picture");
-      }
+      await updateProfilePicture(imageDataUrl);
 
       toast.success("Profile picture updated successfully");
       // Reload the page to reflect changes
