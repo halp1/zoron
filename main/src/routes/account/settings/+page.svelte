@@ -30,6 +30,7 @@
   import _ from "lodash";
 
   import { defaultSettings } from "../../api/account/settings/defaults";
+  import { updateProfilePicture } from "./settings.remote";
 
   let device = $state<Device | null>(null);
   onMount(() => {
@@ -98,37 +99,11 @@
   };
 
   const handleCroppedImage = async (imageDataUrl: string) => {
-    if (true) {
-      toast.error("PFP Uploading is currently still being implemented.");
-      return;
-    }
-
     uploading = true;
     showEditor = false;
     const { dismiss } = toast.loading("Updating profile picture...");
     try {
-      const userId = page.data.session?.user?.id;
-      const filePath = `${userId}/profile-picture.jpg`; // Always use jpg since we convert in compressImage
-
-      // TODO: STUFF HERE
-      const publicUrl = "";
-
-      // Update user's profile picture URL
-      const profileResponse = await fetch(
-        "/api/account/settings/profile-picture",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ imageUrl: publicUrl + "?t=" + Date.now() })
-        }
-      );
-
-      if (!profileResponse.ok) {
-        const data = await profileResponse.json();
-        throw new Error(data.error || "Failed to update profile picture");
-      }
+      await updateProfilePicture(imageDataUrl);
 
       toast.success("Profile picture updated successfully");
       // Reload the page to reflect changes
@@ -173,7 +148,7 @@
         }}
       >
         <a
-          class="btn-circle absolute top-5 left-5"
+          class="btn-circle absolute left-5 top-5"
           href="/account"
           in:fly|global={{
             delay: autoAnim(),
@@ -243,7 +218,7 @@
             {/if}
             <!-- svelte-ignore a11y_click_events_have_key_events -->
             <label
-              class="absolute right-0 bottom-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full {$theme ===
+              class="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full {$theme ===
               'amoled'
                 ? 'border-2 border-white bg-black'
                 : 'bg-blue-600 hover:bg-blue-700'}"
@@ -253,12 +228,6 @@
                 opacity: 0,
                 y: 20,
                 easing: motion.transitions.spring(400, 20)
-              }}
-              onclick={(e) => {
-                e.preventDefault();
-                toast.error(
-                  "PFP Uploading is currently still being implemented."
-                );
               }}
             >
               <Fa icon={faCamera} class="text-white" />

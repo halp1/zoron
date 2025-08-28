@@ -9,7 +9,11 @@
 
   import type { aspen } from "@zoron/common/aspen";
   import { randomPlaceholderImage } from "@zoron/common/assets/placeholders";
-  import { ScheduleBlock, ScheduleExportModal, Swipeable } from "@zoron/common/components";
+  import {
+    ScheduleBlock,
+    ScheduleExportModal,
+    Swipeable
+  } from "@zoron/common/components";
   import { CONSTANTS } from "@zoron/common/constants";
   import { motion } from "@zoron/common/motion";
   import type { Block, CalendarEvent } from "@zoron/common/types";

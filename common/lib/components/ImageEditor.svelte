@@ -247,8 +247,8 @@
   class="mt-2 w-full rounded-lg bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
   onclick={() => {
     const cropCanvas = document.createElement("canvas");
-    cropCanvas.width = frame.size;
-    cropCanvas.height = frame.size;
+    cropCanvas.width = 256;
+    cropCanvas.height = 256;
     const cropCtx = cropCanvas.getContext("2d")!;
     cropCtx.drawImage(
       image,
@@ -258,8 +258,8 @@
       frame.size / scale,
       0,
       0,
-      frame.size,
-      frame.size
+      256,
+      256
     );
     onCrop(cropCanvas.toDataURL());
   }}
