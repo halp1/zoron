@@ -9,7 +9,6 @@
   import { Toggle } from "@zoron/common/components";
   import ImageEditor from "@zoron/common/components/ImageEditor.svelte";
   import { motion } from "@zoron/common/motion";
-  import { supabase, supabaseConnect } from "@zoron/common/supabase";
   import type { Settings } from "@zoron/common/types";
   import {
     type Device,
@@ -45,15 +44,8 @@
   );
 
   onMount(() => {
-    const client = supabaseConnect(
-      page.data.env.supabase.uri,
-      page.data.env.supabase.key
-    );
-    client.auth.setSession(page.data.supabase.session);
     mounted = true;
     return () => {
-      client.removeAllChannels();
-      client.realtime.disconnect();
       history.go(0);
     };
   });
