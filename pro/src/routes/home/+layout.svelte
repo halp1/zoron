@@ -29,6 +29,9 @@
     { name: "Grades", path: "/home/grades", icon: faChartLine },
     { name: "Activity", path: "/home/activity", icon: faList },
     { name: "Friends", path: "/home/friends", icon: faUserFriends },
+    ...(page.data.session?.user?.features?.tasks
+      ? [{ name: "Tasks", path: "/home/tasks", icon: faList }]
+      : []),
     // { name: "Chat", path: "/home/chat", icon: faComments },
     ...(page.data.session?.user?.role === "admin"
       ? [{ name: "Admin", path: "/home/admin", icon: faShieldAlt }]
@@ -37,7 +40,7 @@
       name: "Account",
       path: "/account",
       icon: page.data.session?.user?.image ?? faUser,
-      mobileOnly: true
+      target: "mobile"
     }
   ];
 </script>
