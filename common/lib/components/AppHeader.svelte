@@ -39,7 +39,11 @@
     children?: import("svelte").Snippet;
   }
 
-  let { tabs, changelog, isPro = false, children }: Props = $props();
+  let { tabs: rawTabs, changelog, isPro = false, children }: Props = $props();
+
+  let tabs = $derived(
+    rawTabs.map((tab) => ({ ...tab, target: !tab.target ? "all" : tab.target }))
+  );
 
   let windowWidth = $state(0);
 
@@ -78,7 +82,12 @@
     activeTabIndex === -1 ? 0 : tabRefs[activeTabIndex]?.offsetWidth || 0
   );
 
-  let availableTabs = $derived(tabs.filter((tab) => !tab.mobileOnly));
+  let desktopTabs = $derived(
+    tabs.filter((tab) => ["desktop", "all"].includes(tab.target))
+  );
+  let mobileTabs = $derived(
+    tabs.filter((tab) => ["mobile", "all"].includes(tab.target))
+  );
 
   let animationDirection: "left" | "right" | "none" = $state("none");
 
@@ -245,7 +254,7 @@
         <div class="ml-auto"></div>
 
         <!-- Navigation tabs -->
-        {#each availableTabs as tab, idx}
+        {#each desktopTabs as tab, idx}
           <a
             href={tab.path}
             data-sveltekit-preload-code
@@ -274,7 +283,7 @@
               class="flex items-center justify-center whitespace-nowrap font-mono text-xs text-green-300"
               in:fly|global={{
                 delay:
-                  availableTabs.length * 100 +
+                  desktopTabs.length * 100 +
                   1100 +
                   tagDelay +
                   modeSwitchDelay,
@@ -299,7 +308,7 @@
               href="/pro"
               in:fly|global={{
                 delay:
-                  availableTabs.length * 100 +
+                  desktopTabs.length * 100 +
                   1000 +
                   tagDelay +
                   modeSwitchDelay,
@@ -320,7 +329,7 @@
                 mode.update((mode) => (mode === "light" ? "dark" : "light"));
               }}
               in:fly|global={{
-                delay: availableTabs.length * 100 + 900 + tagDelay,
+                delay: desktopTabs.length * 100 + 900 + tagDelay,
                 duration: 1000,
                 opacity: 0,
                 x: 20,
@@ -340,7 +349,7 @@
             class:border-blue-400={$theme === "zoron"}
             href="/account"
             in:fly|global={{
-              delay: availableTabs.length * 100 + 800 + tagDelay,
+              delay: desktopTabs.length * 100 + 800 + tagDelay,
               duration: 1000,
               opacity: 0,
               x: 20,
@@ -363,7 +372,7 @@
             class:border-blue-400={$theme === "zoron"}
             href="/account/settings"
             in:fly|global={{
-              delay: availableTabs.length * 100 + 700 + tagDelay,
+              delay: desktopTabs.length * 100 + 700 + tagDelay,
               duration: 1000,
               opacity: 0,
               x: 20,
@@ -378,7 +387,7 @@
             class:border-blue-400={$theme === "zoron"}
             href="/logout"
             in:fly|global={{
-              delay: availableTabs.length * 100 + 600 + tagDelay,
+              delay: desktopTabs.length * 100 + 600 + tagDelay,
               duration: 1000,
               opacity: 0,
               x: 20,
@@ -429,7 +438,7 @@
         ? 'border-t-2 border-white bg-black'
         : 'bg-slate-800'}"
     >
-      {#each tabs as tab, idx}
+      {#each mobileTabs as tab, idx}
         <a
           in:fly|global={{
             delay: (idx + 1) * 75,

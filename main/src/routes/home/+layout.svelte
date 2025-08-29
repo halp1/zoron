@@ -41,7 +41,7 @@
             path: "/pro",
             icon: faArrowUp,
             iconClass: "text-yellow-200",
-            mobileOnly: true
+            target: "mobile"
           }
         ]
       : []),
@@ -52,7 +52,7 @@
       name: "Account",
       path: "/account",
       icon: page.data.session?.user?.image || faUser,
-      mobileOnly: true
+      target: "mobile"
     }
   ];
 </script>

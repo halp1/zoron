@@ -65,6 +65,21 @@ declare module "@auth/sveltekit" {
     };
     relationships?: Relationship[];
     pro?: boolean;
+    features?: {
+      tasks?: boolean;
+    };
+    tasks?: {
+      class: {
+        id: string;
+        name: string;
+      };
+      tasks: {
+        id: string;
+        title: string;
+        description: string;
+        date: string;
+      }[];
+    }[];
   }
 }
 
