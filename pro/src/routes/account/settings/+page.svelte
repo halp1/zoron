@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { get, writable } from "svelte/store";
+  import {  writable } from "svelte/store";
   import { fly } from "svelte/transition";
 
   import { onMount } from "svelte";
@@ -12,8 +12,6 @@
   import type { Settings } from "@zoron/common/types";
   import {
     type Device,
-    PWA,
-    compressImage,
     getDeviceInfo,
     getSubscription,
     requests,
