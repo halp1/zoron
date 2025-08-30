@@ -22,6 +22,7 @@
     "@auth/mongodb-adapter": "^3.10.0",
     "@auth/sveltekit": "1.7.4",
     "@dnd-kit-svelte/core": "^0.0.11",
+    "@dnd-kit-svelte/sortable": "^0.0.11",
     "@fingerprintjs/fingerprintjs": "^4.6.2",
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
