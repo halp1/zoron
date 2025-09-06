@@ -1,9 +1,6 @@
 import { redirect } from "@sveltejs/kit";
 
-import {
-  POSTHOG,
-  VAPID_PUBLIC
-} from "$env/static/private";
+import { POSTHOG, VAPID_PUBLIC } from "$env/static/private";
 
 import { aspen } from "@zoron/common/aspen";
 import { adapter } from "@zoron/common/auth";

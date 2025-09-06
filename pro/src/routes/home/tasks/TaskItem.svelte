@@ -61,7 +61,7 @@
     style="touch-action: none;"
   >
     <!-- Task completion checkbox -->
-    <div class="absolute left-2 top-2">
+    <div class="absolute top-2 left-2">
       <input
         type="checkbox"
         checked={task.completed}

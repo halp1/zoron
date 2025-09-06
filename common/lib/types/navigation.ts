@@ -4,7 +4,7 @@ export interface Tab {
   name: string;
   path: string;
   icon: IconDefinition | string;
-  target?: 'mobile' | 'desktop' | 'all';
+  target?: "mobile" | "desktop" | "all";
   iconClass?: string;
 }
 

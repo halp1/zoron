@@ -30,7 +30,7 @@
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
-    class="fixed bottom-0 left-0 right-0 top-0 z-20 grid place-items-center bg-black/50 backdrop-blur-md"
+    class="fixed top-0 right-0 bottom-0 left-0 z-20 grid place-items-center bg-black/50 backdrop-blur-md"
     onclick={({ currentTarget, target }) => {
       if (currentTarget === target) {
         open = false;
@@ -49,7 +49,7 @@
       }}
     >
       <button
-        class="btn-circle absolute right-2 top-2"
+        class="btn-circle absolute top-2 right-2"
         onclick={() => {
           open = false;
         }}><Fa icon={faClose} /></button

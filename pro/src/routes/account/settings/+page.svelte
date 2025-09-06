@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {  writable } from "svelte/store";
+  import { writable } from "svelte/store";
   import { fly } from "svelte/transition";
 
   import { onMount } from "svelte";
