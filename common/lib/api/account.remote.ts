@@ -3,8 +3,6 @@ import { error, redirect } from "@sveltejs/kit";
 import { command, form, query } from "$app/server";
 import { getRequestEvent } from "$app/server";
 
-import { SUPABASE_URI } from "$env/static/private";
-
 import {
   adapter,
   auth,
@@ -369,11 +367,6 @@ export const updateProfilePicture = form(async (data) => {
 
   if (!imageUrl || typeof imageUrl !== "string") {
     error(400, "Invalid image data");
-  }
-
-  // Validate that the URL is from Supabase storage
-  if (!imageUrl.startsWith(`${SUPABASE_URI}/storage/v1/object/public/`)) {
-    error(400, "Invalid image URL: " + imageUrl);
   }
 
   try {

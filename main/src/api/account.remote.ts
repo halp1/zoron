@@ -3,8 +3,6 @@ import { error } from "@sveltejs/kit";
 import { command, query } from "$app/server";
 import { getRequestEvent } from "$app/server";
 
-import { SUPABASE_URI } from "$env/static/private";
-
 import { defaultSettings } from "@zoron/common/api/account/defaults";
 import {
   adapter,
@@ -344,11 +342,6 @@ export const updateProfilePicture = command(
     }
 
     const { imageUrl } = body;
-
-    // Validate that the URL is from Supabase storage
-    if (!imageUrl.startsWith(`${SUPABASE_URI}/storage/v1/object/public/`)) {
-      error(400, "Invalid image URL: " + imageUrl);
-    }
 
     try {
       await adapter.updateUser!({

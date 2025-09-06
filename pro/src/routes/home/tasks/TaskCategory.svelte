@@ -81,7 +81,7 @@
   <div
     class="flex flex-col rounded-xl border-2 transition-all duration-200 {$theme ===
     'amoled'
-      ? 'border-gray-700 bg-black/90'
+      ? 'border-white bg-black'
       : 'border-gray-600 bg-slate-800/90'} min-h-[300px] backdrop-blur-xl {isDragging.current
       ? 'invisible'
       : ''}"
@@ -92,7 +92,7 @@
     <div
       class="flex items-center justify-between border-b-2 p-4 {$theme ===
       'amoled'
-        ? 'border-gray-700'
+        ? 'border-white'
         : 'border-gray-600'} cursor-grab active:cursor-grabbing"
       {...listeners.current}
     >
@@ -106,7 +106,7 @@
         </h2>
         <span
           class="rounded-full px-2 py-1 text-sm {$theme === 'amoled'
-            ? 'bg-gray-800 text-gray-300'
+            ? 'bg-white text-black'
             : 'bg-gray-700 text-gray-400'}"
         >
           {category.tasks.length}
@@ -120,7 +120,7 @@
             onpointerdown={(e) => e.stopPropagation()}
             onmousedown={(e) => e.stopPropagation()}
             class="rounded-full p-2 {$theme === 'amoled'
-              ? 'text-white hover:bg-gray-700'
+              ? 'text-white hover:bg-white hover:text-black'
               : 'text-gray-300 hover:bg-gray-600'} transition-colors"
             title="Edit category"
             aria-label="Edit {category.name} category"
@@ -174,7 +174,7 @@
         <div
           id="{category.id}-add-zone"
           class="mt-3 rounded-lg border-2 border-dashed p-3 {$theme === 'amoled'
-            ? 'border-gray-600 bg-gray-800/50'
+            ? 'border-white bg-white text-black'
             : 'border-gray-500 bg-gray-700/50'} min-h-[60px] transition-colors"
         >
           <input
@@ -182,7 +182,7 @@
             onkeydown={handleKeydown}
             placeholder="Add new task..."
             class="w-full bg-transparent text-sm {$theme === 'amoled'
-              ? 'text-white placeholder-gray-400'
+              ? 'text-black placeholder-black'
               : 'text-gray-100 placeholder-gray-400'} border-none outline-none"
           />
           {#if newTaskTitle.trim()}
@@ -200,7 +200,7 @@
                   newTaskTitle = "";
                 }}
                 class="rounded px-3 py-1 text-xs {$theme === 'amoled'
-                  ? 'text-gray-400 hover:bg-gray-700 hover:text-white'
+                  ? 'text-white hover:bg-white hover:text-black'
                   : 'text-gray-500 hover:bg-gray-600 hover:text-gray-200'} transition-colors"
               >
                 Clear
