@@ -385,7 +385,7 @@
       </h1>
       <p
         class="text-lg {$theme === 'amoled'
-          ? 'text-gray-400'
+          ? 'text-white'
           : 'text-gray-500'}"
       >
         Organize your assignments and projects
@@ -441,7 +441,7 @@
             viewBox="0 0 24 24"
             fill="none"
             class="{$theme === 'amoled'
-              ? 'text-gray-600'
+              ? 'text-white'
               : 'text-gray-500'} mb-4"
           >
             <path
@@ -458,7 +458,7 @@
           </h3>
           <p
             class="text-lg {$theme === 'amoled'
-              ? 'text-gray-400'
+              ? 'text-white'
               : 'text-gray-500'} mb-6 max-w-md"
           >
             Create your first category to start organizing your tasks
@@ -467,7 +467,7 @@
             <button
               onclick={() => openCategoryModal()}
               class="rounded-lg px-6 py-3 {$theme === 'amoled'
-                ? 'bg-white text-black hover:bg-gray-200'
+                ? 'bg-white text-black hover:bg-white'
                 : 'bg-blue-600 text-white hover:bg-blue-700'} transition-colors"
             >
               Create Category

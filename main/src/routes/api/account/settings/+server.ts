@@ -6,6 +6,7 @@ import _ from "lodash";
 
 import type { RequestHandler } from "./$types";
 import { defaultSettings } from "./defaults";
+import type { User } from "@auth/sveltekit";
 
 type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
@@ -41,7 +42,7 @@ export const POST: RequestHandler = async ({ request, locals: { auth } }) => {
   await adapter.updateUser!({
     id: session.user.id!,
     settings: settingsToUpdate
-  });
+  } satisfies User as any);
 
   return api.json(settingsToUpdate);
 };

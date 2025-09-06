@@ -83,7 +83,7 @@
   <div
     class="fixed inset-0 z-50 flex items-center justify-center p-4 {$theme ===
     'amoled'
-      ? 'bg-black/80'
+      ? 'bg-black'
       : 'bg-gray-900/80'} backdrop-blur-sm"
     onclick={handleBackdropClick}
     onkeydown={(e) => e.key === "Escape" && handleBackdropClick(e)}
@@ -114,7 +114,7 @@
         <button
           onclick={handleClose}
           class="rounded-full p-2 {$theme === 'amoled'
-            ? 'text-white hover:bg-gray-700'
+            ? 'text-white hover:bg-white hover:text-black'
             : 'text-gray-400 hover:bg-gray-600'} transition-colors"
           aria-label="Close modal"
         >
@@ -133,7 +133,7 @@
           <label
             for="category-select"
             class="mb-2 block text-sm font-medium {$theme === 'amoled'
-              ? 'text-gray-300'
+              ? 'text-white/80'
               : 'text-gray-400'}"
           >
             Category
@@ -158,7 +158,7 @@
           <label
             for="task-title"
             class="mb-2 block text-sm font-medium {$theme === 'amoled'
-              ? 'text-gray-300'
+              ? 'text-white'
               : 'text-gray-400'}"
           >
             Title
@@ -170,7 +170,7 @@
             placeholder="Enter task title"
             required
             class="w-full rounded-lg border-2 px-3 py-2 {$theme === 'amoled'
-              ? 'border-white bg-black text-white placeholder-gray-500 focus:ring-white'
+              ? 'border-white bg-black text-white placeholder-white focus:ring-white'
               : 'border-gray-600 bg-slate-700 text-gray-100 placeholder-gray-400 focus:ring-blue-500'} focus:border-transparent focus:outline-none focus:ring-2"
           />
         </div>
@@ -180,7 +180,7 @@
           <label
             for="task-description"
             class="mb-2 block text-sm font-medium {$theme === 'amoled'
-              ? 'text-gray-300'
+              ? 'text-white'
               : 'text-gray-400'}"
           >
             Description
@@ -192,7 +192,7 @@
             rows="3"
             class="w-full resize-none rounded-lg border-2 px-3 py-2 {$theme ===
             'amoled'
-              ? 'border-white bg-black text-white placeholder-gray-500 focus:ring-white'
+              ? 'border-white bg-black text-white placeholder-white focus:ring-white'
               : 'border-gray-600 bg-slate-700 text-gray-100 placeholder-gray-400 focus:ring-blue-500'} focus:border-transparent focus:outline-none focus:ring-2"
           ></textarea>
         </div>
@@ -203,7 +203,7 @@
             <label
               for="task-due-date"
               class="mb-2 block text-sm font-medium {$theme === 'amoled'
-                ? 'text-gray-300'
+                ? 'text-white'
                 : 'text-gray-400'}"
             >
               Due Date

@@ -23,10 +23,6 @@ declare global {
       env: {
         vapid: string;
         name: string;
-        supabase: {
-          uri: string;
-          key: string;
-        };
         posthog: {
           key: string;
         };

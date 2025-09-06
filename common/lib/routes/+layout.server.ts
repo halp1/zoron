@@ -2,8 +2,6 @@ import { redirect } from "@sveltejs/kit";
 
 import {
   POSTHOG,
-  SUPABASE_PUBLIC_KEY,
-  SUPABASE_URI,
   VAPID_PUBLIC
 } from "$env/static/private";
 
@@ -66,10 +64,6 @@ export const load: LayoutServerLoad = async (event) => {
     env: {
       vapid: VAPID_PUBLIC,
       name: CONSTANTS.name,
-      supabase: {
-        uri: SUPABASE_URI,
-        key: SUPABASE_PUBLIC_KEY
-      },
       posthog: {
         key: POSTHOG
       },

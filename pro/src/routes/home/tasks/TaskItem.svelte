@@ -52,7 +52,7 @@
   <div
     class="group rounded-lg border-2 p-4 shadow-sm transition-all duration-200 {$theme ===
     'amoled'
-      ? 'border-gray-700 bg-black/90 hover:bg-gray-800/50'
+      ? 'border-white bg-black hover:bg-white hover:text-black'
       : 'border-gray-600 bg-slate-800/90 hover:bg-slate-700/50'} {task.completed
       ? 'opacity-60'
       : ''} {isDragging.current ? 'invisible' : ''}"
@@ -114,7 +114,7 @@
       {#if task.description}
         <p
           class="text-sm {$theme === 'amoled'
-            ? 'text-gray-400'
+            ? 'text-white'
             : 'text-gray-300'} task-description mb-3"
         >
           {task.description}
@@ -128,7 +128,7 @@
           {#if task.date}
             <span
               class="flex items-center gap-1 {$theme === 'amoled'
-                ? 'text-gray-400'
+                ? 'text-white'
                 : 'text-gray-500'}"
             >
               <svg
