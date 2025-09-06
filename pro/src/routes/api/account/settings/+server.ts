@@ -2,11 +2,12 @@ import { adapter } from "@zoron/common/auth";
 import { api } from "@zoron/common/server";
 import type { Settings } from "@zoron/common/types";
 
+import type { User } from "@auth/sveltekit";
+
 import _ from "lodash";
 
 import type { RequestHandler } from "./$types";
 import { defaultSettings } from "./defaults";
-import type { User } from "@auth/sveltekit";
 
 type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];

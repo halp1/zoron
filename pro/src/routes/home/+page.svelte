@@ -38,7 +38,7 @@
       Hello, {name?.split(" ")[0]}.
     </div>
     <div
-      class="mr-auto mt-5 text-2xl sm:mr-0"
+      class="mt-5 mr-auto text-2xl sm:mr-0"
       in:fly|global={{
         delay: 350,
         duration: 1000,
@@ -121,7 +121,7 @@
           y: 20,
           easing: motion.transitions.spring(400, 20)
         }}
-        class="btn-full btn-outlined mb-10 mt-auto w-80 border-green-400 text-base"
+        class="btn-full btn-outlined mt-auto mb-10 w-80 border-green-400 text-base"
         onclick={() => {
           $prompt?.prompt();
           PWA.hidePrompt();
@@ -139,7 +139,7 @@
           y: 20,
           easing: motion.transitions.spring(400, 20)
         }}
-        class="btn-full btn-outlined mb-10 mt-auto w-80 border-green-400 text-base"
+        class="btn-full btn-outlined mt-auto mb-10 w-80 border-green-400 text-base"
         onclick={() => {
           iosInstructionsOpen = true;
         }}
@@ -154,7 +154,7 @@
 {#if iosInstructionsOpen}
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
-    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
+    class="bg-opacity-50 fixed inset-0 flex items-center justify-center bg-black backdrop-blur-sm"
     onkeydown={(e) => {
       if (e.key === "Escape") {
         iosInstructionsOpen = false;
