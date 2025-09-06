@@ -1335,7 +1335,7 @@
                 {:else}
                   <div class="rounded-3xl p-3 backdrop-blur-3xl">
                     <img
-                      src={randomPlaceholderImage()}
+                      src={randomPlaceholderImage(dayViewDay)}
                       class="h-80 w-80"
                       alt="placeholder"
                     />
