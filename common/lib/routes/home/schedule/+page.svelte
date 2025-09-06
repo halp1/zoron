@@ -1333,7 +1333,7 @@
                     </div>
                   {/each}
                 {:else}
-                  <div class="rounded-3xl bg-slate-700 p-3 backdrop-blur-3xl">
+                  <div class="rounded-3xl p-3 backdrop-blur-3xl">
                     <img
                       src={randomPlaceholderImage()}
                       class="h-80 w-80"
