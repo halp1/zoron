@@ -236,7 +236,7 @@
     style="transform: translateX(-{!showFriend ? 0 : 100}vw);"
   >
     <div
-      class="h-full w-screen border-r-2 border-slate-600 px-10 pt-10 md:w-1/3"
+      class="h-full w-screen border-r-2 border-slate-600 px-10 pt-10 md:w-1/3 overflow-y-auto"
     >
       <div class="text-center text-4xl">Friends</div>
       <div class="relative">
