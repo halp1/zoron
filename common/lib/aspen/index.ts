@@ -1879,6 +1879,7 @@ export namespace aspen {
         const et = (text: Text) => decodeURIComponent(text.R[0].T);
 
         const data = await pdfPromise(d);
+        console.log(JSON.stringify(data));
         const schedulePage = data[0];
         const text = schedulePage.Texts;
         const name = et(text[0]);
