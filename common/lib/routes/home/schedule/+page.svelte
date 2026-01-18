@@ -89,7 +89,7 @@
 
     updating = true;
     const currentDate = new Date();
-    const cuttoff = new Date(2026, 0, 25);
+    const cuttoff = new Date(2026, 0, 17);
     const semester = currentDate >= cuttoff ? 2 : 1;
 
     const { dismiss } = toast.loading("Generating schedule...");
