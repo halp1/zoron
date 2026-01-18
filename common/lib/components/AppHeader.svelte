@@ -111,9 +111,12 @@
     } else animationDirection = "none";
   });
 
-  const titleBarState = writable(true);
+  const titleBarState = writable(false);
 
   onMount(() => {
+		if (storage.get("popups.schedule-s2-2026") === null) {
+			titleBarState.set(true);
+		}
     return storage.use("popups.schedule-s2-2026", titleBarState);
   });
 
