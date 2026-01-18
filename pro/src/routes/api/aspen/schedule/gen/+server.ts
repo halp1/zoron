@@ -22,10 +22,10 @@ export const POST: RequestHandler = async ({
   if (
     session.user.schedule &&
     session.user.schedule.updated &&
-    session.user.schedule.updated > Date.now() - 1000 * 60 * 60 * 24
+    session.user.schedule.updated > Date.now() - 1000 * 60 * 60 * 1
   )
     return stream.error(
-      "Schedule updated within the last 24 hours. You may only request a schedule refresh every 24 hours.",
+      "Schedule updated within the last 1 hour. You may only request a schedule refresh once per hour.",
       400
     );
 
