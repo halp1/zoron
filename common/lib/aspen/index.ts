@@ -1854,6 +1854,8 @@ export namespace aspen {
       tick();
 
       const pdfBuffer = Buffer.from(await pdfRes.arrayBuffer());
+
+			await import('fs/promises').then(({ writeFile }) => writeFile(`/tmp/schedule-${semester}.pdf`, pdfBuffer));
       const parsed = await parser.extract(pdfBuffer, semester);
       tick();
       return parsed;
