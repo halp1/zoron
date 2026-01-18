@@ -22,5 +22,5 @@ export const POST = async ({ locals: { auth } }) => {
   });
   p2.unref();
 
-  return api.json(`Server upgrading to commit ${commit}...`);
+  return api.json(`Server upgrading from ${commit}...`);
 };
