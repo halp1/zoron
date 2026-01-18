@@ -130,5 +130,3 @@ export const transformID = <T>(object: WithId<T>) => {
     _id: string;
   };
 };
-
-// update("users", {}, { $unset: {schedule: ""} });

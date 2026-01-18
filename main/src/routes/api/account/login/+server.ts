@@ -66,11 +66,5 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     httpOnly: cookieOptions.httpOnly
   });
 
-  console.log(
-    "setcookie!",
-    auth.cookies.sessionToken.name,
-    session.sessionToken
-  );
-
   return response;
 };
