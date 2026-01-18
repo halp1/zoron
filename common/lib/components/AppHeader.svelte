@@ -516,7 +516,7 @@
   </div>
 
   <!-- Theme popup -->
-  {#if $themePopup}
+  <!-- {#if $themePopup}
     <div
       class="fixed right-0 bottom-10 mx-5 rounded-3xl border-4 p-8 md:right-10 md:mx-0 md:ml-0 md:w-96 {$theme ===
       'amoled'
@@ -564,7 +564,7 @@
         {/if}
       </div>
     </div>
-  {/if}
+  {/if} -->
 </main>
 
 {#if $theme === "zoron"}
