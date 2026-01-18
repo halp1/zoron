@@ -145,8 +145,11 @@ export const text = (url: string) => {
   return `Sign in to ${CONSTANTS.name} at \n${url}\n\n`;
 };
 
-export const validEmail = (email: string) => {
-  if (!email.endsWith("@lexingtonma.org")) return false;
+export const validEmail = (email: string): boolean => {
+  if (!email.endsWith("@lexingtonma.org"))
+    return !email.includes("@")
+      ? validEmail(email + "@lexingtonma.org")
+      : false;
   const username = email
     .split("@")
     .slice(0, email.split("@").length - 1)

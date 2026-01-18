@@ -72,6 +72,10 @@ export const handle: Handle = async (params) => {
 };
 
 export const handleError = (params) => {
+	console.log(isRedirect(params.error));
+	console.log(params.error);
+  if (isRedirect(params.error)) throw params.error;
+
   console.error(
     "IP for below error:",
     params.event.request.headers.get("x-forwarded-for") ||

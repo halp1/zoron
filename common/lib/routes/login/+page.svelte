@@ -30,7 +30,10 @@
   ) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    const email = data.get("email") as string;
+    let email = data.get("email") as string;
+    if (!email.endsWith("@lexingtonma.org")) {
+      email += "@lexingtonma.org";
+    }
     if (!email || email.length === 0) {
       toast.error("Please enter an email", { position: "bottom-right" });
       return;
@@ -96,15 +99,27 @@
   <img src="/favicon.png" alt="Site icon" class="mb-3 w-32" />
   <h1 class="mb-10 text-center text-4xl">Log in to {page.data.env.name}</h1>
   <form onsubmit={handleSubmission} class="flex w-96 flex-col gap-2">
-    <input
-      class="w-full rounded-lg border-2 border-dashed {$theme === 'amoled'
-        ? 'border-white'
-        : 'border-blue-400'} bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
-      name="email"
-      bind:value={email}
-      placeholder="School Email"
-      required
-    />
+    <div class="relative">
+      <input
+        class="w-full rounded-lg border-2 border-dashed {$theme === 'amoled'
+          ? 'border-white'
+          : 'border-blue-400'} bg-transparent px-5 py-3 outline-none focus-within:border-solid focus-within:outline-none"
+        name="email"
+        bind:value={email}
+        placeholder="School Email"
+        required
+      />
+      <div
+        style={!email.includes("@")
+          ? "clip-path: inset(0 0 0 0);"
+          : "clip-path: inset(0 0 0 100%);"}
+        class="absolute right-5 top-1/2 z-10 -translate-y-1/2
+         whitespace-nowrap text-right text-gray-600
+         transition-[clip-path] duration-300"
+      >
+        @lexingtonma.org
+      </div>
+    </div>
     <div
       class="overflow-hidden text-sm text-red-600 transition-all"
       style="height: {validEmail(email) || email.length === 0 ? '0px' : '20px'}"
