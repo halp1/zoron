@@ -111,12 +111,10 @@
     } else animationDirection = "none";
   });
 
-  const titleBarState = writable(false);
-  const themePopup = writable(get(theme) === "zoron");
+  const titleBarState = writable(true);
 
   onMount(() => {
-    $themePopup = get(theme) === "zoron";
-    return storage.use("popups.theme", themePopup);
+    return storage.use("popups.schedule-s2-2026", titleBarState);
   });
 
   const prompt = PWA.prompt;
@@ -146,8 +144,7 @@
     <div class="flex h-12 items-center bg-green-500 px-4 text-xl text-white">
       <div class="md:mr-auto md:w-10"></div>
       <div>
-        Notifications are back, now checked about every hour between 7am and
-        10pm.
+        Semester 2 schedules are now available! Head to the Schedule tab to generate your new schedule.
       </div>
       <div class="ml-auto md:w-10">
         <button class="btn-circle" onclick={() => ($titleBarState = false)}>
