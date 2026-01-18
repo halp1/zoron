@@ -6,4 +6,4 @@ bun i
 cd ../main
 bun i
 bun run build
-pm2 restart "zoron"
+pm2 restart "zoron-main"
