@@ -20,6 +20,7 @@ export const POST: RequestHandler = async ({
       401
     );
   if (
+    session.user.role !== "admin" &&
     session.user.schedule &&
     session.user.schedule.updated &&
     session.user.schedule.updated > Date.now() - 1000 * 60 * 60 * 1

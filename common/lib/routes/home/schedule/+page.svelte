@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { run } from "svelte/legacy";
-  import { fade, fly } from "svelte/transition";
+  import { fly } from "svelte/transition";
 
   import { onMount, tick, untrack } from "svelte";
 
