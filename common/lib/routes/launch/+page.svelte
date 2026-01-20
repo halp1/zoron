@@ -29,11 +29,9 @@
     })();
 
     setTimeout(() => {
-      if (!loaded) {
-        toast.loading("Taking longer than usual to load. Restarting...", {
-          duration: 10000
-        });
-      }
+      toast.loading("Taking longer than usual to load. Restarting...", {
+        duration: 10000
+      });
     }, 4000);
   });
 </script>
