@@ -28,11 +28,16 @@
       }
     })();
 
-    setTimeout(() => {
+    let timeout = setTimeout(() => {
       toast.loading("Taking longer than usual to load. Restarting...", {
-        duration: 10000
+        duration: 3000
       });
-    }, 4000);
+      history.go(0);
+    }, 6000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
   });
 </script>
 
