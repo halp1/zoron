@@ -991,7 +991,7 @@
             {dayViewDay.getDate()}{(() => {
 							if (Math.floor(dayViewDay.getDate() / 10) % 10 === 1) return "th";
 
-              switch (dayViewDay.getDate()) {
+              switch (dayViewDay.getDate() % 10) {
                 case 1:
                   return "st";
                 case 2:
