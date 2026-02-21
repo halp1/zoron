@@ -989,7 +989,7 @@
               "December"
             ][dayViewDay.getMonth()]}
             {dayViewDay.getDate()}{(() => {
-							if (Math.floor(dayViewDay.getDate() / 10) % 10 === 1) return "th";
+							if (Math.floor(dayViewDay.getDate() / 10) % 10 === 1) return "th";``
 
               switch (dayViewDay.getDate() % 10) {
                 case 1:

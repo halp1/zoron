@@ -148,7 +148,7 @@ export namespace aspen {
 
   export namespace constants {
     export namespace steps {
-      export const authenticate = 5;
+      export const authenticate = 6;
       export const classDetail = 5;
       export const assignment = 6;
       export const transcriptShort = 2;
@@ -235,6 +235,44 @@ export namespace aspen {
 
     tick();
 
+    const ssoRes = await fetch(
+      "https://ma-lexington.myfollett.com/app/rest/aspen/sso?deploymentId=ma-lexington",
+      {
+        headers: {
+          accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+          "accept-language": "en-US,en;q=0.9,es-US;q=0.8,es;q=0.7",
+          "cache-control": "no-cache",
+          pragma: "no-cache",
+          "sec-ch-ua":
+            '"Not(A:Brand";v="8", "Chromium";v="144", "Google Chrome";v="144"',
+          "sec-ch-ua-mobile": "?0",
+          "sec-ch-ua-platform": '"Windows"',
+          "sec-fetch-dest": "document",
+          "sec-fetch-mode": "navigate",
+          "sec-fetch-site": "same-origin",
+          "sec-fetch-user": "?1",
+          "upgrade-insecure-requests": "1",
+          cookie,
+          Referer:
+            "https://ma-lexington.myfollett.com/aspen-login/?deploymentId=ma-lexington"
+        },
+        redirect: "manual",
+        body: null,
+        method: "GET"
+      }
+    );
+
+    if (ssoRes.status !== 302) {
+      throw new Error(
+        `Failed to get SSO URL: ${ssoRes.status} (${ssoRes.statusText})`
+      );
+    }
+
+		cookie = `${cookie}; ${getCookies(ssoRes).join("; ")}`;
+
+		tick();
+
     const auth: AuthResponse = await authRes.json();
     cookie = `${cookie}; user=${encodeURIComponent(JSON.stringify(auth))}`;
 
@@ -259,15 +297,21 @@ export namespace aspen {
           "https://ma-lexington.myfollett.com/aspen-login/?deploymentId=ma-lexington",
         "Referrer-Policy": "strict-origin-when-cross-origin"
       },
+      redirect: "manual",
       body: null,
       method: "GET"
     });
 
-    if (authTokenRes.status !== 200) {
-      throw new Error(`Failed to get auth token: ${await authTokenRes.text()}`);
+    if (authTokenRes.status !== 307) {
+      throw new Error(
+        `Failed to get auth token: ${authTokenRes.status} (${authTokenRes.statusText})`
+      );
     }
 
+    cookie = `${cookie}; ${getCookies(authTokenRes).join("; ")}`;
+
     tick();
+
 
     const homeRes = await fetch(
       "https://ma-lexington.myfollett.com/aspen/home.do",
