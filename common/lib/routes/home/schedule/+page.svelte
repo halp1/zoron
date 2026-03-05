@@ -319,12 +319,16 @@
       "Advisory"
     ];
 
-    const filtered = allEvents.filter(
-      (event) =>
-        !blockNames.includes(event.name) ||
-        blocks.includes(event.name) ||
-        event.name === "I-block"
-    );
+    const filtered = allEvents
+      .filter(
+        (event) =>
+          !blockNames.includes(event.name) ||
+          blocks.includes(event.name) ||
+          event.name === "I-block"
+      )
+      .map((item) =>
+        item.name === "Homeroom" ? { ...item, name: "Advisory" } : item
+      );
 
     const unmerged = filtered
       .map((event) => ({
@@ -814,7 +818,7 @@
     class="relative flex h-full flex-col-reverse items-center gap-3 md:flex-row md:pt-0"
   >
     <div
-      class="backdrop-blur-xs fixed z-10 mb-4 flex items-center gap-3 rounded-full border-white p-2 md:left-6 md:top-1/2 md:mb-0 md:-translate-y-1/2 md:flex-col"
+      class="fixed z-10 mb-4 flex items-center gap-3 rounded-full border-white p-2 backdrop-blur-xs md:top-1/2 md:left-6 md:mb-0 md:-translate-y-1/2 md:flex-col"
       class:border-2={$theme === "amoled"}
       in:fly|global={{
         delay: 200,
@@ -840,7 +844,7 @@
       >
         <Fa
           icon={faListUl}
-          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         />
       </button>
       <button
@@ -860,7 +864,7 @@
       >
         <Fa
           icon={faCalendar}
-          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         />
       </button>
       <button
@@ -874,7 +878,7 @@
       >
         <Fa
           icon={faFileExport}
-          class="absolute left-1/2 top-1/2 ml-[2px] -translate-x-1/2 -translate-y-1/2"
+          class="absolute top-1/2 left-1/2 ml-[2px] -translate-x-1/2 -translate-y-1/2"
         />
       </button>
       <button
@@ -887,7 +891,7 @@
       >
         <Fa
           icon={faRotateRight}
-          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         />
       </button>
     </div>
@@ -964,7 +968,7 @@
           class="absolute -top-1 left-1/2 z-10 flex w-[calc(100vw+4px)] -translate-x-1/2 flex-col items-center gap-5 border-2 border-white bg-black/20 p-2 pt-0 backdrop-blur-sm md:w-96 md:rounded-b-2xl"
         >
           <div
-            class="-mb-3 mt-3 text-xl text-slate-400"
+            class="mt-3 -mb-3 text-xl text-slate-400"
             in:fly|global={{
               delay: 250,
               duration: 1000,
@@ -989,7 +993,8 @@
               "December"
             ][dayViewDay.getMonth()]}
             {dayViewDay.getDate()}{(() => {
-							if (Math.floor(dayViewDay.getDate() / 10) % 10 === 1) return "th";``
+              if (Math.floor(dayViewDay.getDate() / 10) % 10 === 1) return "th";
+              ``;
 
               switch (dayViewDay.getDate() % 10) {
                 case 1:
@@ -1134,7 +1139,7 @@
                 <!-- svelte-ignore a11y_no_static_element_interactions -->
                 <!-- svelte-ignore a11y_click_events_have_key_events -->
                 <div
-                  class="absolute right-0 top-10 z-10 {$theme === 'amoled'
+                  class="absolute top-10 right-0 z-10 {$theme === 'amoled'
                     ? 'invert'
                     : ''}"
                   transition:fly|global={{
@@ -1219,7 +1224,7 @@
               style="padding: 0 10000px 0 10000px; margin: 0 -10000px 0 -10000px;"
             >
               <div
-                class="flex min-h-[60vh] min-w-[336px] flex-col items-center gap-5 animate-in-{swipeDirection} pb-20 pt-36 md:pb-5"
+                class="flex min-h-[60vh] min-w-[336px] flex-col items-center gap-5 animate-in-{swipeDirection} pt-36 pb-20 md:pb-5"
                 style="transition: inherit;"
                 bind:this={dayViewRef}
               >
@@ -1322,7 +1327,7 @@
                               {block.progression.toFixed(0)}%
                             </div>
                             <div
-                              class="absolute left-0 top-0 h-full {block.class
+                              class="absolute top-0 left-0 h-full {block.class
                                 ?.type === 'block'
                                 ? block.class.color
                                 : 'bg-slate-600'}"
@@ -1353,7 +1358,7 @@
   <!-- image schedule -->
   <div
     bind:this={imageSchedule}
-    class="fixed left-[300vw] top-[300vh] flex h-[720px] w-[1280px] flex-1 justify-center overflow-auto bg-black pb-10"
+    class="fixed top-[300vh] left-[300vw] flex h-[720px] w-[1280px] flex-1 justify-center overflow-auto bg-black pb-10"
   >
     <div class="grid min-h-full grid-cols-6 border-0 border-slate-800">
       {#each generated as block, i}
