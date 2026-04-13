@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({
     const account = await aspen.authenticate(data.username, data.password);
     const email = await aspen.email(account.cookie);
     if (email !== session?.user?.email) {
-      const msg = `This is not your account. This incident has been reported`;
+      const msg = `This is not your account. This incident has been reported.`;
       const to = email,
         from = "system@mail.haelp.dev";
       const form = new FormData();

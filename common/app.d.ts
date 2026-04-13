@@ -36,6 +36,12 @@ declare global {
         email: string;
         image: string;
       }[];
+			notifications: {
+				id: string;
+				type: "info" | "warning" | "error";
+				message: string;
+				date: Date;
+			}[]
       app?: {
         timeDelta: number;
         schedule: aspen.Types.Schedule.Schedule & { updated: number };

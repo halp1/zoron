@@ -1,12 +1,16 @@
 import type { RequestHandler } from "@sveltejs/kit";
+import { redirect } from "@sveltejs/kit";
 
+import { defaultSettings } from "@zoron/common/api/account/defaults";
 import { aspen } from "@zoron/common/aspen";
 import { adapter } from "@zoron/common/auth";
 import { cache } from "@zoron/common/cache";
-import { query, transformID } from "@zoron/common/database";
+import { update } from "@zoron/common/database";
+import { insert, query, transformID } from "@zoron/common/database";
 import { api } from "@zoron/common/server";
 import type { AppState } from "@zoron/common/web";
 
+import _ from "lodash";
 import { ObjectId } from "mongodb";
 
 export const GET: RequestHandler = async ({ locals: { auth }, cookies }) => {
@@ -21,6 +25,50 @@ export const GET: RequestHandler = async ({ locals: { auth }, cookies }) => {
       .authenticate(credentials.username, credentials.password)
       .then(({ cookie }) => cookie);
   cache.setUser(session.user.id, cookies.get("secret")!);
+
+  // make sure the user can auth correctly before doing anything else
+  try {
+    await a();
+  } catch (e) {
+    const networkOk = await fetch(
+      "https://ma-lexington.myfollett.com/aspen-login/?deploymentId=ma-lexington"
+    )
+      .then(() => true)
+      .catch(() => false);
+
+    if (networkOk) {
+      console.error("Authentication failed for user:", user!.email, e);
+      adapter.updateUser!({
+        id: session.user.id!,
+        settings: {
+          ..._.merge(defaultSettings, user!.settings),
+          notifications: {
+            attendance: false,
+            grades: false
+          }
+        }
+      });
+
+      await update(
+        "users",
+        { _id: new ObjectId(session.user.id!) },
+        { $unset: { session: "", aspen: "" } }
+      );
+
+      await insert("alerts", {
+        userID: session.user.id!,
+        type: "error",
+        message:
+          "Your Aspen credentials are no longer valid. Notifications have been disabled. Please update your password and then re-enable notifications.",
+        date: new Date().toISOString()
+      });
+    } else {
+      throw redirect(302, "/account/update");
+      // console.error("Network error while authenticating user:", user!.email, e);
+      // // Don't disable notifications since this is likely a temporary issue
+      // return [];
+    }
+  }
 
   const data = await Promise.all([
     a().then((cookie) => aspen.announcements(cookie)),

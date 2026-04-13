@@ -114,11 +114,11 @@
   const titleBarState = writable(false);
 
   onMount(() => {
-    if (storage.get("popups.schedule-s2-2026") === null) {
-      titleBarState.set(true);
-    }
+    // if (storage.get("popups.schedule-s2-2026") === null) {
+    //   titleBarState.set(true);
+    // }
     return storage.use("popups.schedule-s2-2026", titleBarState);
-  });	
+  });
 
   const prompt = PWA.prompt;
 
@@ -127,6 +127,12 @@
   );
   let proDelay = $derived(isPro ? 100 : 0);
   let modeSwitchDelay = $derived($theme === "amoled" ? 100 : 0);
+
+  let notifications = $state<
+    ((typeof page.data.notifications)[number] & { open: boolean })[]
+  >(page.data.notifications.map((n) => ({ ...n, open: true })) ?? []);
+  let notificationHeight =
+    (titleBarState ? 48 : 0) + notifications.filter((n) => n.open).length * 48;
 </script>
 
 <svelte:head>
@@ -159,18 +165,44 @@
     </div>
   </div>
 
+  {#each notifications as notification, idx (notification)}
+    <div
+      class="{notification.open
+        ? 'h-12'
+        : 'h-0'} w-screen overflow-hidden transition-all"
+    >
+      <div
+        class="flex h-12 items-center px-4 text-xl text-white"
+        class:bg-blue-400={notification.type === "info"}
+        class:bg-yellow-400={notification.type === "warning"}
+        class:bg-red-400={notification.type === "error"}
+      >
+        <div class="md:mr-auto md:w-10"></div>
+        <div>
+          {notification.message}
+        </div>
+        <div class="ml-auto md:w-10">
+          <button
+            class="btn-circle"
+            onclick={() => (notification.open = false)}
+          >
+            <Fa icon={faClose} />
+          </button>
+        </div>
+      </div>
+    </div>
+  {/each}
+
   <!-- Desktop header -->
   {#if typeof window === "undefined" || windowWidth >= 768}
     <div class="hidden md:block">
       <div class="h-12 {$theme === 'amoled' ? 'border-b-2' : ''}"></div>
       <div
-        class="fixed left-0 {$titleBarState
-          ? 'top-12'
-          : 'top-0'} z-50 flex h-12 w-full items-center gap-4 {$theme ===
+        class="fixed left-0 z-50 flex h-12 w-full items-center gap-4 {$theme ===
         'amoled'
           ? 'border-b-2 border-white bg-black'
           : 'bg-slate-800'} px-3 shadow-2xl transition-all"
-        style="view-transition-name: header;"
+        style="view-transition-name: header; top: {notificationHeight}px;"
         bind:this={tabContainer}
       >
         <!-- Logo and title section -->
@@ -235,7 +267,7 @@
           {/if}
 
           <div
-            class="group mb-[4px] ml-2 mt-auto flex items-center font-mono text-sm text-slate-600"
+            class="group mt-auto mb-[4px] ml-2 flex items-center font-mono text-sm text-slate-600"
             in:fly|global={{
               delay: 400 + proDelay + tagDelay,
               duration: 1000,
@@ -282,7 +314,7 @@
         <div class="flex w-[24rem] items-center justify-end gap-2">
           {#if !isPro && (page.data.accountAge ?? 0) > CONSTANTS.proAccountAge}
             <span
-              class="flex items-center justify-center whitespace-nowrap font-mono text-xs text-green-300"
+              class="flex items-center justify-center font-mono text-xs whitespace-nowrap text-green-300"
               in:fly|global={{
                 delay:
                   desktopTabs.length * 100 + 1100 + tagDelay + modeSwitchDelay,
@@ -419,7 +451,7 @@
   <!-- Main content area -->
   {#key page.url}
     <div
-      class="view-anim-{animationDirection} no-scroll mt-[env(safe-area-inset-top)] flex w-full flex-1 flex-col gap-2 overflow-y-auto overflow-x-hidden"
+      class="view-anim-{animationDirection} no-scroll mt-[env(safe-area-inset-top)] flex w-full flex-1 flex-col gap-2 overflow-x-hidden overflow-y-auto"
     >
       {@render children?.()}
     </div>
@@ -429,7 +461,7 @@
   {#if typeof window === "undefined" || windowWidth < 768}
     <div class="h-14 pb-[env(safe-area-inset-bottom)] md:hidden"></div>
     <div
-      class="fixed bottom-0 left-0 right-0 flex w-full items-center justify-evenly pb-2 pt-2 shadow-xl md:hidden {$theme ===
+      class="fixed right-0 bottom-0 left-0 flex w-full items-center justify-evenly pt-2 pb-2 shadow-xl md:hidden {$theme ===
       'amoled'
         ? 'border-t-2 border-white bg-black'
         : 'bg-slate-800'}"
@@ -458,7 +490,7 @@
               src={tab.icon}
               alt=""
               class={twMerge(
-                "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full",
+                "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full",
                 tab.iconClass ?? ""
               )}
             />
@@ -467,7 +499,7 @@
               icon={tab.icon}
               size="lg"
               class={twMerge(
-                "scale-85 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
+                "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-85",
                 $theme === "amoled" && idx === activeTabIndex
                   ? "text-black"
                   : "text-white",
@@ -482,7 +514,7 @@
 
   <!-- PWA installation popup -->
   <div
-    class="fixed bottom-0 left-0 right-0 top-0 {$prompt
+    class="fixed top-0 right-0 bottom-0 left-0 {$prompt
       ? 'flex'
       : 'hidden'} items-center justify-center backdrop-blur-md"
   >
@@ -576,7 +608,7 @@
   <img
     src={bgSrc}
     alt=""
-    class="fixed left-1/2 top-1/2 -z-10 mb-12 h-[70vh] -translate-x-1/2 -translate-y-1/2 opacity-10 blur-xl md:mt-12"
+    class="fixed top-1/2 left-1/2 -z-10 mb-12 h-[70vh] -translate-x-1/2 -translate-y-1/2 opacity-10 blur-xl md:mt-12"
   />
 {/if}
 

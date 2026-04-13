@@ -62,7 +62,7 @@
     const taskData: Partial<Task> = {
       title: formData.title.trim(),
       description: formData.description.trim() || undefined,
-      date: formData.date || undefined
+      date: formData.date || undefined,
     };
 
     onSave(taskData, formData.categoryId);
@@ -144,7 +144,7 @@
             required
             class="w-full rounded-lg border-2 px-3 py-2 {$theme === 'amoled'
               ? 'border-white bg-black text-white focus:ring-white'
-              : 'border-gray-600 bg-slate-700 text-gray-100 focus:ring-blue-500'} focus:border-transparent focus:ring-2 focus:outline-none"
+              : 'border-gray-600 bg-slate-700 text-gray-100 focus:ring-blue-500'} focus:border-transparent focus:outline-none focus:ring-2"
           >
             <option value="">Select a category</option>
             {#each categories as category}
@@ -171,7 +171,7 @@
             required
             class="w-full rounded-lg border-2 px-3 py-2 {$theme === 'amoled'
               ? 'border-white bg-black text-white placeholder-white focus:ring-white'
-              : 'border-gray-600 bg-slate-700 text-gray-100 placeholder-gray-400 focus:ring-blue-500'} focus:border-transparent focus:ring-2 focus:outline-none"
+              : 'border-gray-600 bg-slate-700 text-gray-100 placeholder-gray-400 focus:ring-blue-500'} focus:border-transparent focus:outline-none focus:ring-2"
           />
         </div>
 
@@ -193,7 +193,7 @@
             class="w-full resize-none rounded-lg border-2 px-3 py-2 {$theme ===
             'amoled'
               ? 'border-white bg-black text-white placeholder-white focus:ring-white'
-              : 'border-gray-600 bg-slate-700 text-gray-100 placeholder-gray-400 focus:ring-blue-500'} focus:border-transparent focus:ring-2 focus:outline-none"
+              : 'border-gray-600 bg-slate-700 text-gray-100 placeholder-gray-400 focus:ring-blue-500'} focus:border-transparent focus:outline-none focus:ring-2"
           ></textarea>
         </div>
 
@@ -214,7 +214,7 @@
               bind:value={formData.date}
               class="w-full rounded-lg border-2 px-3 py-2 {$theme === 'amoled'
                 ? 'border-white bg-black text-white focus:ring-white'
-                : 'border-gray-600 bg-slate-700 text-gray-100 focus:ring-blue-500'} focus:border-transparent focus:ring-2 focus:outline-none"
+                : 'border-gray-600 bg-slate-700 text-gray-100 focus:ring-blue-500'} focus:border-transparent focus:outline-none focus:ring-2"
             />
           </div>
         </div>

@@ -5,6 +5,7 @@ import { POSTHOG, VAPID_PUBLIC } from "$env/static/private";
 import { aspen } from "@zoron/common/aspen";
 import { adapter } from "@zoron/common/auth";
 import { CONSTANTS } from "@zoron/common/constants";
+import { query, remove, transformID } from "@zoron/common/database";
 
 import type { User } from "@auth/sveltekit";
 
@@ -45,6 +46,22 @@ export const load: LayoutServerLoad = async (event) => {
     session?.user?.aspen && cookies.get("secret")
       ? aspen.decrypt(cookies.get("secret")!, session.user.aspen).username
       : undefined;
+
+  const notifications = session?.user?.id
+    ? await query<{
+        userID: string;
+        type: "info" | "warning" | "error";
+        message: string;
+        date: Date;
+      }>({ collection: "alerts", query: { userID: session?.user?.id } }).then(
+        (r) => r.map(transformID)
+      )
+    : [];
+
+  if (session?.user?.id) {
+    await remove("alerts", { userID: session?.user?.id });
+  }
+
   return {
     session,
     username: aspenName,
@@ -67,6 +84,7 @@ export const load: LayoutServerLoad = async (event) => {
       commit: commit,
       pro
     },
+    notifications,
     hideFooter: event.cookies.get("hide-footer") === "1"
   };
 };

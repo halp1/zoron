@@ -121,7 +121,7 @@ export const remove = async (collection: string, search: any) => {
   const res = await client
     .db(database)
     .collection(collection)
-    .deleteOne(search);
+    .deleteMany(search);
   return !!res.deletedCount;
 };
 

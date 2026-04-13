@@ -1,6 +1,7 @@
 import { VAPID_PRIVATE, VAPID_PUBLIC } from "$env/static/private";
 
-import type { aspen } from "@zoron/common/aspen";
+import { defaultSettings } from "@zoron/common/api/account/defaults";
+import { aspen } from "@zoron/common/aspen";
 import type {
   Assignment,
   Attendance,
@@ -9,11 +10,19 @@ import type {
 } from "@zoron/common/aspen/types";
 import { adapter } from "@zoron/common/auth";
 import { cache } from "@zoron/common/cache";
-import { query, transformID } from "@zoron/common/database";
+import {
+  dbClient,
+  insert,
+  query,
+  transformID,
+  update
+} from "@zoron/common/database";
 import type { PushEvent } from "@zoron/common/types";
 
 import type { Session, User } from "@auth/sveltekit";
 
+import _ from "lodash";
+import { ObjectId } from "mongodb";
 import webpush from "web-push";
 
 import { activity } from "../../routes/api/aspen/activity";
@@ -118,6 +127,33 @@ export class Notifier extends Job {
     return internalResults;
   }
 
+  async #disableNotifications(user: User) {
+    adapter.updateUser!({
+      id: user.id!,
+      settings: {
+        ..._.merge(defaultSettings, user.settings),
+        notifications: {
+          attendance: false,
+          grades: false
+        }
+      }
+    });
+
+    await update(
+      "users",
+      { _id: new ObjectId(user.id!) },
+      { $unset: { session: "", aspen: "" } }
+    );
+
+    await insert("alerts", {
+      userID: user.id!,
+      type: "error",
+      message:
+        "Your Aspen credentials are no longer valid. Notifications have been disabled. Please update your password and then re-enable notifications.",
+      date: new Date().toISOString()
+    });
+  }
+
   async #fetchUserNotifications(
     user: User,
     secret: string
@@ -130,6 +166,41 @@ export class Notifier extends Job {
       user,
       expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toString()
     };
+
+    if (!session?.user?.aspen) {
+      await this.#disableNotifications(user);
+      return [];
+    }
+
+    // log in first!
+    try {
+      const { username, password } = aspen.decrypt(
+        secret,
+        session.user!.aspen!
+      );
+      const apsenSession = await aspen.authenticate(username, password);
+      session.user.session = apsenSession;
+    } catch (e) {
+      const networkOk = await fetch(
+        "https://ma-lexington.myfollett.com/aspen-login/?deploymentId=ma-lexington"
+      )
+        .then(() => true)
+        .catch(() => false);
+
+      if (networkOk) {
+        console.error("Authentication failed for user:", user.email, e);
+        await this.#disableNotifications(user);
+        return [];
+      } else {
+        console.error(
+          "Network error while authenticating user:",
+          user.email,
+          e
+        );
+        // Don't disable notifications since this is likely a temporary issue
+        return [];
+      }
+    }
 
     const { merged, raw } = await activity(session, secret);
 
