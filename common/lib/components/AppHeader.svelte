@@ -113,12 +113,12 @@
 
   const titleBarState = writable(false);
 
-  onMount(() => {
-    // if (storage.get("popups.schedule-s2-2026") === null) {
-    //   titleBarState.set(true);
-    // }
-    return storage.use("popups.schedule-s2-2026", titleBarState);
-  });
+  // onMount(() => {
+  //   if (storage.get("popups.schedule-s2-2026") === null) {
+  //     titleBarState.set(true);
+  //   }
+  //   return storage.use("popups.schedule-s2-2026", titleBarState);
+  // });
 
   const prompt = PWA.prompt;
 
@@ -132,7 +132,7 @@
     ((typeof page.data.notifications)[number] & { open: boolean })[]
   >(page.data.notifications.map((n) => ({ ...n, open: true })) ?? []);
   let notificationHeight =
-    (titleBarState ? 48 : 0) + notifications.filter((n) => n.open).length * 48;
+    ($titleBarState ? 48 : 0) + notifications.filter((n) => n.open).length * 48;
 </script>
 
 <svelte:head>
