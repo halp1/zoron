@@ -120,7 +120,7 @@
               document.querySelector("html")!.style.overflow = "visible";
               upgraded = true;
               await new Promise((r) => setTimeout(r, 2000));
-              window.location.href = "https://pro.zoron.app";
+              window.location.href = "https://pro.zoron.dev";
             })
             .catch((e) => toast.error(e.message));
         }}

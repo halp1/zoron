@@ -1,4 +1,5 @@
 import { adapter, auth, verifyPassword } from "@zoron/common/auth";
+import { isEmailDisabled } from "@zoron/common/auth";
 import { api } from "@zoron/common/server";
 
 import "@auth/sveltekit";
@@ -20,6 +21,9 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
   }
 
   const user = await adapter.getUserByEmail!(email);
+  if (await isEmailDisabled(email)) {
+    return api.error("This account is disabled", 403);
+  }
   if (!user) {
     return api.error("Invalid email.", 404);
   }

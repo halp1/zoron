@@ -14,6 +14,10 @@
 
   import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
+  const disabledEmails = $derived(
+    ((page.data as any).disabledEmails?.data ?? []) as string[]
+  );
+
   let tick = $state(0);
   onMount(() => {
     let frame;
@@ -147,6 +151,98 @@
       ? 'bg-black'
       : 'bg-slate-800'} p-5"
     in:fly|global={{
+      delay: 525,
+      duration: 1000,
+      opacity: 0,
+      y: -20,
+      easing: motion.transitions.spring(400, 20)
+    }}
+  >
+    <div class="text-2xl">Disable accounts</div>
+    <form
+      class="mt-4 flex flex-col gap-2"
+      onsubmit={async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const email = String(formData.get("email") || "").trim();
+
+        if (!email) {
+          toast.error("Email is required");
+          return;
+        }
+
+        const res = await requests.post("/api/admin/disabled-emails", {
+          action: "add",
+          email
+        });
+
+        if (res.success === true) {
+          toast.success("Login disabled for " + email);
+          history.go(0);
+        } else {
+          toast.error("Failed to disable email: " + res.error);
+        }
+      }}
+    >
+      <input
+        name="email"
+        type="email"
+        placeholder="Email address"
+        class="w-full rounded-full border-2 {$theme === 'amoled'
+          ? 'border-white'
+          : 'border-slate-600'} bg-transparent px-3 py-2 outline-none"
+      />
+      <button
+        type="submit"
+        class="btn-outlined btn-full w-full {$theme === 'amoled'
+          ? 'border-white'
+          : 'border-red-400'} text-base"
+      >
+        Disable Login
+      </button>
+    </form>
+    <div class="mt-4 text-sm text-slate-300">Disabled emails</div>
+    <div class="mt-2 flex max-h-64 flex-col gap-2 overflow-auto">
+      {#if disabledEmails.length === 0}
+        <div class="rounded-2xl border border-dashed border-slate-600 px-3 py-2 text-sm text-slate-400">
+          No disabled emails
+        </div>
+      {:else}
+        {#each disabledEmails as disabledEmail}
+          <div class="flex items-center justify-between gap-3 rounded-2xl border border-slate-600 px-3 py-2 text-sm">
+            <span class="break-all">{disabledEmail}</span>
+            <button
+              type="button"
+              class="rounded-full border border-red-500 px-3 py-1 text-sm"
+              onclick={async () => {
+                const res = await requests.post("/api/admin/disabled-emails", {
+                  action: "remove",
+                  email: disabledEmail
+                });
+
+                if (res.success === true) {
+                  toast.success("Login re-enabled for " + disabledEmail);
+                  history.go(0);
+                } else {
+                  toast.error("Failed to re-enable email: " + res.error);
+                }
+              }}
+            >
+              Enable
+            </button>
+          </div>
+        {/each}
+      {/if}
+    </div>
+  </div>
+
+  <div
+    class="rounded-3xl border-2 {$theme === 'amoled'
+      ? 'border-white'
+      : 'border-red-400'} {$theme === 'amoled'
+      ? 'bg-black'
+      : 'bg-slate-800'} p-5"
+    in:fly|global={{
       delay: 450,
       duration: 1000,
       opacity: 0,
@@ -191,17 +287,17 @@
       <input
         type="text"
         name="name"
-        class="w-full rounded-full border-2 border-dashed {$theme === 'amoled'
+        class="w-full rounded-full border-2 {$theme === 'amoled'
           ? 'border-white'
-          : 'border-slate-600'} bg-transparent px-2 text-center outline-none focus-within:border-solid"
+          : 'border-slate-600'} bg-transparent px-3 py-2 text-center outline-none"
         placeholder="Name"
       />
       <input
         type="text"
         name="email"
-        class="w-full rounded-full border-2 border-dashed {$theme === 'amoled'
+        class="w-full rounded-full border-2 {$theme === 'amoled'
           ? 'border-white'
-          : 'border-slate-600'} bg-transparent px-2 text-center outline-none focus-within:border-solid"
+          : 'border-slate-600'} bg-transparent px-3 py-2 text-center outline-none"
         placeholder="Email"
       />
       <button
@@ -263,17 +359,17 @@
       <input
         type="text"
         name="copy-name"
-        class="w-full rounded-full border-2 border-dashed {$theme === 'amoled'
+        class="w-full rounded-full border-2 {$theme === 'amoled'
           ? 'border-white'
-          : 'border-slate-600'} bg-transparent px-2 text-center outline-none focus-within:border-solid"
+          : 'border-slate-600'} bg-transparent px-3 py-2 text-center outline-none"
         placeholder="Name"
       />
       <input
         type="text"
         name="copy-email"
-        class="w-full rounded-full border-2 border-dashed {$theme === 'amoled'
+        class="w-full rounded-full border-2 {$theme === 'amoled'
           ? 'border-white'
-          : 'border-slate-600'} bg-transparent px-2 text-center outline-none focus-within:border-solid"
+          : 'border-slate-600'} bg-transparent px-3 py-2 text-center outline-none"
         placeholder="Email"
       />
       <button

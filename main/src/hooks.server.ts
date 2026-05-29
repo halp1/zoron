@@ -3,6 +3,7 @@ import type { Handle } from "@sveltejs/kit";
 import { MONGODB_URI } from "$env/static/private";
 
 import { handle as authHandle } from "@zoron/common/auth";
+import { isEmailDisabled } from "@zoron/common/auth";
 import { logger } from "@zoron/common/logs";
 
 declare namespace globalThis {
@@ -21,8 +22,6 @@ export const handle: Handle = async (params) => {
   ) {
     return new Response(null, { status: 204 }); // Return empty response with 204 No Content
   }
-  if (params.event.url.pathname === "/api/admin/impersonate")
-    return await params.resolve(params.event);
   if (
     params.event.url.pathname.startsWith("/posthog-proxy/static") ||
     params.event.url.pathname.startsWith("/posthog-proxy")
@@ -64,7 +63,54 @@ export const handle: Handle = async (params) => {
     });
   }
 
-  return await authHandle(params);
+  return await authHandle({
+    ...params,
+    resolve: async (event) => {
+      const pathname = event.url.pathname;
+      const session = await event.locals.auth();
+      const email = session?.user?.email;
+
+      if (email && (await isEmailDisabled(email))) {
+        if (
+          pathname === "/login" ||
+          pathname === "/register" ||
+          pathname === "/forgor" ||
+          pathname === "/verify"
+        ) {
+          const originalAuth = event.locals.auth;
+          event.locals.auth = async () => null;
+          try {
+            return await params.resolve(event);
+          } finally {
+            event.locals.auth = originalAuth;
+          }
+        }
+
+        if (pathname.startsWith("/api/")) {
+          return new Response(
+            JSON.stringify({ success: false, error: "Account disabled" }),
+            {
+              status: 403,
+              headers: { "content-type": "application/json" }
+            }
+          );
+        }
+
+        if (
+          pathname.startsWith("/home") ||
+          pathname.startsWith("/account") ||
+          pathname === "/launch"
+        ) {
+          return new Response(null, {
+            status: 302,
+            headers: { location: "/login?error=disabled" }
+          });
+        }
+      }
+
+      return await params.resolve(event);
+    }
+  });
 };
 
 export const handleError = (params) => {

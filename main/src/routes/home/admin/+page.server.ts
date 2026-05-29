@@ -13,6 +13,14 @@ export const load: PageServerLoad = async () => {
           query: { name: "timeDelta" }
         })
       )[0] || { name: "timeDelta", data: 0, _id: new ObjectId() }
+    ),
+    disabledEmails: transformID(
+      (
+        await query<{ name: "disabledEmails"; data: string[] }>({
+          collection: "app",
+          query: { name: "disabledEmails" }
+        })
+      )[0] || { name: "disabledEmails", data: [], _id: new ObjectId() }
     )
   };
 };

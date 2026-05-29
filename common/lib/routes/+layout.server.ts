@@ -23,7 +23,7 @@ const pro = process
 export const load: LayoutServerLoad = async (event) => {
   const session = await event.locals.auth();
   if (pro) {
-    if (!session?.user?.id) return redirect(302, "https://zoron.app/login");
+    if (!session?.user?.id) return redirect(302, "https://zoron.dev/login");
     if (!session.user.pro) {
       if (import.meta.env.DEV) {
         await adapter.updateUser!({
@@ -31,12 +31,12 @@ export const load: LayoutServerLoad = async (event) => {
           pro: true
         } satisfies User as any);
         session.user.pro = true;
-      } else return redirect(302, "https://zoron.app/pro");
+      } else return redirect(302, "https://zoron.dev/pro");
     }
   } else {
     if (session?.user?.pro) {
       if (!import.meta.env.DEV) {
-        return redirect(302, "https://pro.zoron.app");
+        return redirect(302, "https://pro.zoron.dev");
       }
     }
   }
