@@ -42,7 +42,7 @@ export namespace aspen {
       course: string;
       term: string;
       teachers: Name[];
-      // email: string;
+      email: string;
       room?: string;
       grade?: Grade;
       attendance: {
@@ -828,16 +828,16 @@ export namespace aspen {
                 last: item.split(", ")[0]
               }) satisfies Types.Name
           ),
-        // email: getItem(4),
-        room: getItem(4),
+        email: getItem(4),
+        room: getItem(5),
         grade: {
-          number: Math.round(parseFloat(getItem(5).split(" ")[0]) * 100) / 100,
-          letter: getItem(5).split(" ")[1]
+          number: Math.round(parseFloat(getItem(6).split(" ")[0]) * 100) / 100,
+          letter: getItem(6).split(" ")[1]
         },
         attendance: {
-          absent: getItemWithFallback(6, parseInt, null),
-          tardy: getItemWithFallback(7, parseInt, null),
-          dismissed: getItemWithFallback(8, parseInt, null)
+          absent: getItemWithFallback(7, parseInt, null),
+          tardy: getItemWithFallback(8, parseInt, null),
+          dismissed: getItemWithFallback(9, parseInt, null)
         }
       });
     }
