@@ -18,8 +18,15 @@ export namespace cache {
   }
 
   export const read = (): Cache => {
-    const data = fs.readFileSync(path, "utf-8");
-    return JSON.parse(data) as Cache;
+    try {
+      const data = fs.readFileSync(path, "utf-8");
+      return JSON.parse(data) as Cache;
+    } catch (error) {
+      console.error("Failed reading cache", error);
+      if (!fs.existsSync(`${path}.bak`))
+        fs.renameSync(path, `${path}.bak`);
+      return defaultValue;
+    }
   };
 
   export const write = (cacheData: Cache): void => {
