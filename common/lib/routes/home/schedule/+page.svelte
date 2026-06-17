@@ -238,6 +238,7 @@
     const day = currentDayEvents.find(
       (event) =>
         event.summary.toLowerCase().includes("day") ||
+        event.summary.toLowerCase().includes("final") ||
         event.summary.toLowerCase().includes("all") ||
         event.summary.toLowerCase().includes("grade 9 only")
     )?.summary!;
@@ -246,6 +247,7 @@
       .filter(
         (event) =>
           !event.summary.toLowerCase().includes("day") &&
+          !event.summary.toLowerCase().includes("final") &&
           !event.summary.toLowerCase().includes("all blocks") &&
           !event.summary.toLowerCase().includes("grade 9 only")
       )
