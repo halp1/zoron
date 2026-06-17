@@ -247,7 +247,7 @@
       .filter(
         (event) =>
           !event.summary.toLowerCase().includes("day") &&
-          !event.summary.toLowerCase().includes("final") &&
+          !event.summary.toLowerCase().includes("finals") &&
           !event.summary.toLowerCase().includes("all blocks") &&
           !event.summary.toLowerCase().includes("grade 9 only")
       )
