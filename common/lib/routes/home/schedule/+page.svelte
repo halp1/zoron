@@ -967,7 +967,7 @@
         class="relative mx-auto flex h-full max-w-80 flex-col items-center gap-5 overflow-x-visible md:h-full md:flex-none"
       >
         <div
-          class="absolute -top-1 left-1/2 z-10 flex w-[calc(100vw+4px)] -translate-x-1/2 flex-col items-center gap-5 border-2 border-white bg-black/20 p-2 pt-0 backdrop-blur-sm md:w-96 md:rounded-b-2xl"
+          class="absolute -top-1 left-1/2 z-10 flex max-md:w-[calc(100vw+4px)] -translate-x-1/2 flex-col items-center gap-5 border-2 border-white bg-black/20 p-2 pt-0 backdrop-blur-sm md:w-max md:rounded-b-2xl"
         >
           <div
             class="mt-3 -mb-3 text-xl text-slate-400"
@@ -1041,7 +1041,7 @@
               loading...
             </div>
           {:else}
-            <div class="relative -mt-2 flex w-full justify-center gap-2">
+            <div class="relative -mt-2 flex w-full justify-center gap-2 overflow-x-auto scrollbar-hidden">
               <button
                 in:fly|global={{
                   delay: 450,
