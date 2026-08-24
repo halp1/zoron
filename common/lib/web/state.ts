@@ -15,7 +15,7 @@ export interface AppState {
     cookie: string;
     token: string;
   };
-  classes: aspen.Types.Class[];
+  classes: aspen.Types.Class[] | null;
   activity: Awaited<ReturnType<typeof aspen.activity>>;
   transcript: aspen.Types.Transcript;
 }

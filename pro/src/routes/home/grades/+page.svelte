@@ -30,16 +30,18 @@
   }
 
   let classes: Class[] | null = $state(
-    $zoron.classes.map(
-      (c) =>
-        ({
-          ...c,
-          expanded: false,
-          height: -1,
-          credit: $zoron.schedule?.schedule?.find((a) => a?.course === c.course)
-            ?.credit
-        }) satisfies Class
-    ) as Class[] | null
+    $zoron.classes
+      ? ($zoron.classes.map(
+          (c) =>
+            ({
+              ...c,
+              expanded: false,
+              height: -1,
+              credit: $zoron.schedule?.schedule?.find((a) => a?.course === c.course)
+                ?.credit
+            }) satisfies Class
+        ) as Class[])
+      : null
   );
 
   const loadClassData = async (c: Class) => {
@@ -130,17 +132,19 @@
         return;
       }
       if (query.year === "current" && query.term === 0) {
-        classes = $zoron.classes.map(
-          (c) =>
-            ({
-              ...c,
-              expanded: false,
-              height: -1,
-              credit: $zoron.schedule?.schedule?.find(
-                (a) => a?.course === c.course
-              )?.credit
-            }) satisfies Class
-        );
+        classes = $zoron.classes
+          ? $zoron.classes.map(
+              (c) =>
+                ({
+                  ...c,
+                  expanded: false,
+                  height: -1,
+                  credit: $zoron.schedule?.schedule?.find(
+                    (a) => a?.course === c.course
+                  )?.credit
+                }) satisfies Class
+            )
+          : null;
         return;
       }
       if (query.year === "previous" && query.term === 0) {
@@ -507,7 +511,11 @@
 </div>
 
 {#if displayMode === "grades"}
-  {#if classes && classes.length}
+  {#if $zoron.classes === null}
+    <div class="text-center text-red-500 py-10 text-lg font-medium">
+      Cannot obtain your current class list.
+    </div>
+  {:else if classes && classes.length}
     <div
       class="grid grid-cols-1 gap-5 px-10 pb-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
     >

@@ -84,7 +84,11 @@ export const GET: RequestHandler = async ({ locals: { auth }, cookies }) => {
     aspen.authenticate(credentials.username, credentials.password),
     a()
       .then((cookie) => aspen.classes(cookie))
-      .then(({ classes }) => classes),
+      .then(({ classes }) => classes)
+      .catch((e) => {
+        console.error("Failed to fetch classes:", e);
+        return null;
+      }),
     a().then((cookie) => aspen.activity(cookie)),
     a().then((cookie) => aspen.transcript({ cookie, all: true }))
   ] as const);
