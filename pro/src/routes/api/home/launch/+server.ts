@@ -90,7 +90,12 @@ export const GET: RequestHandler = async ({ locals: { auth }, cookies }) => {
         return null;
       }),
     a().then((cookie) => aspen.activity(cookie)),
-    a().then((cookie) => aspen.transcript({ cookie, all: true }))
+    a()
+      .then((cookie) => aspen.transcript({ cookie, all: true }))
+      .catch((e) => {
+        console.error("Failed to fetch transcript:", e);
+        return null;
+      })
   ] as const);
 
   const response = api.json<AppState>({

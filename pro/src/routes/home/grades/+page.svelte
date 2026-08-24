@@ -297,14 +297,17 @@
   let weightedGPA = $state<"unweighted" | "lhs" | "weighted">("lhs");
 
   let transcript = $derived(
-    $zoron.transcript.classes.filter((c) => {
-      if (transcriptTime === "all") return true;
-      if (transcriptTime === "current")
-        return (
-          c.grade === Math.max(...$zoron.transcript.classes.map((c) => c.grade))
-        );
-      return c.grade === parseInt(transcriptTime.replace("g", ""));
-    })
+    $zoron.transcript
+      ? $zoron.transcript.classes.filter((c) => {
+          if (transcriptTime === "all") return true;
+          if (transcriptTime === "current")
+            return (
+              c.grade ===
+              Math.max(...$zoron.transcript.classes.map((c) => c.grade))
+            );
+          return c.grade === parseInt(transcriptTime.replace("g", ""));
+        })
+      : []
   );
 
   let transcriptCreditsEarned = $derived(
@@ -1107,7 +1110,13 @@
 {:else}
   <!-- Transcript View -->
   <div class="pb-10">
-    {#if transcript.length > 0}
+    {#if $zoron.transcript === null}
+      <div
+        class="flex h-64 items-center justify-center text-xl text-red-500 font-medium"
+      >
+        Cannot obtain your transcript.
+      </div>
+    {:else if transcript.length > 0}
       <div
         class="mb-5 grid gap-5 pb-5"
         in:fly={{
