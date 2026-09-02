@@ -88,7 +88,7 @@
 
     updating = true;
     const currentDate = new Date();
-    const cutoff = new Date(2026, 0, 16);
+    const cutoff = new Date(2027, 0, 22);
     const semester = currentDate >= cutoff ? 2 : 1;
 
     const { dismiss } = toast.loading("Generating schedule...");
@@ -110,7 +110,7 @@
     if (updating) return toast.error("Schedule is already updating");
     updating = true;
     const currentDate = new Date();
-    const cutoff = new Date(2026, 0, 16);
+    const cutoff = new Date(2027, 0, 22);
     const semester = currentDate >= cutoff ? 2 : 1;
 
     const { dismiss, update } = toast.loading(getLoadingText(0));
